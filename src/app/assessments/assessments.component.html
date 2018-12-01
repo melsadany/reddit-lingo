@@ -1,11 +1,26 @@
-<div>
-  <button class="start-button" *ngIf="!isRecording && !blobUrl" (click)="startRecording()">Start Recording</button>
+<div class="mx-lg-5">
+  <div *ngIf="splashPage">
+    <p>
+      In this assessment, there will be a three second count-down,
+      then you will see a grid of shapes or a grid of numbers. Read off the numbers or shapes as quickly as you can,
+      from left to right and from top to bottom. When you are finished, press the "DONE" button at the bottom of the page.
+    </p>
+    <button class="start-button" (click)="startDisplayedCountdownTimer()">Start assessment</button>
+  </div>
+  <!-- <button class="start-button" *ngIf="!isRecording && !blobUrl" (click)="startRecording()">Start Recording</button> -->
+  <div *ngIf="showImage">
+    <img src="assets/img/ran_1.png">
+  </div>
   <button class="stop-button" *ngIf="isRecording && !blobUrl" (click)="stopRecording()">Stop Recording</button>
   <button class="cancel-button" *ngIf="!isRecording && blobUrl" (click)="clearRecordedData()">Clear Recording</button>
   <div *ngIf="isRecording && !blobUrl"> {{recordedTime}} </div>
   <div>
-  <audio *ngIf="!isRecording && blobUrl"  controls>
-    <source [src]="blobUrl" type="audio/webm">
-  </audio>
+    <audio *ngIf="!isRecording && blobUrl"  controls>
+      <source [src]="blobUrl" type="audio/webm">
+    </audio>
+  </div>
+  <p *ngIf="countingDown">{{timeLeft}}</p>
+  <div *ngIf="doneRecording">
+    Thank for completing this assessment.
   </div>
 </div>

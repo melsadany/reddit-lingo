@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AudioRecordingService } from '../audio-recording.service';
 import { DomSanitizer } from '@angular/platform-browser';
+import { interval } from 'rxjs';
 
 @Component({
   selector: 'app-assessments',
@@ -9,9 +10,18 @@ import { DomSanitizer } from '@angular/platform-browser';
 })
 export class AssessmentsComponent implements OnDestroy {
 
-  isRecording = false;
+  isRecording: boolean = false;
   recordedTime;
   blobUrl;
+  intervalCountdown;
+  intervalCountup;
+  splashPage: boolean = true;
+  countingDown: boolean = false;
+  doneCounting: boolean = false;
+  showImage: boolean = false;
+  doneRecording: boolean = false;
+  timeLeft: number = 3;
+  startedAssessment: boolean = false;
 
   constructor(private audioRecordingService: AudioRecordingService, private sanitizer: DomSanitizer) {
 
@@ -32,6 +42,9 @@ export class AssessmentsComponent implements OnDestroy {
     if (!this.isRecording) {
       this.isRecording = true;
       this.audioRecordingService.startRecording();
+      this.intervalCountup = setTimeout( () => {
+          this.stopRecording();
+        }, 30000);
     }
   }
 
@@ -39,6 +52,7 @@ export class AssessmentsComponent implements OnDestroy {
     if (this.isRecording) {
       this.isRecording = false;
       this.audioRecordingService.abortRecording();
+      this.doneRecording = true;
     }
   }
 
@@ -46,6 +60,8 @@ export class AssessmentsComponent implements OnDestroy {
     if (this.isRecording) {
       this.audioRecordingService.stopRecording();
       this.isRecording = false;
+      this.doneRecording = true;
+      clearTimeout(this.intervalCountup);
     }
   }
 
@@ -57,4 +73,20 @@ export class AssessmentsComponent implements OnDestroy {
     this.abortRecording();
   }
 
+  startDisplayedCountdownTimer() {
+    this.startedAssessment = true;
+    this.countingDown = true;
+    this.splashPage = false;
+    this.intervalCountdown = setInterval( () => {
+      if (this.timeLeft > 0) {
+        this.timeLeft--;
+      } else {
+        this.timeLeft = 3;
+        this.countingDown = false;
+        this.doneCounting = true;
+        this.showImage = true;
+        this.startRecording();
+      }
+    }, 1000)
+  }
 }
