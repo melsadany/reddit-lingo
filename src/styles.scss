@@ -7,7 +7,7 @@
 
 
 $custom-typography: mat-typography-config(
-    $font-family: 'Exo'
+    $font-family: 'Poppins'
 );
 
 @include mat-core($custom-typography);
