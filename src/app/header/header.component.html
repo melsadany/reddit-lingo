@@ -1,22 +1,22 @@
 <header>
-  <nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container-fluid">
-      <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>                           
-            </button>
+    <nav class="navbar navbar-expand-sm navbar-dark bg-primary">
         <img src="logo.png" height="50" class="navbar-brand"/>
-        <a class="navbar-brand" [routerLink]="['/']">Michaelson Laboratory</a>
-      </div>
-      <div class="collapse navbar-collapse" id="myNavbar">
-          <ul class="nav navbar-nav">
-              <li class="active"><a [routerLink]="['/']">Home</a></li>
-              <li><a [routerLink]="['/about']">About</a></li>
-              <li><a [routerLink]="['/contact']">Contact</a></li>
-            </ul>
-      </div>
-    </div>
-  </nav>
+        <a class="navbar-brand" href="#">Michaelson Lab</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarColor01">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">About</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Contact</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
 </header>
