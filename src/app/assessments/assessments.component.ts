@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AudioRecordingService } from '../audio-recording.service';
+import { AssessmentDataService } from '../assessment-data.service'
 import { DomSanitizer } from '@angular/platform-browser';
 import { interval } from 'rxjs';
 
@@ -17,13 +18,13 @@ export class AssessmentsComponent implements OnDestroy {
   intervalCountup;
   splashPage: boolean = true;
   countingDown: boolean = false;
-  doneCounting: boolean = false;
+  doneCountingDown: boolean = false;
   showImage: boolean = false;
   doneRecording: boolean = false;
   timeLeft: number = 3;
   startedAssessment: boolean = false;
 
-  constructor(private audioRecordingService: AudioRecordingService, private sanitizer: DomSanitizer) {
+  constructor(private audioRecordingService: AudioRecordingService, private sanitizer: DomSanitizer, private dataService: AssessmentDataService) {
 
     this.audioRecordingService.recordingFailed().subscribe(() => {
       this.isRecording = false;
@@ -61,6 +62,7 @@ export class AssessmentsComponent implements OnDestroy {
       this.audioRecordingService.stopRecording();
       this.isRecording = false;
       this.doneRecording = true;
+      this.showImage = false;
       clearTimeout(this.intervalCountup);
     }
   }
@@ -83,9 +85,10 @@ export class AssessmentsComponent implements OnDestroy {
       } else {
         this.timeLeft = 3;
         this.countingDown = false;
-        this.doneCounting = true;
+        this.doneCountingDown = true;
         this.showImage = true;
         this.startRecording();
+        clearInterval(this.intervalCountdown);
       }
     }, 1000)
   }

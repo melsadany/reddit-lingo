@@ -17,6 +17,7 @@
     <button type="button" class="stop-button btn btn-outline-secondary" *ngIf="isRecording && !blobUrl" (click)="stopRecording()">DONE</button>
     <button type="button" class="cancel-button btn btn-danger" *ngIf="!isRecording && blobUrl" (click)="clearRecordedData()">Clear Recording</button>
     <div *ngIf="isRecording && !blobUrl"> {{recordedTime}} </div>
+
   </div>
   <div>
     <audio *ngIf="!isRecording && blobUrl"  controls>
@@ -25,6 +26,6 @@
   </div>
   <p *ngIf="countingDown" class="text-center display-1">{{timeLeft}}</p>
   <div class="text-center" *ngIf="doneRecording">
-    <p class="pt4"> Thank for completing this assessment.</p>
+    <p class="pt4"> Thank you for completing this assessment.</p>
   </div>
 </div>
