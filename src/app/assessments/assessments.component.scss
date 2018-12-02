@@ -1,33 +1,14 @@
-.start-button {
-  background-color: #7ffe9f; /* Green */
-  border: none;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin-bottom: 10px;
+.imageParent{
+  height: 75vh;
+  width: 100%;
 }
-.stop-button {
-  background-color: rgba(118, 146, 254, 0.69); /* Green */
-  border: none;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin-bottom: 10px;
-}
-.cancel-button {
-  background-color: #af7541; /* Green */
-  border: none;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin-bottom: 10px;
+
+img {
+  width: auto;
+  max-width: 100%;
+  height: 95%;
+  vertical-align: top;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }

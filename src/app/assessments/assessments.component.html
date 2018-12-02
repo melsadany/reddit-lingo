@@ -5,22 +5,26 @@
       then you will see a grid of shapes or a grid of numbers. Read off the numbers or shapes as quickly as you can,
       from left to right and from top to bottom. When you are finished, press the "DONE" button at the bottom of the page.
     </p>
-    <button class="start-button" (click)="startDisplayedCountdownTimer()">Start assessment</button>
+    <div class="text-center">
+        <button type="button" class="start-button btn btn-success" (click)="startDisplayedCountdownTimer()">Start assessment</button>
+    </div>
   </div>
   <!-- <button class="start-button" *ngIf="!isRecording && !blobUrl" (click)="startRecording()">Start Recording</button> -->
-  <div *ngIf="showImage">
-    <img src="assets/img/ran_1.png">
+  <div class = "imageParent" *ngIf="showImage">
+    <img class="rounded" src="assets/img/ran_1.png">
   </div>
-  <button class="stop-button" *ngIf="isRecording && !blobUrl" (click)="stopRecording()">Stop Recording</button>
-  <button class="cancel-button" *ngIf="!isRecording && blobUrl" (click)="clearRecordedData()">Clear Recording</button>
-  <div *ngIf="isRecording && !blobUrl"> {{recordedTime}} </div>
+  <div class="text-center">
+    <button type="button" class="stop-button btn btn-outline-secondary" *ngIf="isRecording && !blobUrl" (click)="stopRecording()">DONE</button>
+    <button type="button" class="cancel-button btn btn-danger" *ngIf="!isRecording && blobUrl" (click)="clearRecordedData()">Clear Recording</button>
+    <div *ngIf="isRecording && !blobUrl"> {{recordedTime}} </div>
+  </div>
   <div>
     <audio *ngIf="!isRecording && blobUrl"  controls>
       <source [src]="blobUrl" type="audio/webm">
     </audio>
   </div>
-  <p *ngIf="countingDown">{{timeLeft}}</p>
-  <div *ngIf="doneRecording">
-    Thank for completing this assessment.
+  <p *ngIf="countingDown" class="text-center display-1">{{timeLeft}}</p>
+  <div class="text-center" *ngIf="doneRecording">
+    <p>Thank for completing this assessment.</p>
   </div>
 </div>
