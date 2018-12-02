@@ -1,6 +1,6 @@
 <div class="mx-lg-5">
   <div *ngIf="splashPage">
-    <p>
+    <p class="pt-4">
       In this assessment, there will be a three second count-down,
       then you will see a grid of shapes or a grid of numbers. Read off the numbers or shapes as quickly as you can,
       from left to right and from top to bottom. When you are finished, press the "DONE" button at the bottom of the page.
@@ -25,6 +25,6 @@
   </div>
   <p *ngIf="countingDown" class="text-center display-1">{{timeLeft}}</p>
   <div class="text-center" *ngIf="doneRecording">
-    <p>Thank for completing this assessment.</p>
+    <p class="pt4"> Thank for completing this assessment.</p>
   </div>
 </div>
