@@ -18,6 +18,7 @@ import { HomeComponent } from './home/home.component';
 import { AssessmentsComponent } from './assessments/assessments.component';
 import { AboutComponent } from './about/about.component';
 import { ContactComponent } from './contact/contact.component';
+import { AssessmentDataService } from './assessment-data.service';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { ContactComponent } from './contact/contact.component';
   ],
   providers: [
     AudioRecordingService,
+    AssessmentDataService,
     {
     provide: HTTP_INTERCEPTORS,
     useClass: AuthHeaderInterceptor,
