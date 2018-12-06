@@ -5,11 +5,11 @@ const RanSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  path_to_wav: {
+  path_to_wave: {
     type: String,
     required: true
   },
-  google_speech_to_tex: {
+  google_speech_to_text: {
     type: String,
     required: false
   }
