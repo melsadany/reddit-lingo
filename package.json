@@ -1,11 +1,11 @@
 {
-  "name": "mean",
-  "version": "2.0.1",
+  "name": "screnner2",
+  "version": "2.0.0",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
     "serve": "node server",
-    "start": "concurrently -c \"yellow.bold,green.bold\" -n \"SERVER,BUILD\" \"nodemon server\" \"ng build --watch\"",
+    "start": "concurrently -c \"yellow.bold,green.bold\" -n \"NODE SERVER,ANGULAR BUILD\" \"nodemon server\" \"ng build --watch\"",
     "build": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
