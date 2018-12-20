@@ -5,7 +5,7 @@ const RanSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  wav_blob: {
+  wav_base64: {
     type: String,
     required: true
   },

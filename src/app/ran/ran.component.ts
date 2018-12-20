@@ -6,15 +6,15 @@ import { Ran } from "../../../server/models/ran.model";
 import { Observable } from "rxjs";
 
 @Component({
-  selector: "app-assessments",
-  templateUrl: "./assessments.component.html",
-  styleUrls: ["./assessments.component.scss"]
+  selector: "app-ran",
+  templateUrl: "./ran.component.html",
+  styleUrls: ["./ran.component.scss"]
 })
-export class AssessmentsComponent implements OnDestroy {
+export class RanComponent implements OnDestroy {
   isRecording: boolean = false;
   recordedTime;
   recordedBlob;
-  recordedBlobAsBase64;
+  recordedBlobAsBase64: ArrayBuffer | String;
   blobUrl;
   intervalCountdown;
   intervalCountup;
@@ -78,11 +78,10 @@ export class AssessmentsComponent implements OnDestroy {
       let reader = new FileReader();
       reader.readAsDataURL(this.recordedBlob);
       reader.onloadend = () => {
-        this.recordedBlobAsBase64 = reader.result.slice(22);
-        console.log(this.recordedBlobAsBase64);
+        this.recordedBlobAsBase64 = reader.result;
         this.postRanToMongo({
-          user_id: "fake_user_ID",
-          wav_blob: this.recordedBlobAsBase64,
+          user_id: "fake_user_bob",
+          wav_base64: this.recordedBlobAsBase64,
           google_speech_to_text: "Fake speech to text"
         }).subscribe();
       };

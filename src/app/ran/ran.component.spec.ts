@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component, OnDestroy } from '@angular/core';
 import { AudioRecordingService } from '../audio-recording.service';
-import { AssessmentsComponent } from './assessments.component';
+import { AssessmentsComponent } from './ran.component';
 
 describe('AssessmentsComponent', () => {
   let component: AssessmentsComponent;

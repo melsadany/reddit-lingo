@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "serve": "node server",
-    "start": "concurrently -c \"yellow.bold,green.bold\" -n \"NODE SERVER,ANGULAR BUILD\" \"nodemon server\" \"ng build --watch\"",
+    "start": "concurrently -c \"yellow.bold,green.bold\" -n \"NODE SERVER,NG BUILD\" \"nodemon server\" \"ng build --watch\"",
     "build": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
@@ -67,7 +67,7 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.7.0-beta.1",
-    "@angular/cli": "^6.0.7",
+    "@angular/cli": "^7.1.4",
     "@angular/compiler-cli": "6.0.3",
     "@angular/language-service": "6.0.3",
     "@types/jasmine": "~2.8.3",

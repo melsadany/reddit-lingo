@@ -15,7 +15,7 @@ import { AudioRecordingService } from './audio-recording.service'
 import { AppRoutingModule } from './app-routing/app-routing.module';
 import { HeaderComponent } from './header/header.component';
 import { HomeComponent } from './home/home.component';
-import { AssessmentsComponent } from './assessments/assessments.component';
+import { RanComponent } from './ran/ran.component';
 import { AboutComponent } from './about/about.component';
 import { ContactComponent } from './contact/contact.component';
 import { AssessmentDataService } from './assessment-data.service';
@@ -25,7 +25,7 @@ import { AssessmentDataService } from './assessment-data.service';
     AppComponent,
     HeaderComponent,
     HomeComponent,
-    AssessmentsComponent,
+    RanComponent,
     AboutComponent,
     ContactComponent,
   ],
