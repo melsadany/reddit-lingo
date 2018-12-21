@@ -3,17 +3,17 @@ import * as RecordRTC from "recordrtc";
 import * as moment from "moment";
 import { Observable, Subject } from "rxjs";
 
-interface RecordedAudioOutput {
+export interface RecordedAudioOutput {
   blob: Blob;
-  title: string;
+  user_id: string;
 }
 
 @Injectable()
 export class AudioRecordingService {
-  private stream;
-  private recorder;
-  private interval;
-  private startTime;
+  private stream: MediaStream;
+  private recorder: { record: () => void; stop: (arg0: (blob: any) => void, arg1: () => void) => void; };
+  private interval: NodeJS.Timeout;
+  private startTime: moment.MomentInput;
   private _recorded = new Subject<RecordedAudioOutput>();
   private _recordingTime = new Subject<string>();
   private _recordingFailed = new Subject<string>();
@@ -70,7 +70,7 @@ export class AudioRecordingService {
     }, 1000);
   }
 
-  private toString(value) {
+  private toString(value: string | number) {
     let val = value;
     if (!value) {
       val = "00";
@@ -84,13 +84,13 @@ export class AudioRecordingService {
   stopRecording() {
     if (this.recorder) {
       this.recorder.stop(
-        blob => {
+        (blob: Blob) => {
           if (this.startTime) {
-            const mp3Name = encodeURIComponent(
-              "audio_" + new Date().getTime() + ".mp3"
+            const wavName = encodeURIComponent(
+              "audio_" + new Date().getTime() + ".wav"
             );
             this.stopMedia();
-            this._recorded.next({ blob: blob, title: mp3Name });
+            this._recorded.next({ blob: blob, user_id: wavName });
           }
         },
         () => {
@@ -107,7 +107,7 @@ export class AudioRecordingService {
       clearInterval(this.interval);
       this.startTime = null;
       if (this.stream) {
-        this.stream.getAudioTracks().forEach(track => track.stop());
+        this.stream.getAudioTracks().forEach((track: { stop: () => void; }) => track.stop());
         this.stream = null;
       }
     }

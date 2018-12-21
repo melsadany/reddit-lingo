@@ -1,7 +1,10 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
-import { AudioRecordingService } from "../audio-recording.service";
+import { Component, OnDestroy } from "@angular/core";
+import {
+  AudioRecordingService,
+  RecordedAudioOutput
+} from "../audio-recording.service";
 import { AssessmentDataService } from "../assessment-data.service";
-import { DomSanitizer } from "@angular/platform-browser";
+import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { Ran } from "../../../server/models/ran.model";
 import { Observable } from "rxjs";
 
@@ -12,12 +15,12 @@ import { Observable } from "rxjs";
 })
 export class RanComponent implements OnDestroy {
   isRecording: boolean = false;
-  recordedTime;
-  recordedBlob;
+  recordedTime: string;
+  recordedBlob: Blob;
   recordedBlobAsBase64: ArrayBuffer | String;
-  blobUrl;
-  intervalCountdown;
-  intervalCountup;
+  blobUrl: SafeUrl;
+  intervalCountdown: NodeJS.Timer;
+  intervalCountup: NodeJS.Timer;
   splashPage: boolean = true;
   countingDown: boolean = false;
   doneCountingDown: boolean = false;
@@ -40,13 +43,8 @@ export class RanComponent implements OnDestroy {
     });
 
     this.audioRecordingService.getRecordedBlob().subscribe(data => {
-      this.blobUrl = this.sanitizer.bypassSecurityTrustUrl(
-        URL.createObjectURL(data.blob)
-      );
+      this.handleRecordedOutput(data);
     });
-    this.audioRecordingService.getRecordedBlob().subscribe(data => {
-      this.recordedBlob = data.blob;
-    })
     this.dataService = dataService;
   }
 
@@ -75,16 +73,6 @@ export class RanComponent implements OnDestroy {
       this.doneRecording = true;
       this.showImage = false;
       clearTimeout(this.intervalCountup);
-      let reader = new FileReader();
-      reader.readAsDataURL(this.recordedBlob);
-      reader.onloadend = () => {
-        this.recordedBlobAsBase64 = reader.result;
-        this.postRanToMongo({
-          user_id: "fake_user_bob",
-          wav_base64: this.recordedBlobAsBase64,
-          google_speech_to_text: "Fake speech to text"
-        }).subscribe();
-      };
     }
   }
 
@@ -114,8 +102,24 @@ export class RanComponent implements OnDestroy {
     }, 1000);
   }
 
+  handleRecordedOutput(data: RecordedAudioOutput) {
+    this.blobUrl = this.sanitizer.bypassSecurityTrustUrl(
+      URL.createObjectURL(data.blob)
+    );
+    this.recordedBlob = data.blob;
+    let reader: FileReader = new FileReader();
+    reader.readAsDataURL(this.recordedBlob);
+    reader.onloadend = () => {
+      this.recordedBlobAsBase64 = reader.result.slice(22);
+      this.postRanToMongo({
+        user_id: "fake_user_tom1",
+        wav_base64: this.recordedBlobAsBase64,
+        google_speech_to_text: "Fake speech to text"
+      }).subscribe();
+    };
+  }
+
   postRanToMongo(ranObject: Ran): Observable<Ran> {
-    console.log(ranObject);
     return this.dataService.http.post("/api/ran/SaveRan", ranObject, {
       responseType: "text"
     });

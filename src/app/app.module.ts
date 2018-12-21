@@ -19,6 +19,7 @@ import { RanComponent } from './ran/ran.component';
 import { AboutComponent } from './about/about.component';
 import { ContactComponent } from './contact/contact.component';
 import { AssessmentDataService } from './assessment-data.service';
+import { AssessmentsService } from './assessments.service';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { AssessmentDataService } from './assessment-data.service';
   providers: [
     AudioRecordingService,
     AssessmentDataService,
+    AssessmentsService,
     {
     provide: HTTP_INTERCEPTORS,
     useClass: AuthHeaderInterceptor,
