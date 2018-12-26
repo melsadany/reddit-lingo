@@ -2,18 +2,21 @@ import { Component, OnDestroy } from "@angular/core";
 import {
   AudioRecordingService,
   RecordedAudioOutput
-} from "../audio-recording.service";
-import { AssessmentDataService } from "../assessment-data.service";
+} from "../../../audio-recording.service";
+import { AssessmentDataService } from "../../../assessment-data.service";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
-import { Ran } from "../../../server/models/ran.model";
+import { Ran } from "../../../../../server/models/ran.model";
 import { Observable } from "rxjs";
+import { Assessment } from "../../../structures/assessment";
 
 @Component({
   selector: "app-ran",
   templateUrl: "./ran.component.html",
   styleUrls: ["./ran.component.scss"]
 })
-export class RanComponent implements OnDestroy {
+export class RanComponent implements OnDestroy, Assessment {
+  name: String = "RanAssessment";
+  description: String = "Ran test componenet";
   isRecording: boolean = false;
   recordedTime: string;
   recordedBlob: Blob;
