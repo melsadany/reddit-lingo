@@ -7,20 +7,26 @@ import { ContactComponent } from "../contact/contact.component";
 
 const routes: Routes = [
   {
-    path: "",
+    path: "home",
+    redirectTo: 'home/',
+    pathMatch: 'full'
+  },
+  {
+    path: "home/:bool",
     component: HomeComponent
   },
   {
-    path: "auth",
-    loadChildren: "app/auth/auth.module#AuthModule"
-  },
-  {
-    path: "admin",
-    loadChildren: "app/admin/admin.module#AdminModule"
+    path:"",
+    redirectTo: "home/",
+    pathMatch: 'full'
   },
   // {
-  //   path: "assessments",
-  //   loadChildren: "app/assessments-controller/"
+  //   path: "auth",
+  //   loadChildren: "app/auth/auth.module#AuthModule"
+  // },
+  // {
+  //   path: "admin",
+  //   loadChildren: "app/admin/admin.module#AdminModule"
   // },
   {
     path: "about",
@@ -32,7 +38,7 @@ const routes: Routes = [
   },
   {
     path: "**",
-    redirectTo: ""
+    redirectTo: "home/"
   },
 ];
 

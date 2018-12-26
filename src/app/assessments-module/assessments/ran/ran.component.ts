@@ -2,8 +2,8 @@ import { Component, OnDestroy } from "@angular/core";
 import {
   AudioRecordingService,
   RecordedAudioOutput
-} from "../../../audio-recording.service";
-import { AssessmentDataService } from "../../../assessment-data.service";
+} from "../../../services/audio-recording.service";
+import { AssessmentDataService } from "../../../services/assessment-data.service";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
 import { Ran } from "../../../../../server/models/ran.model";
 import { Observable } from "rxjs";
