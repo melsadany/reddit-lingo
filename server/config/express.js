@@ -3,7 +3,9 @@ const express = require('express');
 const httpError = require('http-errors');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
+const cookieSession = require('cookie-session');
 const cookieParser = require('cookie-parser');
+const keyGrip = require('keygrip')
 const compress = require('compression');
 const methodOverride = require('method-override');
 const cors = require('cors');
@@ -21,26 +23,22 @@ if (config.env === 'development') {
 }
 
 // Choose what frontend framework to serve the dist from
-var distDir = '../../dist/';
-if (config.frontend == 'react') {
-  distDir = '../../node_modules/material-dashboard-react/dist'
-} else {
-  distDir = '../../dist/';
-}
+let distDir = '../../dist/';
 
-//
+app.use(cookieSession({
+  name: 'session',
+  keys: new keyGrip(['key1', 'key2'], 'SHA384', 'base64'),
+  maxAge: 24 * 60 * 60 * 1000, // 24 Hours
+  secure: false
+}));
+
 app.use(express.static(path.join(__dirname, distDir)))
 app.use(/^((?!(api)).)*/, (req, res) => {
+  req.session.user_id = (Math.floor(Math.random() * (900))).toString();
   res.sendFile(path.join(__dirname, distDir + '/index.html'));
 });
 
-console.log(distDir);
-//React server
-app.use(express.static(path.join(__dirname, '../../node_modules/material-dashboard-react/dist')))
-app.use(/^((?!(api)).)*/, (req, res) => {
-  res.sendFile(path.join(__dirname, '../../dist/index.html'));
-});
-
+console.log('Distributing front end from ' + distDir);
 
 app.use(bodyParser.json({
   limit: '50mb'

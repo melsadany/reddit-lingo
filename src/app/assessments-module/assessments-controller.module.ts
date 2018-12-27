@@ -9,7 +9,6 @@ import { AssessmentsControllerRoutingModule } from "./assessments-controller-rou
 import { RanComponent } from "./assessments/ran/ran.component";
 import { AudioRecordingService } from "../services/audio-recording.service";
 import { AssessmentDataService } from "../services/assessment-data.service";
-import { AssessmentsService } from "../services/assessments.service";
 import { AuthHeaderInterceptor } from "../interceptors/header.interceptor";
 import { CatchErrorInterceptor } from "../interceptors/http-error.interceptor";
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
@@ -20,7 +19,6 @@ import { HTTP_INTERCEPTORS } from "@angular/common/http";
   providers: [
     AudioRecordingService,
     AssessmentDataService,
-    AssessmentsService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthHeaderInterceptor,

@@ -5,7 +5,7 @@ import {
 } from "../../../services/audio-recording.service";
 import { AssessmentDataService } from "../../../services/assessment-data.service";
 import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
-import { Ran } from "../../../../../server/models/ran.model";
+import { AssessmentModel } from "../../../../../server/models/assessment.model";
 import { Observable } from "rxjs";
 import { Assessment } from "../../../structures/assessment";
 
@@ -15,12 +15,12 @@ import { Assessment } from "../../../structures/assessment";
   styleUrls: ["./ran.component.scss"]
 })
 export class RanComponent implements OnDestroy, Assessment {
-  name: String = "RanAssessment";
-  description: String = "Ran test componenet";
+  name: string = "RanAssessment";
+  description: string = "Ran test componenet";
   isRecording: boolean = false;
   recordedTime: string;
   recordedBlob: Blob;
-  recordedBlobAsBase64: ArrayBuffer | String;
+  recordedBlobAsBase64: ArrayBuffer | string;
   blobUrl: SafeUrl;
   intervalCountdown: NodeJS.Timer;
   intervalCountup: NodeJS.Timer;
@@ -115,16 +115,22 @@ export class RanComponent implements OnDestroy, Assessment {
     reader.onloadend = () => {
       this.recordedBlobAsBase64 = reader.result.slice(22);
       this.postRanToMongo({
-        user_id: "fake_user_tom1",
-        wav_base64: this.recordedBlobAsBase64,
-        google_speech_to_text: "Fake speech to text"
+        user_id: "",
+        wav_base64_ran_assess: this.recordedBlobAsBase64,
+        google_speech_to_text_ran_assess: "Fake speech to text"
       }).subscribe();
     };
   }
 
-  postRanToMongo(ranObject: Ran): Observable<Ran> {
-    return this.dataService.http.post("/api/ran/SaveRan", ranObject, {
-      responseType: "text"
-    });
+  postRanToMongo(assessments: AssessmentModel): Observable<AssessmentModel> {
+    return this.dataService.http.post(
+      "/api/assessmentsAPI/SaveAssessments",
+      assessments,
+      {
+        responseType: "text"
+      }
+    );
   }
 }
+
+// TODO: Assessments Data Service posting to mongo or updating from what's been done so far
