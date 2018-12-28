@@ -20,7 +20,7 @@ import {
   MatTreeModule,
   MatProgressBarModule,
   MatFormFieldModule,
-  MatSelectModule,
+  MatSelectModule
 } from '@angular/material';
 
 @NgModule({
@@ -45,7 +45,7 @@ import {
     MatProgressBarModule,
     MatFormFieldModule,
     MatSelectModule,
-    FlexLayoutModule,
+    FlexLayoutModule
   ],
   exports: [
     MatToolbarModule,
@@ -67,8 +67,8 @@ import {
     MatProgressBarModule,
     MatFormFieldModule,
     MatSelectModule,
-    FlexLayoutModule,
+    FlexLayoutModule
   ],
-  declarations: [],
+  declarations: []
 })
-export class SharedModule { }
+export class SharedModule {}

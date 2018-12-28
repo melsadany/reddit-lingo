@@ -9,20 +9,9 @@ import { AuthService } from './auth.service';
 import { TokenStorage } from './token.storage';
 import { AuthRoutingModule } from './auth-routing.module';
 
-
 @NgModule({
-  imports: [
-    CommonModule,
-    SharedModule,
-    AuthRoutingModule,
-  ],
-  declarations: [
-    LoginComponent,
-    RegisterComponent
-  ],
-  providers: [
-    AuthService,
-    TokenStorage
-  ]
+  imports: [CommonModule, SharedModule, AuthRoutingModule],
+  declarations: [LoginComponent, RegisterComponent],
+  providers: [AuthService, TokenStorage]
 })
-export class AuthModule { }
+export class AuthModule {}

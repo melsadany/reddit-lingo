@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap } from '@angular/router'
-import { switchMap } from 'rxjs/operators'
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -8,15 +7,11 @@ import { switchMap } from 'rxjs/operators'
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-
   single: boolean;
 
-  constructor(
-    private route: ActivatedRoute,
-  ) { }
+  constructor(private route: ActivatedRoute) {}
 
   ngOnInit() {
-    this.single = this.route.snapshot.params['bool'] === "single";
+    this.single = this.route.snapshot.params['bool'] === 'single';
   }
-
 }

@@ -1,15 +1,15 @@
-import { NgModule } from "@angular/core";
-import { Routes, RouterModule } from "@angular/router";
-import { AssessmentsControllerComponent } from "./assessments-controller.component";
-import { RanComponent } from "./assessments/ran/ran.component";
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { AssessmentsControllerComponent } from './assessments-controller.component';
+import { RanComponent } from './assessments/ran/ran.component';
 
 const routes: Routes = [
   {
-    path: "assessments",
+    path: 'assessments',
     component: AssessmentsControllerComponent,
     children: [
       {
-        path: "ran",
+        path: 'ran',
         component: RanComponent
       }
     ]

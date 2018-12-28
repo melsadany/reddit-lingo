@@ -1,17 +1,17 @@
-import { NgModule } from "@angular/core";
+import { NgModule } from '@angular/core';
 
-import { CommonModule } from "@angular/common";
-import { BrowserModule } from "@angular/platform-browser";
+import { CommonModule } from '@angular/common';
+import { BrowserModule } from '@angular/platform-browser';
 
-import { AssessmentsControllerComponent } from "./assessments-controller.component";
+import { AssessmentsControllerComponent } from './assessments-controller.component';
 
-import { AssessmentsControllerRoutingModule } from "./assessments-controller-routing.module";
-import { RanComponent } from "./assessments/ran/ran.component";
-import { AudioRecordingService } from "../services/audio-recording.service";
-import { AssessmentDataService } from "../services/assessment-data.service";
-import { AuthHeaderInterceptor } from "../interceptors/header.interceptor";
-import { CatchErrorInterceptor } from "../interceptors/http-error.interceptor";
-import { HTTP_INTERCEPTORS } from "@angular/common/http";
+import { AssessmentsControllerRoutingModule } from './assessments-controller-routing.module';
+import { RanComponent } from './assessments/ran/ran.component';
+import { AudioRecordingService } from '../services/audio-recording.service';
+import { AssessmentDataService } from '../services/assessment-data.service';
+import { AuthHeaderInterceptor } from '../interceptors/header.interceptor';
+import { CatchErrorInterceptor } from '../interceptors/http-error.interceptor';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 @NgModule({
   imports: [CommonModule, BrowserModule, AssessmentsControllerRoutingModule],

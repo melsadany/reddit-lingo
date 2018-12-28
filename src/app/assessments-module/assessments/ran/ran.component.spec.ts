@@ -1,21 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Component, OnDestroy } from '@angular/core';
-import { AudioRecordingService } from '../audio-recording.service';
-import { AssessmentsComponent } from './ran.component';
+import { RanComponent } from './ran.component';
 
-describe('AssessmentsComponent', () => {
-  let component: AssessmentsComponent;
-  let fixture: ComponentFixture<AssessmentsComponent>;
+describe('RanComponent', () => {
+  let component: RanComponent;
+  let fixture: ComponentFixture<RanComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AssessmentsComponent ]
+      declarations: [ RanComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AssessmentsComponent);
+    fixture = TestBed.createComponent(RanComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

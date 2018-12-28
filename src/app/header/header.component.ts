@@ -9,16 +9,11 @@ import { AuthService } from '../auth/auth.service';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
-
   @Input() user: any = {};
 
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) { }
+  constructor(private authService: AuthService, private router: Router) {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   logout(): void {
     this.authService.signOut();
@@ -28,5 +23,4 @@ export class HeaderComponent implements OnInit {
   navigate(link): void {
     this.router.navigate([link]);
   }
-
 }

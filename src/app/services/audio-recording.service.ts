@@ -1,7 +1,7 @@
-import { Injectable, NgZone } from "@angular/core";
-import * as RecordRTC from "recordrtc";
-import * as moment from "moment";
-import { Observable, Subject } from "rxjs";
+import { Injectable, NgZone } from '@angular/core';
+import * as RecordRTC from 'recordrtc';
+import * as moment from 'moment';
+import { Observable, Subject } from 'rxjs';
 
 export interface RecordedAudioOutput {
   blob: Blob;
@@ -35,7 +35,7 @@ export class AudioRecordingService {
       return;
     }
 
-    this._recordingTime.next("00:00");
+    this._recordingTime.next('00:00');
     navigator.mediaDevices
       .getUserMedia({ audio: true })
       .then(s => {
@@ -53,8 +53,8 @@ export class AudioRecordingService {
 
   private record() {
     this.recorder = new RecordRTC.StereoAudioRecorder(this.stream, {
-      type: "audio",
-      mimeType: "audio/webm"
+      type: 'audio',
+      mimeType: 'audio/webm'
     });
 
     this.recorder.record();
@@ -64,7 +64,7 @@ export class AudioRecordingService {
       const diffTime = moment.duration(currentTime.diff(this.startTime));
       const time =
         this.toString(diffTime.minutes()) +
-        ":" +
+        ':' +
         this.toString(diffTime.seconds());
       this._recordingTime.next(time);
     }, 1000);
@@ -73,10 +73,10 @@ export class AudioRecordingService {
   private toString(value: string | number) {
     let val = value;
     if (!value) {
-      val = "00";
+      val = '00';
     }
     if (value < 10) {
-      val = "0" + value;
+      val = '0' + value;
     }
     return val;
   }
@@ -87,7 +87,7 @@ export class AudioRecordingService {
         (blob: Blob) => {
           if (this.startTime) {
             const wavName = encodeURIComponent(
-              "audio_" + new Date().getTime() + ".wav"
+              'audio_' + new Date().getTime() + '.wav'
             );
             this.stopMedia();
             this._recorded.next({ blob: blob, user_id: wavName });

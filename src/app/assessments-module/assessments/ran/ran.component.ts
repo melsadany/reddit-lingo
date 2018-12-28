@@ -1,36 +1,36 @@
-import { Component, OnDestroy } from "@angular/core";
+import { Component, OnDestroy } from '@angular/core';
 import {
   AudioRecordingService,
   RecordedAudioOutput
-} from "../../../services/audio-recording.service";
-import { AssessmentDataService } from "../../../services/assessment-data.service";
-import { DomSanitizer, SafeUrl } from "@angular/platform-browser";
-import { AssessmentModel } from "../../../../../server/models/assessment.model";
-import { Observable } from "rxjs";
-import { Assessment } from "../../../structures/assessment";
+} from '../../../services/audio-recording.service';
+import { AssessmentDataService } from '../../../services/assessment-data.service';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { AssessmentModel } from '../../../../../server/models/assessment.model';
+import { Observable } from 'rxjs';
+import { Assessment } from '../../../structures/assessment';
 
 @Component({
-  selector: "app-ran",
-  templateUrl: "./ran.component.html",
-  styleUrls: ["./ran.component.scss"]
+  selector: 'app-ran',
+  templateUrl: './ran.component.html',
+  styleUrls: ['./ran.component.scss']
 })
 export class RanComponent implements OnDestroy, Assessment {
-  name: string = "RanAssessment";
-  description: string = "Ran test componenet";
-  isRecording: boolean = false;
+  name = 'RanAssessment';
+  description = 'Ran test componenet';
+  isRecording = false;
   recordedTime: string;
   recordedBlob: Blob;
   recordedBlobAsBase64: ArrayBuffer | string;
   blobUrl: SafeUrl;
   intervalCountdown: NodeJS.Timer;
   intervalCountup: NodeJS.Timer;
-  splashPage: boolean = true;
-  countingDown: boolean = false;
-  doneCountingDown: boolean = false;
-  showImage: boolean = false;
-  doneRecording: boolean = false;
-  timeLeft: number = 3;
-  startedAssessment: boolean = false;
+  splashPage = true;
+  countingDown = false;
+  doneCountingDown = false;
+  showImage = false;
+  doneRecording = false;
+  timeLeft = 3;
+  startedAssessment = false;
 
   constructor(
     private audioRecordingService: AudioRecordingService,
@@ -110,24 +110,24 @@ export class RanComponent implements OnDestroy, Assessment {
       URL.createObjectURL(data.blob)
     );
     this.recordedBlob = data.blob;
-    let reader: FileReader = new FileReader();
+    const reader: FileReader = new FileReader();
     reader.readAsDataURL(this.recordedBlob);
     reader.onloadend = () => {
       this.recordedBlobAsBase64 = reader.result.slice(22);
       this.postRanToMongo({
-        user_id: "",
+        user_id: '',
         wav_base64_ran_assess: this.recordedBlobAsBase64,
-        google_speech_to_text_ran_assess: "Fake speech to text"
+        google_speech_to_text_ran_assess: 'Fake speech to text'
       }).subscribe();
     };
   }
 
   postRanToMongo(assessments: AssessmentModel): Observable<AssessmentModel> {
     return this.dataService.http.post(
-      "/api/assessmentsAPI/SaveAssessments",
+      '/api/assessmentsAPI/SaveAssessments',
       assessments,
       {
-        responseType: "text"
+        responseType: 'text'
       }
     );
   }

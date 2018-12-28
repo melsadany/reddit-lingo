@@ -19,9 +19,9 @@ export class LinkedList<T> {
   *iterator(): IterableIterator<T> {
     let currentItem = this._head;
 
-    while(currentItem) {
-      yield currentItem.value
-      currentItem = currentItem.next
+    while (currentItem) {
+      yield currentItem.value;
+      currentItem = currentItem.next;
     }
   }
 
@@ -48,7 +48,7 @@ export class LinkedList<T> {
       return false;
     }
 
-    let newItem: LinkedListItem<T> = new LinkedListItem<T>(val);
+    const newItem: LinkedListItem<T> = new LinkedListItem<T>(val);
     let currentItem: LinkedListItem<T> = this._head;
 
     if (!currentItem) {
@@ -70,8 +70,7 @@ export class LinkedList<T> {
         } else {
           if (currentItem.next) {
             currentItem = currentItem.next;
-          }
-          else {
+          } else {
             // can't locate previousItem
             return false;
           }
@@ -87,7 +86,7 @@ export class LinkedList<T> {
       return false;
     }
 
-    let newItem = new LinkedListItem<T>(val);
+    const newItem = new LinkedListItem<T>(val);
 
     if (!this._tail) {
       this._head = this._tail = newItem;
@@ -108,7 +107,7 @@ export class LinkedList<T> {
       return false;
     }
 
-    let newItem = new LinkedListItem<T>(val);
+    const newItem = new LinkedListItem<T>(val);
 
     if (!this._head) {
       this._head = this._tail = newItem;
@@ -162,7 +161,7 @@ export class LinkedList<T> {
   }
 
   removeHead(): T {
-    let currentItem = this._head;
+    const currentItem = this._head;
 
     // empty list
     if (!currentItem) {
@@ -186,7 +185,7 @@ export class LinkedList<T> {
   }
 
   removeTail(): T {
-    let currentItem = this._tail;
+    const currentItem = this._tail;
 
     // empty list
     if (!currentItem) {
@@ -210,13 +209,13 @@ export class LinkedList<T> {
   }
 
   first(num: number): T[] {
-    let iter = this.iterator();
-    let result = [];
+    const iter = this.iterator();
+    const result = [];
 
-    let n = Math.min(num, this.length);
+    const n = Math.min(num, this.length);
 
     for (let i = 0; i < n; i++) {
-      let val = iter.next();
+      const val = iter.next();
       result.push(val.value);
     }
     return result;
@@ -227,7 +226,7 @@ export class LinkedList<T> {
   }
 
   private isDuplicate(val: T): boolean {
-    let set = new Set(this.toArray());
+    const set = new Set(this.toArray());
     return set.has(val);
   }
 }

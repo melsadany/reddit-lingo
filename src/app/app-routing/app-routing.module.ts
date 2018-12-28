@@ -1,23 +1,23 @@
-import { NgModule } from "@angular/core";
-import { RouterModule, Routes } from "@angular/router";
-import { AuthGuard } from "../auth/auth-guard.service";
-import { HomeComponent } from "../home/home.component";
-import { AboutComponent } from "../about/about.component";
-import { ContactComponent } from "../contact/contact.component";
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from '../auth/auth-guard.service';
+import { HomeComponent } from '../home/home.component';
+import { AboutComponent } from '../about/about.component';
+import { ContactComponent } from '../contact/contact.component';
 
 const routes: Routes = [
   {
-    path: "home",
+    path: 'home',
     redirectTo: 'home/',
     pathMatch: 'full'
   },
   {
-    path: "home/:bool",
+    path: 'home/:bool',
     component: HomeComponent
   },
   {
-    path:"",
-    redirectTo: "home/",
+    path: '',
+    redirectTo: 'home/',
     pathMatch: 'full'
   },
   // {
@@ -29,16 +29,16 @@ const routes: Routes = [
   //   loadChildren: "app/admin/admin.module#AdminModule"
   // },
   {
-    path: "about",
+    path: 'about',
     component: AboutComponent
   },
   {
-    path: "contact",
+    path: 'contact',
     component: ContactComponent
   },
   {
-    path: "**",
-    redirectTo: "home/"
+    path: '**',
+    redirectTo: 'home/'
   },
 ];
 
