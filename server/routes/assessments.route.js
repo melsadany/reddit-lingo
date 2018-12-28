@@ -4,9 +4,6 @@ const assessCtrl = require('../controllers/assessments.controller')
 const router = express.Router()
 
 router.post('/SaveAssessments', (req, res) => {
-  console.log(req.session)
-  console.log(req.body.user_id)
-  req.body.user_id = req.session.user_id
   assessCtrl.insert(req.body)
   res.send('Success')
 })

@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
 const AssessmentSchema = new mongoose.Schema({
   user_id: {
@@ -13,6 +13,6 @@ const AssessmentSchema = new mongoose.Schema({
     type: String,
     required: false
   }
-});
+})
 
 module.exports = mongoose.model('AssessmentData', AssessmentSchema);

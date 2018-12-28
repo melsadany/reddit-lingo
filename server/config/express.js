@@ -3,9 +3,7 @@ const express = require('express')
 const HTTPError = require('http-errors')
 const logger = require('morgan')
 const bodyParser = require('body-parser')
-const cookieSession = require('cookie-session')
 const cookieParser = require('cookie-parser')
-const KeyGrip = require('keygrip')
 const compress = require('compression')
 const methodOverride = require('method-override')
 const cors = require('cors')
@@ -25,16 +23,8 @@ if (config.env === 'development') {
 // Choose what frontend framework to serve the dist from
 let distDir = '../../dist/'
 
-app.use(cookieSession({
-  name: 'session',
-  keys: new KeyGrip(['key1', 'key2'], 'SHA384', 'base64'),
-  maxAge: 24 * 60 * 60 * 1000, // 24 Hours
-  secure: false
-}))
-
 app.use(express.static(path.join(__dirname, distDir)))
 app.use(/^((?!(api)).)*/, (req, res) => {
-  req.session.user_id = (Math.floor(Math.random() * (900))).toString()
   res.sendFile(path.join(__dirname, distDir + '/index.html'))
 })
 

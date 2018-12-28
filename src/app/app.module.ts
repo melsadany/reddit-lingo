@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
+import { CookieService } from 'ngx-cookie-service';
 
 import { SharedModule } from './shared/shared.module';
 import { AuthModule } from './auth/auth.module';
@@ -35,6 +36,7 @@ import { AssessmentsModule } from './assessments-module/assessments-controller.m
     AppRoutingModule
   ],
   providers: [
+    CookieService
   ],
   entryComponents: [],
   bootstrap: [AppComponent]

@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
   AudioRecordingService,
   RecordedAudioOutput
@@ -8,13 +8,14 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { AssessmentModel } from '../../../../../server/models/assessment.model';
 import { Observable } from 'rxjs';
 import { Assessment } from '../../../structures/assessment';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-ran',
   templateUrl: './ran.component.html',
   styleUrls: ['./ran.component.scss']
 })
-export class RanComponent implements OnDestroy, Assessment {
+export class RanComponent implements OnInit, OnDestroy, Assessment {
   name = 'RanAssessment';
   description = 'Ran test componenet';
   isRecording = false;
@@ -31,11 +32,13 @@ export class RanComponent implements OnDestroy, Assessment {
   doneRecording = false;
   timeLeft = 3;
   startedAssessment = false;
+  assessmentAlreadyCompleted = false;
 
   constructor(
     private audioRecordingService: AudioRecordingService,
     private sanitizer: DomSanitizer,
-    private dataService: AssessmentDataService
+    private dataService: AssessmentDataService,
+    private cookieService: CookieService
   ) {
     this.audioRecordingService.recordingFailed().subscribe(() => {
       this.isRecording = false;
@@ -87,6 +90,12 @@ export class RanComponent implements OnDestroy, Assessment {
     this.abortRecording();
   }
 
+  ngOnInit(): void {
+    if (this.cookieService.get('RanCompleted') === 'true') {
+      this.assessmentAlreadyCompleted = true;
+    }
+  }
+
   startDisplayedCountdownTimer() {
     this.startedAssessment = true;
     this.countingDown = true;
@@ -115,7 +124,7 @@ export class RanComponent implements OnDestroy, Assessment {
     reader.onloadend = () => {
       this.recordedBlobAsBase64 = reader.result.slice(22);
       this.postRanToMongo({
-        user_id: '',
+        user_id: this.cookieService.get('user_id'),
         wav_base64_ran_assess: this.recordedBlobAsBase64,
         google_speech_to_text_ran_assess: 'Fake speech to text'
       }).subscribe();
@@ -123,6 +132,13 @@ export class RanComponent implements OnDestroy, Assessment {
   }
 
   postRanToMongo(assessments: AssessmentModel): Observable<AssessmentModel> {
+    this.cookieService.delete('RanCompleted', '/assessments/ran');
+    this.cookieService.set(
+      'RanCompleted',
+      'true',
+      new Date(2019, 1, 1),
+      '/assessments/ran'
+    );
     return this.dataService.http.post(
       '/api/assessmentsAPI/SaveAssessments',
       assessments,
