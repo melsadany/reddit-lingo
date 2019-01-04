@@ -1,60 +1,70 @@
 {
-    "swagger": "2.0",
-    "info": {
-      "version": "1.0.0",
-      "title": "Mean Application API",
-      "description": "Mean Application API",
-      "license": {
-        "name": "MIT",
-        "url": "https://opensource.org/licenses/MIT"
-      }
-    },
-    "host": "localhost:4040",
-    "basePath": "/api/",
-    "tags": [
-      {
-        "name": "Users",
-        "description": "API for users in the system"
-      },
-      {
-        "name": "Auth",
-        "description": "API for auth in the system"
-      }
-    ],
-    "schemes": [
-      "http"
-    ],
-    "consumes": [
-      "application/json"
-    ],
-    "produces": [
-      "application/json"
-    ],
-    "securityDefinitions": {
-      "AuthHeader": {
-        "type": "apiKey",
-        "in": "header",
-        "name": "Authorization"
-      }
-    },
-    "paths": {
-      "/auth/login": {
-        "post": {
-          "tags": ["Auth"],
-          "description": "Login to the system",
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Screener Application API",
+    "description": "API Docs for Screener API",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "host": "localhost:4040",
+  "basePath": "/api/",
+  "tags": [{
+    "name": "Assessments",
+    "description": "API for saving and loading assessment data in the system"
+  }],
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "securityDefinitions": {
+    "AuthHeader": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "Authorization"
+    }
+  },
+  "paths": {
+    "/assessmentsAPI/SaveAssessments": {
+      "post": {
+        "tags": [
+          "Assessments"
+        ],
+        "summary": "Save assessment data progress",
+        "description": "Save current assessment progress",
         "parameters": [{
-          "name": "auth",
+          "name": "assessment data",
           "in": "body",
-          "description": "User auth details",
+          "description": "User assessment data",
           "schema": {
             "type": "object",
-            "required": ["email", "password"],
+            "required": [
+              "user_id",
+              "assessments,",
+              "google_speech_to_text_assess"
+            ],
             "properties": {
-              "email": {
+              "user_id": {
                 "type": "string"
               },
-              "password": {
-                "type": "string"
+              "assessments": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              "google_speech_to_text_assess": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
               }
             }
           }
@@ -64,58 +74,63 @@
         ],
         "responses": {
           "200": {
-            "description": "User is loggedin",
+            "description": "saved user data",
             "schema": {
-              "$ref": "#/definitions/User"
+              "$ref": "#/definitions/AssessmentData"
             }
           }
         }
-      }
       }
     },
-    "definitions": {
-      "User": {
-        "required": [
-          "email",
-          "fullname"
+    "/assessmentsAPI/GetUserAssessment/{user_id}": {
+      "get": {
+        "tags": [
+          "Assessments"
         ],
-        "properties": {
-          "_id": {
-            "type": "string",
-            "uniqueItems": true
+        "summary": "Find user by ID",
+        "description": "Get user's assessment data by ID",
+        "operationId": "getUserById",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [{
+          "name": "user_id",
+          "in": "path",
+          "description": "ID of user to return data for",
+          "required": true,
+          "type": "integer",
+          "format": "int64"
+        }],
+        "responses": {
+          "200": {
+            "description": "Successfully found user"
           },
-          "email": {
-            "type": "string",
-            "uniqueItems": true
-          },
-          "fullname": {
-            "type": "string"
-          },
-          "createdAt": {
-            "type": "string"
-          },
-          "roles": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
+          "404": {
+            "description": "User not found"
           }
         }
-      },
-      "Users": {
-        "type": "array",
-        "$ref": "#/definitions/User"
-      },
-      "Auth": {
-        "type": "object",
-        "properties": [{
-          "token": {
-            "type": "string"
-          },
-          "user": {
-            "$ref": "#/definitions/User"
-          }
-        }]
       }
+    }
+  },
+  "definitions": {
+    "AssessmentData": {
+      "required": [
+        "user_id",
+        "assessments",
+        "google_speech_to_text_assess"
+      ],
+      "properties": {
+        "user_id": {
+          "type": "number",
+          "uniqueItems": true
+        },
+        "assessments": {
+          "type": "array"
+        },
+        "google_speech_to_text_assess": {
+          "type": "array"
+        }
+      }
+    }
   }
 }

@@ -1,18 +1,10 @@
 const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
-const AssessmentSchema = new mongoose.Schema({
-  user_id: {
-    type: String,
-    required: true
-  },
-  wav_base64_ran_assess: {
-    type: String,
-    required: true
-  },
-  google_speech_to_text_ran_assess: {
-    type: String,
-    required: false
-  }
+const AssessmentSchema = new Schema({
+  user_id: Number,
+  assessments: [],
+  google_speech_to_text_assess: []
 })
 
-module.exports = mongoose.model('AssessmentData', AssessmentSchema);
+module.exports = mongoose.model('AssessmentData', AssessmentSchema)

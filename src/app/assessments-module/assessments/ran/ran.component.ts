@@ -33,6 +33,7 @@ export class RanComponent implements OnInit, OnDestroy, Assessment {
   timeLeft = 3;
   startedAssessment = false;
   assessmentAlreadyCompleted = false;
+  ranAssessment;
 
   constructor(
     private audioRecordingService: AudioRecordingService,
@@ -125,10 +126,23 @@ export class RanComponent implements OnInit, OnDestroy, Assessment {
       this.recordedBlobAsBase64 = reader.result.slice(22);
       this.postRanToMongo({
         user_id: this.cookieService.get('user_id'),
-        wav_base64_ran_assess: this.recordedBlobAsBase64,
-        google_speech_to_text_ran_assess: 'Fake speech to text'
-      }).subscribe();
+        assessments: [
+          {
+            assess_name: 'ran',
+            data: { recorded_data: this.recordedBlobAsBase64 }
+          }
+        ],
+        google_speech_to_text_assess: [
+          {
+            assess_name: 'ran',
+            data: {
+              text: 'Fake speech to text'
+            }
+          }
+        ]
+      }).subscribe((element) => console.log(element));
     };
+    // KRM: Each assessment will handle the structure of its assessment data before posting it to mongo
   }
 
   postRanToMongo(assessments: AssessmentModel): Observable<AssessmentModel> {

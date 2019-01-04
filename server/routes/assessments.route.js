@@ -4,21 +4,27 @@ const assessCtrl = require('../controllers/assessments.controller')
 const router = express.Router()
 
 router.post('/SaveAssessments', (req, res) => {
-  assessCtrl.insert(req.body)
-  res.send('Success')
+  assessCtrl.insertNewAssessmentData(req.body)
+    .then((product) => {
+      res.send('Success')
+      console.log(product)
+    })
+    // KRM: TODO: Figure out best thing to do with
+    // the assessment model here
+    .catch((error) => res.send(error))
 })
 
-router.get('/GetUser/:user_id', (req, res) => {
-  let assessmentsQuery = assessCtrl.getWavBase64(req.params.user_id)
-  assessmentsQuery.exec((err, queryValue) => {
-    if (err) {
-      res.send(err)
+router.get('/GetUserAssessment/:user_id', (req, res) => {
+  let assessmentsQuery = assessCtrl.getUserAssessmentData(req.params.user_id)
+  assessmentsQuery.exec((error, queryValue) => {
+    if (error) {
+      res.sendStatus(400, error)
     } else if (queryValue.length === 0) {
-      res.send('User id not found.')
+      res.send(404, 'User ID not found.')
     } else if (queryValue.length > 1) {
-      res.send('Matched more than one entry: ' + req.params.user_id)
+      res.send('Queried ID matched more than one entry: ' + req.params.user_id)
     } else {
-      let filename = `=${req.params.user_id}_ran_file.json`
+      let filename = `=${req.params.user_id}_assessment_data.json`
       res.set({
         'Content-Disposition': 'attachment; filename' + filename
       })

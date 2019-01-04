@@ -61,7 +61,7 @@
     "material-dashboard-react": "latest",
     "method-override": "^3.0.0",
     "moment": "^2.23.0",
-    "mongoose": "^5.4.1",
+    "mongoose": "^5.4.2",
     "morgan": "^1.9.1",
     "ng2-dragula": "^2.1.1",
     "ngx-cookie-service": "^2.1.0",

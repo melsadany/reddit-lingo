@@ -1,26 +1,26 @@
 const Joi = require('joi')
 const AssessmentModel = require('../models/assessment.model')
 
-const AssessmentSchema = Joi.object({
-  user_id: Joi.string().required(),
-  wav_base64_ran_assess: Joi.string().required(),
-  google_speech_to_text_ran_assess: Joi.string()
+const AssessmentSchemaValidator = Joi.object({
+  user_id: Joi.number().required(),
+  assessments: Joi.array(),
+  google_speech_to_text_assess: Joi.array()
 })
 
 module.exports = {
-  insert,
-  getWavBase64
+  insertNewAssessmentData,
+  getUserAssessmentData
 }
 
-async function insert (assessmentData) {
-  await Joi.validate(assessmentData, AssessmentSchema, {
+async function insertNewAssessmentData (incomingAssessmentData) {
+  await Joi.validate(incomingAssessmentData, AssessmentSchemaValidator, {
     abortEarly: false
   })
-  return new AssessmentModel(assessmentData).save()
+  return new AssessmentModel(incomingAssessmentData).save()
 }
 
-function getWavBase64 (userId) {
+function getUserAssessmentData (searchUserId) {
   return AssessmentModel.find({
-    user_id: userId
+    user_id: searchUserId
   })
 }

@@ -6,7 +6,13 @@ const config = require('./config')
 
 // connect to mongo db
 const mongoUri = config.mongo.host
-mongoose.connect(mongoUri, { keepAlive: 1 })
+mongoose.connect(mongoUri, {
+  keepAlive: 1,
+  useNewUrlParser: true,
+  useCreateIndex: true
+})
+// KRM : Avoid deprecation warnings by using
+// these options in mongoose.connect
 mongoose.connection.on('error', () => {
   throw new Error(`unable to connect to database: ${mongoUri}`)
 })
