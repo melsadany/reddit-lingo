@@ -3,7 +3,7 @@
   "info": {
     "version": "1.0.0",
     "title": "Screener Application API",
-    "description": "API Docs for Screener API",
+    "description": "API Docs for Screener app",
     "license": {
       "name": "MIT",
       "url": "https://opensource.org/licenses/MIT"
