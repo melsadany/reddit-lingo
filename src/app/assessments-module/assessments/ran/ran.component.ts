@@ -92,7 +92,7 @@ export class RanComponent implements OnInit, OnDestroy, Assessment {
   }
 
   ngOnInit(): void {
-    if (this.cookieService.get('RanCompleted') === 'true') {
+    if (this.dataService.checkIfAssessmentCompleted('ran')) {
       this.assessmentAlreadyCompleted = true;
     }
   }
@@ -129,7 +129,8 @@ export class RanComponent implements OnInit, OnDestroy, Assessment {
         assessments: [
           {
             assess_name: 'ran',
-            data: { recorded_data: this.recordedBlobAsBase64 }
+            data: { recorded_data: this.recordedBlobAsBase64 },
+            completed: true
           }
         ],
         google_speech_to_text_assess: [
@@ -140,7 +141,7 @@ export class RanComponent implements OnInit, OnDestroy, Assessment {
             }
           }
         ]
-      }).subscribe((element) => console.log(element));
+      }).subscribe((product) => console.log(product));
     };
     // KRM: Each assessment will handle the structure of its assessment data before posting it to mongo
   }
@@ -150,7 +151,7 @@ export class RanComponent implements OnInit, OnDestroy, Assessment {
     this.cookieService.set(
       'RanCompleted',
       'true',
-      new Date(2019, 1, 1),
+      new Date(2019, 2, 1),
       '/assessments/ran'
     );
     return this.dataService.http.post(

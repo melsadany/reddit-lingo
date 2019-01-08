@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CookieService } from 'ngx-cookie-service';
+import { AssessmentDataService } from '../services/assessment-data.service';
 
 @Component({
   selector: 'app-assessments-controller',
@@ -7,30 +7,39 @@ import { CookieService } from 'ngx-cookie-service';
   styleUrls: ['./assessments-controller.component.scss']
 })
 export class AssessmentsControllerComponent implements OnInit {
-  cookieValue = 'UNKNOWN';
-  constructor(private cookieService: CookieService) {}
+  public assessmentData;
+
+  constructor(private dataService: AssessmentDataService) {}
 
   ngOnInit() {
-    console.log(this.cookieService.getAll());
+    if (this.dataService.user_id()) {
+      // if the angular cookie has been set
+      this.dataService.http
+        .get('/api/assessmentsAPI/GetUserAssessment/' + this.dataService.user_id())
+        .subscribe(data => {
+          this.assessmentData = data;
+          console.log(this.assessmentData);
+        });
+    }
     if (
-      !this.cookieService.check('RanCompleted') &&
-      !this.cookieService.check('user_id')
+      !this.dataService.checkCookie('RanCompleted') &&
+      !this.dataService.checkCookie('user_id')
     ) {
-      this.cookieService.set(
+      this.dataService.setCookie(
         'RanCompleted',
         'false',
         new Date(2019, 1, 1), // TODO: Set initial cookies function
         '/assessments/ran'
       );
-      this.cookieService.set(
+      this.dataService.setCookie(
         'user_id',
         Math.floor(Math.random() * 50 + 1).toString(),
         new Date(2019, 1, 1),
         '/assessments'
       );
-      console.log(this.cookieService.getAll());
+      console.log(this.dataService.getAllCookies());
       console.log('setting initial cookie');
-    } else if (this.cookieService.get('RanCompleted') === 'false') {
+    } else if (this.dataService.getCookie('RanCompleted') === 'false') {
       console.log('Ran not completed yet');
     } else {
       console.log('Ran completed already');

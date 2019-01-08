@@ -7,20 +7,20 @@ const AssessmentSchemaValidator = Joi.object({
   google_speech_to_text_assess: Joi.array()
 })
 
-module.exports = {
-  insertNewAssessmentData,
-  getUserAssessmentData
-}
-
-async function insertNewAssessmentData (incomingAssessmentData) {
-  await Joi.validate(incomingAssessmentData, AssessmentSchemaValidator, {
+async function insertNewAssessmentData(reqData) {
+  await Joi.validate(reqData, AssessmentSchemaValidator, {
     abortEarly: false
   })
-  return new AssessmentModel(incomingAssessmentData).save()
+  return new AssessmentModel(reqData).save()
 }
 
-function getUserAssessmentData (searchUserId) {
+function getUserAssessmentData(searchUserId) {
   return AssessmentModel.find({
     user_id: searchUserId
   })
+}
+
+module.exports = {
+  insertNewAssessmentData,
+  getUserAssessmentData
 }

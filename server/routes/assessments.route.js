@@ -4,14 +4,24 @@ const assessCtrl = require('../controllers/assessments.controller')
 const router = express.Router()
 
 router.post('/SaveAssessments', (req, res) => {
-  assessCtrl.insertNewAssessmentData(req.body)
-    .then((product) => {
-      res.send('Success')
-      console.log(product)
+  if (req.cookies.document) {
+    console.log('Cookie already exists. Updating document')
+    req.cookies.document.updateOne(req.body, (err, raw) => {
+      if (err) {
+        console.log(err)
+      } else {
+        console.log(raw)
+      }
     })
-    // KRM: TODO: Figure out best thing to do with
-    // the assessment model here
-    .catch((error) => res.send(error))
+  } else {
+    console.log('Cookie does not exist. Creating new document')
+    assessCtrl.insertNewAssessmentData(req.body)
+      .then((product) => {
+        req.cookies.document = product
+        res.send('Success')
+      })
+      .catch((error) => res.send(error))
+  }
 })
 
 router.get('/GetUserAssessment/:user_id', (req, res) => {
