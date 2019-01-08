@@ -19,12 +19,18 @@ const app = express()
 if (config.env === 'development') {
   app.use(logger('dev'))
 }
-
-// Choose what frontend framework to serve the dist from
-let distDir = '../../dist/'
-
+// Front end directory
+const distDir = '../../dist/'
+app.use(cookieParser())
+let currentUserNumber = 0
 app.use(express.static(path.join(__dirname, distDir)))
 app.use(/^((?!(api)).)*/, (req, res) => {
+  if (!req.cookies.user_id) {
+    res.cookie('user_id', currentUserNumber, {
+      httpOnly: false
+    })
+    currentUserNumber++
+  }
   res.sendFile(path.join(__dirname, distDir + '/index.html'))
 })
 
@@ -36,8 +42,6 @@ app.use(bodyParser.json({
 app.use(bodyParser.urlencoded({
   extended: true
 }))
-
-app.use(cookieParser())
 app.use(compress())
 app.use(methodOverride())
 

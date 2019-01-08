@@ -17,8 +17,8 @@ router.post('/SaveAssessments', (req, res) => {
     console.log('Cookie does not exist. Creating new document')
     assessCtrl.insertNewAssessmentData(req.body)
       .then((product) => {
-        req.cookies.document = product
-        res.send('Success')
+        res.cookies.document = product
+        res.send(product)
       })
       .catch((error) => res.send(error))
   }

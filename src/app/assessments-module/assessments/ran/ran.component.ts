@@ -124,44 +124,39 @@ export class RanComponent implements OnInit, OnDestroy, Assessment {
     reader.readAsDataURL(this.recordedBlob);
     reader.onloadend = () => {
       this.recordedBlobAsBase64 = reader.result.slice(22);
-      this.postRanToMongo({
-        user_id: this.cookieService.get('user_id'),
-        assessments: [
-          {
-            assess_name: 'ran',
-            data: { recorded_data: this.recordedBlobAsBase64 },
-            completed: true
-          }
-        ],
-        google_speech_to_text_assess: [
-          {
-            assess_name: 'ran',
-            data: {
-              text: 'Fake speech to text'
+      this.dataService
+        .postAssessmentDataToMongo({
+          user_id: this.cookieService.get('user_id'),
+          assessments: [
+            {
+              assess_name: 'ran',
+              data: { recorded_data: this.recordedBlobAsBase64 },
+              completed: true
             }
-          }
-        ]
-      }).subscribe((product) => console.log(product));
+          ],
+          google_speech_to_text_assess: [
+            {
+              assess_name: 'ran',
+              data: {
+                text: 'Fake speech to text'
+              }
+            }
+          ]
+        })
+        .subscribe(product => console.log(product)); // KRM: Subscription likely not needed here, debugging only right now
     };
     // KRM: Each assessment will handle the structure of its assessment data before posting it to mongo
   }
 
-  postRanToMongo(assessments: AssessmentModel): Observable<AssessmentModel> {
-    this.cookieService.delete('RanCompleted', '/assessments/ran');
-    this.cookieService.set(
-      'RanCompleted',
-      'true',
-      new Date(2019, 2, 1),
-      '/assessments/ran'
-    );
-    return this.dataService.http.post(
-      '/api/assessmentsAPI/SaveAssessments',
-      assessments,
-      {
-        responseType: 'text'
-      }
-    );
-  }
+  //   postRanToMongo(assessments: AssessmentModel): Observable<AssessmentModel> {
+  //     return this.dataService.http.post(
+  //       '/api/assessmentsAPI/SaveAssessments',
+  //       assessments,
+  //       {
+  //         responseType: 'text'
+  //       }
+  //     );
+  //   }
 }
 
 // TODO: Assessments Data Service posting to mongo or updating from what's been done so far
