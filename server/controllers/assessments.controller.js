@@ -13,6 +13,17 @@ async function insertNewAssessmentData(reqData) {
   })
   return new AssessmentModel(reqData).save()
 }
+async function updateAssessmentData(reqData) {
+  let condition = {
+    user_id: reqData.user_id
+  }
+  AssessmentModel.findOne(condition, (err, doc) => {
+    if (err) console.log(err)
+    doc.assessments.push(reqData.assessments[0])
+    doc.google_speech_to_text_assess.push(reqData.google_speech_to_text_assess[0])
+    doc.save()
+  })
+}
 
 function getUserAssessmentData(searchUserId) {
   return AssessmentModel.find({
@@ -22,5 +33,6 @@ function getUserAssessmentData(searchUserId) {
 
 module.exports = {
   insertNewAssessmentData,
-  getUserAssessmentData
+  getUserAssessmentData,
+  updateAssessmentData
 }

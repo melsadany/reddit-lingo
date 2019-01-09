@@ -3,35 +3,24 @@ import { HttpClient } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
 import { AssessmentModel } from '../../../server/models/assessment.model';
 import { Observable } from 'rxjs';
-import 'rxjs/add/operator/map'
-import { AssessmentsModule } from '../assessments-module/assessments-controller.module';
+import 'rxjs/add/operator/map';
 
 @Injectable()
 export class AssessmentDataService {
   assessmentData;
   constructor(private Http: HttpClient, private cookieService: CookieService) {
     this.http = Http;
-    console.log(this.cookieService.getAll());
     this.http
       .get(
         '/api/assessmentsAPI/GetUserAssessment/' +
           this.cookieService.get('user_id')
       )
-      .map(data => {
+      .subscribe(data => {
         this.assessmentData = data;
         console.log(this.assessmentData);
       });
   }
   http: HttpClient;
-
-  public newUserId(value) {
-    this.setCookie(
-      'user_id',
-      Math.floor(Math.random() * value + 1).toString(),
-      new Date(2020, 2, 1)
-    );
-    console.log(this.checkCookie('user_id'));
-  }
   public setCookie(name: string, value: string, date): void {
     this.cookieService.set(name, value, date);
   }
@@ -47,16 +36,8 @@ export class AssessmentDataService {
   public getAllCookies() {
     return this.cookieService.getAll();
   }
-  public checkIfAssessmentCompleted(assess_name_check: String): Boolean {
-    this.assessmentData.assessments.forEach(element => {
-      if (
-        element.assess_name === assess_name_check &&
-        element.completed === true
-      ) {
-        return true;
-      }
-    });
-    return false;
+  public checkIfAssessmentCompleted(assess_name_check: string): Boolean {
+    return this.checkCookie(assess_name_check);
   }
   public postAssessmentDataToMongo(
     assessmentsData: AssessmentModel
@@ -69,12 +50,5 @@ export class AssessmentDataService {
         responseType: 'text'
       }
     );
-  }
-  public createNewEntryInMongo() {
-    return this.postAssessmentDataToMongo({
-      user_id: this.getCookie('user_id'),
-      assessments: [],
-      google_speech_to_text_assess: []
-    });
   }
 }

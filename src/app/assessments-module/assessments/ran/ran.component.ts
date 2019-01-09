@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import {
   AudioRecordingService,
   RecordedAudioOutput
@@ -147,16 +147,6 @@ export class RanComponent implements OnInit, OnDestroy, Assessment {
     };
     // KRM: Each assessment will handle the structure of its assessment data before posting it to mongo
   }
-
-  //   postRanToMongo(assessments: AssessmentModel): Observable<AssessmentModel> {
-  //     return this.dataService.http.post(
-  //       '/api/assessmentsAPI/SaveAssessments',
-  //       assessments,
-  //       {
-  //         responseType: 'text'
-  //       }
-  //     );
-  //   }
 }
 
 // TODO: Assessments Data Service posting to mongo or updating from what's been done so far
