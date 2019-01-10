@@ -1,5 +1,6 @@
 const Joi = require('joi')
 const AssessmentModel = require('../models/assessment.model')
+const UserIDCounterModel = require('../models/useridcounter.model')
 
 const AssessmentSchemaValidator = Joi.object({
   user_id: Joi.number().required(),
@@ -26,13 +27,19 @@ async function updateAssessmentData(reqData) {
 }
 
 function getUserAssessmentData(searchUserId) {
-  return AssessmentModel.find({
+  const condition = {
     user_id: searchUserId
-  })
+  }
+  return AssessmentModel.findOne(condition)
+}
+
+function getNextUserID() {
+  return UserIDCounterModel.findOne({})
 }
 
 module.exports = {
   insertNewAssessmentData,
   getUserAssessmentData,
-  updateAssessmentData
+  updateAssessmentData,
+  getNextUserID
 }

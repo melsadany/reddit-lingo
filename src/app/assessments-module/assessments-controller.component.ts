@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AssessmentDataService } from '../services/assessment-data.service';
+import { AppComponent } from '../app.component';
 
 @Component({
   selector: 'app-assessments-controller',
@@ -9,7 +10,9 @@ import { AssessmentDataService } from '../services/assessment-data.service';
 export class AssessmentsControllerComponent implements OnInit {
   public assessmentData;
 
-  constructor(private dataService: AssessmentDataService) {}
+  constructor(private dataService: AssessmentDataService, rootComponent: AppComponent) {
+    this.assessmentData = rootComponent.assessmentData;
+  }
 
   ngOnInit() {
   }

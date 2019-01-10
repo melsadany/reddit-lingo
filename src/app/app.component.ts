@@ -6,7 +6,10 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 import { AuthService } from './auth/auth.service';
 import * as schema from './schema/equipment.json';
-
+import { AssessmentDataService } from './services/assessment-data.service';
+interface UserIdObject {
+  nextID: Number;
+}
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -14,27 +17,26 @@ import * as schema from './schema/equipment.json';
 })
 export class AppComponent implements OnInit, OnDestroy {
   private userSubscription: Subscription;
-  public user: any;
+  private dataSubscription: Subscription;
+  public nextUserID: any;
+  public assessmentData: any;
 
   constructor(
     private authService: AuthService,
     private router: Router,
     private domSanitizer: DomSanitizer,
-    private matIconRegistry: MatIconRegistry
+    private matIconRegistry: MatIconRegistry,
+    private dataService: AssessmentDataService
   ) {
     this.registerSvgIcons();
   }
 
   public ngOnInit() {
-    // init this.user on startup
-    this.authService.me().subscribe(data => {
-      this.user = data.user;
-    });
-
-    // update this.user after login/register/logout
-    this.userSubscription = this.authService.$userSource.subscribe(user => {
-      this.user = user;
-    });
+    if (!this.dataService.checkCookie('user_id')) {
+      this.setCookieAndGetData();
+    } else {
+      this.getData();
+    }
   }
 
   logout(): void {
@@ -50,6 +52,31 @@ export class AppComponent implements OnInit, OnDestroy {
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();
     }
+    if (this.dataSubscription) {
+      this.dataSubscription.unsubscribe();
+    }
+  }
+
+  setCookieAndGetData() {
+    console.log('setting cookie');
+    this.dataService.getNextUserID().subscribe((value: UserIdObject) => {
+      this.nextUserID = value.nextID.toString();
+      this.dataService.setCookie('user_id', this.nextUserID, 200);
+      this.getData();
+    });
+  }
+
+  getData() {
+    // get the data from the current user
+    this.dataSubscription = this.dataService
+      .getUserAssessmentDataFromMongo(this.dataService.getCookie('user_id'))
+      .subscribe(data => {
+        this.assessmentData = data;
+        // console.log(JSON.stringify(this.assessmentData)); KRM: Debugging
+        this.dataService.populateCompletionCookies(
+          this.assessmentData.assessments
+        );
+      });
   }
 
   registerSvgIcons() {

@@ -21,16 +21,10 @@ if (config.env === 'development') {
 }
 // Front end directory
 const distDir = '../../dist/'
-app.use(cookieParser())
-let currentUserNumber = 0
+
 app.use(express.static(path.join(__dirname, distDir)))
+
 app.use(/^((?!(api)).)*/, (req, res) => {
-  if (!req.cookies.user_id) {
-    res.cookie('user_id', currentUserNumber, {
-      httpOnly: false
-    })
-    currentUserNumber++
-  }
   res.sendFile(path.join(__dirname, distDir + '/index.html'))
 })
 
@@ -44,6 +38,7 @@ app.use(bodyParser.urlencoded({
 }))
 app.use(compress())
 app.use(methodOverride())
+app.use(cookieParser())
 
 // secure apps by setting various HTTP headers
 app.use(helmet())

@@ -10,15 +10,6 @@ export class AssessmentDataService {
   assessmentData;
   constructor(private Http: HttpClient, private cookieService: CookieService) {
     this.http = Http;
-    this.http
-      .get(
-        '/api/assessmentsAPI/GetUserAssessment/' +
-          this.cookieService.get('user_id')
-      )
-      .subscribe(data => {
-        this.assessmentData = data;
-        console.log(this.assessmentData);
-      });
   }
   http: HttpClient;
   public setCookie(name: string, value: string, date): void {
@@ -31,7 +22,9 @@ export class AssessmentDataService {
     return this.cookieService.check(name);
   }
   public getCookie(name: string): string {
-    return this.cookieService.get(name);
+    const id = this.cookieService.get(name);
+    console.log('User id getting cookie for: ' + id);
+    return id;
   }
   public getAllCookies() {
     return this.cookieService.getAll();
@@ -39,10 +32,21 @@ export class AssessmentDataService {
   public checkIfAssessmentCompleted(assess_name_check: string): Boolean {
     return this.checkCookie(assess_name_check);
   }
+  public populateCompletionCookies(assessmentsList): void {
+    assessmentsList.forEach(value => {
+      if (!this.checkCookie(value.assess_name)) {
+        this.setCookie(value.assess_name, 'completed', 200);
+      }
+    });
+  }
+  public getUserAssessmentDataFromMongo(
+    user_id: String
+  ): Observable<AssessmentModel> {
+    return this.http.get('/api/assessmentsAPI/GetUserAssessment/' + user_id);
+  }
   public postAssessmentDataToMongo(
     assessmentsData: AssessmentModel
   ): Observable<AssessmentModel> {
-    // KRM TODO: Abstract away the methods to post data to mongo and update the document.
     return this.http.post(
       '/api/assessmentsAPI/SaveAssessments',
       assessmentsData,
@@ -50,5 +54,8 @@ export class AssessmentDataService {
         responseType: 'text'
       }
     );
+  }
+  public getNextUserID() {
+    return this.http.get('/api/assessmentsAPI/NextUserID', {});
   }
 }

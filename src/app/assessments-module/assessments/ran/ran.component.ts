@@ -5,8 +5,6 @@ import {
 } from '../../../services/audio-recording.service';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { AssessmentModel } from '../../../../../server/models/assessment.model';
-import { Observable } from 'rxjs';
 import { Assessment } from '../../../structures/assessment';
 import { CookieService } from 'ngx-cookie-service';
 
@@ -142,11 +140,10 @@ export class RanComponent implements OnInit, OnDestroy, Assessment {
               }
             }
           ]
-        })
-        .subscribe(product => console.log(product)); // KRM: Subscription likely not needed here, debugging only right now
+        }).subscribe();
     };
+    this.dataService.setCookie('ran', 'completed', 200);
+
     // KRM: Each assessment will handle the structure of its assessment data before posting it to mongo
   }
 }
-
-// TODO: Assessments Data Service posting to mongo or updating from what's been done so far
