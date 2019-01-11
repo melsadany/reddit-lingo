@@ -1,13 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import {
   AudioRecordingService,
   RecordedAudioOutput
 } from '../../../services/audio-recording.service';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { AssessmentModel } from '../../../../../server/models/assessment.model';
-import { Observable } from 'rxjs';
-import { Assessment } from '../../../structures/assessment';
 import { CookieService } from 'ngx-cookie-service';
 
 @Component({
@@ -15,9 +12,7 @@ import { CookieService } from 'ngx-cookie-service';
   templateUrl: './ran.component.html',
   styleUrls: ['./ran.component.scss']
 })
-export class RanComponent implements OnInit, OnDestroy, Assessment {
-  name = 'RanAssessment';
-  description = 'Ran test componenet';
+export class RanComponent implements OnInit, OnDestroy {
   isRecording = false;
   recordedTime: string;
   recordedBlob: Blob;
@@ -55,7 +50,7 @@ export class RanComponent implements OnInit, OnDestroy, Assessment {
     this.dataService = dataService;
   }
 
-  startRecording() {
+  startRecording(): void {
     if (!this.isRecording) {
       this.isRecording = true;
       this.audioRecordingService.startRecording();
@@ -65,7 +60,7 @@ export class RanComponent implements OnInit, OnDestroy, Assessment {
     }
   }
 
-  abortRecording() {
+  abortRecording(): void {
     if (this.isRecording) {
       this.isRecording = false;
       this.audioRecordingService.abortRecording();
@@ -73,7 +68,7 @@ export class RanComponent implements OnInit, OnDestroy, Assessment {
     }
   }
 
-  stopRecording() {
+  stopRecording(): void {
     if (this.isRecording) {
       this.audioRecordingService.stopRecording();
       this.isRecording = false;
@@ -83,7 +78,7 @@ export class RanComponent implements OnInit, OnDestroy, Assessment {
     }
   }
 
-  clearRecordedData() {
+  clearRecordedData(): void {
     this.blobUrl = null;
   }
 
@@ -92,12 +87,12 @@ export class RanComponent implements OnInit, OnDestroy, Assessment {
   }
 
   ngOnInit(): void {
-    if (this.cookieService.get('RanCompleted') === 'true') {
+    if (this.dataService.checkIfAssessmentCompleted('ran')) {
       this.assessmentAlreadyCompleted = true;
     }
   }
 
-  startDisplayedCountdownTimer() {
+  startDisplayedCountdownTimer(): void {
     this.startedAssessment = true;
     this.countingDown = true;
     this.splashPage = false;
@@ -115,52 +110,38 @@ export class RanComponent implements OnInit, OnDestroy, Assessment {
     }, 1000);
   }
 
-  handleRecordedOutput(data: RecordedAudioOutput) {
+  handleRecordedOutput(data: RecordedAudioOutput): void {
     this.blobUrl = this.sanitizer.bypassSecurityTrustUrl(
       URL.createObjectURL(data.blob)
     );
     this.recordedBlob = data.blob;
     const reader: FileReader = new FileReader();
     reader.readAsDataURL(this.recordedBlob);
-    reader.onloadend = () => {
+    reader.onloadend = (): any => {
       this.recordedBlobAsBase64 = reader.result.slice(22);
-      this.postRanToMongo({
-        user_id: this.cookieService.get('user_id'),
-        assessments: [
-          {
-            assess_name: 'ran',
-            data: { recorded_data: this.recordedBlobAsBase64 }
-          }
-        ],
-        google_speech_to_text_assess: [
-          {
-            assess_name: 'ran',
-            data: {
-              text: 'Fake speech to text'
+      this.dataService
+        .postAssessmentDataToMongo({
+          user_id: this.cookieService.get('user_id'),
+          assessments: [
+            {
+              assess_name: 'ran',
+              data: { recorded_data: this.recordedBlobAsBase64 },
+              completed: true
             }
-          }
-        ]
-      }).subscribe((element) => console.log(element));
+          ],
+          google_speech_to_text_assess: [
+            {
+              assess_name: 'ran',
+              data: {
+                text: 'Fake speech to text'
+              }
+            }
+          ]
+        })
+        .subscribe();
     };
+    this.dataService.setCookie('ran', 'completed', 200);
+
     // KRM: Each assessment will handle the structure of its assessment data before posting it to mongo
   }
-
-  postRanToMongo(assessments: AssessmentModel): Observable<AssessmentModel> {
-    this.cookieService.delete('RanCompleted', '/assessments/ran');
-    this.cookieService.set(
-      'RanCompleted',
-      'true',
-      new Date(2019, 1, 1),
-      '/assessments/ran'
-    );
-    return this.dataService.http.post(
-      '/api/assessmentsAPI/SaveAssessments',
-      assessments,
-      {
-        responseType: 'text'
-      }
-    );
-  }
 }
-
-// TODO: Assessments Data Service posting to mongo or updating from what's been done so far

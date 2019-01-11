@@ -11,7 +11,7 @@ export class HomeComponent implements OnInit {
 
   constructor(private route: ActivatedRoute) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.single = this.route.snapshot.params['bool'] === 'single';
   }
 }

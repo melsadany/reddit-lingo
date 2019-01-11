@@ -4,31 +4,50 @@ const assessCtrl = require('../controllers/assessments.controller')
 const router = express.Router()
 
 router.post('/SaveAssessments', (req, res) => {
-  assessCtrl.insertNewAssessmentData(req.body)
-    .then((product) => {
-      res.send('Success')
-      console.log(product)
-    })
-    // KRM: TODO: Figure out best thing to do with
-    // the assessment model here
-    .catch((error) => res.send(error))
+  assessCtrl.updateAssessmentData(req.body)
+  res.send('Success')
 })
 
 router.get('/GetUserAssessment/:user_id', (req, res) => {
-  let assessmentsQuery = assessCtrl.getUserAssessmentData(req.params.user_id)
-  assessmentsQuery.exec((error, queryValue) => {
-    if (error) {
-      res.sendStatus(400, error)
-    } else if (queryValue.length === 0) {
-      res.send(404, 'User ID not found.')
-    } else if (queryValue.length > 1) {
-      res.send('Queried ID matched more than one entry: ' + req.params.user_id)
-    } else {
-      let filename = `=${req.params.user_id}_assessment_data.json`
-      res.set({
-        'Content-Disposition': 'attachment; filename' + filename
+  let query = assessCtrl.getUserAssessmentData(req.params.user_id)
+  query.exec((err, data) => {
+    if (err) {
+      res.sendStatus(404, err)
+    } else if (!data) {
+      assessCtrl.insertNewAssessmentData({
+        user_id: req.params.user_id,
+        assessments: [],
+        google_speech_to_text_assess: []
+      }).then((data) => {
+        res.set({
+          'Content-Type': 'application/json'
+        })
+        res.send(data)
       })
-      res.send(queryValue[0])
+    } else {
+      res.set({
+        'Content-Type': 'application/json'
+      })
+      console.log(data)
+      res.send(data)
+    }
+  })
+})
+router.get('/NextUserId', (req, res) => {
+  let query = assessCtrl.getNextUserID()
+  query.exec((err, data) => {
+    if (err) {
+      res.sendStatus(404, err)
+    } else {
+      const nextID = data.nextID
+      data.nextID = ++data.nextID
+      data.save()
+      res.set({
+        'Content-Type': 'application/json'
+      })
+      res.send({
+        'nextID': nextID
+      })
     }
   })
 })

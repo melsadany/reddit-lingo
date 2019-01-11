@@ -96,6 +96,9 @@
       true,
       "allow-null-check"
     ],
+    "typedef": [
+      true, "call-signature", "arrow-call-signature", "parameter"
+    ],
     "typedef-whitespace": [
       true,
       {

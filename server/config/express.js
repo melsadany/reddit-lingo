@@ -19,11 +19,11 @@ const app = express()
 if (config.env === 'development') {
   app.use(logger('dev'))
 }
-
-// Choose what frontend framework to serve the dist from
-let distDir = '../../dist/'
+// Front end directory
+const distDir = '../../dist/'
 
 app.use(express.static(path.join(__dirname, distDir)))
+
 app.use(/^((?!(api)).)*/, (req, res) => {
   res.sendFile(path.join(__dirname, distDir + '/index.html'))
 })
@@ -36,10 +36,9 @@ app.use(bodyParser.json({
 app.use(bodyParser.urlencoded({
   extended: true
 }))
-
-app.use(cookieParser())
 app.use(compress())
 app.use(methodOverride())
+app.use(cookieParser())
 
 // secure apps by setting various HTTP headers
 app.use(helmet())

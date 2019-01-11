@@ -25,7 +25,7 @@ export class LinkedList<T> {
     }
   }
 
-  [Symbol.iterator]() {
+  [Symbol.iterator](): IterableIterator<T> {
     return this.iterator();
   }
 
