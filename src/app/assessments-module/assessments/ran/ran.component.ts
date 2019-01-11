@@ -5,7 +5,6 @@ import {
 } from '../../../services/audio-recording.service';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { Assessment } from '../../../structures/assessment';
 import { CookieService } from 'ngx-cookie-service';
 
 @Component({
@@ -13,9 +12,7 @@ import { CookieService } from 'ngx-cookie-service';
   templateUrl: './ran.component.html',
   styleUrls: ['./ran.component.scss']
 })
-export class RanComponent implements OnInit, OnDestroy, Assessment {
-  name = 'RanAssessment';
-  description = 'Ran test componenet';
+export class RanComponent implements OnInit, OnDestroy {
   isRecording = false;
   recordedTime: string;
   recordedBlob: Blob;
@@ -53,7 +50,7 @@ export class RanComponent implements OnInit, OnDestroy, Assessment {
     this.dataService = dataService;
   }
 
-  startRecording() {
+  startRecording(): void {
     if (!this.isRecording) {
       this.isRecording = true;
       this.audioRecordingService.startRecording();
@@ -63,7 +60,7 @@ export class RanComponent implements OnInit, OnDestroy, Assessment {
     }
   }
 
-  abortRecording() {
+  abortRecording(): void {
     if (this.isRecording) {
       this.isRecording = false;
       this.audioRecordingService.abortRecording();
@@ -71,7 +68,7 @@ export class RanComponent implements OnInit, OnDestroy, Assessment {
     }
   }
 
-  stopRecording() {
+  stopRecording(): void {
     if (this.isRecording) {
       this.audioRecordingService.stopRecording();
       this.isRecording = false;
@@ -81,7 +78,7 @@ export class RanComponent implements OnInit, OnDestroy, Assessment {
     }
   }
 
-  clearRecordedData() {
+  clearRecordedData(): void {
     this.blobUrl = null;
   }
 
@@ -95,7 +92,7 @@ export class RanComponent implements OnInit, OnDestroy, Assessment {
     }
   }
 
-  startDisplayedCountdownTimer() {
+  startDisplayedCountdownTimer(): void {
     this.startedAssessment = true;
     this.countingDown = true;
     this.splashPage = false;
@@ -113,14 +110,14 @@ export class RanComponent implements OnInit, OnDestroy, Assessment {
     }, 1000);
   }
 
-  handleRecordedOutput(data: RecordedAudioOutput) {
+  handleRecordedOutput(data: RecordedAudioOutput): void {
     this.blobUrl = this.sanitizer.bypassSecurityTrustUrl(
       URL.createObjectURL(data.blob)
     );
     this.recordedBlob = data.blob;
     const reader: FileReader = new FileReader();
     reader.readAsDataURL(this.recordedBlob);
-    reader.onloadend = () => {
+    reader.onloadend = (): any => {
       this.recordedBlobAsBase64 = reader.result.slice(22);
       this.dataService
         .postAssessmentDataToMongo({
@@ -140,7 +137,8 @@ export class RanComponent implements OnInit, OnDestroy, Assessment {
               }
             }
           ]
-        }).subscribe();
+        })
+        .subscribe();
     };
     this.dataService.setCookie('ran', 'completed', 200);
 

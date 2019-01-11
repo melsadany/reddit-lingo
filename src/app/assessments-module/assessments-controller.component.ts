@@ -10,10 +10,10 @@ import { AppComponent } from '../app.component';
 export class AssessmentsControllerComponent implements OnInit {
   public assessmentData;
 
-  constructor(private dataService: AssessmentDataService, rootComponent: AppComponent) {
-    this.assessmentData = rootComponent.assessmentData;
+  constructor(private dataService: AssessmentDataService, appComponent: AppComponent) {
+    this.assessmentData = appComponent.assessmentData;
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 }

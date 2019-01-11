@@ -5,11 +5,11 @@ import { MatIconRegistry } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { AuthService } from './auth/auth.service';
-import * as schema from './schema/equipment.json';
+// import * as schema from './schema/equipment.json'; KRM: Not neccessary
 import { AssessmentDataService } from './services/assessment-data.service';
-interface UserIdObject {
-  nextID: Number;
-}
+import { UserIdObject } from './structures/useridobject';
+import { AssessmentData } from './structures/assessmentdata';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -18,8 +18,8 @@ interface UserIdObject {
 export class AppComponent implements OnInit, OnDestroy {
   private userSubscription: Subscription;
   private dataSubscription: Subscription;
-  public nextUserID: any;
-  public assessmentData: any;
+  public nextUserID: string;
+  public assessmentData: AssessmentData;
 
   constructor(
     private authService: AuthService,
@@ -28,10 +28,10 @@ export class AppComponent implements OnInit, OnDestroy {
     private matIconRegistry: MatIconRegistry,
     private dataService: AssessmentDataService
   ) {
-    this.registerSvgIcons();
+    // this.registerSvgIcons();
   }
 
-  public ngOnInit() {
+  public ngOnInit(): void {
     if (!this.dataService.checkCookie('user_id')) {
       this.setCookieAndGetData();
     } else {
@@ -39,16 +39,16 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  logout(): void {
-    this.authService.signOut();
-    this.navigate('');
-  }
+  // logout(): void {
+  //   this.authService.signOut();
+  //   this.navigate('');
+  // } KRM: Not necessary
 
-  navigate(link): void {
+  navigate(link: any): void {
     this.router.navigate([link]);
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();
     }
@@ -57,7 +57,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  setCookieAndGetData() {
+  setCookieAndGetData(): void {
     console.log('setting cookie');
     this.dataService.getNextUserID().subscribe((value: UserIdObject) => {
       this.nextUserID = value.nextID.toString();
@@ -66,60 +66,58 @@ export class AppComponent implements OnInit, OnDestroy {
     });
   }
 
-  getData() {
+  getData(): void {
     // get the data from the current user
     this.dataSubscription = this.dataService
       .getUserAssessmentDataFromMongo(this.dataService.getCookie('user_id'))
-      .subscribe(data => {
+      .subscribe((data: AssessmentData) => {
         this.assessmentData = data;
-        // console.log(JSON.stringify(this.assessmentData)); KRM: Debugging
-        this.dataService.populateCompletionCookies(
-          this.assessmentData.assessments
-        );
+        // console.log(JSON.stringify(this.assessmentData)); KRM: For debugging
+        this.dataService.populateCompletionCookies(this.assessmentData);
       });
   }
 
-  registerSvgIcons() {
-    [
-      'close',
-      'add',
-      'add-blue',
-      'airplane-front-view',
-      'air-station',
-      'balloon',
-      'boat',
-      'cargo-ship',
-      'car',
-      'catamaran',
-      'clone',
-      'convertible',
-      'delete',
-      'drone',
-      'fighter-plane',
-      'fire-truck',
-      'horseback-riding',
-      'motorcycle',
-      'railcar',
-      'railroad-train',
-      'rocket-boot',
-      'sailing-boat',
-      'segway',
-      'shuttle',
-      'space-shuttle',
-      'steam-engine',
-      'suv',
-      'tour-bus',
-      'tow-truck',
-      'transportation',
-      'trolleybus',
-      'water-transportation'
-    ].forEach(icon => {
-      this.matIconRegistry.addSvgIcon(
-        icon,
-        this.domSanitizer.bypassSecurityTrustResourceUrl(
-          `assets/icons/${icon}.svg`
-        )
-      );
-    });
-  }
+  // registerSvgIcons(): void {
+  //   [
+  //     'close',
+  //     'add',
+  //     'add-blue',
+  //     'airplane-front-view',
+  //     'air-station',
+  //     'balloon',
+  //     'boat',
+  //     'cargo-ship',
+  //     'car',
+  //     'catamaran',
+  //     'clone',
+  //     'convertible',
+  //     'delete',
+  //     'drone',
+  //     'fighter-plane',
+  //     'fire-truck',
+  //     'horseback-riding',
+  //     'motorcycle',
+  //     'railcar',
+  //     'railroad-train',
+  //     'rocket-boot',
+  //     'sailing-boat',
+  //     'segway',
+  //     'shuttle',
+  //     'space-shuttle',
+  //     'steam-engine',
+  //     'suv',
+  //     'tour-bus',
+  //     'tow-truck',
+  //     'transportation',
+  //     'trolleybus',
+  //     'water-transportation'
+  //   ].forEach(icon => {
+  //     this.matIconRegistry.addSvgIcon(
+  //       icon,
+  //       this.domSanitizer.bypassSecurityTrustResourceUrl(
+  //         `assets/icons/${icon}.svg`
+  //       )
+  //     );
+  //   });
+  // } KRM: Likely not necessary
 }

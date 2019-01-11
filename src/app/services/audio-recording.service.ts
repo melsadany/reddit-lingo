@@ -30,7 +30,7 @@ export class AudioRecordingService {
     return this._recordingFailed.asObservable();
   }
 
-  startRecording() {
+  startRecording(): void {
     if (this.recorder) {
       return;
     }
@@ -47,11 +47,11 @@ export class AudioRecordingService {
       });
   }
 
-  abortRecording() {
+  abortRecording(): void {
     this.stopMedia();
   }
 
-  private record() {
+  private record(): void {
     this.recorder = new RecordRTC.StereoAudioRecorder(this.stream, {
       type: 'audio',
       mimeType: 'audio/webm'
@@ -70,7 +70,7 @@ export class AudioRecordingService {
     }, 1000);
   }
 
-  private toString(value: string | number) {
+  private toString(value: string | number): string | number {
     let val = value;
     if (!value) {
       val = '00';
@@ -81,7 +81,7 @@ export class AudioRecordingService {
     return val;
   }
 
-  stopRecording() {
+  stopRecording(): void {
     if (this.recorder) {
       this.recorder.stop(
         (blob: Blob) => {
@@ -101,7 +101,7 @@ export class AudioRecordingService {
     }
   }
 
-  private stopMedia() {
+  private stopMedia(): void {
     if (this.recorder) {
       this.recorder = null;
       clearInterval(this.interval);

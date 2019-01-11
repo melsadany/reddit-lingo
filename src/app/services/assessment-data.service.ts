@@ -1,52 +1,61 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
-import { AssessmentModel } from '../../../server/models/assessment.model';
 import { Observable } from 'rxjs';
+import { UserIdObject } from '../structures/useridobject';
+import { AssessmentData } from '../structures/assessmentdata';
 import 'rxjs/add/operator/map';
 
 @Injectable()
 export class AssessmentDataService {
-  assessmentData;
+  assessmentData: AssessmentData;
+  http: HttpClient;
+
   constructor(private Http: HttpClient, private cookieService: CookieService) {
     this.http = Http;
   }
-  http: HttpClient;
-  public setCookie(name: string, value: string, date): void {
+
+  public setCookie(name: string, value: string, date: number): void {
     this.cookieService.set(name, value, date);
   }
+
   public deleteCookie(name: string): void {
     this.cookieService.delete(name);
   }
+
   public checkCookie(name: string): boolean {
     return this.cookieService.check(name);
   }
+
   public getCookie(name: string): string {
     const id = this.cookieService.get(name);
     console.log('User id getting cookie for: ' + id);
     return id;
   }
-  public getAllCookies() {
+
+  public getAllCookies(): Object {
     return this.cookieService.getAll();
   }
+
   public checkIfAssessmentCompleted(assess_name_check: string): Boolean {
     return this.checkCookie(assess_name_check);
   }
-  public populateCompletionCookies(assessmentsList): void {
-    assessmentsList.forEach(value => {
+
+  public populateCompletionCookies(assessmentsData: AssessmentData): void {
+    assessmentsData.assessments.forEach(value => {
       if (!this.checkCookie(value.assess_name)) {
         this.setCookie(value.assess_name, 'completed', 200);
       }
     });
   }
-  public getUserAssessmentDataFromMongo(
-    user_id: String
-  ): Observable<AssessmentModel> {
-    return this.http.get('/api/assessmentsAPI/GetUserAssessment/' + user_id);
+
+  public getUserAssessmentDataFromMongo(user_id: string): Observable<AssessmentData> {
+    return <Observable<AssessmentData>> this.http.get('/api/assessmentsAPI/GetUserAssessment/' + user_id);
   }
+
   public postAssessmentDataToMongo(
-    assessmentsData: AssessmentModel
-  ): Observable<AssessmentModel> {
+    assessmentsData: AssessmentData
+  ): Observable<string> {
     return this.http.post(
       '/api/assessmentsAPI/SaveAssessments',
       assessmentsData,
@@ -55,7 +64,10 @@ export class AssessmentDataService {
       }
     );
   }
-  public getNextUserID() {
-    return this.http.get('/api/assessmentsAPI/NextUserID', {});
+
+  public getNextUserID(): Observable<UserIdObject> {
+    return <Observable<UserIdObject>>(
+      this.http.get('/api/assessmentsAPI/NextUserID', {})
+    );
   }
 }
