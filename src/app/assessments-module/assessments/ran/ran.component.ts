@@ -87,7 +87,7 @@ export class RanComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (this.dataService.checkIfAssessmentCompleted('ran')) {
+    if (this.dataService.isAssessmentCompleted('ran')) {
       this.assessmentAlreadyCompleted = true;
     }
   }
@@ -140,6 +140,7 @@ export class RanComponent implements OnInit, OnDestroy {
         })
         .subscribe();
     };
+    this.dataService.setIsInAssessment(false);
     this.dataService.setCookie('ran', 'completed', 200);
 
     // KRM: Each assessment will handle the structure of its assessment data before posting it to mongo

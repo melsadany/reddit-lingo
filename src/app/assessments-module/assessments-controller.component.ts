@@ -8,12 +8,13 @@ import { AppComponent } from '../app.component';
   styleUrls: ['./assessments-controller.component.scss']
 })
 export class AssessmentsControllerComponent implements OnInit {
-  public assessmentData;
+  allAssessmentsCompleted: Boolean = false;
 
-  constructor(private dataService: AssessmentDataService, appComponent: AppComponent) {
-    this.assessmentData = appComponent.assessmentData;
-  }
+  constructor(
+    private dataService: AssessmentDataService,
+    private appComponent: AppComponent
+  ) {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
+
 }
