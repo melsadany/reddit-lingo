@@ -10,13 +10,13 @@
       <ul class="navbar-nav mr-auto">
         <li>
           <ng-container *ngIf="updateHeader(); then resumeAssessment; else Home">
-            </ng-container>
-            <ng-template #resumeAssessment>
-              <a class="nav-link" [routerLink]="['/assessments', dataService.getCurrentAssessment()]">Resume <span class="sr-only">(current)</span></a>
-            </ng-template>
-            <ng-template #Home>
-              <a class="nav-link" [routerLink]="['']">Home <span class="sr-only">(current)</span></a>
-            </ng-template>
+          </ng-container>
+          <ng-template #resumeAssessment>
+            <a class="nav-link" [routerLink]="['/assessments/', dataService.getCurrentAssessment()]">Resume <span class="sr-only">(current)</span></a>
+          </ng-template>
+          <ng-template #Home>
+            <a class="nav-link" [routerLink]="['home']">Home <span class="sr-only">(current)</span></a>
+          </ng-template>
         </li>
         <li class="nav-item">
           <a class="nav-link" [routerLink]="['about']">About</a>

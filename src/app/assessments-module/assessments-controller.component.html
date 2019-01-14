@@ -1,11 +1,17 @@
 <ng-container *ngIf="!dataService.inAssessment && dataService.showWelcomePage && !dataService.allAssessmentsCompleted then welcome; else inAssessment"></ng-container>
 <ng-template #welcome>
-  <div class='pb-5 text-center'>
+  <div class='py-4 text-center'>
     Welcome to the assessments.
   </div>
   <div class='pb-5 text-center'>
     <button type='button' class='btn btn-primary btn-lg' (click)="dataService.nextAssessment()">START</button>
   </div>
 </ng-template>
-<ng-template #inAssessment></ng-template>
-<router-outlet></router-outlet>
+<ng-template #inAssessment>
+  <router-outlet></router-outlet>
+</ng-template>
+<div class='py-4 text-center'>
+  <div *ngIf="!dataService.inAssessment && !dataService.showWelcomePage && !dataService.allAssessmentsCompleted">
+    <button type='button' class='btn btn-primary btn-lg' (click)="dataService.nextAssessment()">Continue Assessments</button>
+  </div>
+</div>

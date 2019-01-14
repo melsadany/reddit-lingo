@@ -14,18 +14,18 @@
   </div>
   <div class="text-center">
     <button type="button" class="stop-button btn btn-outline-secondary" *ngIf="isRecording && !blobUrl" (click)="stopRecording()">DONE</button>
-    <button type="button" class="cancel-button btn btn-danger" *ngIf="!isRecording && blobUrl" (click)="clearRecordedData()">Clear Recording</button>
+    <!-- <button type="button" class="cancel-button btn btn-danger" *ngIf="!isRecording && blobUrl" (click)="clearRecordedData()">Clear Recording</button> KRM: For debugging usage only. -->
     <div *ngIf="isRecording && !blobUrl"> {{recordedTime}} </div>
 
   </div>
-  <div>
+  <!-- <div>
     <audio *ngIf="!isRecording && blobUrl"  controls>
       <source [src]="blobUrl" type="audio/webm">
     </audio>
-  </div>
+</div> KRM: For debugging usage only. -->
   <p *ngIf="countingDown" class="text-center display-1">{{timeLeft}}</p>
   <div class="text-center" *ngIf="dataService.checkCookie('ran')">
     <p class="pt4"> Thank you for completing this assessment.</p>
-<button type='button' class='btn btn-primary btn-lg' (click)="dataService.nextAssessment()">Next assessment</button>
+<!-- <button type='button' class='btn btn-primary btn-lg' (click)="dataService.nextAssessment()">Next assessment</button> KRM: Might not need this button after other additional button. -->
   </div>
 </div>

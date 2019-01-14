@@ -102,7 +102,7 @@ export class AssessmentDataService {
     return this.currentAssessment;
   }
 
-  determineNextAssessment(): string {
+  private determineNextAssessment(): string {
     for (const assessmentName of this.assessmentsList) {
       if (!this.isAssessmentCompleted(assessmentName)) {
         console.log('not completed: ' + assessmentName); // KRM: Debugging
@@ -127,7 +127,7 @@ export class AssessmentDataService {
   }
 
   public goTo(assessmentName: string): void {
-    console.log('navigating to: ' + assessmentName);
+    console.log('navigating to: ' + assessmentName); // KRM: For bebugging
     this.router.navigate(['/assessments/', assessmentName]);
   }
 }
