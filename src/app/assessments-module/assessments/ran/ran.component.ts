@@ -5,7 +5,6 @@ import {
 } from '../../../services/audio-recording.service';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-ran',
@@ -34,7 +33,6 @@ export class RanComponent implements OnInit, OnDestroy {
     private audioRecordingService: AudioRecordingService,
     private sanitizer: DomSanitizer,
     private dataService: AssessmentDataService,
-    private cookieService: CookieService
   ) {
     this.audioRecordingService.recordingFailed().subscribe(() => {
       this.isRecording = false;
@@ -47,7 +45,6 @@ export class RanComponent implements OnInit, OnDestroy {
     this.audioRecordingService.getRecordedBlob().subscribe(data => {
       this.handleRecordedOutput(data);
     });
-    this.dataService = dataService;
   }
 
   startRecording(): void {
@@ -87,7 +84,7 @@ export class RanComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (this.dataService.checkIfAssessmentCompleted('ran')) {
+    if (this.dataService.isAssessmentCompleted('ran')) {
       this.assessmentAlreadyCompleted = true;
     }
   }
@@ -121,7 +118,7 @@ export class RanComponent implements OnInit, OnDestroy {
       this.recordedBlobAsBase64 = reader.result.slice(22);
       this.dataService
         .postAssessmentDataToMongo({
-          user_id: this.cookieService.get('user_id'),
+          user_id: this.dataService.getCookie('user_id'),
           assessments: [
             {
               assess_name: 'ran',
@@ -140,6 +137,7 @@ export class RanComponent implements OnInit, OnDestroy {
         })
         .subscribe();
     };
+    this.dataService.setIsInAssessment(false);
     this.dataService.setCookie('ran', 'completed', 200);
 
     // KRM: Each assessment will handle the structure of its assessment data before posting it to mongo

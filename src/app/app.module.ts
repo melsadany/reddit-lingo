@@ -17,6 +17,7 @@ import { AboutComponent } from './about/about.component';
 import { ContactComponent } from './contact/contact.component';
 import { AssessmentsModule } from './assessments-module/assessments-controller.module';
 import { AssessmentDataService } from './services/assessment-data.service';
+import { DialogService } from './services/dialog.service';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,7 @@ import { AssessmentDataService } from './services/assessment-data.service';
     AssessmentsModule,
     AppRoutingModule
   ],
-  providers: [CookieService, AssessmentDataService],
+  providers: [CookieService, AssessmentDataService, DialogService],
   entryComponents: [],
   bootstrap: [AppComponent]
 })

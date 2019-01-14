@@ -11,10 +11,11 @@ import { AudioRecordingService } from '../services/audio-recording.service';
 import { AuthHeaderInterceptor } from '../interceptors/header.interceptor';
 import { CatchErrorInterceptor } from '../interceptors/http-error.interceptor';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AssessmentsDoneComponent } from './assessments-done/assessments-done.component';
 
 @NgModule({
   imports: [CommonModule, BrowserModule, AssessmentsControllerRoutingModule],
-  declarations: [AssessmentsControllerComponent, RanComponent],
+  declarations: [AssessmentsControllerComponent, RanComponent, AssessmentsDoneComponent],
   providers: [
     AudioRecordingService,
     {
