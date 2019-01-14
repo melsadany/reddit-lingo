@@ -24,10 +24,8 @@
     </audio>
   </div>
   <p *ngIf="countingDown" class="text-center display-1">{{timeLeft}}</p>
-  <div class="text-center" *ngIf="doneRecording">
+  <div class="text-center" *ngIf="dataService.checkCookie('ran')">
     <p class="pt4"> Thank you for completing this assessment.</p>
-  </div>
-  <div class="text-center" *ngIf="assessmentAlreadyCompleted">
-    <p class="pt4"> You have already completed this assessment.</p>
+<button type='button' class='btn btn-primary btn-lg' (click)="dataService.nextAssessment()">Next assessment</button>
   </div>
 </div>

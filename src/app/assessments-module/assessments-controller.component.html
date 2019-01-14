@@ -1,5 +1,5 @@
-<ng-container *ngIf="!dataService.isInAssessment() && !allAssessmentsCompleted; then WelcomeAssessments; else InAssessments"></ng-container>
-<ng-template #WelcomeAssessments>
+<ng-container *ngIf="!dataService.inAssessment && dataService.showWelcomePage && !dataService.allAssessmentsCompleted then welcome; else inAssessment"></ng-container>
+<ng-template #welcome>
   <div class='pb-5 text-center'>
     Welcome to the assessments.
   </div>
@@ -7,9 +7,5 @@
     <button type='button' class='btn btn-primary btn-lg' (click)="dataService.nextAssessment()">START</button>
   </div>
 </ng-template>
-<ng-template #InAssessments>
-  <router-outlet></router-outlet>
-</ng-template>
-<div *ngIf="!dataService.isInAssessment() && dataService.allAssessmentsCompleted">
-  All assessments completed.
-</div>
+<ng-template #inAssessment></ng-template>
+<router-outlet></router-outlet>

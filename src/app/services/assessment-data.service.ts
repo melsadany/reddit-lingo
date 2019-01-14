@@ -12,10 +12,11 @@ export class AssessmentDataService {
   assessmentData: AssessmentData;
   http: HttpClient;
   inAssessment: Boolean = false;
-  currentAssessment: String = '';
+  currentAssessment = '';
   assessmentsList: string[];
   allAssessmentsCompleted: Boolean = false;
   router: Router;
+  showWelcomePage = true;
 
   constructor(
     private Http: HttpClient,
@@ -40,12 +41,10 @@ export class AssessmentDataService {
   }
 
   public getCookie(name: string): string {
-    const id = this.cookieService.get(name);
-    console.log('User id getting cookie for: ' + id);
-    return id;
+    return this.cookieService.get(name);
   }
 
-  public getAllCookies(): Object {
+  public getAllCookies(): object {
     return this.cookieService.getAll();
   }
 
@@ -54,11 +53,11 @@ export class AssessmentDataService {
   }
 
   public populateCompletionCookies(assessmentsData: AssessmentData): void {
-    assessmentsData.assessments.forEach(value => {
+    for (const value of assessmentsData.assessments) {
       if (!this.checkCookie(value.assess_name)) {
-        this.setCookie(value.assess_name, 'completed', 200);
+        this.cookieService.set(value.assess_name, 'completed', 200);
       }
-    });
+    }
   }
 
   public getUserAssessmentDataFromMongo(
@@ -95,18 +94,19 @@ export class AssessmentDataService {
     this.inAssessment = set;
   }
 
-  public setCurrentAssessment(set: String): void {
+  public setCurrentAssessment(set: string): void {
     this.currentAssessment = set;
   }
 
-  public getCurrentAssessment(): String {
+  public getCurrentAssessment(): string {
     return this.currentAssessment;
   }
 
-  determineNextAssessment(): String {
+  determineNextAssessment(): string {
     for (const assessmentName of this.assessmentsList) {
       if (!this.isAssessmentCompleted(assessmentName)) {
         console.log('not completed: ' + assessmentName); // KRM: Debugging
+        this.setIsInAssessment(true);
         return assessmentName;
       }
     }
@@ -117,10 +117,17 @@ export class AssessmentDataService {
     //            the way through, or when the one assessment is done.
   }
 
-  nextAssessment(): void {
+  public nextAssessment(): void {
+    if (this.showWelcomePage) {
+      this.showWelcomePage = false;
+    }
     this.setCurrentAssessment(this.determineNextAssessment());
-    console.log(this.getCurrentAssessment());
-    this.setIsInAssessment(true);
-    this.router.navigate(['/assessments/', this.getCurrentAssessment()]);
+    console.log('Getting assessment: ' + this.getCurrentAssessment()); // KRM: For debugging
+    this.goTo(this.getCurrentAssessment());
+  }
+
+  public goTo(assessmentName: string): void {
+    console.log('navigating to: ' + assessmentName);
+    this.router.navigate(['/assessments/', assessmentName]);
   }
 }
