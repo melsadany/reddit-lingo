@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AssessmentsControllerComponent } from './assessments-controller.component';
 import { RanComponent } from './assessments/ran/ran.component';
+import { ListeningcomprehensionComponent } from './assessments/listening_comprehension/listeningcomprehension.component';
 import { AssessmentsDoneComponent } from './assessments-done/assessments-done.component';
 import { CanDeactivateGuard } from '../guards/can-deactivate.guard';
 
@@ -14,6 +15,10 @@ const routes: Routes = [
       {
         path: 'ran',
         component: RanComponent
+      },
+      {
+        path: 'listeningcomprehension',
+        component: ListeningcomprehensionComponent
       },
       {
         path: 'done',

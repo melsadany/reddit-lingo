@@ -24,7 +24,7 @@ export class AssessmentDataService {
     router: Router
   ) {
     this.http = Http;
-    this.assessmentsList = ['ran']; // KRM: Add to this list to add more assessments as they are built
+    this.assessmentsList = ['ran', 'listeningcomprehension']; // KRM: Add to this list to add more assessments as they are built
     this.router = router;
   }
 
