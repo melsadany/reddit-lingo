@@ -5,6 +5,7 @@ import { RanComponent } from './assessments/ran/ran.component';
 import { ListeningcomprehensionComponent } from './assessments/listening_comprehension/listeningcomprehension.component';
 import { AssessmentsDoneComponent } from './assessments-done/assessments-done.component';
 import { CanDeactivateGuard } from '../guards/can-deactivate.guard';
+import { PrescreenerquestionsComponent } from './assessments/prescreenerquestions/prescreenerquestions.component';
 
 const routes: Routes = [
   {
@@ -23,6 +24,10 @@ const routes: Routes = [
       {
         path: 'done',
         component: AssessmentsDoneComponent
+      },
+      {
+        path: 'prescreenerquestions',
+        component: PrescreenerquestionsComponent
       }
     ]
   }

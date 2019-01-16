@@ -1,0 +1,34 @@
+<mat-form-field>
+  <input matInput [matDatepicker]="picker" placeholder="Select your date of birth">
+  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-datepicker #picker></mat-datepicker>
+</mat-form-field>
+<mat-form-field>
+  <mat-select placeholder="Select your gender">
+    <mat-option *ngFor="let gender of genderOptions" [value]="gender">
+      {{gender}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+<mat-form-field>
+  <mat-select placeholder="Select your Ethnicity">
+    <mat-option *ngFor="let ethnicity of ethnicityOptions" [value]="ethnicity">
+      {{ethnicity}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+<mat-form-field>
+  <mat-select placeholder="Select your highest education">
+    <mat-option *ngFor="let education of educationOptions" [value]="education">
+      {{education}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+<mat-checkbox>{{english}}</mat-checkbox>
+<mat-form-field>
+  <mat-select placeholder="Select your level of musical ability">
+    <mat-option *ngFor="let musicAbility of musicAbilityOptions" [value]="musicAbility">
+      {{musicAbility}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>

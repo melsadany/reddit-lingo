@@ -13,10 +13,37 @@ import { CatchErrorInterceptor } from '../interceptors/http-error.interceptor';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AssessmentsDoneComponent } from './assessments-done/assessments-done.component';
 import { ListeningcomprehensionComponent } from './assessments/listening_comprehension/listeningcomprehension.component';
+import { PrescreenerquestionsComponent } from './assessments/prescreenerquestions/prescreenerquestions.component';
+import {
+  MatDatepickerModule,
+  MatFormFieldModule,
+  MatNativeDateModule,
+  MatInputModule,
+  MatSelectModule,
+  MatCheckboxModule
+} from '@angular/material';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
-  imports: [CommonModule, BrowserModule, AssessmentsControllerRoutingModule],
-  declarations: [AssessmentsControllerComponent, RanComponent, AssessmentsDoneComponent, ListeningcomprehensionComponent],
+  imports: [
+    CommonModule,
+    BrowserModule,
+    AssessmentsControllerRoutingModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatNativeDateModule,
+    MatInputModule,
+    BrowserAnimationsModule,
+    MatSelectModule,
+    MatCheckboxModule
+  ],
+  declarations: [
+    AssessmentsControllerComponent,
+    RanComponent,
+    AssessmentsDoneComponent,
+    ListeningcomprehensionComponent,
+    PrescreenerquestionsComponent
+  ],
   providers: [
     AudioRecordingService,
     {

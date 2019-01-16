@@ -7,7 +7,10 @@ import { AssessmentDataService } from '../../../services/assessment-data.service
   styleUrls: ['./listeningcomprehension.component.scss']
 })
 export class ListeningcomprehensionComponent implements OnInit {
+  textOnButton = 'Start Assessment';
+  firstSet = true;
   assessmentAlreadyCompleted = false;
+  showStartButton = true;
   splashPage = true;
   startedAssessment = false;
   countingDown = false;
@@ -15,9 +18,11 @@ export class ListeningcomprehensionComponent implements OnInit {
   timeLeft = 3;
   doneCountingDown = false;
   showImage = false;
-  imagePaths: [];
+  imagePaths: string[][];
   currentQuestionSetNumber = 1;
   imagesLocation = 'assets/img/listeningcomprehension/';
+  audioInstructionsLocation = 'assets/audio/listeningcomprehension/';
+  imageSelections = [];
 
   constructor(private dataService: AssessmentDataService) {}
 
@@ -48,20 +53,90 @@ export class ListeningcomprehensionComponent implements OnInit {
 
   calculateImageNames(): void {
     this.imagePaths = [];
-    this.imagesLocation = `assets/img/listeningcomprehension/${this.currentQuestionSetNumber}/image/`;
+    this.imagesLocation = `assets/img/listeningcomprehension/${
+      this.currentQuestionSetNumber
+    }/image/`;
     const firstRow: string[] = [];
     const secondRow: string[] = [];
     const thirdRow: string[] = [];
     for (let i = 1; i <= 3; i++) {
-      firstRow.push(`${this.imagesLocation}${i}a_q${this.currentQuestionSetNumber}.png`);
+      firstRow.push(
+        `${this.imagesLocation}${i}a_q${this.currentQuestionSetNumber}.png`
+      );
     }
     for (let i = 4; i <= 6; i++) {
-      secondRow.push(`${this.imagesLocation}${i}a_q${this.currentQuestionSetNumber}.png`);
+      secondRow.push(
+        `${this.imagesLocation}${i}a_q${this.currentQuestionSetNumber}.png`
+      );
     }
     for (let i = 7; i <= 9; i++) {
-      thirdRow.push(`${this.imagesLocation}${i}a_q${this.currentQuestionSetNumber}.png`);
+      thirdRow.push(
+        `${this.imagesLocation}${i}a_q${this.currentQuestionSetNumber}.png`
+      );
     }
     this.imagePaths.push(firstRow, secondRow, thirdRow);
-    console.log(this.imagePaths);
+  }
+
+  selectImage(image: string): void {
+    const delimited = image.split('/');
+    const image_name = delimited[delimited.length - 1];
+    this.imageSelections.push({
+      setNumber: this.currentQuestionSetNumber,
+      imageSelected: image_name
+    });
+    this.currentQuestionSetNumber++;
+    console.log(this.imageSelections);
+    this.showImage = false;
+    if (this.currentQuestionSetNumber > 12) {
+      this.finishAssessment();
+    } else {
+      this.nextImageSet();
+    }
+  }
+
+  nextImageSet(): void {
+    this.calculateImageNames();
+    if (this.firstSet) {
+      this.firstSet = false;
+      this.textOnButton = 'Continue to next set';
+    }
+    this.splashPage = true;
+    // this.showStartButton = true;
+    this.startAudioInstructionForSet();
+  }
+
+  startAudioInstructionForSet(): void {
+    const audio = new Audio();
+    audio.src = `${this.audioInstructionsLocation}q${
+      this.currentQuestionSetNumber
+    }.mp3`;
+    audio.addEventListener('ended', () => this.startDisplayedCountdownTimer());
+    audio.play();
+    this.showStartButton = false;
+  }
+
+  finishAssessment(): void {
+    this.dataService
+      .postAssessmentDataToMongo({
+        user_id: this.dataService.getCookie('user_id'),
+        assessments: [
+          {
+            assess_name: 'listeningcomprehension',
+            data: { selection_data: this.imageSelections },
+            completed: true
+          }
+        ],
+        google_speech_to_text_assess: [
+          {
+            assess_name: 'listeningComprehension',
+            data: {
+              text: 'Fake speech to text'
+            }
+          }
+        ]
+      })
+      .subscribe();
+    this.dataService.setIsInAssessment(false);
+    this.dataService.setCookie('listeningcomprehension', 'completed', 200);
   }
 }
