@@ -36,5 +36,5 @@ export class PrescreenerquestionsComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit() {}
+  ngOnInit(): void {}
 }
