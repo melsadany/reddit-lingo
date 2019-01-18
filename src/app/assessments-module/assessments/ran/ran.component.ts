@@ -32,7 +32,7 @@ export class RanComponent implements OnInit, OnDestroy {
   constructor(
     private audioRecordingService: AudioRecordingService,
     private sanitizer: DomSanitizer,
-    private dataService: AssessmentDataService,
+    private dataService: AssessmentDataService
   ) {
     this.audioRecordingService.recordingFailed().subscribe(() => {
       this.isRecording = false;
@@ -117,24 +117,19 @@ export class RanComponent implements OnInit, OnDestroy {
     reader.onloadend = (): any => {
       this.recordedBlobAsBase64 = reader.result.slice(22);
       this.dataService
-        .postAssessmentDataToMongo({
-          user_id: this.dataService.getCookie('user_id'),
-          assessments: [
-            {
-              assess_name: 'ran',
-              data: { recorded_data: this.recordedBlobAsBase64 },
-              completed: true
+        .postAssessmentDataToMongo(
+          {
+            assess_name: 'ran',
+            data: { recorded_data: this.recordedBlobAsBase64 },
+            completed: true
+          },
+          {
+            assess_name: 'ran',
+            data: {
+              text: 'Fake speech to text'
             }
-          ],
-          google_speech_to_text_assess: [
-            {
-              assess_name: 'ran',
-              data: {
-                text: 'Fake speech to text'
-              }
-            }
-          ]
-        })
+          }
+        )
         .subscribe();
     };
     this.dataService.setIsInAssessment(false);

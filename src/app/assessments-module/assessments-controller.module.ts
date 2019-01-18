@@ -14,6 +14,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AssessmentsDoneComponent } from './assessments-done/assessments-done.component';
 import { ListeningcomprehensionComponent } from './assessments/listening_comprehension/listeningcomprehension.component';
 import { PrescreenerquestionsComponent } from './assessments/prescreenerquestions/prescreenerquestions.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   MatDatepickerModule,
   MatFormFieldModule,
@@ -35,7 +36,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     MatInputModule,
     BrowserAnimationsModule,
     MatSelectModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   declarations: [
     AssessmentsControllerComponent,

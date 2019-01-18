@@ -3,7 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
 import { Observable } from 'rxjs';
 import { UserIdObject } from '../structures/useridobject';
-import { AssessmentData } from '../structures/assessmentdata';
+import {
+  AssessmentData,
+  AssessmentDataStructure,
+  GoogleSpeechToTextDataStructure
+} from '../structures/assessmentdata';
 import { Router } from '@angular/router';
 import 'rxjs/add/operator/map';
 
@@ -73,11 +77,16 @@ export class AssessmentDataService {
   }
 
   public postAssessmentDataToMongo(
-    assessmentsData: AssessmentData
+    assessmentsData: AssessmentDataStructure,
+    googleData: GoogleSpeechToTextDataStructure
   ): Observable<string> {
     return this.http.post(
       '/api/assessmentsAPI/SaveAssessments',
-      assessmentsData,
+      {
+        user_id: this.getCookie('user_id'),
+        assessments: [assessmentsData],
+        google_speech_to_text_assess: [googleData]
+      },
       {
         responseType: 'text'
       }

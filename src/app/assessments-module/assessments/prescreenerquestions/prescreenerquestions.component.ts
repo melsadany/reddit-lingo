@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { AssessmentDataService } from '../../../services/assessment-data.service';
+import { FormControl, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-prescreenerquestions',
@@ -6,8 +8,15 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./prescreenerquestions.component.scss']
 })
 export class PrescreenerquestionsComponent implements OnInit {
+  dataForm = this.fb.group({
+    date: ['', Validators.required],
+    gender: ['', Validators.required],
+    ethnicity: ['', Validators.required],
+    education: ['', Validators.required],
+    englishOption: ['', Validators.required],
+    musicAbility: ['', Validators.required]
+  });
   genderOptions = ['Prefer not to say', 'Male', 'Female', 'Other'];
-  gender;
   ethnicityOptions = [
     'Prefer not to say',
     'American Indian/Alaska Native',
@@ -16,7 +25,6 @@ export class PrescreenerquestionsComponent implements OnInit {
     'Native Hawaiian/Other Pacific Islander',
     'White'
   ];
-  ethnicity;
   educationOptions = [
     'Did not graduate High School',
     'High School diploma or equivalent',
@@ -26,15 +34,46 @@ export class PrescreenerquestionsComponent implements OnInit {
     'Graduate college',
     'Post graducate'
   ];
-  english = 'Is english your first language?';
+  englishOptions = ['Yes', 'No'];
   musicAbilityOptions = [
     'I have never had any formal training in any kind of music',
-    'I have some musical traning but don\'t routinely play or sing',
+    "I have some musical traning but don't routinely play or sing",
     'I can play an instrument, or have formal training in singing',
     'I play or sing professionally / I study music as a major / I teach music'
   ];
 
-  constructor() {}
+  constructor(
+    private dataService: AssessmentDataService,
+    private fb: FormBuilder
+  ) {}
 
   ngOnInit(): void {}
+  postData(): void {
+    const data = {
+      date: this.dataForm.get('date').value,
+      gender: this.dataForm.get('gender').value,
+      ethnicity: this.dataForm.get('ethnicity').value,
+      education: this.dataForm.get('education').value,
+      englishOption: this.dataForm.get('englishOption').value,
+      musicAbility: this.dataForm.get('musicAbility').value
+    };
+    this.dataService
+      .postAssessmentDataToMongo(
+        {
+          assess_name: 'prescreenerquestions',
+          data: { prescreenerQuestions: data },
+          completed: true
+        },
+        {
+          assess_name: 'prescreener',
+          data: {
+            text: 'None'
+          }
+        }
+      )
+      .subscribe(); // KRM: Do this for every assessment
+    // this.dataService.setIsInAssessment(false);
+    this.dataService.setCookie('prescreenerquestions', 'completed', 200);
+    this.dataService.nextAssessment();
+  }
 }

@@ -117,24 +117,19 @@ export class ListeningcomprehensionComponent implements OnInit {
 
   finishAssessment(): void {
     this.dataService
-      .postAssessmentDataToMongo({
-        user_id: this.dataService.getCookie('user_id'),
-        assessments: [
-          {
-            assess_name: 'listeningcomprehension',
-            data: { selection_data: this.imageSelections },
-            completed: true
+      .postAssessmentDataToMongo(
+        {
+          assess_name: 'listeningcomprehension',
+          data: { selection_data: this.imageSelections },
+          completed: true
+        },
+        {
+          assess_name: 'listeningComprehension',
+          data: {
+            text: 'Fake speech to text'
           }
-        ],
-        google_speech_to_text_assess: [
-          {
-            assess_name: 'listeningComprehension',
-            data: {
-              text: 'Fake speech to text'
-            }
-          }
-        ]
-      })
+        }
+      )
       .subscribe();
     this.dataService.setIsInAssessment(false);
     this.dataService.setCookie('listeningcomprehension', 'completed', 200);
