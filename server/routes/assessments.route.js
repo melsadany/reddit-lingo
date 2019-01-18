@@ -5,7 +5,11 @@ const router = express.Router()
 
 router.post('/SaveAssessments', (req, res) => {
   assessCtrl.updateAssessmentData(req.body)
-  res.send('Success')
+    .then(res.send('Success'))
+    .catch((err) => {
+      console.log(err)
+      res.send(err)
+    })
 })
 
 router.get('/GetUserAssessment/:user_id', (req, res) => {
@@ -33,6 +37,7 @@ router.get('/GetUserAssessment/:user_id', (req, res) => {
     }
   })
 })
+
 router.get('/NextUserId', (req, res) => {
   let query = assessCtrl.getNextUserID()
   query.exec((err, data) => {
