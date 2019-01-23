@@ -24,8 +24,4 @@
     </audio>
 </div> KRM: For debugging usage only. -->
   <p *ngIf="countingDown" class="text-center display-1">{{timeLeft}}</p>
-  <div class="text-center" *ngIf="dataService.checkCookie('ran')">
-    <p class="pt4"> Thank you for completing this assessment.</p>
-<!-- <button type='button' class='btn btn-primary btn-lg' (click)="dataService.nextAssessment()">Next assessment</button> KRM: Might not need this button after other additional button. -->
-  </div>
 </div>

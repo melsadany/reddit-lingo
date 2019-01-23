@@ -21,6 +21,9 @@ export class AssessmentDataService {
   allAssessmentsCompleted: Boolean = false;
   router: Router;
   showWelcomePage = true;
+  textOnButton = 'START';
+  welcomeText = 'Welcome to the assessments';
+  firstTimeStarting = true;
 
   constructor(
     private Http: HttpClient,
@@ -56,8 +59,8 @@ export class AssessmentDataService {
     return this.cookieService.getAll();
   }
 
-  public isAssessmentCompleted(assess_name_check: string): Boolean {
-    return this.checkCookie(assess_name_check);
+  public isAssessmentCompleted(assessNameCheck: string): Boolean {
+    return this.checkCookie(assessNameCheck);
   }
 
   public populateCompletionCookies(assessmentsData: AssessmentData): void {
@@ -134,13 +137,25 @@ export class AssessmentDataService {
     if (this.showWelcomePage) {
       this.showWelcomePage = false;
     }
+    if (this.firstTimeStarting) {
+      this.firstTimeStarting = false;
+      this.textOnButton = 'Continue Assessments';
+      this.welcomeText = 'You have partially completed the set of assessments';
+    }
     this.setCurrentAssessment(this.determineNextAssessment());
     console.log('Getting assessment: ' + this.getCurrentAssessment()); // KRM: For debugging
     this.goTo(this.getCurrentAssessment());
   }
 
   public goTo(assessmentName: string): void {
-    console.log('navigating to: ' + assessmentName); // KRM: For bebugging
     this.router.navigate(['/assessments/', assessmentName]);
+  }
+
+  public getCurrentUrl(): string {
+    return this.router.url;
+  }
+
+  public getCurrentAssessmentUrl(): string {
+    return this.router.url.slice(13); // KRM: Slice off the /assessments/ portion of the url to just get the assessment name
   }
 }

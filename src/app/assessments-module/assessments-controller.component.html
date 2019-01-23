@@ -1,17 +1,22 @@
 <ng-container *ngIf="!dataService.inAssessment && dataService.showWelcomePage && !dataService.allAssessmentsCompleted then welcome; else inAssessment"></ng-container>
 <ng-template #welcome>
   <div class='py-4 text-center'>
-    Welcome to the assessments.
-  </div>
-  <div class='pb-5 text-center'>
-    <button type='button' class='btn btn-primary btn-lg' (click)="dataService.nextAssessment()">START</button>
+    {{dataService.welcomeText}}
   </div>
 </ng-template>
 <ng-template #inAssessment>
   <router-outlet></router-outlet>
 </ng-template>
 <div class='py-4 text-center'>
-  <div *ngIf="!dataService.inAssessment && !dataService.showWelcomePage && !dataService.allAssessmentsCompleted">
-    <button type='button' class='btn btn-primary btn-lg' (click)="dataService.nextAssessment()">Continue Assessments</button>
+  <div *ngIf="
+     dataService.getCurrentUrl() == '/assessments'
+  || (dataService.isAssessmentCompleted(dataService.getCurrentAssessmentUrl()))
+  || (!dataService.inAssessment
+  && !dataService.showWelcomePage
+  && !dataService.allAssessmentsCompleted)">
+    <div class="text-center" *ngIf="(dataService.isAssessmentCompleted(dataService.getCurrentAssessmentUrl()))">
+      <p class="pt4"> Thank you for completing this assessment.</p>
+    </div>
+    <button type='button' class='btn btn-primary btn-lg' (click)="dataService.nextAssessment()">{{dataService.textOnButton}}</button>
   </div>
 </div>

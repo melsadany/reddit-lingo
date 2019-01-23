@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { AssessmentDataService } from '../services/assessment-data.service';
 import { AppComponent } from '../app.component';
 import { DialogService } from '../services/dialog.service';
@@ -23,8 +23,16 @@ export class AssessmentsControllerComponent implements OnInit {
       this.dataService.goTo('done');
     }
   }
-
   canDeactivate(): boolean {
     return this.dialogService.canRedirect();
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  unloadNotification($event: any): string {
+    const notifyMessage =
+      'Please complete your current assessment before refreshing the page.';
+    $event.returnValue = notifyMessage;
+    $event.preventDefault();
+    return notifyMessage;
   }
 }
