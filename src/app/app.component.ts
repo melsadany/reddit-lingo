@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, NavigationStart } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { MatIconRegistry } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -26,9 +26,13 @@ export class AppComponent implements OnInit, OnDestroy {
     private router: Router,
     private domSanitizer: DomSanitizer,
     private matIconRegistry: MatIconRegistry,
-    private dataService: AssessmentDataService
+    private dataService: AssessmentDataService,
+    private activatedRoute: ActivatedRoute,
+    private navigationStart: NavigationStart
   ) {
     // this.registerSvgIcons();
+    this.router = router;
+    this.router.events.subscribe(e => console.log(e));
   }
 
   public ngOnInit(): void {
@@ -58,7 +62,6 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   setCookieAndGetData(): void {
-    console.log('setting cookie');
     this.dataService.getNextUserID().subscribe((value: UserIdObject) => {
       this.nextUserID = value.nextID.toString();
       this.dataService.setCookie('user_id', this.nextUserID, 200);

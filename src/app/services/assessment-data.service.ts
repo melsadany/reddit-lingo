@@ -17,7 +17,12 @@ export class AssessmentDataService {
   http: HttpClient;
   inAssessment: Boolean = false;
   currentAssessment = '';
-  assessmentsList: string[];
+  assessmentsList: string[] = [
+    'prescreenerquestions',
+    'ran',
+    'listeningcomprehension'
+  ];
+  // KRM: Add to this list to add more assessments as they are built
   allAssessmentsCompleted: Boolean = false;
   router: Router;
   showWelcomePage = true;
@@ -28,14 +33,9 @@ export class AssessmentDataService {
   constructor(
     private Http: HttpClient,
     private cookieService: CookieService,
-    router: Router
+    router: Router,
   ) {
     this.http = Http;
-    this.assessmentsList = [
-      'prescreenerquestions',
-      'ran',
-      'listeningcomprehension'
-    ]; // KRM: Add to this list to add more assessments as they are built
     this.router = router;
   }
 
@@ -128,9 +128,7 @@ export class AssessmentDataService {
     }
     this.allAssessmentsCompleted = true;
     return 'done';
-    // KRM: TODO: The purpose of this return value is not very clear right now,
-    //            will be used to direct to a 'done' assessment page when all
-    //            the way through, or when the one assessment is done.
+    // KRM: done is the name of the route for the completion component
   }
 
   public nextAssessment(): void {
@@ -157,5 +155,27 @@ export class AssessmentDataService {
 
   public getCurrentAssessmentUrl(): string {
     return this.router.url.slice(13); // KRM: Slice off the /assessments/ portion of the url to just get the assessment name
+  }
+
+  public showButton(): Boolean {
+    return (
+      this.getCurrentUrl() === '/assessments' ||
+      this.isAssessmentCompleted(this.getCurrentAssessmentUrl()) ||
+      (!this.inAssessment &&
+        !this.showWelcomePage &&
+        !this.allAssessmentsCompleted)
+    );
+  }
+
+  public showThankYou(): Boolean {
+    return this.isAssessmentCompleted(this.getCurrentAssessmentUrl());
+  }
+
+  public showWelcome(): Boolean {
+    return (
+      this.showWelcomePage &&
+      !this.inAssessment &&
+      !this.allAssessmentsCompleted
+    );
   }
 }
