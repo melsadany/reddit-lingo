@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute, NavigationStart } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { MatIconRegistry } from '@angular/material';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -28,11 +28,10 @@ export class AppComponent implements OnInit, OnDestroy {
     private matIconRegistry: MatIconRegistry,
     private dataService: AssessmentDataService,
     private activatedRoute: ActivatedRoute,
-    private navigationStart: NavigationStart
   ) {
     // this.registerSvgIcons();
     this.router = router;
-    this.router.events.subscribe(e => console.log(e));
+    // this.router.events.subscribe(e => console.log(e));
   }
 
   public ngOnInit(): void {

@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { RouterModule, NavigationStart } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
 
@@ -40,8 +40,7 @@ import { DialogService } from './services/dialog.service';
   providers: [
     CookieService,
     AssessmentDataService,
-    DialogService,
-    NavigationStart
+    DialogService
 
   ],
   entryComponents: [],

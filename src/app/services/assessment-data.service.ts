@@ -20,6 +20,7 @@ export class AssessmentDataService {
   assessmentsList: string[] = [
     'prescreenerquestions',
     'ran',
+    'pictureprompt',
     'listeningcomprehension'
   ];
   // KRM: Add to this list to add more assessments as they are built

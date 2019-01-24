@@ -2,10 +2,11 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AssessmentsControllerComponent } from './assessments-controller.component';
 import { RanComponent } from './assessments/ran/ran.component';
-import { ListeningcomprehensionComponent } from './assessments/listening_comprehension/listeningcomprehension.component';
+import { ListeningcomprehensionComponent } from './assessments/listeningcomprehension/listeningcomprehension.component';
 import { AssessmentsDoneComponent } from './assessments-done/assessments-done.component';
 import { CanDeactivateGuard } from '../guards/can-deactivate.guard';
 import { PrescreenerquestionsComponent } from './assessments/prescreenerquestions/prescreenerquestions.component';
+import { PicturepromptComponent } from './assessments/pictureprompt/pictureprompt.component';
 
 const routes: Routes = [
   {
@@ -19,18 +20,23 @@ const routes: Routes = [
         canDeactivate: [CanDeactivateGuard]
       },
       {
+        path: 'pictureprompt',
+        component: PicturepromptComponent,
+        canDeactivate: [CanDeactivateGuard]
+      },
+      {
         path: 'listeningcomprehension',
         component: ListeningcomprehensionComponent,
         canDeactivate: [CanDeactivateGuard]
       },
       {
-        path: 'done',
-        component: AssessmentsDoneComponent,
+        path: 'prescreenerquestions',
+        component: PrescreenerquestionsComponent,
         canDeactivate: [CanDeactivateGuard]
       },
       {
-        path: 'prescreenerquestions',
-        component: PrescreenerquestionsComponent,
+        path: 'done',
+        component: AssessmentsDoneComponent,
         canDeactivate: [CanDeactivateGuard]
       }
     ]

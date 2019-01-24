@@ -12,7 +12,7 @@ import { AuthHeaderInterceptor } from '../interceptors/header.interceptor';
 import { CatchErrorInterceptor } from '../interceptors/http-error.interceptor';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AssessmentsDoneComponent } from './assessments-done/assessments-done.component';
-import { ListeningcomprehensionComponent } from './assessments/listening_comprehension/listeningcomprehension.component';
+import { ListeningcomprehensionComponent } from './assessments/listeningcomprehension/listeningcomprehension.component';
 import { PrescreenerquestionsComponent } from './assessments/prescreenerquestions/prescreenerquestions.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
@@ -24,6 +24,7 @@ import {
   MatCheckboxModule
 } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { PicturepromptComponent } from './assessments/pictureprompt/pictureprompt.component';
 
 @NgModule({
   imports: [
@@ -45,7 +46,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     RanComponent,
     AssessmentsDoneComponent,
     ListeningcomprehensionComponent,
-    PrescreenerquestionsComponent
+    PrescreenerquestionsComponent,
+    PicturepromptComponent
   ],
   providers: [
     AudioRecordingService,
