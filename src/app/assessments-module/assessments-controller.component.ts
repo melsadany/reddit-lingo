@@ -25,17 +25,9 @@ export class AssessmentsControllerComponent
       this.dataService.goTo('done');
     }
   }
+
   @HostListener('window:beforeunload', ['$event'])
   canDeactivate(): boolean {
     return this.dialogService.canRedirect();
   }
-
-  // @HostListener('window:beforeunload', ['$event'])
-  // unloadNotification($event: any): boolean {
-  //   // const notifyMessage =
-  //   //   'Please complete your current assessment before refreshing the page.';
-  //   // $event.returnValue = notifyMessage;
-  //   $event.preventDefault();
-  //   return false;
-  // }
 }

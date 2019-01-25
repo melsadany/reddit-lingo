@@ -17,27 +17,22 @@ const routes: Routes = [
       {
         path: 'ran',
         component: RanComponent,
-        canDeactivate: [CanDeactivateGuard]
       },
       {
         path: 'pictureprompt',
         component: PicturepromptComponent,
-        canDeactivate: [CanDeactivateGuard]
       },
       {
         path: 'listeningcomprehension',
         component: ListeningcomprehensionComponent,
-        canDeactivate: [CanDeactivateGuard]
       },
       {
         path: 'prescreenerquestions',
         component: PrescreenerquestionsComponent,
-        canDeactivate: [CanDeactivateGuard]
       },
       {
         path: 'done',
         component: AssessmentsDoneComponent,
-        canDeactivate: [CanDeactivateGuard]
       }
     ]
   }
@@ -46,6 +41,6 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
-  providers: [CanDeactivateGuard]
+  providers: []
 })
 export class AssessmentsControllerRoutingModule {}

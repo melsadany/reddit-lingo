@@ -1,24 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import {
   AudioRecordingService,
   RecordedAudioOutput
 } from '../../../services/audio-recording.service';
 import { DomSanitizer } from '@angular/platform-browser';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-pictureprompt',
   templateUrl: './pictureprompt.component.html',
   styleUrls: ['./pictureprompt.component.scss']
 })
-export class PicturepromptComponent implements OnInit {
+export class PicturepromptComponent implements OnInit, OnDestroy {
   imagesLocation = 'assets/img/pictureprompt/';
   imageNames = ['despair.jpg', 'he_texted.jpg', 'joke.jpg', 'antagonism.jpg'];
-  promptNumber = 1;
+  promptNumber = 0;
   imagePaths: string[] = [];
   showStartButton = true;
   countingDown = false;
-  intervalCountdown: NodeJS.Timeout;
+  intervalCountup: NodeJS.Timer;
+  intervalCountdown: NodeJS.Timer;
   timeLeft = 3;
   doneCountingDown = false;
   showPromptImage = false;
@@ -26,31 +28,47 @@ export class PicturepromptComponent implements OnInit {
   splashPage = true;
   currentImagePrompt = '';
   isRecording = false;
-  intervalCountup: NodeJS.Timer;
   doneRecording = false;
   recordeData = [];
   recordedTime;
+  recordingNumber = 1;
+  failSubscription: Subscription;
+  recordingTimeSubscription: Subscription;
+  recordedOutputSubscription: Subscription;
 
   constructor(
     private dataService: AssessmentDataService,
     private audioRecordingService: AudioRecordingService,
     private sanitizer: DomSanitizer
   ) {
-    this.audioRecordingService.recordingFailed().subscribe(() => {
-      this.isRecording = false;
-    });
+    this.failSubscription = this.audioRecordingService
+      .recordingFailed()
+      .subscribe(() => {
+        this.isRecording = false;
+      });
 
-    this.audioRecordingService.getRecordedTime().subscribe(time => {
-      this.recordedTime = time;
-    });
+    this.recordingTimeSubscription = this.audioRecordingService
+      .getRecordedTime()
+      .subscribe(time => {
+        this.recordedTime = time;
+      });
 
-    this.audioRecordingService.getRecordedBlob().subscribe(data => {
-      this.handleRecordedOutput(data);
-    });
+    this.recordedOutputSubscription = this.audioRecordingService
+      .getRecordedBlob()
+      .subscribe(data => {
+        this.handleRecordedOutput(data);
+      });
   }
 
   ngOnInit(): void {
     this.calculateImagePaths();
+  }
+
+  ngOnDestroy(): void {
+    this.abortRecording();
+    this.failSubscription.unsubscribe();
+    this.recordingTimeSubscription.unsubscribe();
+    this.recordedOutputSubscription.unsubscribe();
   }
 
   calculateImagePaths(): void {
@@ -69,7 +87,9 @@ export class PicturepromptComponent implements OnInit {
     console.log(this.currentImagePrompt);
     this.startedAssessment = true;
     this.countingDown = true;
-    this.splashPage = false;
+    if (this.splashPage) {
+      this.splashPage = false;
+    }
     this.intervalCountdown = setInterval(() => {
       if (this.timeLeft > 0) {
         this.timeLeft--;
@@ -94,6 +114,14 @@ export class PicturepromptComponent implements OnInit {
     }
   }
 
+  abortRecording(): void {
+    if (this.isRecording) {
+      this.isRecording = false;
+      this.audioRecordingService.abortRecording();
+      this.doneRecording = true;
+    }
+  }
+
   stopRecording(): void {
     if (this.isRecording) {
       this.audioRecordingService.stopRecording();
@@ -101,11 +129,12 @@ export class PicturepromptComponent implements OnInit {
       this.doneRecording = true;
       this.showPromptImage = false;
       clearTimeout(this.intervalCountup);
+      this.advanceToNextPrompt();
     }
   }
 
   advanceToNextPrompt(): void {
-    if (this.promptNumber > this.imageNames.length) {
+    if (this.promptNumber >= this.imageNames.length) {
       this.finishAssessment();
     } else {
       this.promptNumber++;
@@ -122,11 +151,15 @@ export class PicturepromptComponent implements OnInit {
     const reader: FileReader = new FileReader();
     reader.readAsDataURL(currentBlob);
     reader.onloadend = (): any => {
+      console.log(
+        'Handling recorded output for prompt number: ' + this.recordingNumber
+      );
       const currentRecordedBlobAsBase64 = reader.result.slice(22);
       this.recordeData.push({
-        prompt_number: this.promptNumber,
+        prompt_number: this.recordingNumber, // KRM: this code doesn't get executed until after the promptNumber got incremented already
         recorded_data: currentRecordedBlobAsBase64
       });
+      this.recordingNumber++;
     };
   }
 

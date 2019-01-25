@@ -34,7 +34,7 @@ export class AssessmentDataService {
   constructor(
     private Http: HttpClient,
     private cookieService: CookieService,
-    router: Router,
+    router: Router
   ) {
     this.http = Http;
     this.router = router;
@@ -84,6 +84,7 @@ export class AssessmentDataService {
     assessmentsData: AssessmentDataStructure,
     googleData: GoogleSpeechToTextDataStructure
   ): Observable<string> {
+    console.log('Posting');
     return this.http.post(
       '/api/assessmentsAPI/SaveAssessments',
       {
@@ -123,7 +124,6 @@ export class AssessmentDataService {
     for (const assessmentName of this.assessmentsList) {
       if (!this.isAssessmentCompleted(assessmentName)) {
         console.log('not completed: ' + assessmentName); // KRM: Debugging
-        this.setIsInAssessment(true);
         return assessmentName;
       }
     }
@@ -147,6 +147,7 @@ export class AssessmentDataService {
   }
 
   public goTo(assessmentName: string): void {
+    this.setIsInAssessment(true);
     this.router.navigate(['/assessments/', assessmentName]);
   }
 

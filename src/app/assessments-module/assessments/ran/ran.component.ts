@@ -5,6 +5,7 @@ import {
 } from '../../../services/audio-recording.service';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-ran',
@@ -27,24 +28,32 @@ export class RanComponent implements OnInit, OnDestroy {
   timeLeft = 3;
   startedAssessment = false;
   assessmentAlreadyCompleted = false;
-  ranAssessment;
+  failSubscription: Subscription;
+  recordingTimeSubscription: Subscription;
+  recordedOutputSubscription: Subscription;
 
   constructor(
     private audioRecordingService: AudioRecordingService,
     private sanitizer: DomSanitizer,
     private dataService: AssessmentDataService
   ) {
-    this.audioRecordingService.recordingFailed().subscribe(() => {
-      this.isRecording = false;
-    });
+    this.failSubscription = this.audioRecordingService
+      .recordingFailed()
+      .subscribe(() => {
+        this.isRecording = false;
+      });
 
-    this.audioRecordingService.getRecordedTime().subscribe(time => {
-      this.recordedTime = time;
-    });
+    this.recordingTimeSubscription = this.audioRecordingService
+      .getRecordedTime()
+      .subscribe(time => {
+        this.recordedTime = time;
+      });
 
-    this.audioRecordingService.getRecordedBlob().subscribe(data => {
-      this.handleRecordedOutput(data);
-    });
+    this.recordedOutputSubscription = this.audioRecordingService
+      .getRecordedBlob()
+      .subscribe(data => {
+        this.handleRecordedOutput(data);
+      });
   }
 
   startRecording(): void {
@@ -81,6 +90,9 @@ export class RanComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.abortRecording();
+    this.failSubscription.unsubscribe();
+    this.recordingTimeSubscription.unsubscribe();
+    this.recordedOutputSubscription.unsubscribe();
   }
 
   ngOnInit(): void {
