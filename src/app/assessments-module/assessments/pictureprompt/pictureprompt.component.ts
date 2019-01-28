@@ -129,7 +129,6 @@ export class PicturepromptComponent implements OnInit, OnDestroy {
       this.doneRecording = true;
       this.showPromptImage = false;
       clearTimeout(this.intervalCountup);
-      this.advanceToNextPrompt();
     }
   }
 
@@ -158,8 +157,11 @@ export class PicturepromptComponent implements OnInit, OnDestroy {
       this.recordeData.push({
         prompt_number: this.recordingNumber, // KRM: this code doesn't get executed until after the promptNumber got incremented already
         recorded_data: currentRecordedBlobAsBase64
-      });
+      }); // KRM: Adding recording to the array is done in sync. Currently wait for the recording to load.
+      // Might be btter to do this async so we don't have the chance of blocking for a short
+      // period before moving to the next prompt.
       this.recordingNumber++;
+      this.advanceToNextPrompt();
     };
   }
 

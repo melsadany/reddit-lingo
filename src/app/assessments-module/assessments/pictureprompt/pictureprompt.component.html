@@ -10,7 +10,7 @@
     </div>
   </div>
   <div class="imageParent" *ngIf="showPromptImage">
-<img class="rounded img-fluid" src="{{currentImagePrompt}}">
+    <img class="rounded img-fluid" src="{{currentImagePrompt}}">
   </div>
   <div class="text-center">
     <button type="button" class="stop-button btn btn-outline-secondary" *ngIf="isRecording && !blobUrl" (click)="stopRecording()">DONE</button>
