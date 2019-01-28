@@ -23,3 +23,4 @@ with open(aboslute_path + '/response_main_test.json') as file:
 
 
 ## base64 source_base64_text_file -d > dest_audio_file
+## related bash command

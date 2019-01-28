@@ -63,6 +63,7 @@
     "moment": "^2.23.0",
     "mongoose": "^5.4.2",
     "morgan": "^1.9.1",
+    "ng-circle-progress": "^1.4.0",
     "ng2-dragula": "^2.1.1",
     "ngx-cookie-service": "^2.1.0",
     "nodemon": "^1.18.9",

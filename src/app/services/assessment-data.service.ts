@@ -19,6 +19,7 @@ export class AssessmentDataService {
   currentAssessment = '';
   assessmentsList: string[] = [
     'prescreenerquestions',
+    'timeduration',
     'ran',
     'pictureprompt',
     'listeningcomprehension'

@@ -7,6 +7,7 @@ import { AssessmentsDoneComponent } from './assessments-done/assessments-done.co
 import { CanDeactivateGuard } from '../guards/can-deactivate.guard';
 import { PrescreenerquestionsComponent } from './assessments/prescreenerquestions/prescreenerquestions.component';
 import { PicturepromptComponent } from './assessments/pictureprompt/pictureprompt.component';
+import { TimedurationComponent } from './assessments/timeduration/timeduration.component';
 
 const routes: Routes = [
   {
@@ -15,24 +16,28 @@ const routes: Routes = [
     canDeactivate: [CanDeactivateGuard],
     children: [
       {
+        path: 'timeduration',
+        component: TimedurationComponent
+      },
+      {
         path: 'ran',
-        component: RanComponent,
+        component: RanComponent
       },
       {
         path: 'pictureprompt',
-        component: PicturepromptComponent,
+        component: PicturepromptComponent
       },
       {
         path: 'listeningcomprehension',
-        component: ListeningcomprehensionComponent,
+        component: ListeningcomprehensionComponent
       },
       {
         path: 'prescreenerquestions',
-        component: PrescreenerquestionsComponent,
+        component: PrescreenerquestionsComponent
       },
       {
         path: 'done',
-        component: AssessmentsDoneComponent,
+        component: AssessmentsDoneComponent
       }
     ]
   }

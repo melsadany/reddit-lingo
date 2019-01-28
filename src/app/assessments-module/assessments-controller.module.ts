@@ -25,6 +25,8 @@ import {
 } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PicturepromptComponent } from './assessments/pictureprompt/pictureprompt.component';
+import { TimedurationComponent } from './assessments/timeduration/timeduration.component';
+import { NgCircleProgressModule } from 'ng-circle-progress';
 
 @NgModule({
   imports: [
@@ -39,7 +41,8 @@ import { PicturepromptComponent } from './assessments/pictureprompt/picturepromp
     MatSelectModule,
     MatCheckboxModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgCircleProgressModule.forRoot()
   ],
   declarations: [
     AssessmentsControllerComponent,
@@ -47,7 +50,8 @@ import { PicturepromptComponent } from './assessments/pictureprompt/picturepromp
     AssessmentsDoneComponent,
     ListeningcomprehensionComponent,
     PrescreenerquestionsComponent,
-    PicturepromptComponent
+    PicturepromptComponent,
+    TimedurationComponent
   ],
   providers: [
     AudioRecordingService,
