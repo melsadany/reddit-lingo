@@ -85,7 +85,6 @@ export class ListeningcomprehensionComponent implements OnInit {
       imageSelected: image_name
     });
     this.currentQuestionSetNumber++;
-    console.log(this.imageSelections);
     this.showImage = false;
     if (this.currentQuestionSetNumber > 12) {
       this.finishAssessment();

@@ -13,9 +13,10 @@
     </div>
   </div>
   <div class="imageParent" *ngIf="showAnimation">
-<circle-progress (mousedown)="startTimer()" (mouseup)="pauseTimer()" [percent]="currentPercentage" [radius]="100"
-      [outerStrokeWidth]="16" [innerStrokeWidth]="8" [outerStrokeColor]="'#78C000'" [innerStrokeColor]="'#C7E596'"
-      [animation]="true" [animationDuration]="10000" [maxPercent]="100">
+    <circle-progress (mousedown)="startTimer()" (mouseup)="pauseTimer()" [responsive]="true" [percent]="displayPercentage"
+      [radius]="100" [outerStrokeWidth]="16" [innerStrokeWidth]="8" [outerStrokeColor]="outerStrokeColor" [innerStrokeColor]="innerStrokeColor"
+      [animation]="canAnimate" [animationDuration]="animationDuration" [maxPercent]="100" [renderOnClick]="false"
+      [showTitle]='false' [subtitle]="displaySubtitle" [showUnits]='false'>
     </circle-progress>
   </div>
   <div class="text-center">

@@ -150,9 +150,6 @@ export class PicturepromptComponent implements OnInit, OnDestroy {
     const reader: FileReader = new FileReader();
     reader.readAsDataURL(currentBlob);
     reader.onloadend = (): any => {
-      console.log(
-        'Handling recorded output for prompt number: ' + this.recordingNumber
-      );
       const currentRecordedBlobAsBase64 = reader.result.slice(22);
       this.recordeData.push({
         prompt_number: this.recordingNumber, // KRM: this code doesn't get executed until after the promptNumber got incremented already

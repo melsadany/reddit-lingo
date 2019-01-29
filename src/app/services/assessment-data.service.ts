@@ -85,7 +85,6 @@ export class AssessmentDataService {
     assessmentsData: AssessmentDataStructure,
     googleData: GoogleSpeechToTextDataStructure
   ): Observable<string> {
-    console.log('Posting');
     return this.http.post(
       '/api/assessmentsAPI/SaveAssessments',
       {

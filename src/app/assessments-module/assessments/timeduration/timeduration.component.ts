@@ -17,13 +17,18 @@ export class TimedurationComponent implements OnInit {
   timerInterval: NodeJS.Timer;
   animationInterval: NodeJS.Timer;
   holdingDown = false;
-  currentTimeHeld = 0;
+  currentTimeHeld;
   currentPrompt = 0;
   canPress = false;
   durations = [5, 1.5, 0.5, 11, 5, 1, 7, 0.75];
-  currentPercentage = 0;
-  i = 0;
-
+  displayPercentage = 100;
+  animationDuration;
+  heldData = [];
+  displaySubtitle = 'Wait';
+  canAnimate = true;
+  outerStrokeColor = '#78C000';
+  innerStrokeColor = '#C7E596';
+  startTime;
   constructor(private dataService: AssessmentDataService) {}
 
   ngOnInit(): void {}
@@ -47,48 +52,70 @@ export class TimedurationComponent implements OnInit {
   }
 
   startTimer(): void {
-    if (this.canPress) {
-      this.currentTimeHeld = 0;
-      if (!this.holdingDown) {
-        this.holdingDown = true;
-        this.timerInterval = setInterval(() => {
-          if (!this.holdingDown) {
-            clearInterval(this.timerInterval);
-          } else {
-            this.currentTimeHeld++;
-          }
-        }, 1); // KRM: Counting time button held in miliseconds
-      }
+    if (this.canPress && !this.holdingDown) {
+      this.startTime = Date.now();
+      this.holdingDown = true;
+      this.outerStrokeColor = '#4286f4';
+      this.innerStrokeColor = '#4286f4';
+      this.displaySubtitle = 'Holding';
+      this.timerInterval = setInterval(() => {
+        if (!this.holdingDown) {
+          clearInterval(this.timerInterval);
+        }
+      }, 1); // KRM: Counting time button held in miliseconds
     }
   }
 
   pauseTimer(): void {
     if (this.holdingDown) {
+      this.canAnimate = true;
       this.holdingDown = false;
+      this.outerStrokeColor = '#78C000';
+      this.innerStrokeColor = '#C7E596';
+      this.displaySubtitle = 'Wait';
       this.canPress = false;
       this.showAnimation = false;
-      this.startDisplayedCountdownTimer();
+      this.currentTimeHeld = (Date.now() - this.startTime) / 1000; // KRM: Store in seconds with 3 decimal points
+      this.currentPrompt++;
+      this.heldData.push({
+        prompt_number: this.currentPrompt, // KRM: Notice that we will nicely post
+        time_held: this.currentTimeHeld // the number 1 here in currentPrompt since its initial value is 0
+      }); // and we increment it first right before the push.
+      this.currentTimeHeld = 0;
+      if (this.currentPrompt < 8) {
+        this.startDisplayedCountdownTimer();
+      } else {
+        this.finishAssessment();
+      }
     }
   }
 
   displayAnimation(animationLength: number): void {
-    // console.log(animationLength);
-    // let timeInMs = animationLength * 10 ;
-    // const addPerCheck = 100 / timeInMs;
-    // console.log(addPerCheck);
-    // this.animationInterval = setInterval(() => {
-    //   if (timeInMs <= 0) {
-    //     this.canPress = true;
-    //     console.log('can press');
-    //     clearInterval(this.animationInterval);
-    //     // KRM: DO other stuff
-    //   } else {
-    //     console.log(timeInMs);
-    //     this.currentPercentage ++;
-    //     timeInMs--;
-    //   }
-    // }, 100);
-    this.currentPercentage = 100;
+    this.animationDuration = this.durations[this.currentPrompt] * 1000; // KRM: Duration from s -> ms
+    setTimeout(() => {
+      this.canPress = true;
+      this.displaySubtitle = 'Press';
+      this.canAnimate = false;
+    }, this.animationDuration);
   }
 
+  finishAssessment(): void {
+    this.dataService
+      .postAssessmentDataToMongo(
+        {
+          assess_name: 'timeduration',
+          data: { held_data: this.heldData },
+          completed: true
+        },
+        {
+          assess_name: 'timeduration',
+          data: {
+            text: 'None'
+          }
+        }
+      )
+      .subscribe();
+    this.dataService.setIsInAssessment(false);
+    this.dataService.setCookie('timeduration', 'completed', 200);
+  }
 }
