@@ -1,45 +1,20 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import {
   AudioRecordingService,
   RecordedAudioOutput
 } from '../../../services/audio-recording.service';
-import { DomSanitizer } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-pictureprompt',
-  templateUrl: './pictureprompt.component.html',
-  styleUrls: ['./pictureprompt.component.scss']
+  selector: 'app-syncvoice',
+  templateUrl: './syncvoice.component.html',
+  styleUrls: ['./syncvoice.component.scss']
 })
-export class PicturepromptComponent implements OnInit, OnDestroy {
-  imagesLocation = 'assets/img/pictureprompt/';
-  imageNames = ['despair.jpg', 'he_texted.jpg', 'joke.jpg', 'antagonism.jpg'];
-  promptNumber = 0;
-  imagePaths: string[] = [];
-  showStartButton = true;
-  countingDown = false;
-  intervalCountup: NodeJS.Timer;
-  intervalCountdown: NodeJS.Timer;
-  timeLeft = 3;
-  doneCountingDown = false;
-  showPromptImage = false;
-  startedAssessment = false;
-  splashPage = true;
-  currentImagePrompt = '';
-  isRecording = false;
-  doneRecording = false;
-  recordedData = [];
-  recordedTime;
-  recordingNumber = 1;
-  failSubscription: Subscription;
-  recordingTimeSubscription: Subscription;
-  recordedOutputSubscription: Subscription;
-
+export class SyncvoiceComponent implements OnInit {
   constructor(
     private dataService: AssessmentDataService,
-    private audioRecordingService: AudioRecordingService,
-    private sanitizer: DomSanitizer
+    private audioRecordingService: AudioRecordingService
   ) {
     this.failSubscription = this.audioRecordingService
       .recordingFailed()
@@ -60,31 +35,44 @@ export class PicturepromptComponent implements OnInit, OnDestroy {
       });
   }
 
+  recordedTime;
+  promptNumber = 0;
+  lalaLocations = 'assets/audio/syncvoice/';
+  textOnButton = 'Start Assessment';
+  audioNames = [
+    '1_0_half.mp3',
+    '1_1_fivequarters.mp3',
+    '1_2_one.mp3',
+    '1_3_threequarters.mp3'
+  ];
+  startedAssessment = false;
+  countingDown = false;
+  splashPage = true;
+  intervalCountdown: NodeJS.Timer;
+  intervalCountup: NodeJS.Timer;
+  timeLeft = 3;
+  doneCountingDown = false;
+  isRecording = false;
+  recordingNumber = 1;
+  failSubscription: Subscription;
+  recordingTimeSubscription: Subscription;
+  recordedOutputSubscription: Subscription;
+  recordedData = [];
+  doneRecording = false;
+  showStartButton = true;
+  showRecordingIcon = false;
+
   ngOnInit(): void {
-    this.calculateImagePaths();
+    this.calculateAudioFilePaths();
   }
 
-  ngOnDestroy(): void {
-    this.abortRecording();
-    this.failSubscription.unsubscribe();
-    this.recordingTimeSubscription.unsubscribe();
-    this.recordedOutputSubscription.unsubscribe();
-  }
-
-  calculateImagePaths(): void {
-    for (let i = 0; i < this.imageNames.length; i++) {
-      this.imagePaths.push(
-        `${this.imagesLocation}${i + 1}/${this.imageNames[i]}`
-      );
+  calculateAudioFilePaths(): void {
+    for (let i = 0; i < this.audioNames.length; i++) {
+      this.audioNames[i] = this.lalaLocations + this.audioNames[i];
     }
   }
 
-  getNextImagePath(): void {
-    this.currentImagePrompt = this.imagePaths[this.promptNumber - 1];
-  }
-
   startDisplayedCountdownTimer(): void {
-    console.log(this.currentImagePrompt);
     this.startedAssessment = true;
     this.countingDown = true;
     if (this.splashPage) {
@@ -97,7 +85,6 @@ export class PicturepromptComponent implements OnInit, OnDestroy {
         this.timeLeft = 3;
         this.countingDown = false;
         this.doneCountingDown = true;
-        this.showPromptImage = true;
         this.startRecording();
         clearInterval(this.intervalCountdown);
       }
@@ -107,10 +94,11 @@ export class PicturepromptComponent implements OnInit, OnDestroy {
   startRecording(): void {
     if (!this.isRecording) {
       this.isRecording = true;
+      this.showRecordingIcon = true;
       this.audioRecordingService.startRecording();
       this.intervalCountup = setTimeout(() => {
         this.stopRecording();
-      }, 30000);
+      }, 10000);
     }
   }
 
@@ -127,56 +115,65 @@ export class PicturepromptComponent implements OnInit, OnDestroy {
       this.audioRecordingService.stopRecording();
       this.isRecording = false;
       this.doneRecording = true;
-      this.showPromptImage = false;
+      this.showRecordingIcon = false;
       clearTimeout(this.intervalCountup);
     }
   }
 
-  advanceToNextPrompt(): void {
-    if (this.promptNumber >= this.imageNames.length) {
-      this.finishAssessment();
-    } else {
-      this.promptNumber++;
-      this.getNextImagePath();
-      this.startDisplayedCountdownTimer();
-    }
-  }
-
   handleRecordedOutput(data: RecordedAudioOutput): void {
-    // const url = this.sanitizer.bypassSecurityTrustUrl(
-    //   URL.createObjectURL(data.blob)
-    // );
     const currentBlob = data.blob;
     const reader: FileReader = new FileReader();
     reader.readAsDataURL(currentBlob);
     reader.onloadend = (): any => {
       const currentRecordedBlobAsBase64 = reader.result.slice(22);
       this.recordedData.push({
-        prompt_number: this.recordingNumber, // KRM: this code doesn't get executed until after the promptNumber got incremented already
+        prompt_number: this.recordingNumber,
         recorded_data: currentRecordedBlobAsBase64
       }); // KRM: Adding recording to the array is done in sync. Currently wait for the recording to load.
       // Might be btter to do this async so we don't have the chance of blocking for a short
       // period before moving to the next prompt.
       this.recordingNumber++;
-      this.advanceToNextPrompt();
+      this.promptNumber++;
+      this.showStartButton = true;
+      console.log(this.recordedData);
     };
+  }
+
+  nextLalaPrompt(): void {
+    console.log(this.promptNumber);
+    console.log(this.audioNames[this.promptNumber]);
+    if (this.promptNumber < 0) {
+      this.textOnButton = 'Continue to next set';
+    }
+    if (this.promptNumber < this.audioNames.length) {
+      this.splashPage = true;
+      const audio = new Audio();
+      audio.src = this.audioNames[this.promptNumber];
+      audio.addEventListener('ended', () =>
+        this.startDisplayedCountdownTimer()
+      );
+      audio.play();
+      this.showStartButton = false;
+    } else {
+      this.finishAssessment();
+    }
   }
 
   finishAssessment(): void {
     this.dataService
       .postAssessmentDataToMongo(
         {
-          assess_name: 'pictureprompt',
+          assess_name: 'syncvoice',
           data: { recorded_data: this.recordedData },
           completed: true
         },
         {
-          assess_name: 'pictureprompt',
-          data: { text: 'Fake speech to text' }
+          assess_name: 'syncvoice',
+          data: { text: 'None' }
         }
       )
       .subscribe();
-    this.dataService.setCookie('pictureprompt', 'completed', 200);
+    this.dataService.setCookie('syncvoice', 'completed', 200);
     this.dataService.setIsInAssessment(false);
   }
 }

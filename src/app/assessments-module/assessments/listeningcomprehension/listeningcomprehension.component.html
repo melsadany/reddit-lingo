@@ -1,5 +1,5 @@
 <div class="mx-lg-5">
-  <div *ngIf="splashPage && !assessmentAlreadyCompleted">
+  <div *ngIf="splashPage && !dataService.isAssessmentCompleted('listeningcomprehension')">
     <p class="py-4">
       In this task, you will listen to an audio clip. When the clip ends,
       pick the image that matches what you heard. We'll

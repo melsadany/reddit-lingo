@@ -8,6 +8,7 @@ import { CanDeactivateGuard } from '../guards/can-deactivate.guard';
 import { PrescreenerquestionsComponent } from './assessments/prescreenerquestions/prescreenerquestions.component';
 import { PicturepromptComponent } from './assessments/pictureprompt/pictureprompt.component';
 import { TimedurationComponent } from './assessments/timeduration/timeduration.component';
+import { SyncvoiceComponent } from './assessments/syncvoice/syncvoice.component';
 
 const routes: Routes = [
   {
@@ -34,6 +35,10 @@ const routes: Routes = [
       {
         path: 'prescreenerquestions',
         component: PrescreenerquestionsComponent
+      },
+      {
+        path: 'syncvoice',
+        component: SyncvoiceComponent
       },
       {
         path: 'done',

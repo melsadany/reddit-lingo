@@ -27,6 +27,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PicturepromptComponent } from './assessments/pictureprompt/pictureprompt.component';
 import { TimedurationComponent } from './assessments/timeduration/timeduration.component';
 import { NgCircleProgressModule } from 'ng-circle-progress';
+import { SyncvoiceComponent } from './assessments/syncvoice/syncvoice.component';
 
 @NgModule({
   imports: [
@@ -51,7 +52,8 @@ import { NgCircleProgressModule } from 'ng-circle-progress';
     ListeningcomprehensionComponent,
     PrescreenerquestionsComponent,
     PicturepromptComponent,
-    TimedurationComponent
+    TimedurationComponent,
+    SyncvoiceComponent
   ],
   providers: [
     AudioRecordingService,
