@@ -132,6 +132,9 @@ export class SyncvoiceComponent implements OnInit {
       }); // KRM: Adding recording to the array is done in sync. Currently wait for the recording to load.
       // Might be btter to do this async so we don't have the chance of blocking for a short
       // period before moving to the next prompt.
+      if (this.promptNumber === 0) {
+        this.textOnButton = 'Continue to next set'; // KRM: Update the button after the first press prompt finsihes
+      }
       this.recordingNumber++;
       this.promptNumber++;
       this.showStartButton = true;
@@ -142,9 +145,6 @@ export class SyncvoiceComponent implements OnInit {
   nextLalaPrompt(): void {
     console.log(this.promptNumber);
     console.log(this.audioNames[this.promptNumber]);
-    if (this.promptNumber < 0) {
-      this.textOnButton = 'Continue to next set';
-    }
     if (this.promptNumber < this.audioNames.length) {
       this.splashPage = true;
       const audio = new Audio();
