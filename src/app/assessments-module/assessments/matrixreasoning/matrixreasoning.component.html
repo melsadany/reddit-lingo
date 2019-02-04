@@ -9,10 +9,19 @@
       <button *ngIf="showStartButton" type="button" class="start-button btn btn-success" (click)="startDisplayedCountdownTimer()">{{textOnButton}}</button>
     </div>
   </div>
-  <div *ngIf="showImage">
-    <table style="margin: 0 auto;">
+  <div *ngIf="showMatrix">
+    <table class="table-bordered table-active custom-table">
       <tbody>
-        <tr *ngFor="let row of imagePaths">
+        <tr *ngFor="let row of imageMatrices['frameSets'][questionNumber]">
+          <td *ngFor="let image of row">
+            <img class="img-fluid" [src]="image">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <table class="table-bordered">
+      <tbody>
+        <tr class="table-primary" *ngFor="let row of imageMatrices['solutionSets'][questionNumber]">
           <td *ngFor="let image of row">
             <img class="img-fluid" [src]="image" (click)="selectImage(image)">
           </td>

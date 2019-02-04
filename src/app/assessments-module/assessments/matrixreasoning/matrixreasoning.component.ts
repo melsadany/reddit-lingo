@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AssessmentDataService } from '../../../services/assessment-data.service';
 
 @Component({
   selector: 'app-matrixreasoning',
@@ -39,12 +40,12 @@ export class MatrixreasoningComponent implements OnInit {
         height: 7,
         width: 1,
         images: 7
+      },
+      7: {
+        height: 1,
+        width: 1,
+        images: 1
       }
-      // 7: {
-      //   height: 1,
-      //   width: 1,
-      //   images: 1
-      // }
     },
     solutionSets: {
       1: {
@@ -76,12 +77,12 @@ export class MatrixreasoningComponent implements OnInit {
         height: 4,
         width: 1,
         images: 4
+      },
+      7: {
+        height: 4,
+        width: 1,
+        images: 4
       }
-      // 7: {
-      //   height: 4,
-      //   width: 1,
-      //   images: 4
-      // },
     }
   };
   questionNumber = 1;
@@ -89,8 +90,18 @@ export class MatrixreasoningComponent implements OnInit {
     frameSets: {},
     solutionSets: {}
   };
+  startedAssessment = false;
+  countingDown = false;
+  splashPage = true;
+  intervalCountdown: NodeJS.Timeout;
+  timeLeft = 3;
+  doneCountingDown = false;
+  showMatrix = false;
+  showStartButton = true;
+  textOnButton = 'Start Assessment';
+  imageSelections = {};
 
-  constructor() {}
+  constructor(private dataService: AssessmentDataService) {}
 
   ngOnInit(): void {
     this.calculateFrameSets();
@@ -104,14 +115,16 @@ export class MatrixreasoningComponent implements OnInit {
   }
 
   calculateFrameSets(): void {
-    for (let i = 1; i <= 6; i++) {
+    for (let i = 1; i <= 7; i++) {
       // KRM: Question number
       let currentRow: string[] = [];
       let currentMatrix: string[][] = [];
       const questionWidth = this.dimensions['frameSets'][i]['width'];
       for (let j = 1; j <= this.dimensions['frameSets'][i]['images']; j++) {
         // KRM: Image number
-        const currentImage = `${this.imagesLocation}${i}/frameSets/${j}q_q${i}`;
+        const currentImage = `${
+          this.imagesLocation
+        }${i}/frameSets/${j}q_q${i}.png`;
         if (currentRow.length < questionWidth) {
           currentRow.push(currentImage);
         } else {
@@ -127,17 +140,17 @@ export class MatrixreasoningComponent implements OnInit {
   }
 
   calculateSolutionSets(): void {
-    for (let i = 1; i <= 6; i++) {
+    for (let i = 1; i <= 7; i++) {
       // KRM: Question number
       let currentRow: string[] = [];
       let currentMatrix: string[][] = [];
-      const questionWidth = this.dimensions['solutionSets'][i]['width'];
+      const questionHeight = this.dimensions['solutionSets'][i]['height'];
       for (let j = 1; j <= this.dimensions['solutionSets'][i]['images']; j++) {
         // KRM: Image number
         const currentImage = `${
           this.imagesLocation
-        }${i}/solutionSets/${j}q_q${i}`;
-        if (currentRow.length < questionWidth) {
+        }${i}/solutionSets/${j}a_q${i}.png`;
+        if (currentRow.length < questionHeight) {
           currentRow.push(currentImage);
         } else {
           currentMatrix.push(currentRow);
@@ -149,5 +162,53 @@ export class MatrixreasoningComponent implements OnInit {
       this.imageMatrices['solutionSets'][i] = currentMatrix;
       currentMatrix = [];
     }
+  }
+
+  startDisplayedCountdownTimer(): void {
+    this.startedAssessment = true;
+    this.countingDown = true;
+    this.splashPage = false;
+    this.intervalCountdown = setInterval(() => {
+      if (this.timeLeft > 0) {
+        this.timeLeft--;
+      } else {
+        this.timeLeft = 3;
+        this.countingDown = false;
+        this.doneCountingDown = true;
+        this.showMatrix = true;
+        clearInterval(this.intervalCountdown);
+      }
+    }, 1000);
+  }
+
+  selectImage(image: string): void {
+    this.showMatrix = false;
+    this.imageSelections[this.questionNumber] = image;
+    this.questionNumber++;
+    if (this.questionNumber >= 8) {
+      this.finishAssessment();
+    } else {
+      this.startDisplayedCountdownTimer();
+    }
+  }
+
+  finishAssessment(): void {
+    this.dataService
+      .postAssessmentDataToMongo(
+        {
+          assess_name: 'matrixreasoning',
+          data: { selection_data: this.imageSelections },
+          completed: true
+        },
+        {
+          assess_name: 'matrixreasoning',
+          data: {
+            text: 'none'
+          }
+        }
+      )
+      .subscribe();
+    this.dataService.setIsInAssessment(false);
+    this.dataService.setCookie('matrixreasoning', 'completed', 200);
   }
 }
