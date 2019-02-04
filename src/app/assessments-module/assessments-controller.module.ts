@@ -28,6 +28,7 @@ import { PicturepromptComponent } from './assessments/pictureprompt/picturepromp
 import { TimedurationComponent } from './assessments/timeduration/timeduration.component';
 import { NgCircleProgressModule } from 'ng-circle-progress';
 import { SyncvoiceComponent } from './assessments/syncvoice/syncvoice.component';
+import { MatrixreasoningComponent } from './assessments/matrixreasoning/matrixreasoning.component';
 
 @NgModule({
   imports: [
@@ -53,7 +54,8 @@ import { SyncvoiceComponent } from './assessments/syncvoice/syncvoice.component'
     PrescreenerquestionsComponent,
     PicturepromptComponent,
     TimedurationComponent,
-    SyncvoiceComponent
+    SyncvoiceComponent,
+    MatrixreasoningComponent
   ],
   providers: [
     AudioRecordingService,

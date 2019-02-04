@@ -5,12 +5,12 @@
       trying to match the speed or tempo that you heard. There will be several trials, each with a different speed.
     </p>
   </div>
-  <div class="text-center">
+  <div class="text-center button-down">
     <button *ngIf="showStartButton && !dataService.isAssessmentCompleted('syncvoice')" type="button" class="start-button btn btn-success"
       (click)="nextLalaPrompt()">{{textOnButton}}</button>
   </div>
-  <div *ngIf="showRecordingIcon">
-    <p class="text-center">recording</p>
+  <div class="text-center" *ngIf="showRecordingIcon">
+    <button type="button" class="cancel-button btn btn-danger button-down">Recording</button>
   </div>
   <p *ngIf="countingDown" class="text-center display-1">{{timeLeft}}</p>
 </div>

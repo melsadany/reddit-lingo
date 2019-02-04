@@ -9,6 +9,7 @@ import { PrescreenerquestionsComponent } from './assessments/prescreenerquestion
 import { PicturepromptComponent } from './assessments/pictureprompt/pictureprompt.component';
 import { TimedurationComponent } from './assessments/timeduration/timeduration.component';
 import { SyncvoiceComponent } from './assessments/syncvoice/syncvoice.component';
+import { MatrixreasoningComponent } from './assessments/matrixreasoning/matrixreasoning.component';
 
 const routes: Routes = [
   {
@@ -39,6 +40,10 @@ const routes: Routes = [
       {
         path: 'syncvoice',
         component: SyncvoiceComponent
+      },
+      {
+        path: 'matrixreasoning',
+        component: MatrixreasoningComponent
       },
       {
         path: 'done',

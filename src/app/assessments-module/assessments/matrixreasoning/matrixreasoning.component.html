@@ -1,0 +1,24 @@
+<div class="mx-lg-5">
+  <div *ngIf="splashPage && !dataService.isAssessmentCompleted('matrixreasoning')">
+    <p class="py-4">
+      In this task, you will be shown a set of related pictures.
+      Select the image that you feel best fits in with the other
+      pictures.
+    </p>
+    <div class="text-center">
+      <button *ngIf="showStartButton" type="button" class="start-button btn btn-success" (click)="startDisplayedCountdownTimer()">{{textOnButton}}</button>
+    </div>
+  </div>
+  <div *ngIf="showImage">
+    <table style="margin: 0 auto;">
+      <tbody>
+        <tr *ngFor="let row of imagePaths">
+          <td *ngFor="let image of row">
+            <img class="img-fluid" [src]="image" (click)="selectImage(image)">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p *ngIf="countingDown" class="text-center display-1">{{timeLeft}}</p>
+</div>

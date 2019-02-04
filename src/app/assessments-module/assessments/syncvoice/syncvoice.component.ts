@@ -133,7 +133,7 @@ export class SyncvoiceComponent implements OnInit {
       // Might be btter to do this async so we don't have the chance of blocking for a short
       // period before moving to the next prompt.
       if (this.promptNumber === 0) {
-        this.textOnButton = 'Continue to next set'; // KRM: Update the button after the first press prompt finsihes
+        this.textOnButton = 'Continue'; // KRM: Update the button after the first press prompt finsihes
       }
       this.recordingNumber++;
       this.promptNumber++;
