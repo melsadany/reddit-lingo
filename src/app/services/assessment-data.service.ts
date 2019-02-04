@@ -19,6 +19,7 @@ export class AssessmentDataService {
   currentAssessment = '';
   assessmentsList: string[] = [
     'prescreenerquestions',
+    'matrixreasoning',
     'syncvoice',
     'timeduration',
     'ran',
@@ -71,6 +72,9 @@ export class AssessmentDataService {
       if (!this.checkCookie(value.assess_name)) {
         this.cookieService.set(value.assess_name, 'completed', 200);
       }
+    }
+    if (Object.keys(this.cookieService.getAll()).length > 1) {
+      this.textOnButton = 'Continue assessments';
     }
   }
 
@@ -180,5 +184,9 @@ export class AssessmentDataService {
       !this.inAssessment &&
       !this.allAssessmentsCompleted
     );
+  }
+
+  public doRedirectBackToStart(): Boolean {
+    return this.showWelcome() && !this.showButton(); // If you come to an assessment just from the browser with the URL
   }
 }

@@ -14,7 +14,7 @@ export class DialogService {
       );
       return false;
     } else {
-      console.log('can redirect');
+      console.log('Can redirect');
       return true;
     }
   }
