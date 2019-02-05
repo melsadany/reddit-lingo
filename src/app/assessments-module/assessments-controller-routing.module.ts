@@ -10,6 +10,7 @@ import { PicturepromptComponent } from './assessments/pictureprompt/picturepromp
 import { TimedurationComponent } from './assessments/timeduration/timeduration.component';
 import { SyncvoiceComponent } from './assessments/syncvoice/syncvoice.component';
 import { MatrixreasoningComponent } from './assessments/matrixreasoning/matrixreasoning.component';
+import { SentencerepetitionComponent } from './assessments/sentencerepetition/sentencerepetition.component';
 
 const routes: Routes = [
   {
@@ -44,6 +45,10 @@ const routes: Routes = [
       {
         path: 'matrixreasoning',
         component: MatrixreasoningComponent
+      },
+      {
+        path: 'sentencerepetition',
+        component: SentencerepetitionComponent
       },
       {
         path: 'done',

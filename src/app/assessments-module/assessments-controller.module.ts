@@ -29,6 +29,7 @@ import { TimedurationComponent } from './assessments/timeduration/timeduration.c
 import { NgCircleProgressModule } from 'ng-circle-progress';
 import { SyncvoiceComponent } from './assessments/syncvoice/syncvoice.component';
 import { MatrixreasoningComponent } from './assessments/matrixreasoning/matrixreasoning.component';
+import { SentencerepetitionComponent } from './assessments/sentencerepetition/sentencerepetition.component';
 
 @NgModule({
   imports: [
@@ -55,7 +56,8 @@ import { MatrixreasoningComponent } from './assessments/matrixreasoning/matrixre
     PicturepromptComponent,
     TimedurationComponent,
     SyncvoiceComponent,
-    MatrixreasoningComponent
+    MatrixreasoningComponent,
+    SentencerepetitionComponent
   ],
   providers: [
     AudioRecordingService,

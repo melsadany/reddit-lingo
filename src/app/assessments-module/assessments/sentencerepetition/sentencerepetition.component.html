@@ -1,0 +1,16 @@
+<div class="mx-lg-5">
+  <div *ngIf="splashPage && !dataService.isAssessmentCompleted('sentencerepetition')">
+    <p class="py-4">
+      You will listen to a sentence. Once the sentence is finished,
+      the screen will advance automatically and you will be
+      asked to repeat the sentence back.
+    </p>
+  </div>
+  <div class="text-center button-down">
+    <button *ngIf="showStartButton" type="button" class="start-button btn btn-success" (click)="startAudioForSet()">{{textOnButton}}</button>
+  </div>
+  <div class="text-center" *ngIf="showRecordingIcon">
+    <button type="button" class="cancel-button btn btn-danger button-down">Recording</button>
+  </div>
+  <p *ngIf="countingDown" class="text-center display-1">{{timeLeft}}</p>
+</div>
