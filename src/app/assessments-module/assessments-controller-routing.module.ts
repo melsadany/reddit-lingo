@@ -11,6 +11,8 @@ import { TimedurationComponent } from './assessments/timeduration/timeduration.c
 import { SyncvoiceComponent } from './assessments/syncvoice/syncvoice.component';
 import { MatrixreasoningComponent } from './assessments/matrixreasoning/matrixreasoning.component';
 import { SentencerepetitionComponent } from './assessments/sentencerepetition/sentencerepetition.component';
+import { WordfindingComponent } from './assessments/wordfinding/wordfinding.component';
+import { PostscreenerquestionsComponent } from './assessments/finalquestions/postscreenerquestions.component';
 
 const routes: Routes = [
   {
@@ -35,6 +37,10 @@ const routes: Routes = [
         component: ListeningcomprehensionComponent
       },
       {
+        path: 'postscreenerquestions',
+        component: PostscreenerquestionsComponent
+      },
+      {
         path: 'prescreenerquestions',
         component: PrescreenerquestionsComponent
       },
@@ -49,6 +55,10 @@ const routes: Routes = [
       {
         path: 'sentencerepetition',
         component: SentencerepetitionComponent
+      },
+      {
+        path: 'wordfinding',
+        component: WordfindingComponent
       },
       {
         path: 'done',

@@ -19,14 +19,17 @@ export class AssessmentDataService {
   currentAssessment = '';
   assessmentsList: string[] = [
     'prescreenerquestions',
+    'wordfinding',
+    'sentencerepetition',
     'matrixreasoning',
     'syncvoice',
     'timeduration',
     'ran',
     'pictureprompt',
-    'listeningcomprehension'
-  ];
-  // KRM: Add to this list to add more assessments as they are built
+    'listeningcomprehension',
+    'postscreenerquestions'
+  ]; // KRM: Add to this list to add more assessments as they are built
+  // The ordering determines the order in which the assessments are presented
   allAssessmentsCompleted: Boolean = false;
   router: Router;
   showWelcomePage = true;

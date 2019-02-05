@@ -1,0 +1,61 @@
+<div class="mx-lg-5">
+  <div *ngIf="!dataService.isAssessmentCompleted('postscreenerquestions')">
+    <form [formGroup]="dataForm" (ngSubmit)="postData()">
+      <div class="form-group text-center">
+        <mat-form-field class="form-group">
+          <input matInput [matDatepicker]="picker" placeholder="Select your date of birth" formControlName="date">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <div class="form-group text-center">
+        <mat-form-field>
+          <mat-select placeholder="Select your gender" formControlName="gender">
+            <mat-option *ngFor="let gender of genderOptions" [value]="gender">
+              {{ gender }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="form-group text-center">
+        <mat-form-field>
+          <mat-select placeholder="Select your Ethnicity" formControlName="ethnicity">
+            <mat-option *ngFor="let ethnicity of ethnicityOptions" [value]="ethnicity">
+              {{ ethnicity }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="form-group text-center">
+        <mat-form-field>
+          <mat-select placeholder="Select your highest education" formControlName="education" required>
+            <mat-option *ngFor="let education of educationOptions" [value]="education">
+              {{ education }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="form-group text-center">
+        <mat-form-field>
+          <mat-select placeholder="Is English your first lanaguage?" formControlName="englishOption">
+            <mat-option *ngFor="let englishOption of englishOptions" [value]="englishOption">
+              {{ englishOption }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="form-group text-center">
+        <mat-form-field>
+          <mat-select placeholder="Select your level of musical ability" formControlName="musicAbility">
+            <mat-option *ngFor="let musicAbility of musicAbilityOptions" [value]="musicAbility">
+              {{ musicAbility }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="text-center">
+        <button type='submit' [disabled]="!dataForm.valid" class='btn btn-primary btn-lg'>Next</button>
+      </div>
+    </form>
+  </div>
+</div>

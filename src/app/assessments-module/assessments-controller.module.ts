@@ -30,6 +30,8 @@ import { NgCircleProgressModule } from 'ng-circle-progress';
 import { SyncvoiceComponent } from './assessments/syncvoice/syncvoice.component';
 import { MatrixreasoningComponent } from './assessments/matrixreasoning/matrixreasoning.component';
 import { SentencerepetitionComponent } from './assessments/sentencerepetition/sentencerepetition.component';
+import { WordfindingComponent } from './assessments/wordfinding/wordfinding.component';
+import { PostscreenerquestionsComponent } from './assessments/finalquestions/postscreenerquestions.component';
 
 @NgModule({
   imports: [
@@ -57,7 +59,9 @@ import { SentencerepetitionComponent } from './assessments/sentencerepetition/se
     TimedurationComponent,
     SyncvoiceComponent,
     MatrixreasoningComponent,
-    SentencerepetitionComponent
+    SentencerepetitionComponent,
+    WordfindingComponent,
+    PostscreenerquestionsComponent
   ],
   providers: [
     AudioRecordingService,
