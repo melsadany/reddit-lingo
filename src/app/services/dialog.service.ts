@@ -9,7 +9,7 @@ export class DialogService {
 
   canRedirect(): boolean {
     if (this.dataService.isInAssessment()) {
-      window.alert(
+      alert(
         'Please complete the current assessment before going to another page.'
       );
       return false;

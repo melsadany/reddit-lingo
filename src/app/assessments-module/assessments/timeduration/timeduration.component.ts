@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
+import { DialogService } from '../../../services/dialog.service';
 
 @Component({
   selector: 'app-timeduration',
   templateUrl: './timeduration.component.html',
   styleUrls: ['./timeduration.component.scss']
 })
-export class TimedurationComponent implements OnInit {
+export class TimedurationComponent implements OnInit, OnDestroy {
   startedAssessment = false;
   countingDown = false;
   splashPage = true;
@@ -29,9 +30,13 @@ export class TimedurationComponent implements OnInit {
   outerStrokeColor = '#78C000';
   innerStrokeColor = '#C7E596';
   startTime;
-  constructor(private dataService: AssessmentDataService) {}
+  constructor(private dataService: AssessmentDataService, private dialogService: DialogService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
+
+  ngOnDestroy(): void {
+    this.dataService.goTo('');
+  }
 
   startDisplayedCountdownTimer(): void {
     this.startedAssessment = true;
@@ -117,5 +122,8 @@ export class TimedurationComponent implements OnInit {
       .subscribe();
     this.dataService.setIsInAssessment(false);
     this.dataService.setCookie('timeduration', 'completed', 200);
+  }
+  canDeactivate(): boolean {
+    return this.dialogService.canRedirect();
   }
 }

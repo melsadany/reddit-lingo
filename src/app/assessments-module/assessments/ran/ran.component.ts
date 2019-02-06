@@ -6,6 +6,7 @@ import {
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
+import { DialogService } from '../../../services/dialog.service';
 
 @Component({
   selector: 'app-ran',
@@ -35,7 +36,8 @@ export class RanComponent implements OnInit, OnDestroy {
   constructor(
     private audioRecordingService: AudioRecordingService,
     private sanitizer: DomSanitizer,
-    private dataService: AssessmentDataService
+    private dataService: AssessmentDataService,
+    private dialogService: DialogService
   ) {
     this.failSubscription = this.audioRecordingService
       .recordingFailed()
@@ -93,6 +95,7 @@ export class RanComponent implements OnInit, OnDestroy {
     this.failSubscription.unsubscribe();
     this.recordingTimeSubscription.unsubscribe();
     this.recordedOutputSubscription.unsubscribe();
+    this.dataService.goTo('');
   }
 
   ngOnInit(): void {
@@ -148,5 +151,8 @@ export class RanComponent implements OnInit, OnDestroy {
     this.dataService.setCookie('ran', 'completed', 200);
 
     // KRM: Each assessment will handle the structure of its assessment data before posting it to mongo
+  }
+  canDeactivate(): boolean {
+    return this.dialogService.canRedirect();
   }
 }

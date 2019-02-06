@@ -1,13 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
-import { FormControl, FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
+import { DialogService } from '../../../services/dialog.service';
+import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 
 @Component({
   selector: 'app-prescreenerquestions',
   templateUrl: './prescreenerquestions.component.html',
   styleUrls: ['./prescreenerquestions.component.scss']
 })
-export class PrescreenerquestionsComponent implements OnInit {
+export class PrescreenerquestionsComponent implements OnInit, CanComponentDeactivate, OnDestroy {
   dataForm = this.fb.group({
     date: ['', Validators.required],
     gender: ['', Validators.required],
@@ -44,10 +46,18 @@ export class PrescreenerquestionsComponent implements OnInit {
 
   constructor(
     private dataService: AssessmentDataService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private dialogService: DialogService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.dataService.setIsInAssessment(true);
+  }
+
+  ngOnDestroy(): void {
+    this.dataService.goTo('');
+  }
+
   postData(): void {
     const data = {
       date: this.dataForm.get('date').value,
@@ -76,5 +86,9 @@ export class PrescreenerquestionsComponent implements OnInit {
     this.dataService.setIsInAssessment(false);
     this.dataService.setCookie('prescreenerquestions', 'completed', 200);
     this.dataService.nextAssessment();
+  }
+
+  canDeactivate(): boolean {
+    return this.dialogService.canRedirect();
   }
 }

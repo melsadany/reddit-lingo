@@ -6,6 +6,7 @@ import {
 } from '../../../services/audio-recording.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
+import { DialogService } from '../../../services/dialog.service';
 
 @Component({
   selector: 'app-pictureprompt',
@@ -39,7 +40,7 @@ export class PicturepromptComponent implements OnInit, OnDestroy {
   constructor(
     private dataService: AssessmentDataService,
     private audioRecordingService: AudioRecordingService,
-    private sanitizer: DomSanitizer
+    private dialogService: DialogService
   ) {
     this.failSubscription = this.audioRecordingService
       .recordingFailed()
@@ -65,10 +66,13 @@ export class PicturepromptComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.abortRecording();
+    if (this.isRecording) {
+      this.abortRecording();
+    }
     this.failSubscription.unsubscribe();
     this.recordingTimeSubscription.unsubscribe();
     this.recordedOutputSubscription.unsubscribe();
+    this.dataService.goTo('');
   }
 
   calculateImagePaths(): void {
@@ -179,4 +183,9 @@ export class PicturepromptComponent implements OnInit, OnDestroy {
     this.dataService.setCookie('pictureprompt', 'completed', 200);
     this.dataService.setIsInAssessment(false);
   }
+
+  canDeactivate(): boolean {
+    return this.dialogService.canRedirect();
+  }
+
 }

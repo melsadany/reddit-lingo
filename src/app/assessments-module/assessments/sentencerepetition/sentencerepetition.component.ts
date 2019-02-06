@@ -1,17 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import {
   AudioRecordingService,
   RecordedAudioOutput
 } from '../../../services/audio-recording.service';
 import { Subscription } from 'rxjs';
+import { DialogService } from '../../../services/dialog.service';
 
 @Component({
   selector: 'app-sentencerepetition',
   templateUrl: './sentencerepetition.component.html',
   styleUrls: ['./sentencerepetition.component.scss']
 })
-export class SentencerepetitionComponent implements OnInit {
+export class SentencerepetitionComponent implements OnInit, OnDestroy {
   failSubscription: Subscription;
   isRecording = false;
   recordingTimeSubscription: Subscription;
@@ -34,7 +35,8 @@ export class SentencerepetitionComponent implements OnInit {
 
   constructor(
     private dataService: AssessmentDataService,
-    private audioRecordingService: AudioRecordingService
+    private audioRecordingService: AudioRecordingService,
+    private dialogService: DialogService
   ) {
     this.failSubscription = this.audioRecordingService
       .recordingFailed()
@@ -72,6 +74,14 @@ export class SentencerepetitionComponent implements OnInit {
 
   ngOnInit(): void {
     this.calculateFilePaths();
+  }
+
+  ngOnDestroy(): void {
+    this.abortRecording();
+    this.failSubscription.unsubscribe();
+    this.recordingTimeSubscription.unsubscribe();
+    this.recordedOutputSubscription.unsubscribe();
+    this.dataService.goTo('');
   }
 
   calculateFilePaths(): void {
@@ -183,5 +193,8 @@ export class SentencerepetitionComponent implements OnInit {
       .subscribe();
     this.dataService.setCookie('sentencerepetition', 'completed', 200);
     this.dataService.setIsInAssessment(false);
+  }
+  canDeactivate(): boolean {
+    return this.dialogService.canRedirect();
   }
 }

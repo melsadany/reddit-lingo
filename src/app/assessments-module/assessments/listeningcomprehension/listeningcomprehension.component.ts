@@ -1,17 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
+import { DialogService } from '../../../services/dialog.service';
 
 @Component({
   selector: 'app-listeningcomprehension',
   templateUrl: './listeningcomprehension.component.html',
   styleUrls: ['./listeningcomprehension.component.scss']
 })
-export class ListeningcomprehensionComponent implements OnInit {
+export class ListeningcomprehensionComponent implements OnInit, OnDestroy {
+
   textOnButton = 'Start Assessment';
   firstSet = true;
   assessmentAlreadyCompleted = false;
-  showStartButton = true;
-  splashPage = true;
   startedAssessment = false;
   countingDown = false;
   intervalCountdown: NodeJS.Timeout;
@@ -24,7 +24,10 @@ export class ListeningcomprehensionComponent implements OnInit {
   audioInstructionsLocation = 'assets/audio/listeningcomprehension/';
   imageSelections = [];
 
-  constructor(private dataService: AssessmentDataService) {}
+  constructor(
+    private dataService: AssessmentDataService,
+    private dialogService: DialogService
+  ) {}
 
   ngOnInit(): void {
     if (this.dataService.isAssessmentCompleted('listeningcomprehension')) {
@@ -33,10 +36,14 @@ export class ListeningcomprehensionComponent implements OnInit {
     this.calculateImageNames();
   }
 
+  ngOnDestroy(): void {
+    // this.dataService.goTo('');
+  }
+
   startDisplayedCountdownTimer(): void {
     this.startedAssessment = true;
     this.countingDown = true;
-    this.splashPage = false;
+    this.dataService.setSplashPage(false);
     this.intervalCountdown = setInterval(() => {
       if (this.timeLeft > 0) {
         this.timeLeft--;
@@ -99,8 +106,7 @@ export class ListeningcomprehensionComponent implements OnInit {
       this.firstSet = false;
       this.textOnButton = 'Continue to next set';
     }
-    this.splashPage = true;
-    // this.showStartButton = true;
+    this.dataService.setSplashPage(true);
     this.startAudioInstructionForSet();
   }
 
@@ -111,7 +117,7 @@ export class ListeningcomprehensionComponent implements OnInit {
     }.mp3`;
     audio.addEventListener('ended', () => this.startDisplayedCountdownTimer());
     audio.play();
-    this.showStartButton = false;
+    this.dataService.setStartButton(false);
   }
 
   finishAssessment(): void {
@@ -132,5 +138,8 @@ export class ListeningcomprehensionComponent implements OnInit {
       .subscribe();
     this.dataService.setIsInAssessment(false);
     this.dataService.setCookie('listeningcomprehension', 'completed', 200);
+  }
+  canDeactivate(): boolean {
+    return this.dialogService.canRedirect();
   }
 }

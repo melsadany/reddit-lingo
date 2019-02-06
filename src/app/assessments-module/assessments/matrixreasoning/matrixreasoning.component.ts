@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
+import { DialogService } from '../../../services/dialog.service';
 
 @Component({
   selector: 'app-matrixreasoning',
   templateUrl: './matrixreasoning.component.html',
   styleUrls: ['./matrixreasoning.component.scss']
 })
-export class MatrixreasoningComponent implements OnInit {
+export class MatrixreasoningComponent implements OnInit, OnDestroy {
   imagesLocation = 'assets/img/matrixreasoning/';
   imageTypes = ['frameSets', 'solutionSets'];
   dimensions = {
@@ -101,12 +102,16 @@ export class MatrixreasoningComponent implements OnInit {
   textOnButton = 'Start Assessment';
   imageSelections = {};
 
-  constructor(private dataService: AssessmentDataService) {}
+  constructor(private dataService: AssessmentDataService, private dialogService: DialogService) {}
 
   ngOnInit(): void {
     this.calculateFrameSets();
     this.calculateSolutionSets();
     console.log(this.imageMatrices);
+  }
+
+  ngOnDestroy(): void {
+    this.dataService.goTo('');
   }
 
   calculateImageNames(): void {
@@ -210,5 +215,9 @@ export class MatrixreasoningComponent implements OnInit {
       .subscribe();
     this.dataService.setIsInAssessment(false);
     this.dataService.setCookie('matrixreasoning', 'completed', 200);
+  }
+
+  canDeactivate(): boolean {
+    return this.dialogService.canRedirect();
   }
 }

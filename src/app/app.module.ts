@@ -25,7 +25,7 @@ import { DialogService } from './services/dialog.service';
     HeaderComponent,
     HomeComponent,
     AboutComponent,
-    ContactComponent
+    ContactComponent,
   ],
   imports: [
     BrowserModule,

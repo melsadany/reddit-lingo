@@ -1,17 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
   AudioRecordingService,
   RecordedAudioOutput
 } from '../../../services/audio-recording.service';
 import { Subscription } from 'rxjs';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
+import { DialogService } from '../../../services/dialog.service';
 
 @Component({
   selector: 'app-wordfinding',
   templateUrl: './wordfinding.component.html',
   styleUrls: ['./wordfinding.component.scss']
 })
-export class WordfindingComponent implements OnInit {
+export class WordfindingComponent implements OnInit, OnDestroy {
   startedAssessment = false;
   countingDown = false;
   splashPage = true;
@@ -53,7 +54,8 @@ export class WordfindingComponent implements OnInit {
 
   constructor(
     private audioRecordingService: AudioRecordingService,
-    private dataService: AssessmentDataService
+    private dataService: AssessmentDataService,
+    private dialogService: DialogService
   ) {
     this.failSubscription = this.audioRecordingService
       .recordingFailed()
@@ -75,6 +77,14 @@ export class WordfindingComponent implements OnInit {
   }
 
   ngOnInit(): void {}
+
+  ngOnDestroy(): void {
+    this.abortRecording();
+    this.failSubscription.unsubscribe();
+    this.recordingTimeSubscription.unsubscribe();
+    this.recordedOutputSubscription.unsubscribe();
+    this.dataService.goTo('');
+  }
 
   startDisplayedCountdownTimer(): void {
     this.startedAssessment = true;
@@ -180,5 +190,8 @@ export class WordfindingComponent implements OnInit {
       .subscribe();
     this.dataService.setCookie('wordfinding', 'completed', 200);
     this.dataService.setIsInAssessment(false);
+  }
+  canDeactivate(): boolean {
+    return this.dialogService.canRedirect();
   }
 }

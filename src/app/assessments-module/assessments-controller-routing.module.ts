@@ -22,47 +22,47 @@ const routes: Routes = [
     children: [
       {
         path: 'timeduration',
-        component: TimedurationComponent
+        component: TimedurationComponent,
       },
       {
         path: 'ran',
-        component: RanComponent
+        component: RanComponent,
       },
       {
         path: 'pictureprompt',
-        component: PicturepromptComponent
+        component: PicturepromptComponent,
       },
       {
         path: 'listeningcomprehension',
-        component: ListeningcomprehensionComponent
+        component: ListeningcomprehensionComponent,
       },
       {
         path: 'postscreenerquestions',
-        component: PostscreenerquestionsComponent
+        component: PostscreenerquestionsComponent,
       },
       {
         path: 'prescreenerquestions',
-        component: PrescreenerquestionsComponent
+        component: PrescreenerquestionsComponent,
       },
       {
         path: 'syncvoice',
-        component: SyncvoiceComponent
+        component: SyncvoiceComponent,
       },
       {
         path: 'matrixreasoning',
-        component: MatrixreasoningComponent
+        component: MatrixreasoningComponent,
       },
       {
         path: 'sentencerepetition',
-        component: SentencerepetitionComponent
+        component: SentencerepetitionComponent,
       },
       {
         path: 'wordfinding',
-        component: WordfindingComponent
+        component: WordfindingComponent,
       },
       {
         path: 'done',
-        component: AssessmentsDoneComponent
+        component: AssessmentsDoneComponent,
       }
     ]
   }

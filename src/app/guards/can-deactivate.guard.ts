@@ -1,4 +1,4 @@
-import { Injectable, HostListener } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { CanDeactivate } from '@angular/router';
 import { Observable } from 'rxjs';
 
@@ -11,7 +11,6 @@ export interface CanComponentDeactivate {
 })
 export class CanDeactivateGuard
   implements CanDeactivate<CanComponentDeactivate> {
-  @HostListener('window:beforeunload')
   canDeactivate(
     component: CanComponentDeactivate
   ): Observable<boolean> | Promise<boolean> | boolean {

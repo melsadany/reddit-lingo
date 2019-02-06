@@ -32,7 +32,7 @@ export class AssessmentsControllerComponent
     }
   }
 
-  @HostListener('window:beforeunload', ['$event'])
+  // @HostListener('window:beforeunload', ['$event'])
   canDeactivate(): boolean {
     return this.dialogService.canRedirect();
   }

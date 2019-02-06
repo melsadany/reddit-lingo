@@ -13,11 +13,13 @@ import 'rxjs/add/operator/map';
 
 @Injectable()
 export class AssessmentDataService {
+  private _DEBUG_MODE = true; // KRM: FOR BEBUGGING ONLY. GIVES DEBUG BUTTON IN ASSESSMENTS
   assessmentData: AssessmentData;
   http: HttpClient;
   inAssessment: Boolean = false;
   currentAssessment = '';
   assessmentsList: string[] = [
+    'listeningcomprehension',
     'prescreenerquestions',
     'wordfinding',
     'sentencerepetition',
@@ -26,16 +28,18 @@ export class AssessmentDataService {
     'timeduration',
     'ran',
     'pictureprompt',
-    'listeningcomprehension',
     'postscreenerquestions'
   ]; // KRM: Add to this list to add more assessments as they are built
   // The ordering determines the order in which the assessments are presented
   allAssessmentsCompleted: Boolean = false;
   router: Router;
   showWelcomePage = true;
-  textOnButton = 'START';
+  textOnStartButton = 'START';
+  textOnAssessmentButton: string;
   welcomeText = 'Welcome to the assessments';
   firstTimeStarting = true;
+  startButton = false;
+  splashPage = true;
 
   constructor(
     private Http: HttpClient,
@@ -77,7 +81,7 @@ export class AssessmentDataService {
       }
     }
     if (Object.keys(this.cookieService.getAll()).length > 1) {
-      this.textOnButton = 'Continue assessments';
+      this.textOnStartButton = 'Continue assessments';
     }
   }
 
@@ -146,7 +150,7 @@ export class AssessmentDataService {
     }
     if (this.firstTimeStarting) {
       this.firstTimeStarting = false;
-      this.textOnButton = 'Continue Assessments';
+      this.textOnStartButton = 'Continue Assessments';
       this.welcomeText = 'You have partially completed the set of assessments';
     }
     this.setCurrentAssessment(this.determineNextAssessment());
@@ -155,6 +159,7 @@ export class AssessmentDataService {
   }
 
   public goTo(assessmentName: string): void {
+    this.setStartButton(true);
     this.setIsInAssessment(true);
     this.router.navigate(['/assessments/', assessmentName]);
   }
@@ -170,7 +175,7 @@ export class AssessmentDataService {
   public showButton(): Boolean {
     return (
       this.getCurrentUrl() === '/assessments' ||
-      this.isAssessmentCompleted(this.getCurrentAssessmentUrl()) ||
+      this.isAssessmentCompleted(this.getCurrentAssessment()) ||
       (!this.inAssessment &&
         !this.showWelcomePage &&
         !this.allAssessmentsCompleted)
@@ -189,7 +194,50 @@ export class AssessmentDataService {
     );
   }
 
+  public setStartButton(set: boolean): void {
+    this.startButton = set;
+  }
+
+  public showStartButton(): boolean {
+    return this.startButton;
+  }
+
+  public setSplashPage(set: boolean): void {
+    this.splashPage = set;
+  }
+
+  public showSplashPage(): boolean {
+    return this.splashPage;
+  }
+
+  public showInitialSplashPage(assessment: string): Boolean {
+    return (
+      this.currentAssessment === assessment &&
+      !this.isAssessmentCompleted(assessment)
+    );
+  }
+
   public doRedirectBackToStart(): Boolean {
     return this.showWelcome() && !this.showButton(); // If you come to an assessment just from the browser with the URL
+  }
+
+  public get DEBUG_MODE(): boolean {
+    return this._DEBUG_MODE;
+  }
+  public set DEBUG_MODE(value: boolean) {
+    this._DEBUG_MODE = value;
+  }
+
+  public nextAssessmentDebugMode(): void {
+    if (this.DEBUG_MODE) {
+      this.setCookie(this.currentAssessment, 'completed', 200);
+      this.nextAssessment();
+    }
+  }
+
+  public deleteCookiesDebugMode(): void {
+    if (this.DEBUG_MODE) {
+      this.cookieService.deleteAll();
+    }
   }
 }

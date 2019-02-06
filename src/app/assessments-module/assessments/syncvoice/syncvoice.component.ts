@@ -1,20 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import {
   AudioRecordingService,
   RecordedAudioOutput
 } from '../../../services/audio-recording.service';
 import { Subscription } from 'rxjs';
+import { DialogService } from '../../../services/dialog.service';
 
 @Component({
   selector: 'app-syncvoice',
   templateUrl: './syncvoice.component.html',
   styleUrls: ['./syncvoice.component.scss']
 })
-export class SyncvoiceComponent implements OnInit {
+export class SyncvoiceComponent implements OnInit, OnDestroy {
   constructor(
     private dataService: AssessmentDataService,
-    private audioRecordingService: AudioRecordingService
+    private audioRecordingService: AudioRecordingService,
+    private dialogService: DialogService
   ) {
     this.failSubscription = this.audioRecordingService
       .recordingFailed()
@@ -64,6 +66,14 @@ export class SyncvoiceComponent implements OnInit {
 
   ngOnInit(): void {
     this.calculateAudioFilePaths();
+  }
+
+  ngOnDestroy(): void {
+    this.abortRecording();
+    this.failSubscription.unsubscribe();
+    this.recordingTimeSubscription.unsubscribe();
+    this.recordedOutputSubscription.unsubscribe();
+    this.dataService.goTo('');
   }
 
   calculateAudioFilePaths(): void {
@@ -175,5 +185,8 @@ export class SyncvoiceComponent implements OnInit {
       .subscribe();
     this.dataService.setCookie('syncvoice', 'completed', 200);
     this.dataService.setIsInAssessment(false);
+  }
+  canDeactivate(): boolean {
+    return this.dialogService.canRedirect();
   }
 }
