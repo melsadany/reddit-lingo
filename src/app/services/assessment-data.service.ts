@@ -19,7 +19,6 @@ export class AssessmentDataService {
   inAssessment: Boolean = false;
   currentAssessment = '';
   assessmentsList: string[] = [
-    'listeningcomprehension',
     'prescreenerquestions',
     'wordfinding',
     'sentencerepetition',
@@ -28,6 +27,7 @@ export class AssessmentDataService {
     'timeduration',
     'ran',
     'pictureprompt',
+    'listeningcomprehension',
     'postscreenerquestions'
   ]; // KRM: Add to this list to add more assessments as they are built
   // The ordering determines the order in which the assessments are presented
@@ -230,6 +230,7 @@ export class AssessmentDataService {
 
   public nextAssessmentDebugMode(): void {
     if (this.DEBUG_MODE) {
+      this.setIsInAssessment(false);
       this.setCookie(this.currentAssessment, 'completed', 200);
       this.nextAssessment();
     }

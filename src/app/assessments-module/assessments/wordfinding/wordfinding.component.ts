@@ -6,13 +6,14 @@ import {
 import { Subscription } from 'rxjs';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import { DialogService } from '../../../services/dialog.service';
+import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 
 @Component({
   selector: 'app-wordfinding',
   templateUrl: './wordfinding.component.html',
   styleUrls: ['./wordfinding.component.scss']
 })
-export class WordfindingComponent implements OnInit, OnDestroy {
+export class WordfindingComponent implements OnInit, OnDestroy, CanComponentDeactivate {
   startedAssessment = false;
   countingDown = false;
   splashPage = true;
@@ -87,7 +88,6 @@ export class WordfindingComponent implements OnInit, OnDestroy {
   }
 
   startDisplayedCountdownTimer(): void {
-    this.startedAssessment = true;
     this.countingDown = true;
     if (this.splashPage) {
       this.splashPage = false;
@@ -165,6 +165,10 @@ export class WordfindingComponent implements OnInit, OnDestroy {
   }
 
   advanceToNextPrompt(): void {
+    if (!this.startedAssessment) {
+      this.startedAssessment = true;
+      this.dataService.setIsInAssessment(true);
+    }
     this.showStartButton = false;
     if (this.promptNumber < this.letterData.length) {
       this.calculateNextLetter();

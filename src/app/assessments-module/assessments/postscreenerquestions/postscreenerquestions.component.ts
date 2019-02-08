@@ -2,13 +2,14 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { DialogService } from '../../../services/dialog.service';
+import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 
 @Component({
   selector: 'app-postscreenerquestions',
   templateUrl: './postscreenerquestions.component.html',
   styleUrls: ['./postscreenerquestions.component.scss']
 })
-export class PostscreenerquestionsComponent implements OnInit, OnDestroy {
+export class PostscreenerquestionsComponent implements OnInit, OnDestroy, CanComponentDeactivate {
   dataForm = this.fb.group({
     name: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
@@ -91,7 +92,9 @@ export class PostscreenerquestionsComponent implements OnInit, OnDestroy {
     private dialogService: DialogService
   ) {}
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.dataService.setIsInAssessment(true);
+   }
 
   ngOnDestroy(): void {
     this.dataService.goTo('');

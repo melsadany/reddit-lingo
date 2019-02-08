@@ -1,14 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import { DialogService } from '../../../services/dialog.service';
+import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 
 @Component({
   selector: 'app-listeningcomprehension',
   templateUrl: './listeningcomprehension.component.html',
   styleUrls: ['./listeningcomprehension.component.scss']
 })
-export class ListeningcomprehensionComponent implements OnInit, OnDestroy {
-
+export class ListeningcomprehensionComponent implements OnInit, OnDestroy, CanComponentDeactivate {
   textOnButton = 'Start Assessment';
   firstSet = true;
   assessmentAlreadyCompleted = false;
@@ -41,7 +41,6 @@ export class ListeningcomprehensionComponent implements OnInit, OnDestroy {
   }
 
   startDisplayedCountdownTimer(): void {
-    this.startedAssessment = true;
     this.countingDown = true;
     this.dataService.setSplashPage(false);
     this.intervalCountdown = setInterval(() => {
@@ -110,7 +109,11 @@ export class ListeningcomprehensionComponent implements OnInit, OnDestroy {
     this.startAudioInstructionForSet();
   }
 
-  startAudioInstructionForSet(): void {
+  startAudioInstructionForSet(): void { // KRM: Main function
+    if (!this.startedAssessment) {
+      this.dataService.setIsInAssessment(true);
+      this.startedAssessment = true;
+    }
     const audio = new Audio();
     audio.src = `${this.audioInstructionsLocation}q${
       this.currentQuestionSetNumber

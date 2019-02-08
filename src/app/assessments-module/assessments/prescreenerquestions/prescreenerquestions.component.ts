@@ -9,7 +9,7 @@ import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
   templateUrl: './prescreenerquestions.component.html',
   styleUrls: ['./prescreenerquestions.component.scss']
 })
-export class PrescreenerquestionsComponent implements OnInit, CanComponentDeactivate, OnDestroy {
+export class PrescreenerquestionsComponent implements OnInit, CanComponentDeactivate, OnDestroy, CanComponentDeactivate {
   dataForm = this.fb.group({
     date: ['', Validators.required],
     gender: ['', Validators.required],
@@ -82,7 +82,6 @@ export class PrescreenerquestionsComponent implements OnInit, CanComponentDeacti
         }
       )
       .subscribe(); // KRM: Do this for every assessment
-    // this.dataService.setIsInAssessment(false);
     this.dataService.setIsInAssessment(false);
     this.dataService.setCookie('prescreenerquestions', 'completed', 200);
     this.dataService.nextAssessment();

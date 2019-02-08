@@ -7,13 +7,14 @@ import { AssessmentDataService } from '../../../services/assessment-data.service
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 import { DialogService } from '../../../services/dialog.service';
+import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 
 @Component({
   selector: 'app-ran',
   templateUrl: './ran.component.html',
   styleUrls: ['./ran.component.scss']
 })
-export class RanComponent implements OnInit, OnDestroy {
+export class RanComponent implements OnInit, OnDestroy, CanComponentDeactivate {
   isRecording = false;
   recordedTime: string;
   recordedBlob: Blob;
@@ -105,7 +106,8 @@ export class RanComponent implements OnInit, OnDestroy {
   }
 
   startDisplayedCountdownTimer(): void {
-    this.startedAssessment = true;
+    this.startedAssessment = true; // KRM: Only one prompt for ran task
+    this.dataService.setIsInAssessment(true);
     this.countingDown = true;
     this.splashPage = false;
     this.intervalCountdown = setInterval(() => {

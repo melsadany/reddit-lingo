@@ -7,13 +7,14 @@ import {
 import { DomSanitizer } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 import { DialogService } from '../../../services/dialog.service';
+import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 
 @Component({
   selector: 'app-pictureprompt',
   templateUrl: './pictureprompt.component.html',
   styleUrls: ['./pictureprompt.component.scss']
 })
-export class PicturepromptComponent implements OnInit, OnDestroy {
+export class PicturepromptComponent implements OnInit, OnDestroy, CanComponentDeactivate {
   imagesLocation = 'assets/img/pictureprompt/';
   imageNames = ['despair.jpg', 'he_texted.jpg', 'joke.jpg', 'antagonism.jpg'];
   promptNumber = 0;
@@ -89,7 +90,6 @@ export class PicturepromptComponent implements OnInit, OnDestroy {
 
   startDisplayedCountdownTimer(): void {
     console.log(this.currentImagePrompt);
-    this.startedAssessment = true;
     this.countingDown = true;
     if (this.splashPage) {
       this.splashPage = false;
@@ -137,6 +137,10 @@ export class PicturepromptComponent implements OnInit, OnDestroy {
   }
 
   advanceToNextPrompt(): void {
+    if (!this.startedAssessment) {
+      this.startedAssessment = true;
+      this.dataService.setIsInAssessment(true);
+    }
     if (this.promptNumber >= this.imageNames.length) {
       this.finishAssessment();
     } else {

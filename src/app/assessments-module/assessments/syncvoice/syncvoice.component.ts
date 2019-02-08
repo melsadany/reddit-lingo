@@ -6,13 +6,14 @@ import {
 } from '../../../services/audio-recording.service';
 import { Subscription } from 'rxjs';
 import { DialogService } from '../../../services/dialog.service';
+import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 
 @Component({
   selector: 'app-syncvoice',
   templateUrl: './syncvoice.component.html',
   styleUrls: ['./syncvoice.component.scss']
 })
-export class SyncvoiceComponent implements OnInit, OnDestroy {
+export class SyncvoiceComponent implements OnInit, OnDestroy, CanComponentDeactivate {
   constructor(
     private dataService: AssessmentDataService,
     private audioRecordingService: AudioRecordingService,
@@ -153,8 +154,10 @@ export class SyncvoiceComponent implements OnInit, OnDestroy {
   }
 
   nextLalaPrompt(): void {
-    console.log(this.promptNumber);
-    console.log(this.audioNames[this.promptNumber]);
+    if (!this.startedAssessment) {
+      this.startedAssessment = true;
+      this.dataService.setIsInAssessment(true);
+    }
     if (this.promptNumber < this.audioNames.length) {
       this.splashPage = true;
       const audio = new Audio();

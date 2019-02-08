@@ -6,13 +6,14 @@ import {
 } from '../../../services/audio-recording.service';
 import { Subscription } from 'rxjs';
 import { DialogService } from '../../../services/dialog.service';
+import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 
 @Component({
   selector: 'app-sentencerepetition',
   templateUrl: './sentencerepetition.component.html',
   styleUrls: ['./sentencerepetition.component.scss']
 })
-export class SentencerepetitionComponent implements OnInit, OnDestroy {
+export class SentencerepetitionComponent implements OnInit, OnDestroy, CanComponentDeactivate {
   failSubscription: Subscription;
   isRecording = false;
   recordingTimeSubscription: Subscription;
@@ -113,7 +114,6 @@ export class SentencerepetitionComponent implements OnInit, OnDestroy {
   }
 
   startDisplayedCountdownTimer(): void {
-    this.startedAssessment = true;
     this.countingDown = true;
     if (this.splashPage) {
       this.splashPage = false;
@@ -161,8 +161,10 @@ export class SentencerepetitionComponent implements OnInit, OnDestroy {
   }
 
   startAudioForSet(): void {
-    console.log(this.promptNumber);
-    console.log(this.filePathsToPlay[this.promptNumber]);
+    if (!this.startedAssessment) {
+      this.startedAssessment = true;
+      this.dataService.setIsInAssessment(true);
+    }
     this.showStartButton = false;
     if (this.promptNumber < this.filePathsToPlay.length) {
       this.splashPage = true;

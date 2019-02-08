@@ -1,13 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import { DialogService } from '../../../services/dialog.service';
+import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 
 @Component({
   selector: 'app-matrixreasoning',
   templateUrl: './matrixreasoning.component.html',
   styleUrls: ['./matrixreasoning.component.scss']
 })
-export class MatrixreasoningComponent implements OnInit, OnDestroy {
+export class MatrixreasoningComponent implements OnInit, OnDestroy, CanComponentDeactivate {
   imagesLocation = 'assets/img/matrixreasoning/';
   imageTypes = ['frameSets', 'solutionSets'];
   dimensions = {
@@ -170,7 +171,10 @@ export class MatrixreasoningComponent implements OnInit, OnDestroy {
   }
 
   startDisplayedCountdownTimer(): void {
-    this.startedAssessment = true;
+    if (!this.startedAssessment) {
+      this.startedAssessment = true;
+      this.dataService.setIsInAssessment(true);
+    }
     this.countingDown = true;
     this.splashPage = false;
     this.intervalCountdown = setInterval(() => {

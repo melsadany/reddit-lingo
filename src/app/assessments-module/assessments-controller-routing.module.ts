@@ -62,7 +62,7 @@ const routes: Routes = [
       },
       {
         path: 'done',
-        component: AssessmentsDoneComponent,
+        component: AssessmentsDoneComponent
       }
     ]
   }
@@ -71,6 +71,6 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
-  providers: []
+  providers: [CanDeactivateGuard]
 })
 export class AssessmentsControllerRoutingModule {}
