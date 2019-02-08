@@ -12,7 +12,7 @@
     <div *ngIf="dataService.showThankYou()">
       <p class="pt4"> Thank you for completing this assessment.</p>
     </div>
-    <button type='button' class='btn btn-primary btn-lg' (click)="dataService.nextAssessment()">{{dataService.textOnStartButton}}</button>
+    <button *ngIf="this.dataService.isAssessmentCompleted(this.dataService.getCurrentAssessment())" type='button' class='btn btn-primary btn-lg' (click)="dataService.nextAssessment()">{{dataService.textOnStartButton}}</button>
   </div>
 </div>
 <div *ngIf="dataService.DEBUG_MODE" class="py-4 text-center">

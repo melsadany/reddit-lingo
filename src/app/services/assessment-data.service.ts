@@ -10,6 +10,7 @@ import {
 } from '../structures/assessmentdata';
 import { Router } from '@angular/router';
 import 'rxjs/add/operator/map';
+import { StateManagerService } from './state-manager.service';
 
 @Injectable()
 export class AssessmentDataService {
@@ -17,20 +18,6 @@ export class AssessmentDataService {
   assessmentData: AssessmentData;
   http: HttpClient;
   inAssessment: Boolean = false;
-  currentAssessment = '';
-  assessmentsList: string[] = [
-    'prescreenerquestions',
-    'wordfinding',
-    'sentencerepetition',
-    'matrixreasoning',
-    'syncvoice',
-    'timeduration',
-    'ran',
-    'pictureprompt',
-    'listeningcomprehension',
-    'postscreenerquestions'
-  ]; // KRM: Add to this list to add more assessments as they are built
-  // The ordering determines the order in which the assessments are presented
   allAssessmentsCompleted: Boolean = false;
   router: Router;
   showWelcomePage = true;
@@ -44,6 +31,7 @@ export class AssessmentDataService {
   constructor(
     private Http: HttpClient,
     private cookieService: CookieService,
+    private stateManager: StateManagerService,
     router: Router
   ) {
     this.http = Http;
@@ -72,17 +60,6 @@ export class AssessmentDataService {
 
   public isAssessmentCompleted(assessNameCheck: string): Boolean {
     return this.checkCookie(assessNameCheck);
-  }
-
-  public populateCompletionCookies(assessmentsData: AssessmentData): void {
-    for (const value of assessmentsData.assessments) {
-      if (!this.checkCookie(value.assess_name)) {
-        this.cookieService.set(value.assess_name, 'completed', 200);
-      }
-    }
-    if (Object.keys(this.cookieService.getAll()).length > 1) {
-      this.textOnStartButton = 'Continue assessments';
-    }
   }
 
   public getUserAssessmentDataFromMongo(
@@ -133,10 +110,10 @@ export class AssessmentDataService {
   }
 
   private determineNextAssessment(): string {
-    for (const assessmentName of this.assessmentsList) {
-      if (!this.isAssessmentCompleted(assessmentName)) {
-        console.log('not completed: ' + assessmentName); // KRM: Debugging
-        return assessmentName;
+    for (const assessmentState of this.stateManager.assessments) {
+      if (!assessmentState['completed']) {
+        console.log('not completed: ' + assessmentState['assessment_name']); // KRM: Debugging
+        return assessmentState['assessment_name'];
       }
     }
     this.allAssessmentsCompleted = true;
@@ -145,8 +122,8 @@ export class AssessmentDataService {
   }
 
   public nextAssessment(): void {
-    if (this.showWelcomePage) {
-      this.showWelcomePage = false;
+    if (this.stateManager.showAssessmentFrontPage) {
+      this.stateManager.showAssessmentFrontPage = false;
     }
     if (this.firstTimeStarting) {
       this.firstTimeStarting = false;
@@ -160,7 +137,6 @@ export class AssessmentDataService {
 
   public goTo(assessmentName: string): void {
     this.setStartButton(true);
-    this.setIsInAssessment(true);
     this.router.navigate(['/assessments/', assessmentName]);
   }
 

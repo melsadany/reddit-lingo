@@ -18,6 +18,7 @@ import { ContactComponent } from './contact/contact.component';
 import { AssessmentsModule } from './assessments-module/assessments-controller.module';
 import { AssessmentDataService } from './services/assessment-data.service';
 import { DialogService } from './services/dialog.service';
+import { StateManagerService } from './services/state-manager.service';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { DialogService } from './services/dialog.service';
   providers: [
     CookieService,
     AssessmentDataService,
-    DialogService
+    DialogService,
+    StateManagerService
 
   ],
   entryComponents: [],

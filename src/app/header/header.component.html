@@ -12,7 +12,7 @@
           <ng-container *ngIf="updateHeader(); then resumeAssessment; else Home">
           </ng-container>
           <ng-template #resumeAssessment>
-            <a class="nav-link" [routerLink]="['/assessments/', dataService.getCurrentAssessment()]">Resume <span class="sr-only">(current)</span></a>
+            <a class="nav-link" [routerLink]="['assessments', dataService.getCurrentAssessment()]">In Assessment <span class="sr-only">(current)</span></a>
           </ng-template>
           <ng-template #Home>
             <a class="nav-link" [routerLink]="['home']">Home <span class="sr-only">(current)</span></a>
@@ -23,6 +23,9 @@
         </li>
         <li class="nav-item">
           <a class="nav-link" [routerLink]="['contact']">Contact</a>
+        </li>
+        <li> <a class="nav-link" [routerLink]="['assessments', dataService.getCurrentAssessment()]">Assessments <span
+              class="sr-only">(current)</span></a>
         </li>
       </ul>
     </div>
