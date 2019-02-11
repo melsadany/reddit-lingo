@@ -5,7 +5,7 @@
       someone who could not see the picture. With each picture, your description will be recorded for 30 seconds.
     </p>
     <div class="text-center">
-      <button type="button" class="start-button btn btn-success" (click)="advanceToNextPrompt()">{{stateManager.textOnInnerAssessmentButton}}</button>
+      <button type="button" class="start-button btn btn-success" (click)="setStateAndStart()">{{stateManager.textOnInnerAssessmentButton}}</button>
     </div>
   </div>
   <div class="imageParent" *ngIf="showPromptImage">

@@ -111,10 +111,15 @@ export class MatrixreasoningComponent
     private dialogService: DialogService
   ) {}
 
-  ngOnInit(): void {
+  ngOnInit(): void {}
+
+  setStateAndStart(): void {
+    this.stateManager.showInnerAssessmentButton = false;
+    this.stateManager.textOnInnerAssessmentButton = 'CONTINUE ASSESSMENT';
+    this.stateManager.isInAssessment = true;
     this.calculateFrameSets();
     this.calculateSolutionSets();
-    console.log(this.imageMatrices);
+    this.startDisplayedCountdownTimer();
   }
 
   // ngOnDestroy(): void {
@@ -177,12 +182,7 @@ export class MatrixreasoningComponent
   }
 
   startDisplayedCountdownTimer(): void {
-    if (!this.startedAssessment) {
-      this.startedAssessment = true;
-      this.stateManager.isInAssessment = true;
-    }
     this.countingDown = true;
-    this.splashPage = false;
     this.intervalCountdown = setInterval(() => {
       if (this.timeLeft > 0) {
         this.timeLeft--;

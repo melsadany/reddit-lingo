@@ -14,8 +14,8 @@ import { StateManagerService } from '../../../services/state-manager.service';
   templateUrl: './wordfinding.component.html',
   styleUrls: ['./wordfinding.component.scss']
 })
-export class WordfindingComponent implements OnInit, OnDestroy, CanComponentDeactivate {
-  startedAssessment = false;
+export class WordfindingComponent
+  implements OnInit, OnDestroy, CanComponentDeactivate {
   countingDown = false;
   splashPage = true;
   intervalCountdown: NodeJS.Timeout;
@@ -23,7 +23,6 @@ export class WordfindingComponent implements OnInit, OnDestroy, CanComponentDeac
   timeLeft = 3;
   doneCountingDown = false;
   isRecording = false;
-  showRecordingIcon = false;
   intervalCountup: NodeJS.Timeout;
   doneRecording: boolean;
   recordedData = [];
@@ -31,6 +30,10 @@ export class WordfindingComponent implements OnInit, OnDestroy, CanComponentDeac
   promptNumber = 0;
   showLetter = false;
   currentLetter = '';
+  failSubscription: Subscription;
+  recordingTimeSubscription: Subscription;
+  recordedTime: string;
+  recordedOutputSubscription: Subscription;
   letterData = [
     {
       char: 'A',
@@ -48,12 +51,6 @@ export class WordfindingComponent implements OnInit, OnDestroy, CanComponentDeac
       type: 'Least Frequent'
     }
   ];
-  failSubscription: Subscription;
-  recordingTimeSubscription: Subscription;
-  recordedTime: string;
-  recordedOutputSubscription: Subscription;
-  showStartButton = true;
-
   constructor(
     private stateManager: StateManagerService,
     private audioRecordingService: AudioRecordingService,
@@ -79,21 +76,26 @@ export class WordfindingComponent implements OnInit, OnDestroy, CanComponentDeac
       });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  }
 
   ngOnDestroy(): void {
     this.abortRecording();
     this.failSubscription.unsubscribe();
     this.recordingTimeSubscription.unsubscribe();
     this.recordedOutputSubscription.unsubscribe();
-    // this.dataService.goTo('');
+  }
+
+  setStateAndStart(): void {
+    this.stateManager.showInnerAssessmentButton = false;
+    this.stateManager.textOnInnerAssessmentButton = 'CONTINUE ASSESSMENT';
+    this.stateManager.isInAssessment = true;
+    this.calculateNextLetter();
+    this.startDisplayedCountdownTimer();
   }
 
   startDisplayedCountdownTimer(): void {
     this.countingDown = true;
-    if (this.splashPage) {
-      this.splashPage = false;
-    }
     this.intervalCountdown = setInterval(() => {
       if (this.timeLeft > 0) {
         this.timeLeft--;
@@ -111,7 +113,6 @@ export class WordfindingComponent implements OnInit, OnDestroy, CanComponentDeac
   startRecording(): void {
     if (!this.isRecording) {
       this.isRecording = true;
-      this.showRecordingIcon = true;
       this.audioRecordingService.startRecording();
       this.intervalCountup = setTimeout(() => {
         this.stopRecording();
@@ -132,7 +133,8 @@ export class WordfindingComponent implements OnInit, OnDestroy, CanComponentDeac
       this.audioRecordingService.stopRecording();
       this.isRecording = false;
       this.doneRecording = true;
-      this.showRecordingIcon = false;
+      this.showLetter = false;
+      this.stateManager.showInnerAssessmentButton = true;
       clearTimeout(this.intervalCountup);
     }
   }
@@ -155,25 +157,17 @@ export class WordfindingComponent implements OnInit, OnDestroy, CanComponentDeac
       }); // KRM: Adding recording to the array is done in sync. Currently wait for the recording to load.
       // Might be btter to do this async so we don't have the chance of blocking for a short
       // period before moving to the next prompt.
-      if (this.promptNumber === 0) {
-        this.textOnButton = 'Continue'; // KRM: Update the button after the first press prompt finsihes
-      }
       this.recordingNumber++;
       this.promptNumber++;
-      this.showStartButton = true;
       // this.advanceToNextPrompt();  KRM: For automatic advancement
       console.log(this.recordedData);
     };
   }
 
   advanceToNextPrompt(): void {
-    if (!this.startedAssessment) {
-      this.startedAssessment = true;
-      this.stateManager.isInAssessment = true;
-    }
-    this.showStartButton = false;
     if (this.promptNumber < this.letterData.length) {
       this.calculateNextLetter();
+      this.stateManager.showInnerAssessmentButton = false;
       this.startDisplayedCountdownTimer();
     } else {
       this.finishAssessment();

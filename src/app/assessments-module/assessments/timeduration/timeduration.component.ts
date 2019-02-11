@@ -11,9 +11,7 @@ import { StateManagerService } from '../../../services/state-manager.service';
 })
 export class TimedurationComponent
   implements OnInit, OnDestroy, CanComponentDeactivate {
-  startedAssessment = false;
   countingDown = false;
-  splashPage = true;
   intervalCountdown: NodeJS.Timer;
   timeLeft = 3;
   doneCountingDown = false;
@@ -39,17 +37,19 @@ export class TimedurationComponent
     private dialogService: DialogService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
+
+  setStateAndStart(): void {
+    this.stateManager.showInnerAssessmentButton = false;
+    this.stateManager.textOnInnerAssessmentButton = 'CONTINUE ASSESSMENT';
+    this.stateManager.isInAssessment = true;
+    this.startDisplayedCountdownTimer();
+  }
 
   ngOnDestroy(): void {}
 
   startDisplayedCountdownTimer(): void {
-    if (!this.startedAssessment) {
-      this.startedAssessment = true;
-      this.stateManager.isInAssessment = true;
-    }
     this.countingDown = true;
-    this.splashPage = false;
     this.intervalCountdown = setInterval(() => {
       if (this.timeLeft > 0) {
         this.timeLeft--;

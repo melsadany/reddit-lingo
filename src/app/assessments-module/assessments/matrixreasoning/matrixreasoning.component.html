@@ -6,7 +6,7 @@
       pictures.
     </p>
     <div class="text-center">
-      <button *ngIf="stateManager.showInnerAssessmentButton" type="button" class="start-button btn btn-success" (click)="startDisplayedCountdownTimer()">{{stateManager.textOnInnerAssessmentButton}}</button>
+      <button *ngIf="stateManager.showInnerAssessmentButton" type="button" class="start-button btn btn-success" (click)="setStateAndStart()">{{stateManager.textOnInnerAssessmentButton}}</button>
     </div>
   </div>
   <div *ngIf="showMatrix">

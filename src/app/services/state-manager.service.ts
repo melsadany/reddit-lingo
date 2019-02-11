@@ -12,9 +12,8 @@ import { Router } from '@angular/router';
 export class StateManagerService {
   private _DEBUG_MODE = true; // KRM: FOR BEBUGGING ONLY. GIVES DEBUG BUTTONS IN ASSESSMENTS
   private _isInAssessment = false;
-  private _isAssessmentStarted = false;
   private _showAssessmentFrontPage = true;
-  private _showInnerAssessmentButton = false;
+  private _showInnerAssessmentButton = true;
   private _currentAssessment: string;
   private _finishedAllAssessments = false;
   private _showOutsideAssessmentButton = true;
@@ -60,12 +59,6 @@ export class StateManagerService {
   }
   public set showAssessmentFrontPage(value: boolean) {
     this._showAssessmentFrontPage = value;
-  }
-  public get isAssessmentStarted(): boolean {
-    return this._isAssessmentStarted;
-  }
-  public set isAssessmentStarted(value: boolean) {
-    this._isAssessmentStarted = value;
   }
   public get showContinueOutsideAssessmentButton(): boolean {
     return this._showOutsideAssessmentButton;
@@ -142,16 +135,6 @@ export class StateManagerService {
     this.currentAssessment = this.determineNextAssessment();
   }
 
-  // public populateStateCookies(name: string): void {
-  //   // KRM :Get away from cookies for every assessment. Use internal data structure
-  //   if (!this.dataService.checkCookie(name)) {
-  //     this.dataService.setCookie(name, 'completed', 200);
-  //   }
-  //   if (Object.keys(this.dataService.getAllCookies()).length > 2) {
-  //     this.textOnContinueOutsideAssessmentButton = 'Continue assessments';
-  //   }
-  // }
-
   private determineNextAssessment(): string {
     for (const assessmentState of this.assessments) {
       if (!assessmentState['completed']) {
@@ -186,10 +169,7 @@ export class StateManagerService {
 
   public nextAssessmentDebugMode(): void {
     if (this.DEBUG_MODE) {
-      this.isInAssessment = false;
-      this.markAssessmentCompleted(this.currentAssessment);
-      // this.setCookie(this.currentAssessment, 'completed', 200); KRM: Get away from assessment cookies
-      this.goToNextAssessment();
+      this.finishThisAssessmentAndAdvance(this.currentAssessment);
     }
   }
 
@@ -203,19 +183,14 @@ export class StateManagerService {
 
   public deleteUserCookieDebugMode(): void {
     if (this.DEBUG_MODE) {
-      this.dataService.deleteCookie('user_id');
+      this.dataService.deleteUserIdCookie();
     }
   }
 
   public finishThisAssessmentAndAdvance(assessment: string): void {
     this.isInAssessment = false;
-    this.isAssessmentStarted = false;
     this.markAssessmentCompleted(assessment);
+    this.textOnInnerAssessmentButton = 'START ASSESSMENT';
     this.goToNextAssessment();
-  }
-
-  public startThisAssessment(startFunction: Function): void {
-    this.isAssessmentStarted = true;
-    startFunction();
   }
 }

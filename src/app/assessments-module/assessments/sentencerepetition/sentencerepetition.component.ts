@@ -76,15 +76,21 @@ export class SentencerepetitionComponent
   ];
   filePathsToPlay = [];
 
-  ngOnInit(): void {
-    this.calculateFilePaths();
-  }
+  ngOnInit(): void {}
 
   ngOnDestroy(): void {
     this.abortRecording();
     this.failSubscription.unsubscribe();
     this.recordingTimeSubscription.unsubscribe();
     this.recordedOutputSubscription.unsubscribe();
+  }
+
+  setStateAndStart(): void {
+    this.stateManager.showInnerAssessmentButton = false;
+    this.stateManager.textOnInnerAssessmentButton = 'CONTINUE ASSESSMENT';
+    this.stateManager.isInAssessment = true;
+    this.calculateFilePaths();
+    this.startAudioForSet();
   }
 
   calculateFilePaths(): void {
@@ -110,16 +116,12 @@ export class SentencerepetitionComponent
       }
       this.recordingNumber++;
       this.promptNumber++;
-      this.showStartButton = true;
       console.log(this.recordedData);
     };
   }
 
   startDisplayedCountdownTimer(): void {
     this.countingDown = true;
-    if (this.splashPage) {
-      this.splashPage = false;
-    }
     this.intervalCountdown = setInterval(() => {
       if (this.timeLeft > 0) {
         this.timeLeft--;
@@ -158,16 +160,14 @@ export class SentencerepetitionComponent
       this.isRecording = false;
       this.doneRecording = true;
       this.showRecordingIcon = false;
+      this.stateManager.showInnerAssessmentButton = true; // KRM: manual advance
+      // this.startAudioForSet() // automatic advance
       clearTimeout(this.intervalCountup);
     }
   }
 
   startAudioForSet(): void {
-    if (!this.startedAssessment) {
-      this.startedAssessment = true;
-      this.stateManager.isInAssessment = true;
-    }
-    this.showStartButton = false;
+    this.stateManager.showInnerAssessmentButton = false;
     if (this.promptNumber < this.filePathsToPlay.length) {
       this.splashPage = true;
       const audio = new Audio();

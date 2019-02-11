@@ -14,7 +14,8 @@ import { StateManagerService } from '../../../services/state-manager.service';
   templateUrl: './syncvoice.component.html',
   styleUrls: ['./syncvoice.component.scss']
 })
-export class SyncvoiceComponent implements OnInit, OnDestroy, CanComponentDeactivate {
+export class SyncvoiceComponent
+  implements OnInit, OnDestroy, CanComponentDeactivate {
   constructor(
     private stateManager: StateManagerService,
     private dataService: AssessmentDataService,
@@ -50,9 +51,7 @@ export class SyncvoiceComponent implements OnInit, OnDestroy, CanComponentDeacti
     '1_2_one.mp3',
     '1_3_threequarters.mp3'
   ];
-  startedAssessment = false;
   countingDown = false;
-  splashPage = true;
   intervalCountdown: NodeJS.Timer;
   intervalCountup: NodeJS.Timer;
   timeLeft = 3;
@@ -64,11 +63,15 @@ export class SyncvoiceComponent implements OnInit, OnDestroy, CanComponentDeacti
   recordedOutputSubscription: Subscription;
   recordedData = [];
   doneRecording = false;
-  showStartButton = true;
-  showRecordingIcon = false;
 
-  ngOnInit(): void {
+  ngOnInit(): void {}
+
+  setStateAndStart(): void {
+    this.stateManager.showInnerAssessmentButton = false;
+    this.stateManager.textOnInnerAssessmentButton = 'CONTINUE ASSESSMENT';
+    this.stateManager.isInAssessment = true;
     this.calculateAudioFilePaths();
+    this.nextLalaPrompt();
   }
 
   ngOnDestroy(): void {
@@ -85,11 +88,7 @@ export class SyncvoiceComponent implements OnInit, OnDestroy, CanComponentDeacti
   }
 
   startDisplayedCountdownTimer(): void {
-    this.startedAssessment = true;
     this.countingDown = true;
-    if (this.splashPage) {
-      this.splashPage = false;
-    }
     this.intervalCountdown = setInterval(() => {
       if (this.timeLeft > 0) {
         this.timeLeft--;
@@ -106,7 +105,6 @@ export class SyncvoiceComponent implements OnInit, OnDestroy, CanComponentDeacti
   startRecording(): void {
     if (!this.isRecording) {
       this.isRecording = true;
-      this.showRecordingIcon = true;
       this.audioRecordingService.startRecording();
       this.intervalCountup = setTimeout(() => {
         this.stopRecording();
@@ -127,7 +125,7 @@ export class SyncvoiceComponent implements OnInit, OnDestroy, CanComponentDeacti
       this.audioRecordingService.stopRecording();
       this.isRecording = false;
       this.doneRecording = true;
-      this.showRecordingIcon = false;
+      this.stateManager.showInnerAssessmentButton = true;
       clearTimeout(this.intervalCountup);
     }
   }
@@ -149,25 +147,19 @@ export class SyncvoiceComponent implements OnInit, OnDestroy, CanComponentDeacti
       }
       this.recordingNumber++;
       this.promptNumber++;
-      this.showStartButton = true;
       console.log(this.recordedData);
     };
   }
 
   nextLalaPrompt(): void {
-    if (!this.startedAssessment) {
-      this.startedAssessment = true;
-      this.stateManager.isInAssessment = true;
-    }
     if (this.promptNumber < this.audioNames.length) {
-      this.splashPage = true;
+      this.stateManager.showInnerAssessmentButton = false;
       const audio = new Audio();
       audio.src = this.audioNames[this.promptNumber];
       audio.addEventListener('ended', () =>
         this.startDisplayedCountdownTimer()
       );
       audio.play();
-      this.showStartButton = false;
     } else {
       this.finishAssessment();
     }

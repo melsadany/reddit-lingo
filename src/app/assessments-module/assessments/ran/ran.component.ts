@@ -100,10 +100,13 @@ export class RanComponent implements OnInit, OnDestroy, CanComponentDeactivate {
     this.recordedOutputSubscription.unsubscribe();
   }
 
-  ngOnInit(): void {
-    // if (this.dataService.isAssessmentCompleted('ran')) {
-    //   this.assessmentAlreadyCompleted = true;
-    // }
+  ngOnInit(): void {}
+
+  setStateAndStart(): void {
+    this.stateManager.showInnerAssessmentButton = false;
+    this.stateManager.textOnInnerAssessmentButton = 'CONTINUE ASSESSMENT';
+    this.stateManager.isInAssessment = true;
+    this.startDisplayedCountdownTimer();
   }
 
   startDisplayedCountdownTimer(): void {
@@ -150,7 +153,7 @@ export class RanComponent implements OnInit, OnDestroy, CanComponentDeactivate {
             }
           }
         )
-        .subscribe();
+        .subscribe(); // KRN: Fix how this output is handled to be updated like other assessments
     };
     this.stateManager.finishThisAssessmentAndAdvance('ran');
     // this.dataService.setCookie('ran', 'completed', 200);

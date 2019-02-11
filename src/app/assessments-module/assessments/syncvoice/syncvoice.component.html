@@ -5,10 +5,11 @@
       trying to match the speed or tempo that you heard. There will be several trials, each with a different speed.
     </p>
   </div>
-  <div class="text-center button-down">
-    <button *ngIf="stateManager.showInnerAssessmentButton" type="button" class="start-button btn btn-success" (click)="nextLalaPrompt()">{{stateManager.textOnInnerAssessmentButton}}</button>
+  <div *ngIf="stateManager.showInnerAssessmentButton" class="text-center button-down">
+    <button *ngIf="!stateManager.isInAssessment" type="button" class="start-button btn btn-success" (click)="setStateAndStart()">{{stateManager.textOnInnerAssessmentButton}}</button>
+    <button *ngIf="stateManager.isInAssessment" type="button" class="start-button btn btn-success" (click)="nextLalaPrompt()">{{stateManager.textOnInnerAssessmentButton}}</button>
   </div>
-  <div class="text-center" *ngIf="showRecordingIcon">
+  <div class="text-center" *ngIf="isRecording">
     <button type="button" class="cancel-button btn btn-danger button-down">Recording</button>
   </div>
   <p *ngIf="countingDown" class="text-center display-1">{{timeLeft}}</p>

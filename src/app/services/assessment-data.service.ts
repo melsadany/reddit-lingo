@@ -8,38 +8,29 @@ import {
   AssessmentDataStructure,
   GoogleSpeechToTextDataStructure
 } from '../structures/assessmentdata';
-import { Router } from '@angular/router';
 import 'rxjs/add/operator/map';
-import { StateManagerService } from './state-manager.service';
 
 @Injectable()
 export class AssessmentDataService {
   assessmentData: AssessmentData;
 
-  constructor(
-    private cookieService: CookieService,
-    private http: HttpClient
-  ) {}
+  constructor(private cookieService: CookieService, private http: HttpClient) {}
 
-  public setCookie(name: string, value: string, date: number): void {
-    this.cookieService.set(name, value, date);
+  public setUserIdCookie(value: string): void {
+    this.cookieService.set('user_id', value, 200);
   }
 
-  public deleteCookie(name: string): void {
-    this.cookieService.delete(name);
+  public deleteUserIdCookie(): void {
+    this.cookieService.delete('user_id');
   }
 
-  public checkCookie(name: string): boolean {
-    return this.cookieService.check(name);
+  public checkUserIdCookie(): boolean {
+    return this.cookieService.check('user_id');
   }
 
-  public getCookie(name: string): string {
-    return this.cookieService.get(name);
+  public getUserIdCookie(): string {
+    return this.cookieService.get('user_id');
   }
-
-  // public getAllCookies(): object {
-  //   return this.cookieService.getAll();
-  // }
 
   public getUserAssessmentDataFromMongo(
     user_id: string
@@ -56,7 +47,7 @@ export class AssessmentDataService {
     return this.http.post(
       '/api/assessmentsAPI/SaveAssessments',
       {
-        user_id: this.getCookie('user_id'),
+        user_id: this.getUserIdCookie(),
         assessments: [assessmentsData],
         google_speech_to_text_assess: [googleData]
       },
@@ -71,57 +62,4 @@ export class AssessmentDataService {
       this.http.get('/api/assessmentsAPI/NextUserID', {})
     );
   }
-
-  // public getCurrentAssessmentUrl(): string {
-  //   return this.router.url.slice(13); // KRM: Slice off the /assessments/ portion of the url to just get the assessment name
-  // }
-
-  // public showButton(): Boolean {
-  //   return (
-  //     this.getCurrentUrl() === '/assessments' ||
-  //     this.isAssessmentCompleted(this.getCurrentAssessment()) ||
-  //     (!this.inAssessment &&
-  //       !this.showWelcomePage &&
-  //       !this.allAssessmentsCompleted)
-  //   );
-  // }
-
-  // public showThankYou(): Boolean {
-  //   return this.isAssessmentCompleted(this.getCurrentAssessmentUrl());
-  // }
-
-  // public showWelcome(): Boolean {
-  //   return (
-  //     this.showWelcomePage &&
-  //     !this.inAssessment &&
-  //     !this.allAssessmentsCompleted
-  //   );
-  // }
-
-  // public setStartButton(set: boolean): void {
-  //   this.startButton = set;
-  // }
-
-  // public showStartButton(): boolean {
-  //   return this.startButton;
-  // }
-
-  // public setSplashPage(set: boolean): void {
-  //   this.splashPage = set;
-  // }
-
-  // public showSplashPage(): boolean {
-  //   return this.splashPage;
-  // }
-
-  // public showInitialSplashPage(assessment: string): Boolean {
-  //   return (
-  //     this.currentAssessment === assessment &&
-  //     !this.isAssessmentCompleted(assessment)
-  //   );
-  // }
-
-  // public doRedirectBackToStart(): Boolean {
-  //   return this.showWelcome() && !this.showButton(); // If you come to an assessment just from the browser with the URL
-  // }
 }

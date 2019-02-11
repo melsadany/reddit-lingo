@@ -24,8 +24,8 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    if (!this.dataService.checkCookie('user_id')) {
-      this.setCookieAndGetData();
+    if (!this.dataService.checkUserIdCookie()) {
+      this.setUserIdCookieAndGetData();
     } else {
       this.getData();
     }
@@ -37,10 +37,10 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  setCookieAndGetData(): void {
+  setUserIdCookieAndGetData(): void {
     this.dataService.getNextUserID().subscribe((value: UserIdObject) => {
       this.nextUserID = value.nextID.toString();
-      this.dataService.setCookie('user_id', this.nextUserID, 200);
+      this.dataService.setUserIdCookie(this.nextUserID);
       this.getData();
     });
   }
@@ -49,7 +49,7 @@ export class AppComponent implements OnInit, OnDestroy {
     // KRM: Get the data for the current user
     // that has already been put in the database from pervious assessments
     this.dataSubscription = this.dataService
-      .getUserAssessmentDataFromMongo(this.dataService.getCookie('user_id'))
+      .getUserAssessmentDataFromMongo(this.dataService.getUserIdCookie())
       .subscribe((data: AssessmentData) => {
         this.assessmentData = data;
         // console.log(JSON.stringify(this.assessmentData));

@@ -64,8 +64,14 @@ export class PicturepromptComponent
       });
   }
 
-  ngOnInit(): void {
+  ngOnInit(): void {}
+
+  setStateAndStart(): void {
+    this.stateManager.showInnerAssessmentButton = false;
+    this.stateManager.textOnInnerAssessmentButton = 'CONTINUE ASSESSMENT';
+    this.stateManager.isInAssessment = true;
     this.calculateImagePaths();
+    this.advanceToNextPrompt();
   }
 
   ngOnDestroy(): void {
@@ -138,10 +144,6 @@ export class PicturepromptComponent
   }
 
   advanceToNextPrompt(): void {
-    if (!this.startedAssessment) {
-      this.startedAssessment = true;
-      this.stateManager.isInAssessment = true;
-    }
     if (this.promptNumber >= this.imageNames.length) {
       this.finishAssessment();
     } else {
