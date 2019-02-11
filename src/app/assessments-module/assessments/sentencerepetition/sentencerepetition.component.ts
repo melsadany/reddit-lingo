@@ -24,11 +24,7 @@ export class SentencerepetitionComponent
   recordedData = [];
   recordingNumber = 1;
   promptNumber = 0;
-  textOnButton = 'Start Assessment';
-  showStartButton = true;
-  startedAssessment = false;
   countingDown = false;
-  splashPage = true;
   intervalCountdown: NodeJS.Timeout;
   timeLeft = 3;
   doneCountingDown = false;
@@ -111,9 +107,6 @@ export class SentencerepetitionComponent
       }); // KRM: Adding recording to the array is done in sync. Currently wait for the recording to load.
       // Might be btter to do this async so we don't have the chance of blocking for a short
       // period before moving to the next prompt.
-      if (this.promptNumber === 0) {
-        this.textOnButton = 'Continue'; // KRM: Update the button after the first press prompt finsihes
-      }
       this.recordingNumber++;
       this.promptNumber++;
       console.log(this.recordedData);
@@ -167,9 +160,7 @@ export class SentencerepetitionComponent
   }
 
   startAudioForSet(): void {
-    this.stateManager.showInnerAssessmentButton = false;
     if (this.promptNumber < this.filePathsToPlay.length) {
-      this.splashPage = true;
       const audio = new Audio();
       audio.src = this.filePathsToPlay[this.promptNumber];
       audio.addEventListener('ended', () =>
@@ -196,7 +187,6 @@ export class SentencerepetitionComponent
       )
       .subscribe();
     this.stateManager.finishThisAssessmentAndAdvance('sentencerepetition');
-    // this.dataService.setCookie('sentencerepetition', 'completed', 200);
   }
   canDeactivate(): boolean {
     return this.dialogService.canRedirect();

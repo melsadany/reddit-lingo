@@ -57,9 +57,6 @@ export class PrescreenerquestionsComponent
     this.stateManager.isInAssessment = true;
   }
 
-  // ngOnDestroy(): void {
-  //   this.dataService.goTo('');
-  // }
 
   postData(): void {
     const data = {
@@ -87,7 +84,6 @@ export class PrescreenerquestionsComponent
       .subscribe(); // KRM: Do this for every assessment
     this.stateManager.finishThisAssessmentAndAdvance('prescreenerquestions');
 
-    // this.dataService.setCookie('prescreenerquestions', 'completed', 200);
   }
 
   canDeactivate(): boolean {

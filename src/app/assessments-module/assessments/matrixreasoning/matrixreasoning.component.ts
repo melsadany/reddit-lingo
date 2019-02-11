@@ -94,15 +94,11 @@ export class MatrixreasoningComponent
     frameSets: {},
     solutionSets: {}
   };
-  startedAssessment = false;
   countingDown = false;
-  splashPage = true;
   intervalCountdown: NodeJS.Timeout;
   timeLeft = 3;
   doneCountingDown = false;
   showMatrix = false;
-  showStartButton = true;
-  textOnButton = 'Start Assessment';
   imageSelections = {};
 
   constructor(
@@ -121,10 +117,6 @@ export class MatrixreasoningComponent
     this.calculateSolutionSets();
     this.startDisplayedCountdownTimer();
   }
-
-  // ngOnDestroy(): void {
-  //   this.dataService.goTo('');
-  // }
 
   calculateImageNames(): void {
     this.calculateFrameSets();
@@ -224,7 +216,6 @@ export class MatrixreasoningComponent
       )
       .subscribe();
     this.stateManager.finishThisAssessmentAndAdvance('matrixreasoning');
-    // this.dataService.setCookie('matrixreasoning', 'completed', 200);
   }
 
   canDeactivate(): boolean {

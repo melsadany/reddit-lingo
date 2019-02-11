@@ -129,7 +129,6 @@ export class TimedurationComponent
       )
       .subscribe();
     this.stateManager.finishThisAssessmentAndAdvance('timeduration');
-    // this.dataService.setCookie('timeduration', 'completed', 200);
   }
   canDeactivate(): boolean {
     return this.dialogService.canRedirect();

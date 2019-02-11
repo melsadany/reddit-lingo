@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import {
   AssessmentData,
-  AssessmentDataStructure
 } from '../structures/assessmentdata';
 import { AssessmentDataService } from './assessment-data.service';
 import { Router } from '@angular/router';

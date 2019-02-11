@@ -11,10 +11,6 @@ import { StateManagerService } from '../../../services/state-manager.service';
 })
 export class ListeningcomprehensionComponent
   implements OnInit, OnDestroy, CanComponentDeactivate {
-  textOnButton = 'Start Assessment';
-  firstSet = true;
-  assessmentAlreadyCompleted = false;
-  startedAssessment = false;
   countingDown = false;
   intervalCountdown: NodeJS.Timeout;
   timeLeft = 3;
@@ -103,20 +99,12 @@ export class ListeningcomprehensionComponent
 
   nextImageSet(): void {
     this.calculateImageNames();
-    if (this.firstSet) {
-      this.firstSet = false;
-      this.textOnButton = 'Continue to next set';
-    }
     this.stateManager.showAssessmentFrontPage = true;
     this.startAudioInstructionForSet();
   }
 
   startAudioInstructionForSet(): void {
     // KRM: Main function
-    if (!this.startedAssessment) {
-      this.stateManager.isInAssessment = true;
-      this.startedAssessment = true;
-    }
     const audio = new Audio();
     audio.src = `${this.audioInstructionsLocation}q${
       this.currentQuestionSetNumber
@@ -143,7 +131,6 @@ export class ListeningcomprehensionComponent
       )
       .subscribe();
     this.stateManager.finishThisAssessmentAndAdvance('listeningcomprehension');
-    // this.dataService.setCookie('listeningcomprehension', 'completed', 200);
   }
   canDeactivate(): boolean {
     return this.dialogService.canRedirect();

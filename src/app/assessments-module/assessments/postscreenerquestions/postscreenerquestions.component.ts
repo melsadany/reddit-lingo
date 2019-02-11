@@ -100,10 +100,6 @@ export class PostscreenerquestionsComponent
     this.stateManager.showAssessmentFrontPage = true;
   }
 
-  // ngOnDestroy(): void {
-  //   this.dataService.goTo('');
-  // }
-
   postData(): void {
     const data = {
       name: this.dataForm.get('name').value,
@@ -128,7 +124,6 @@ export class PostscreenerquestionsComponent
       )
       .subscribe(); // KRM: Do this for every assessment
     this.stateManager.finishThisAssessmentAndAdvance('postscreenerquestions');
-    // this.dataService.setCookie('postscreenerquestions', 'completed', 200);
   }
   canDeactivate(): boolean {
     return this.dialogService.canRedirect();

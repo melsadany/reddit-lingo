@@ -4,7 +4,6 @@ import {
   AudioRecordingService,
   RecordedAudioOutput
 } from '../../../services/audio-recording.service';
-import { DomSanitizer } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 import { DialogService } from '../../../services/dialog.service';
 import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
@@ -21,14 +20,12 @@ export class PicturepromptComponent
   imageNames = ['despair.jpg', 'he_texted.jpg', 'joke.jpg', 'antagonism.jpg'];
   promptNumber = 0;
   imagePaths: string[] = [];
-  showStartButton = true;
   countingDown = false;
   intervalCountup: NodeJS.Timer;
   intervalCountdown: NodeJS.Timer;
   timeLeft = 3;
   doneCountingDown = false;
   showPromptImage = false;
-  startedAssessment = false;
   currentImagePrompt = '';
   isRecording = false;
   doneRecording = false;
@@ -154,9 +151,6 @@ export class PicturepromptComponent
   }
 
   handleRecordedOutput(data: RecordedAudioOutput): void {
-    // const url = this.sanitizer.bypassSecurityTrustUrl(
-    //   URL.createObjectURL(data.blob)
-    // );
     const currentBlob = data.blob;
     const reader: FileReader = new FileReader();
     reader.readAsDataURL(currentBlob);
@@ -188,7 +182,6 @@ export class PicturepromptComponent
       )
       .subscribe();
     this.stateManager.finishThisAssessmentAndAdvance('pictureprompt');
-    // this.dataService.setCookie('pictureprompt', 'completed', 200);
   }
 
   canDeactivate(): boolean {

@@ -180,7 +180,6 @@ export class SyncvoiceComponent
       )
       .subscribe();
     this.stateManager.finishThisAssessmentAndAdvance('syncvoice');
-    // this.dataService.setCookie('syncvoice', 'completed', 200);
   }
   canDeactivate(): boolean {
     return this.dialogService.canRedirect();

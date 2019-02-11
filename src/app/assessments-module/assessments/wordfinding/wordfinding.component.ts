@@ -17,9 +17,7 @@ import { StateManagerService } from '../../../services/state-manager.service';
 export class WordfindingComponent
   implements OnInit, OnDestroy, CanComponentDeactivate {
   countingDown = false;
-  splashPage = true;
   intervalCountdown: NodeJS.Timeout;
-  textOnButton = 'Start Assessment';
   timeLeft = 3;
   doneCountingDown = false;
   isRecording = false;
@@ -189,7 +187,6 @@ export class WordfindingComponent
       )
       .subscribe();
     this.stateManager.finishThisAssessmentAndAdvance('wordfinding');
-    // this.dataService.setCookie('wordfinding', 'completed', 200);
   }
   canDeactivate(): boolean {
     return this.dialogService.canRedirect();

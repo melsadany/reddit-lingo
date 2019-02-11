@@ -23,14 +23,11 @@ export class RanComponent implements OnInit, OnDestroy, CanComponentDeactivate {
   blobUrl: SafeUrl;
   intervalCountdown: NodeJS.Timer;
   intervalCountup: NodeJS.Timer;
-  splashPage = true;
   countingDown = false;
   doneCountingDown = false;
   showImage = false;
   doneRecording = false;
   timeLeft = 3;
-  startedAssessment = false;
-  assessmentAlreadyCompleted = false;
   failSubscription: Subscription;
   recordingTimeSubscription: Subscription;
   recordedOutputSubscription: Subscription;
@@ -110,12 +107,7 @@ export class RanComponent implements OnInit, OnDestroy, CanComponentDeactivate {
   }
 
   startDisplayedCountdownTimer(): void {
-    this.startedAssessment = true; // KRM: Only one prompt for ran task
-    if (!this.stateManager.isInAssessment) {
-      this.stateManager.isInAssessment = true;
-    }
     this.countingDown = true;
-    this.splashPage = false;
     this.intervalCountdown = setInterval(() => {
       if (this.timeLeft > 0) {
         this.timeLeft--;
@@ -156,7 +148,6 @@ export class RanComponent implements OnInit, OnDestroy, CanComponentDeactivate {
         .subscribe(); // KRN: Fix how this output is handled to be updated like other assessments
     };
     this.stateManager.finishThisAssessmentAndAdvance('ran');
-    // this.dataService.setCookie('ran', 'completed', 200);
 
     // KRM: Each assessment will handle the structure of its assessment data before posting it to mongo
   }
