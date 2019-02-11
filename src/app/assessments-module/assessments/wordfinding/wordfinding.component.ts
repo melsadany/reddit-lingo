@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import { DialogService } from '../../../services/dialog.service';
 import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
+import { StateManagerService } from '../../../services/state-manager.service';
 
 @Component({
   selector: 'app-wordfinding',
@@ -54,6 +55,7 @@ export class WordfindingComponent implements OnInit, OnDestroy, CanComponentDeac
   showStartButton = true;
 
   constructor(
+    private stateManager: StateManagerService,
     private audioRecordingService: AudioRecordingService,
     private dataService: AssessmentDataService,
     private dialogService: DialogService
@@ -84,7 +86,7 @@ export class WordfindingComponent implements OnInit, OnDestroy, CanComponentDeac
     this.failSubscription.unsubscribe();
     this.recordingTimeSubscription.unsubscribe();
     this.recordedOutputSubscription.unsubscribe();
-    this.dataService.goTo('');
+    // this.dataService.goTo('');
   }
 
   startDisplayedCountdownTimer(): void {
@@ -167,7 +169,7 @@ export class WordfindingComponent implements OnInit, OnDestroy, CanComponentDeac
   advanceToNextPrompt(): void {
     if (!this.startedAssessment) {
       this.startedAssessment = true;
-      this.dataService.setIsInAssessment(true);
+      this.stateManager.isInAssessment = true;
     }
     this.showStartButton = false;
     if (this.promptNumber < this.letterData.length) {
@@ -192,8 +194,8 @@ export class WordfindingComponent implements OnInit, OnDestroy, CanComponentDeac
         }
       )
       .subscribe();
-    this.dataService.setCookie('wordfinding', 'completed', 200);
-    this.dataService.setIsInAssessment(false);
+    this.stateManager.finishThisAssessmentAndAdvance('wordfinding');
+    // this.dataService.setCookie('wordfinding', 'completed', 200);
   }
   canDeactivate(): boolean {
     return this.dialogService.canRedirect();

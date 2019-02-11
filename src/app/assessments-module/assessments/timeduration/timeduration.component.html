@@ -1,5 +1,5 @@
 <div class="mx-lg-5">
-  <div *ngIf="splashPage && !dataService.isAssessmentCompleted('timeduration')">
+  <div *ngIf="stateManager.showAssessmentFrontPage">
     <p class="py-4">
       You will see a line that moves around the outside of a circle. The speed of the line will change from trial to
       trial. When the line stops moving, hold down the button for as long as you think it took the line to complete its
@@ -14,9 +14,9 @@
   </div>
   <div class="imageParent" *ngIf="showAnimation">
     <circle-progress (mousedown)="startTimer()" (mouseup)="pauseTimer()" [responsive]="true" [percent]="displayPercentage"
-      [radius]="100" [outerStrokeWidth]="16" [innerStrokeWidth]="8" [outerStrokeColor]="outerStrokeColor" [innerStrokeColor]="innerStrokeColor"
-      [animation]="canAnimate" [animationDuration]="animationDuration" [maxPercent]="100" [renderOnClick]="false"
-      [showTitle]='false' [subtitle]="displaySubtitle" [showUnits]='false'>
+      [radius]="100" [outerStrokeWidth]="16" [innerStrokeWidth]="8" [outerStrokeColor]="outerStrokeColor"
+      [innerStrokeColor]="innerStrokeColor" [animation]="canAnimate" [animationDuration]="animationDuration"
+      [maxPercent]="100" [renderOnClick]="false" [showTitle]='false' [subtitle]="displaySubtitle" [showUnits]='false'>
     </circle-progress>
   </div>
   <div class="text-center">

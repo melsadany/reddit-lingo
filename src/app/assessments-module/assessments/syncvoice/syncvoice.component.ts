@@ -7,6 +7,7 @@ import {
 import { Subscription } from 'rxjs';
 import { DialogService } from '../../../services/dialog.service';
 import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
+import { StateManagerService } from '../../../services/state-manager.service';
 
 @Component({
   selector: 'app-syncvoice',
@@ -15,6 +16,7 @@ import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 })
 export class SyncvoiceComponent implements OnInit, OnDestroy, CanComponentDeactivate {
   constructor(
+    private stateManager: StateManagerService,
     private dataService: AssessmentDataService,
     private audioRecordingService: AudioRecordingService,
     private dialogService: DialogService
@@ -74,7 +76,6 @@ export class SyncvoiceComponent implements OnInit, OnDestroy, CanComponentDeacti
     this.failSubscription.unsubscribe();
     this.recordingTimeSubscription.unsubscribe();
     this.recordedOutputSubscription.unsubscribe();
-    this.dataService.goTo('');
   }
 
   calculateAudioFilePaths(): void {
@@ -156,7 +157,7 @@ export class SyncvoiceComponent implements OnInit, OnDestroy, CanComponentDeacti
   nextLalaPrompt(): void {
     if (!this.startedAssessment) {
       this.startedAssessment = true;
-      this.dataService.setIsInAssessment(true);
+      this.stateManager.isInAssessment = true;
     }
     if (this.promptNumber < this.audioNames.length) {
       this.splashPage = true;
@@ -186,8 +187,8 @@ export class SyncvoiceComponent implements OnInit, OnDestroy, CanComponentDeacti
         }
       )
       .subscribe();
-    this.dataService.setCookie('syncvoice', 'completed', 200);
-    this.dataService.setIsInAssessment(false);
+    this.stateManager.finishThisAssessmentAndAdvance('syncvoice');
+    // this.dataService.setCookie('syncvoice', 'completed', 200);
   }
   canDeactivate(): boolean {
     return this.dialogService.canRedirect();

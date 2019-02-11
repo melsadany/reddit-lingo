@@ -3,13 +3,15 @@ import { AssessmentDataService } from '../../../services/assessment-data.service
 import { FormBuilder, Validators } from '@angular/forms';
 import { DialogService } from '../../../services/dialog.service';
 import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
+import { StateManagerService } from '../../../services/state-manager.service';
 
 @Component({
   selector: 'app-postscreenerquestions',
   templateUrl: './postscreenerquestions.component.html',
   styleUrls: ['./postscreenerquestions.component.scss']
 })
-export class PostscreenerquestionsComponent implements OnInit, OnDestroy, CanComponentDeactivate {
+export class PostscreenerquestionsComponent
+  implements OnInit, CanComponentDeactivate {
   dataForm = this.fb.group({
     name: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
@@ -89,16 +91,18 @@ export class PostscreenerquestionsComponent implements OnInit, OnDestroy, CanCom
   constructor(
     private dataService: AssessmentDataService,
     private fb: FormBuilder,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private stateManager: StateManagerService
   ) {}
 
   ngOnInit(): void {
-    this.dataService.setIsInAssessment(true);
-   }
-
-  ngOnDestroy(): void {
-    this.dataService.goTo('');
+    this.stateManager.isInAssessment = true;
+    this.stateManager.showAssessmentFrontPage = true;
   }
+
+  // ngOnDestroy(): void {
+  //   this.dataService.goTo('');
+  // }
 
   postData(): void {
     const data = {
@@ -123,9 +127,8 @@ export class PostscreenerquestionsComponent implements OnInit, OnDestroy, CanCom
         }
       )
       .subscribe(); // KRM: Do this for every assessment
-    this.dataService.setIsInAssessment(false);
-    this.dataService.setCookie('postscreenerquestions', 'completed', 200);
-    this.dataService.nextAssessment();
+    this.stateManager.finishThisAssessmentAndAdvance('postscreenerquestions');
+    // this.dataService.setCookie('postscreenerquestions', 'completed', 200);
   }
   canDeactivate(): boolean {
     return this.dialogService.canRedirect();

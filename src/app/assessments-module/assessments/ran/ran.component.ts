@@ -8,6 +8,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 import { DialogService } from '../../../services/dialog.service';
 import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
+import { StateManagerService } from '../../../services/state-manager.service';
 
 @Component({
   selector: 'app-ran',
@@ -35,6 +36,7 @@ export class RanComponent implements OnInit, OnDestroy, CanComponentDeactivate {
   recordedOutputSubscription: Subscription;
 
   constructor(
+    private stateManager: StateManagerService,
     private audioRecordingService: AudioRecordingService,
     private sanitizer: DomSanitizer,
     private dataService: AssessmentDataService,
@@ -96,18 +98,19 @@ export class RanComponent implements OnInit, OnDestroy, CanComponentDeactivate {
     this.failSubscription.unsubscribe();
     this.recordingTimeSubscription.unsubscribe();
     this.recordedOutputSubscription.unsubscribe();
-    this.dataService.goTo('');
   }
 
   ngOnInit(): void {
-    if (this.dataService.isAssessmentCompleted('ran')) {
-      this.assessmentAlreadyCompleted = true;
-    }
+    // if (this.dataService.isAssessmentCompleted('ran')) {
+    //   this.assessmentAlreadyCompleted = true;
+    // }
   }
 
   startDisplayedCountdownTimer(): void {
     this.startedAssessment = true; // KRM: Only one prompt for ran task
-    this.dataService.setIsInAssessment(true);
+    if (!this.stateManager.isInAssessment) {
+      this.stateManager.isInAssessment = true;
+    }
     this.countingDown = true;
     this.splashPage = false;
     this.intervalCountdown = setInterval(() => {
@@ -149,8 +152,8 @@ export class RanComponent implements OnInit, OnDestroy, CanComponentDeactivate {
         )
         .subscribe();
     };
-    this.dataService.setIsInAssessment(false);
-    this.dataService.setCookie('ran', 'completed', 200);
+    this.stateManager.finishThisAssessmentAndAdvance('ran');
+    // this.dataService.setCookie('ran', 'completed', 200);
 
     // KRM: Each assessment will handle the structure of its assessment data before posting it to mongo
   }

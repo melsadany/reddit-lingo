@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import { DialogService } from '../../../services/dialog.service';
 import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
+import { StateManagerService } from '../../../services/state-manager.service';
 
 @Component({
   selector: 'app-timeduration',
@@ -33,20 +34,19 @@ export class TimedurationComponent
   innerStrokeColor = '#C7E596';
   startTime;
   constructor(
+    private stateManager: StateManagerService,
     private dataService: AssessmentDataService,
     private dialogService: DialogService
   ) {}
 
   ngOnInit(): void {}
 
-  ngOnDestroy(): void {
-    this.dataService.goTo('');
-  }
+  ngOnDestroy(): void {}
 
   startDisplayedCountdownTimer(): void {
     if (!this.startedAssessment) {
       this.startedAssessment = true;
-      this.dataService.setIsInAssessment(true);
+      this.stateManager.isInAssessment = true;
     }
     this.countingDown = true;
     this.splashPage = false;
@@ -128,8 +128,8 @@ export class TimedurationComponent
         }
       )
       .subscribe();
-    this.dataService.setIsInAssessment(false);
-    this.dataService.setCookie('timeduration', 'completed', 200);
+    this.stateManager.finishThisAssessmentAndAdvance('timeduration');
+    // this.dataService.setCookie('timeduration', 'completed', 200);
   }
   canDeactivate(): boolean {
     return this.dialogService.canRedirect();

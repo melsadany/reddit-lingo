@@ -1,14 +1,18 @@
 import { Injectable } from '@angular/core';
 import { AssessmentDataService } from './assessment-data.service';
+import { StateManagerService } from './state-manager.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DialogService {
-  constructor(private dataService: AssessmentDataService) {}
+  constructor(
+    private stateManager: StateManagerService,
+    private dataService: AssessmentDataService
+  ) {}
 
   canRedirect(): boolean {
-    if (this.dataService.isInAssessment()) {
+    if (this.stateManager.isInAssessment) {
       alert(
         'Please complete the current assessment before going to another page.'
       );

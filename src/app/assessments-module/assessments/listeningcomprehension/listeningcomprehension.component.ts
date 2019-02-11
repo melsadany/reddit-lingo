@@ -2,13 +2,15 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import { DialogService } from '../../../services/dialog.service';
 import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
+import { StateManagerService } from '../../../services/state-manager.service';
 
 @Component({
   selector: 'app-listeningcomprehension',
   templateUrl: './listeningcomprehension.component.html',
   styleUrls: ['./listeningcomprehension.component.scss']
 })
-export class ListeningcomprehensionComponent implements OnInit, OnDestroy, CanComponentDeactivate {
+export class ListeningcomprehensionComponent
+  implements OnInit, OnDestroy, CanComponentDeactivate {
   textOnButton = 'Start Assessment';
   firstSet = true;
   assessmentAlreadyCompleted = false;
@@ -26,13 +28,14 @@ export class ListeningcomprehensionComponent implements OnInit, OnDestroy, CanCo
 
   constructor(
     private dataService: AssessmentDataService,
+    private stateManager: StateManagerService,
     private dialogService: DialogService
   ) {}
 
   ngOnInit(): void {
-    if (this.dataService.isAssessmentCompleted('listeningcomprehension')) {
-      this.assessmentAlreadyCompleted = true;
-    }
+    // if (this.dataService.isAssessmentCompleted('listeningcomprehension')) {
+    //   this.assessmentAlreadyCompleted = true;
+    // }
     this.calculateImageNames();
   }
 
@@ -42,7 +45,7 @@ export class ListeningcomprehensionComponent implements OnInit, OnDestroy, CanCo
 
   startDisplayedCountdownTimer(): void {
     this.countingDown = true;
-    this.dataService.setSplashPage(false);
+    this.stateManager.showAssessmentFrontPage = false;
     this.intervalCountdown = setInterval(() => {
       if (this.timeLeft > 0) {
         this.timeLeft--;
@@ -51,7 +54,6 @@ export class ListeningcomprehensionComponent implements OnInit, OnDestroy, CanCo
         this.countingDown = false;
         this.doneCountingDown = true;
         this.showImage = true;
-        // this.startRecording();
         clearInterval(this.intervalCountdown);
       }
     }, 1000);
@@ -105,13 +107,14 @@ export class ListeningcomprehensionComponent implements OnInit, OnDestroy, CanCo
       this.firstSet = false;
       this.textOnButton = 'Continue to next set';
     }
-    this.dataService.setSplashPage(true);
+    this.stateManager.showAssessmentFrontPage = true;
     this.startAudioInstructionForSet();
   }
 
-  startAudioInstructionForSet(): void { // KRM: Main function
+  startAudioInstructionForSet(): void {
+    // KRM: Main function
     if (!this.startedAssessment) {
-      this.dataService.setIsInAssessment(true);
+      this.stateManager.isInAssessment = true;
       this.startedAssessment = true;
     }
     const audio = new Audio();
@@ -120,7 +123,7 @@ export class ListeningcomprehensionComponent implements OnInit, OnDestroy, CanCo
     }.mp3`;
     audio.addEventListener('ended', () => this.startDisplayedCountdownTimer());
     audio.play();
-    this.dataService.setStartButton(false);
+    this.stateManager.showInnerAssessmentButton = true;
   }
 
   finishAssessment(): void {
@@ -139,8 +142,8 @@ export class ListeningcomprehensionComponent implements OnInit, OnDestroy, CanCo
         }
       )
       .subscribe();
-    this.dataService.setIsInAssessment(false);
-    this.dataService.setCookie('listeningcomprehension', 'completed', 200);
+    this.stateManager.finishThisAssessmentAndAdvance('listeningcomprehension');
+    // this.dataService.setCookie('listeningcomprehension', 'completed', 200);
   }
   canDeactivate(): boolean {
     return this.dialogService.canRedirect();

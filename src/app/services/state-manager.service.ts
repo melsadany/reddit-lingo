@@ -1,22 +1,29 @@
 import { Injectable } from '@angular/core';
-import { PrescreenerquestionsComponent } from '../assessments-module/assessments/prescreenerquestions/prescreenerquestions.component';
-import { AssessmentData } from '../structures/assessmentdata';
+import {
+  AssessmentData,
+  AssessmentDataStructure
+} from '../structures/assessmentdata';
 import { AssessmentDataService } from './assessment-data.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StateManagerService {
+  private _DEBUG_MODE = true; // KRM: FOR BEBUGGING ONLY. GIVES DEBUG BUTTONS IN ASSESSMENTS
   private _isInAssessment = false;
   private _isAssessmentStarted = false;
   private _showAssessmentFrontPage = true;
-  private _showAssessmentStartButton = true;
-  private _showInAssessmentContinueButton = false;
+  private _showInnerAssessmentButton = false;
   private _currentAssessment: string;
   private _finishedAllAssessments = false;
-  private _showContinueOutsideAssessmentButton = true;
-  private _textOnContinueOutsideAssessmentButton = 'Continue Assessments';
-  constructor(private dataService: AssessmentDataService) {}
+  private _showOutsideAssessmentButton = true;
+  private _textOnOutsideAssessmentButton = 'START ASSESSMENTS';
+  private _textOnInnerAssessmentButton = 'START ASSESSMENT';
+  constructor(
+    private dataService: AssessmentDataService,
+    private routerService: Router
+  ) {}
 
   public get isInAssessment(): boolean {
     return this._isInAssessment;
@@ -24,42 +31,36 @@ export class StateManagerService {
   public set isInAssessment(value: boolean) {
     this._isInAssessment = value;
   }
-
+  public get textOnInnerAssessmentButton(): string {
+    return this._textOnInnerAssessmentButton;
+  }
+  public set textOnInnerAssessmentButton(value: string) {
+    this._textOnInnerAssessmentButton = value;
+  }
   public get finishedAllAssessments(): boolean {
     return this._finishedAllAssessments;
   }
   public set finishedAllAssessments(value: boolean) {
     this._finishedAllAssessments = value;
   }
-
   public get currentAssessment(): string {
     return this._currentAssessment;
   }
   public set currentAssessment(value: string) {
     this._currentAssessment = value;
   }
-
-  public get showInAssessmentContinueButton(): boolean {
-    return this._showInAssessmentContinueButton;
+  public get showInnerAssessmentButton(): boolean {
+    return this._showInnerAssessmentButton;
   }
-  public set showInAssessmentContinueButton(value: boolean) {
-    this._showInAssessmentContinueButton = value;
+  public set showInnerAssessmentButton(value: boolean) {
+    this._showInnerAssessmentButton = value;
   }
-
-  public get showAssessmentStartButton(): boolean {
-    return this._showAssessmentStartButton;
-  }
-  public set showAssessmentStartButton(value: boolean) {
-    this._showAssessmentStartButton = value;
-  }
-
   public get showAssessmentFrontPage(): boolean {
     return this._showAssessmentFrontPage;
   }
   public set showAssessmentFrontPage(value: boolean) {
     this._showAssessmentFrontPage = value;
   }
-
   public get isAssessmentStarted(): boolean {
     return this._isAssessmentStarted;
   }
@@ -67,80 +68,154 @@ export class StateManagerService {
     this._isAssessmentStarted = value;
   }
   public get showContinueOutsideAssessmentButton(): boolean {
-    return this._showContinueOutsideAssessmentButton;
+    return this._showOutsideAssessmentButton;
   }
   public set showContinueOutsideAssessmentButton(value: boolean) {
-    this._showContinueOutsideAssessmentButton = value;
+    this._showOutsideAssessmentButton = value;
   }
-
   public get textOnContinueOutsideAssessmentButton(): string {
-    return this._textOnContinueOutsideAssessmentButton;
+    return this._textOnOutsideAssessmentButton;
   }
   public set textOnContinueOutsideAssessmentButton(value: string) {
-    this._textOnContinueOutsideAssessmentButton = value;
+    this._textOnOutsideAssessmentButton = value;
   }
 
   assessments = [
     {
-      assessment_name: 'prescreenerquestions',
+      assess_name: 'prescreenerquestions',
       completed: false
     },
     {
-      assessment_name: 'wordfinding',
+      assess_name: 'wordfinding',
       completed: false
     },
     {
-      assessment_name: 'sentencerepetition',
+      assess_name: 'sentencerepetition',
       completed: false
     },
     {
-      assessment_name: 'matrixreasoning',
+      assess_name: 'matrixreasoning',
       completed: false
     },
     {
-      assessment_name: 'syncvoice',
+      assess_name: 'syncvoice',
       completed: false
     },
     {
-      assessment_name: 'timeduration',
+      assess_name: 'timeduration',
       completed: false
     },
     {
-      assessment_name: 'ran',
+      assess_name: 'ran',
       completed: false
     },
     {
-      assessment_name: 'pictureprompt',
+      assess_name: 'pictureprompt',
       completed: false
     },
     {
-      assessment_name: 'listeningcomprehension',
+      assess_name: 'listeningcomprehension',
       completed: false
     },
     {
-      assessment_name: 'postscreenerquestions',
+      assess_name: 'postscreenerquestions',
       completed: false
     }
   ];
 
-  printAssessments(): void {
+  public printAllCompletedAssessments(): void {
     this.assessments.forEach(value => console.log(value));
   }
 
-  initializeState(assessmentsData: AssessmentData): void {
-    for (const value of assessmentsData.assessments) {
-      console.log(value);
-      this.assessments[value.assess_name]['completed'] = true;
-      this.populateStateCookies(value.assess_name);
+  public initializeState(existingAssessmentData: AssessmentData): void {
+    for (const completedAssessment of existingAssessmentData.assessments) {
+      const completedAssessmentName = completedAssessment['assess_name'];
+      for (const assessmentRecord of this.assessments) {
+        if (assessmentRecord['assess_name'] === completedAssessmentName) {
+          assessmentRecord['completed'] = true;
+          console.log('Already completed: ' + completedAssessmentName);
+          break;
+        }
+      }
+      // this.populateStateCookies(value.assess_name);
+    }
+    this.currentAssessment = this.determineNextAssessment();
+  }
+
+  // public populateStateCookies(name: string): void {
+  //   // KRM :Get away from cookies for every assessment. Use internal data structure
+  //   if (!this.dataService.checkCookie(name)) {
+  //     this.dataService.setCookie(name, 'completed', 200);
+  //   }
+  //   if (Object.keys(this.dataService.getAllCookies()).length > 2) {
+  //     this.textOnContinueOutsideAssessmentButton = 'Continue assessments';
+  //   }
+  // }
+
+  private determineNextAssessment(): string {
+    for (const assessmentState of this.assessments) {
+      if (!assessmentState['completed']) {
+        console.log('Next not completed: ' + assessmentState['assess_name']); // KRM: Debugging
+        return assessmentState['assess_name'];
+      }
+    }
+    this.finishedAllAssessments = true;
+    return 'done';
+    // Done is the name of the route for the completion component
+  }
+
+  public goToNextAssessment(): void {
+    this.currentAssessment = this.determineNextAssessment();
+    console.log('Going to: ' + this.currentAssessment); // KRM: For debugging
+    this.navigateTo(this.currentAssessment);
+  }
+
+  public navigateTo(assessmentName: string): void {
+    this.showAssessmentFrontPage = true;
+    this.showContinueOutsideAssessmentButton = false;
+    this.showInnerAssessmentButton = true;
+    this.routerService.navigate(['/assessments/', assessmentName]);
+  }
+
+  public get DEBUG_MODE(): boolean {
+    return this._DEBUG_MODE;
+  }
+  public set DEBUG_MODE(value: boolean) {
+    this._DEBUG_MODE = value;
+  }
+
+  public nextAssessmentDebugMode(): void {
+    if (this.DEBUG_MODE) {
+      this.isInAssessment = false;
+      this.markAssessmentCompleted(this.currentAssessment);
+      // this.setCookie(this.currentAssessment, 'completed', 200); KRM: Get away from assessment cookies
+      this.goToNextAssessment();
     }
   }
 
-  public populateStateCookies(name: string): void {
-    if (!this.dataService.checkCookie(name)) {
-      this.dataService.setCookie(name, 'completed', 200);
+  private markAssessmentCompleted(assessmentName: string): void {
+    for (const assessment of this.assessments) {
+      if (assessment['assess_name'] === assessmentName) {
+        assessment['completed'] = true;
+      }
     }
-    if (Object.keys(this.dataService.getAllCookies()).length > 1) {
-      this. = 'Continue assessments';
+  }
+
+  public deleteUserCookieDebugMode(): void {
+    if (this.DEBUG_MODE) {
+      this.dataService.deleteCookie('user_id');
     }
+  }
+
+  public finishThisAssessmentAndAdvance(assessment: string): void {
+    this.isInAssessment = false;
+    this.isAssessmentStarted = false;
+    this.markAssessmentCompleted(assessment);
+    this.goToNextAssessment();
+  }
+
+  public startThisAssessment(startFunction: Function): void {
+    this.isAssessmentStarted = true;
+    startFunction();
   }
 }

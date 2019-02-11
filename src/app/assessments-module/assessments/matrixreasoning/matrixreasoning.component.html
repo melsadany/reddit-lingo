@@ -1,12 +1,12 @@
 <div class="mx-lg-5">
-  <div *ngIf="splashPage && !dataService.isAssessmentCompleted('matrixreasoning')">
+  <div *ngIf="stateManager.showAssessmentFrontPage">
     <p class="py-4">
       In this task, you will be shown a set of related pictures.
       Select the image that you feel best fits in with the other
       pictures.
     </p>
     <div class="text-center">
-      <button *ngIf="showStartButton" type="button" class="start-button btn btn-success" (click)="startDisplayedCountdownTimer()">{{textOnButton}}</button>
+      <button *ngIf="stateManager.showInnerAssessmentButton" type="button" class="start-button btn btn-success" (click)="startDisplayedCountdownTimer()">{{stateManager.textOnInnerAssessmentButton}}</button>
     </div>
   </div>
   <div *ngIf="showMatrix">

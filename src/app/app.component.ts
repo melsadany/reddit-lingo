@@ -46,13 +46,17 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   getData(): void {
-    // get the data from the current user
+    // KRM: Get the data for the current user
+    // that has already been put in the database from pervious assessments
     this.dataSubscription = this.dataService
       .getUserAssessmentDataFromMongo(this.dataService.getCookie('user_id'))
       .subscribe((data: AssessmentData) => {
         this.assessmentData = data;
-        // console.log(JSON.stringify(this.assessmentData)); KRM: For debugging
+        // console.log(JSON.stringify(this.assessmentData));
+        // KRM: For debugging
         this.stateService.initializeState(this.assessmentData);
+        // KRM: Initialize the current state of the assessments based
+        // on the past assessments already completed
       });
   }
 }

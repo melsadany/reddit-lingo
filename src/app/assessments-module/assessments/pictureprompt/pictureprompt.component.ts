@@ -8,13 +8,15 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 import { DialogService } from '../../../services/dialog.service';
 import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
+import { StateManagerService } from '../../../services/state-manager.service';
 
 @Component({
   selector: 'app-pictureprompt',
   templateUrl: './pictureprompt.component.html',
   styleUrls: ['./pictureprompt.component.scss']
 })
-export class PicturepromptComponent implements OnInit, OnDestroy, CanComponentDeactivate {
+export class PicturepromptComponent
+  implements OnInit, OnDestroy, CanComponentDeactivate {
   imagesLocation = 'assets/img/pictureprompt/';
   imageNames = ['despair.jpg', 'he_texted.jpg', 'joke.jpg', 'antagonism.jpg'];
   promptNumber = 0;
@@ -27,7 +29,6 @@ export class PicturepromptComponent implements OnInit, OnDestroy, CanComponentDe
   doneCountingDown = false;
   showPromptImage = false;
   startedAssessment = false;
-  splashPage = true;
   currentImagePrompt = '';
   isRecording = false;
   doneRecording = false;
@@ -39,6 +40,7 @@ export class PicturepromptComponent implements OnInit, OnDestroy, CanComponentDe
   recordedOutputSubscription: Subscription;
 
   constructor(
+    private stateManager: StateManagerService,
     private dataService: AssessmentDataService,
     private audioRecordingService: AudioRecordingService,
     private dialogService: DialogService
@@ -73,7 +75,6 @@ export class PicturepromptComponent implements OnInit, OnDestroy, CanComponentDe
     this.failSubscription.unsubscribe();
     this.recordingTimeSubscription.unsubscribe();
     this.recordedOutputSubscription.unsubscribe();
-    this.dataService.goTo('');
   }
 
   calculateImagePaths(): void {
@@ -91,8 +92,8 @@ export class PicturepromptComponent implements OnInit, OnDestroy, CanComponentDe
   startDisplayedCountdownTimer(): void {
     console.log(this.currentImagePrompt);
     this.countingDown = true;
-    if (this.splashPage) {
-      this.splashPage = false;
+    if (this.stateManager.showAssessmentFrontPage) {
+      this.stateManager.showAssessmentFrontPage = false;
     }
     this.intervalCountdown = setInterval(() => {
       if (this.timeLeft > 0) {
@@ -139,7 +140,7 @@ export class PicturepromptComponent implements OnInit, OnDestroy, CanComponentDe
   advanceToNextPrompt(): void {
     if (!this.startedAssessment) {
       this.startedAssessment = true;
-      this.dataService.setIsInAssessment(true);
+      this.stateManager.isInAssessment = true;
     }
     if (this.promptNumber >= this.imageNames.length) {
       this.finishAssessment();
@@ -184,12 +185,11 @@ export class PicturepromptComponent implements OnInit, OnDestroy, CanComponentDe
         }
       )
       .subscribe();
-    this.dataService.setCookie('pictureprompt', 'completed', 200);
-    this.dataService.setIsInAssessment(false);
+    this.stateManager.finishThisAssessmentAndAdvance('pictureprompt');
+    // this.dataService.setCookie('pictureprompt', 'completed', 200);
   }
 
   canDeactivate(): boolean {
     return this.dialogService.canRedirect();
   }
-
 }

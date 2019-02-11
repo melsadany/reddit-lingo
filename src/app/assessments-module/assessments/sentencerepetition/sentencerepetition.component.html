@@ -1,5 +1,5 @@
 <div class="mx-lg-5">
-  <div *ngIf="splashPage && !dataService.isAssessmentCompleted('sentencerepetition')">
+  <div *ngIf="stateManager.showAssessmentFrontPage">
     <p class="py-4">
       You will listen to a sentence. Once the sentence is finished,
       the screen will advance automatically and you will be

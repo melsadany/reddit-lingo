@@ -1,5 +1,5 @@
 <div class="mx-lg-5">
-  <div *ngIf="!dataService.isAssessmentCompleted('prescreenerquestions')">
+  <div *ngIf="stateManager.showAssessmentFrontPage">
     <form [formGroup]="dataForm" (ngSubmit)="postData()">
       <div class="form-group text-center">
         <mat-form-field class="form-group">

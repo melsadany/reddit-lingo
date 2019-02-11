@@ -3,13 +3,15 @@ import { AssessmentDataService } from '../../../services/assessment-data.service
 import { FormBuilder, Validators } from '@angular/forms';
 import { DialogService } from '../../../services/dialog.service';
 import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
+import { StateManagerService } from '../../../services/state-manager.service';
 
 @Component({
   selector: 'app-prescreenerquestions',
   templateUrl: './prescreenerquestions.component.html',
   styleUrls: ['./prescreenerquestions.component.scss']
 })
-export class PrescreenerquestionsComponent implements OnInit, CanComponentDeactivate, OnDestroy, CanComponentDeactivate {
+export class PrescreenerquestionsComponent
+  implements OnInit, CanComponentDeactivate {
   dataForm = this.fb.group({
     date: ['', Validators.required],
     gender: ['', Validators.required],
@@ -45,18 +47,19 @@ export class PrescreenerquestionsComponent implements OnInit, CanComponentDeacti
   ];
 
   constructor(
+    private stateManager: StateManagerService,
     private dataService: AssessmentDataService,
     private fb: FormBuilder,
     private dialogService: DialogService
   ) {}
 
   ngOnInit(): void {
-    this.dataService.setIsInAssessment(true);
+    this.stateManager.isInAssessment = true;
   }
 
-  ngOnDestroy(): void {
-    this.dataService.goTo('');
-  }
+  // ngOnDestroy(): void {
+  //   this.dataService.goTo('');
+  // }
 
   postData(): void {
     const data = {
@@ -75,16 +78,16 @@ export class PrescreenerquestionsComponent implements OnInit, CanComponentDeacti
           completed: true
         },
         {
-          assess_name: 'prescreener',
+          assess_name: 'prescreenerquestions',
           data: {
             text: 'None'
           }
         }
       )
       .subscribe(); // KRM: Do this for every assessment
-    this.dataService.setIsInAssessment(false);
-    this.dataService.setCookie('prescreenerquestions', 'completed', 200);
-    this.dataService.nextAssessment();
+    this.stateManager.finishThisAssessmentAndAdvance('prescreenerquestions');
+
+    // this.dataService.setCookie('prescreenerquestions', 'completed', 200);
   }
 
   canDeactivate(): boolean {

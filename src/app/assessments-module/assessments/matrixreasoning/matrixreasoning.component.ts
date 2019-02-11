@@ -2,13 +2,15 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import { DialogService } from '../../../services/dialog.service';
 import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
+import { StateManagerService } from '../../../services/state-manager.service';
 
 @Component({
   selector: 'app-matrixreasoning',
   templateUrl: './matrixreasoning.component.html',
   styleUrls: ['./matrixreasoning.component.scss']
 })
-export class MatrixreasoningComponent implements OnInit, OnDestroy, CanComponentDeactivate {
+export class MatrixreasoningComponent
+  implements OnInit, CanComponentDeactivate {
   imagesLocation = 'assets/img/matrixreasoning/';
   imageTypes = ['frameSets', 'solutionSets'];
   dimensions = {
@@ -103,7 +105,11 @@ export class MatrixreasoningComponent implements OnInit, OnDestroy, CanComponent
   textOnButton = 'Start Assessment';
   imageSelections = {};
 
-  constructor(private dataService: AssessmentDataService, private dialogService: DialogService) {}
+  constructor(
+    private stateManager: StateManagerService,
+    private dataService: AssessmentDataService,
+    private dialogService: DialogService
+  ) {}
 
   ngOnInit(): void {
     this.calculateFrameSets();
@@ -111,9 +117,9 @@ export class MatrixreasoningComponent implements OnInit, OnDestroy, CanComponent
     console.log(this.imageMatrices);
   }
 
-  ngOnDestroy(): void {
-    this.dataService.goTo('');
-  }
+  // ngOnDestroy(): void {
+  //   this.dataService.goTo('');
+  // }
 
   calculateImageNames(): void {
     this.calculateFrameSets();
@@ -173,7 +179,7 @@ export class MatrixreasoningComponent implements OnInit, OnDestroy, CanComponent
   startDisplayedCountdownTimer(): void {
     if (!this.startedAssessment) {
       this.startedAssessment = true;
-      this.dataService.setIsInAssessment(true);
+      this.stateManager.isInAssessment = true;
     }
     this.countingDown = true;
     this.splashPage = false;
@@ -217,8 +223,8 @@ export class MatrixreasoningComponent implements OnInit, OnDestroy, CanComponent
         }
       )
       .subscribe();
-    this.dataService.setIsInAssessment(false);
-    this.dataService.setCookie('matrixreasoning', 'completed', 200);
+    this.stateManager.finishThisAssessmentAndAdvance('matrixreasoning');
+    // this.dataService.setCookie('matrixreasoning', 'completed', 200);
   }
 
   canDeactivate(): boolean {

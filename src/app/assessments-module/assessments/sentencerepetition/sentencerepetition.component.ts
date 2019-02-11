@@ -7,13 +7,15 @@ import {
 import { Subscription } from 'rxjs';
 import { DialogService } from '../../../services/dialog.service';
 import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
+import { StateManagerService } from '../../../services/state-manager.service';
 
 @Component({
   selector: 'app-sentencerepetition',
   templateUrl: './sentencerepetition.component.html',
   styleUrls: ['./sentencerepetition.component.scss']
 })
-export class SentencerepetitionComponent implements OnInit, OnDestroy, CanComponentDeactivate {
+export class SentencerepetitionComponent
+  implements OnInit, OnDestroy, CanComponentDeactivate {
   failSubscription: Subscription;
   isRecording = false;
   recordingTimeSubscription: Subscription;
@@ -35,6 +37,7 @@ export class SentencerepetitionComponent implements OnInit, OnDestroy, CanCompon
   doneRecording = false;
 
   constructor(
+    private stateManager: StateManagerService,
     private dataService: AssessmentDataService,
     private audioRecordingService: AudioRecordingService,
     private dialogService: DialogService
@@ -82,7 +85,6 @@ export class SentencerepetitionComponent implements OnInit, OnDestroy, CanCompon
     this.failSubscription.unsubscribe();
     this.recordingTimeSubscription.unsubscribe();
     this.recordedOutputSubscription.unsubscribe();
-    this.dataService.goTo('');
   }
 
   calculateFilePaths(): void {
@@ -163,7 +165,7 @@ export class SentencerepetitionComponent implements OnInit, OnDestroy, CanCompon
   startAudioForSet(): void {
     if (!this.startedAssessment) {
       this.startedAssessment = true;
-      this.dataService.setIsInAssessment(true);
+      this.stateManager.isInAssessment = true;
     }
     this.showStartButton = false;
     if (this.promptNumber < this.filePathsToPlay.length) {
@@ -193,8 +195,8 @@ export class SentencerepetitionComponent implements OnInit, OnDestroy, CanCompon
         }
       )
       .subscribe();
-    this.dataService.setCookie('sentencerepetition', 'completed', 200);
-    this.dataService.setIsInAssessment(false);
+    this.stateManager.finishThisAssessmentAndAdvance('sentencerepetition');
+    // this.dataService.setCookie('sentencerepetition', 'completed', 200);
   }
   canDeactivate(): boolean {
     return this.dialogService.canRedirect();

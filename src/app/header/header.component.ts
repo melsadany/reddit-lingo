@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 
 import { AuthService } from '../auth/auth.service';
 import { AssessmentDataService } from '../services/assessment-data.service';
+import { StateManagerService } from '../services/state-manager.service';
 
 @Component({
   selector: 'app-header',
@@ -14,6 +15,7 @@ export class HeaderComponent implements OnInit {
   @Input() user: any = {};
 
   constructor(
+    private stateManager: StateManagerService,
     private authService: AuthService,
     private router: Router,
     private dataService: AssessmentDataService
@@ -31,7 +33,7 @@ export class HeaderComponent implements OnInit {
   }
 
   public updateHeader(): Boolean {
-    if (this.dataService.isInAssessment()) {
+    if (this.stateManager.isInAssessment) {
       return true;
     } else {
       return false;

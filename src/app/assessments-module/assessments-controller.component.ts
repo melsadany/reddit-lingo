@@ -24,12 +24,12 @@ export class AssessmentsControllerComponent
   ngOnInit(): void {
     this.stateManager.isInAssessment = false;
     if (this.stateManager.finishedAllAssessments) {
-      this.dataService.goTo('done');
+      this.stateManager.navigateTo('done');
     }
-    if (this.dataService.doRedirectBackToStart()) {
-      this.dataService.router.navigate(['/assessments/']);
-    }
-    this.dataService.nextAssessment();
+    // if (this.dataService.doRedirectBackToStart()) {
+    //   this.dataService.router.navigate(['/assessments/']);
+    // }
+    // this.dataService.nextAssessment();
   }
 
   // @HostListener('window:beforeunload', ['$event'])

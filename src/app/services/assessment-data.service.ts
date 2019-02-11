@@ -14,29 +14,12 @@ import { StateManagerService } from './state-manager.service';
 
 @Injectable()
 export class AssessmentDataService {
-  private _DEBUG_MODE = true; // KRM: FOR BEBUGGING ONLY. GIVES DEBUG BUTTON IN ASSESSMENTS
   assessmentData: AssessmentData;
-  http: HttpClient;
-  inAssessment: Boolean = false;
-  allAssessmentsCompleted: Boolean = false;
-  router: Router;
-  showWelcomePage = true;
-  textOnStartButton = 'START';
-  textOnAssessmentButton: string;
-  welcomeText = 'Welcome to the assessments';
-  firstTimeStarting = true;
-  startButton = false;
-  splashPage = true;
 
   constructor(
-    private Http: HttpClient,
     private cookieService: CookieService,
-    private stateManager: StateManagerService,
-    router: Router
-  ) {
-    this.http = Http;
-    this.router = router;
-  }
+    private http: HttpClient
+  ) {}
 
   public setCookie(name: string, value: string, date: number): void {
     this.cookieService.set(name, value, date);
@@ -54,13 +37,9 @@ export class AssessmentDataService {
     return this.cookieService.get(name);
   }
 
-  public getAllCookies(): object {
-    return this.cookieService.getAll();
-  }
-
-  public isAssessmentCompleted(assessNameCheck: string): Boolean {
-    return this.checkCookie(assessNameCheck);
-  }
+  // public getAllCookies(): object {
+  //   return this.cookieService.getAll();
+  // }
 
   public getUserAssessmentDataFromMongo(
     user_id: string
@@ -93,128 +72,56 @@ export class AssessmentDataService {
     );
   }
 
-  public isInAssessment(): Boolean {
-    return this.inAssessment;
-  }
+  // public getCurrentAssessmentUrl(): string {
+  //   return this.router.url.slice(13); // KRM: Slice off the /assessments/ portion of the url to just get the assessment name
+  // }
 
-  public setIsInAssessment(set: Boolean): void {
-    this.inAssessment = set;
-  }
+  // public showButton(): Boolean {
+  //   return (
+  //     this.getCurrentUrl() === '/assessments' ||
+  //     this.isAssessmentCompleted(this.getCurrentAssessment()) ||
+  //     (!this.inAssessment &&
+  //       !this.showWelcomePage &&
+  //       !this.allAssessmentsCompleted)
+  //   );
+  // }
 
-  public setCurrentAssessment(set: string): void {
-    this.currentAssessment = set;
-  }
+  // public showThankYou(): Boolean {
+  //   return this.isAssessmentCompleted(this.getCurrentAssessmentUrl());
+  // }
 
-  public getCurrentAssessment(): string {
-    return this.currentAssessment;
-  }
+  // public showWelcome(): Boolean {
+  //   return (
+  //     this.showWelcomePage &&
+  //     !this.inAssessment &&
+  //     !this.allAssessmentsCompleted
+  //   );
+  // }
 
-  private determineNextAssessment(): string {
-    for (const assessmentState of this.stateManager.assessments) {
-      if (!assessmentState['completed']) {
-        console.log('not completed: ' + assessmentState['assessment_name']); // KRM: Debugging
-        return assessmentState['assessment_name'];
-      }
-    }
-    this.allAssessmentsCompleted = true;
-    return 'done';
-    // KRM: done is the name of the route for the completion component
-  }
+  // public setStartButton(set: boolean): void {
+  //   this.startButton = set;
+  // }
 
-  public nextAssessment(): void {
-    if (this.stateManager.showAssessmentFrontPage) {
-      this.stateManager.showAssessmentFrontPage = false;
-    }
-    if (this.firstTimeStarting) {
-      this.firstTimeStarting = false;
-      this.textOnStartButton = 'Continue Assessments';
-      this.welcomeText = 'You have partially completed the set of assessments';
-    }
-    this.setCurrentAssessment(this.determineNextAssessment());
-    console.log('Getting assessment: ' + this.getCurrentAssessment()); // KRM: For debugging
-    this.goTo(this.getCurrentAssessment());
-  }
+  // public showStartButton(): boolean {
+  //   return this.startButton;
+  // }
 
-  public goTo(assessmentName: string): void {
-    this.setStartButton(true);
-    this.router.navigate(['/assessments/', assessmentName]);
-  }
+  // public setSplashPage(set: boolean): void {
+  //   this.splashPage = set;
+  // }
 
-  public getCurrentUrl(): string {
-    return this.router.url;
-  }
+  // public showSplashPage(): boolean {
+  //   return this.splashPage;
+  // }
 
-  public getCurrentAssessmentUrl(): string {
-    return this.router.url.slice(13); // KRM: Slice off the /assessments/ portion of the url to just get the assessment name
-  }
+  // public showInitialSplashPage(assessment: string): Boolean {
+  //   return (
+  //     this.currentAssessment === assessment &&
+  //     !this.isAssessmentCompleted(assessment)
+  //   );
+  // }
 
-  public showButton(): Boolean {
-    return (
-      this.getCurrentUrl() === '/assessments' ||
-      this.isAssessmentCompleted(this.getCurrentAssessment()) ||
-      (!this.inAssessment &&
-        !this.showWelcomePage &&
-        !this.allAssessmentsCompleted)
-    );
-  }
-
-  public showThankYou(): Boolean {
-    return this.isAssessmentCompleted(this.getCurrentAssessmentUrl());
-  }
-
-  public showWelcome(): Boolean {
-    return (
-      this.showWelcomePage &&
-      !this.inAssessment &&
-      !this.allAssessmentsCompleted
-    );
-  }
-
-  public setStartButton(set: boolean): void {
-    this.startButton = set;
-  }
-
-  public showStartButton(): boolean {
-    return this.startButton;
-  }
-
-  public setSplashPage(set: boolean): void {
-    this.splashPage = set;
-  }
-
-  public showSplashPage(): boolean {
-    return this.splashPage;
-  }
-
-  public showInitialSplashPage(assessment: string): Boolean {
-    return (
-      this.currentAssessment === assessment &&
-      !this.isAssessmentCompleted(assessment)
-    );
-  }
-
-  public doRedirectBackToStart(): Boolean {
-    return this.showWelcome() && !this.showButton(); // If you come to an assessment just from the browser with the URL
-  }
-
-  public get DEBUG_MODE(): boolean {
-    return this._DEBUG_MODE;
-  }
-  public set DEBUG_MODE(value: boolean) {
-    this._DEBUG_MODE = value;
-  }
-
-  public nextAssessmentDebugMode(): void {
-    if (this.DEBUG_MODE) {
-      this.setIsInAssessment(false);
-      this.setCookie(this.currentAssessment, 'completed', 200);
-      this.nextAssessment();
-    }
-  }
-
-  public deleteCookiesDebugMode(): void {
-    if (this.DEBUG_MODE) {
-      this.cookieService.deleteAll();
-    }
-  }
+  // public doRedirectBackToStart(): Boolean {
+  //   return this.showWelcome() && !this.showButton(); // If you come to an assessment just from the browser with the URL
+  // }
 }

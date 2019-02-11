@@ -1,12 +1,13 @@
 <div class="mx-lg-5">
-  <div *ngIf="dataService.showInitialSplashPage('listeningcomprehension') || dataService.showSplashPage()">
+  <div *ngIf="stateManager.showAssessmentFrontPage">
     <p class="py-4">
       In this task, you will listen to an audio clip. When the clip ends,
       pick the image that matches what you heard. We'll
       do a practice round so you get the idea.
     </p>
     <div class="text-center">
-      <button *ngIf="this.dataService.showStartButton()" type="button" class="start-button btn btn-success" (click)="startAudioInstructionForSet()">{{textOnButton}}</button>
+      <button *ngIf="this.stateManager.showInnerAssessmentButton" type="button" class="start-button btn btn-success"
+        (click)="startAudioInstructionForSet()">{{stateManager.textOnInnerAssessmentButton}}</button>
     </div>
   </div>
   <div *ngIf="showImage">
