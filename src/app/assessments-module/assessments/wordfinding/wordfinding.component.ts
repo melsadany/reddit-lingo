@@ -24,7 +24,6 @@ export class WordfindingComponent
   intervalCountup: NodeJS.Timeout;
   doneRecording: boolean;
   recordedData = [];
-  recordingNumber = 1;
   promptNumber = 0;
   showLetter = false;
   currentLetter = '';
@@ -32,6 +31,7 @@ export class WordfindingComponent
   recordingTimeSubscription: Subscription;
   recordedTime: string;
   recordedOutputSubscription: Subscription;
+  lastPrompt = false;
   letterData = [
     {
       char: 'A',
@@ -75,6 +75,11 @@ export class WordfindingComponent
   }
 
   ngOnInit(): void {
+    for (const assessmentRecord of this.stateManager.assessments) {
+      if (assessmentRecord['assess_name'] === 'wordfinding') {
+        this.promptNumber = assessmentRecord['prompt_number'];
+      }
+    }
   }
 
   ngOnDestroy(): void {
@@ -150,20 +155,24 @@ export class WordfindingComponent
     reader.onloadend = (): any => {
       const currentRecordedBlobAsBase64 = reader.result.slice(22);
       this.recordedData.push({
-        prompt_number: this.recordingNumber,
+        prompt_number: this.promptNumber,
         recorded_data: currentRecordedBlobAsBase64
       }); // KRM: Adding recording to the array is done in sync. Currently wait for the recording to load.
       // Might be btter to do this async so we don't have the chance of blocking for a short
       // period before moving to the next prompt.
-      this.recordingNumber++;
+      this.pushAudioData();
       this.promptNumber++;
       // this.advanceToNextPrompt();  KRM: For automatic advancement
-      console.log(this.recordedData);
     };
   }
 
   advanceToNextPrompt(): void {
     if (this.promptNumber < this.letterData.length) {
+      if (this.promptNumber + 1 === this.letterData.length) {
+        this.lastPrompt = true;
+        this.stateManager.textOnInnerAssessmentButton =
+          'FINISH ASSESSMENT AND ADVANCE';
+      }
       this.calculateNextLetter();
       this.stateManager.showInnerAssessmentButton = false;
       this.startDisplayedCountdownTimer();
@@ -172,20 +181,29 @@ export class WordfindingComponent
     }
   }
 
+  pushAudioData(): void {
+    const assessmentData = {
+      assess_name: 'wordfinding',
+      data: { recorded_data: this.recordedData },
+      completed: this.lastPrompt
+    };
+    const assessmentGoogleData = {
+      assess_name: 'wordfinding',
+      data: { text: 'None' }
+    };
+    if (this.promptNumber === 0) {
+      this.dataService
+        .postAssessmentDataToMongo(assessmentData, assessmentGoogleData)
+        .subscribe();
+    } else {
+      this.dataService
+        .postSingleAudioDataToMongo(assessmentData, assessmentGoogleData)
+        .subscribe();
+    }
+    this.recordedData = [];
+  }
+
   finishAssessment(): void {
-    this.dataService
-      .postAssessmentDataToMongo(
-        {
-          assess_name: 'wordfinding',
-          data: { recorded_data: this.recordedData },
-          completed: true
-        },
-        {
-          assess_name: 'wordfinding',
-          data: { text: 'None' }
-        }
-      )
-      .subscribe();
     this.stateManager.finishThisAssessmentAndAdvance('wordfinding');
   }
   canDeactivate(): boolean {

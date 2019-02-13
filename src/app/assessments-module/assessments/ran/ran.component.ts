@@ -148,7 +148,6 @@ export class RanComponent implements OnInit, OnDestroy, CanComponentDeactivate {
         .subscribe(); // KRN: Fix how this output is handled to be updated like other assessments
     };
     this.stateManager.finishThisAssessmentAndAdvance('ran');
-
     // KRM: Each assessment will handle the structure of its assessment data before posting it to mongo
   }
   canDeactivate(): boolean {

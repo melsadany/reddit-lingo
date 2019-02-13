@@ -1091,7 +1091,7 @@ arrify@^1.0.0, arrify@^1.0.1:
   resolved "https://registry.yarnpkg.com/arrify/-/arrify-1.0.1.tgz#898508da2226f380df904728456849c1501a4b0d"
   integrity sha1-iYUI2iIm84DfkEcoRWhJwVAaSw0=
 
-asap@~2.0.3:
+asap@^2.0.0, asap@~2.0.3:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/asap/-/asap-2.0.6.tgz#e50347611d7e690943208bbdafebcbc2fb866d46"
   integrity sha1-5QNHYR1+aQlDIIu9r+vLwvuGbUY=
@@ -3723,6 +3723,14 @@ detect-port-alt@1.1.6:
   dependencies:
     address "^1.0.1"
     debug "^2.6.0"
+
+dezalgo@^1.0.1:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/dezalgo/-/dezalgo-1.0.3.tgz#7f742de066fc748bc8db820569dddce49bf0d456"
+  integrity sha1-f3Qt4Gb8dIvI24IFad3c5Jvw1FY=
+  dependencies:
+    asap "^2.0.0"
+    wrappy "1"
 
 di@^0.0.1:
   version "0.0.1"
@@ -7962,7 +7970,7 @@ lodash.uniq@^4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
   integrity sha1-0CJTc662Uq3BvILklFM5qEJ1R3M=
 
-"lodash@>=3.5 <5", lodash@^4.0.0, lodash@^4.15.0, lodash@^4.16.2, lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.2, lodash@^4.17.3, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.3.0, lodash@^4.5.0, lodash@^4.9.0, lodash@~4.17.10:
+"lodash@>=3.5 <5", lodash@>=4.17.11, lodash@^4.0.0, lodash@^4.15.0, lodash@^4.16.2, lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.2, lodash@^4.17.3, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.3.0, lodash@^4.5.0, lodash@^4.9.0, lodash@~4.17.10:
   version "4.17.11"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
   integrity sha512-cQKh8igo5QUhZ7lg38DYWAxMvjSAKG0A8wGSVimP07SIUEK2UO+arSRKbRZWtelMtN5V0Hkwh5ryOto/SshYIg==
@@ -8467,6 +8475,14 @@ mongodb@3.1.10:
   dependencies:
     mongodb-core "3.1.9"
     safe-buffer "^5.1.2"
+
+mongoose-gridfs@^0.6.2:
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/mongoose-gridfs/-/mongoose-gridfs-0.6.2.tgz#b144219af01c51b14c58e5cdf7f58293d2ce1d67"
+  integrity sha512-fW6+D1Pn+qtpuYK3lYl1OMd3wenNIJ0/KhpOAoiRZWdzHjABiUQrtZSCyLEjmVgsxuTqIsUqvS1KeMUvUmtO2A==
+  dependencies:
+    lodash ">=4.17.11"
+    stream-read ">=1.1.2"
 
 mongoose-legacy-pluralize@1.0.2:
   version "1.0.2"
@@ -11906,6 +11922,13 @@ stream-http@^2.7.2:
     readable-stream "^2.3.6"
     to-arraybuffer "^1.0.0"
     xtend "^4.0.0"
+
+stream-read@>=1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/stream-read/-/stream-read-1.1.2.tgz#3137110d7aa80ba54e4b829c4cd33ca106b9564d"
+  integrity sha1-MTcRDXqoC6VOS4KcTNM8oQa5Vk0=
+  dependencies:
+    dezalgo "^1.0.1"
 
 stream-shift@^1.0.0:
   version "1.0.0"

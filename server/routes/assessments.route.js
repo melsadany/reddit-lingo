@@ -12,6 +12,15 @@ router.post('/SaveAssessments', (req, res) => {
     })
 })
 
+router.post('/PushOneSingleAudioData', (req, res) => {
+  assessCtrl.pushOneAudioAssessmentData(req.body)
+    .then(res.send('Success'))
+    .catch((err) => {
+      console.log(err)
+      res.send(err)
+    })
+})
+
 router.get('/GetUserAssessment/:user_id', (req, res) => {
   let query = assessCtrl.getUserAssessmentData(req.params.user_id)
   query.exec((err, data) => {

@@ -1,9 +1,12 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import {
   AssessmentData,
+  AssessmentDataStructure
 } from '../structures/assessmentdata';
 import { AssessmentDataService } from './assessment-data.service';
 import { Router } from '@angular/router';
+import { Subscription, Observable } from 'rxjs';
+import { UserIdObject } from '../structures/useridobject';
 
 @Injectable({
   providedIn: 'root'
@@ -18,10 +21,7 @@ export class StateManagerService {
   private _showOutsideAssessmentButton = true;
   private _textOnOutsideAssessmentButton = 'START ASSESSMENTS';
   private _textOnInnerAssessmentButton = 'START ASSESSMENT';
-  constructor(
-    private dataService: AssessmentDataService,
-    private routerService: Router
-  ) {}
+  constructor(private routerService: Router) {}
 
   public get isInAssessment(): boolean {
     return this._isInAssessment;
@@ -73,16 +73,19 @@ export class StateManagerService {
   }
 
   assessments = [
+    // KRM: Load assessment data into here
     {
       assess_name: 'prescreenerquestions',
       completed: false
     },
     {
       assess_name: 'wordfinding',
+      prompt_number: 0,
       completed: false
     },
     {
       assess_name: 'sentencerepetition',
+      prompt_number: 0,
       completed: false
     },
     {
@@ -120,18 +123,26 @@ export class StateManagerService {
   }
 
   public initializeState(existingAssessmentData: AssessmentData): void {
-    for (const completedAssessment of existingAssessmentData.assessments) {
-      const completedAssessmentName = completedAssessment['assess_name'];
+    for (const existingAssessment of existingAssessmentData.assessments) {
+      const existingAssessmentName = existingAssessment['assess_name'];
       for (const assessmentRecord of this.assessments) {
-        if (assessmentRecord['assess_name'] === completedAssessmentName) {
+        if (assessmentRecord['assess_name'] === existingAssessmentName && existingAssessment['completed'] === true) {
           assessmentRecord['completed'] = true;
-          console.log('Already completed: ' + completedAssessmentName);
+          console.log('Already completed: ' + existingAssessmentName);
           break;
+        } else {
+          const currentPromptNumber = this.determineCurrentRecordingPromptNumber(existingAssessment['data']['recorded_data']);
+          assessmentRecord['prompt_number'] = currentPromptNumber;
         }
       }
-      // this.populateStateCookies(value.assess_name);
     }
     this.currentAssessment = this.determineNextAssessment();
+  }
+
+  private determineCurrentRecordingPromptNumber(recordedData: Array<Object>): number {
+    const latestEntryIndex = recordedData.length - 1;
+    console.log(recordedData[latestEntryIndex]['prompt_number'] + 1);
+    return recordedData[latestEntryIndex]['prompt_number'] + 1;
   }
 
   private determineNextAssessment(): string {
@@ -177,12 +188,6 @@ export class StateManagerService {
       if (assessment['assess_name'] === assessmentName) {
         assessment['completed'] = true;
       }
-    }
-  }
-
-  public deleteUserCookieDebugMode(): void {
-    if (this.DEBUG_MODE) {
-      this.dataService.deleteUserIdCookie();
     }
   }
 

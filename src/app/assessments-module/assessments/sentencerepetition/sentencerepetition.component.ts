@@ -22,7 +22,6 @@ export class SentencerepetitionComponent
   recordedTime: string;
   recordedOutputSubscription: Subscription;
   recordedData = [];
-  recordingNumber = 1;
   promptNumber = 0;
   countingDown = false;
   intervalCountdown: NodeJS.Timeout;
@@ -31,6 +30,7 @@ export class SentencerepetitionComponent
   showRecordingIcon = false;
   intervalCountup: NodeJS.Timeout;
   doneRecording = false;
+  lastPrompt = false;
 
   constructor(
     private stateManager: StateManagerService,
@@ -72,7 +72,13 @@ export class SentencerepetitionComponent
   ];
   filePathsToPlay = [];
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    for (const assessmentRecord of this.stateManager.assessments) {
+      if (assessmentRecord['assess_name'] === 'sentencerepetition') {
+        this.promptNumber = assessmentRecord['prompt_number'];
+      }
+    }
+  }
 
   ngOnDestroy(): void {
     this.abortRecording();
@@ -102,12 +108,12 @@ export class SentencerepetitionComponent
     reader.onloadend = (): any => {
       const currentRecordedBlobAsBase64 = reader.result.slice(22);
       this.recordedData.push({
-        prompt_number: this.recordingNumber,
+        prompt_number: this.promptNumber,
         recorded_data: currentRecordedBlobAsBase64
       }); // KRM: Adding recording to the array is done in sync. Currently wait for the recording to load.
       // Might be btter to do this async so we don't have the chance of blocking for a short
       // period before moving to the next prompt.
-      this.recordingNumber++;
+      this.pushAudioData();
       this.promptNumber++;
       console.log(this.recordedData);
     };
@@ -160,7 +166,13 @@ export class SentencerepetitionComponent
   }
 
   startAudioForSet(): void {
+    this.stateManager.showInnerAssessmentButton = false;
     if (this.promptNumber < this.filePathsToPlay.length) {
+      if (this.promptNumber + 1 === this.filePathsToPlay.length) {
+        this.lastPrompt = true;
+        this.stateManager.textOnInnerAssessmentButton =
+          'FINISH ASSESSMENT AND ADVANCE';
+      }
       const audio = new Audio();
       audio.src = this.filePathsToPlay[this.promptNumber];
       audio.addEventListener('ended', () =>
@@ -172,22 +184,32 @@ export class SentencerepetitionComponent
     }
   }
 
+  pushAudioData(): void {
+    const assessmentData = {
+      assess_name: 'sentencerepetition',
+      data: { recorded_data: this.recordedData },
+      completed: this.lastPrompt
+    };
+    const assessmentGoogleData = {
+      assess_name: 'sentencerepetition',
+      data: { text: 'None' }
+    };
+    if (this.promptNumber === 0) {
+      this.dataService
+        .postAssessmentDataToMongo(assessmentData, assessmentGoogleData)
+        .subscribe();
+    } else {
+      this.dataService
+        .postSingleAudioDataToMongo(assessmentData, assessmentGoogleData)
+        .subscribe();
+    }
+    this.recordedData = [];
+  }
+
   finishAssessment(): void {
-    this.dataService
-      .postAssessmentDataToMongo(
-        {
-          assess_name: 'sentencerepetition',
-          data: { recorded_data: this.recordedData },
-          completed: true
-        },
-        {
-          assess_name: 'sentencerepetition',
-          data: { text: 'None' }
-        }
-      )
-      .subscribe();
     this.stateManager.finishThisAssessmentAndAdvance('sentencerepetition');
   }
+
   canDeactivate(): boolean {
     return this.dialogService.canRedirect();
   }

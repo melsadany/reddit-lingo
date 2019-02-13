@@ -14,8 +14,8 @@ mongoose.connect(mongoUri, {
 // KRM : Avoid deprecation warnings by using
 // these options in mongoose.connect
 mongoose.connection.on('error', () => {
-  throw new Error(`unable to connect to database: ${mongoUri}`)
-})
+    throw new Error(`unable to connect to database: ${mongoUri}`)
+  })
   .once('open', () => {
     console.log('MongoDB connected successfully')
   })
