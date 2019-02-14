@@ -109,7 +109,7 @@ export class PostscreenerquestionsComponent
       publicSchoolOption: this.dataForm.get('publicSchoolOption').value
     };
     this.dataService
-      .postAssessmentDataToMongo(
+      .postAssessmentDataToFileSystem(
         {
           assess_name: 'postscreenerquestions',
           data: { prescreenerQuestions: data },

@@ -116,7 +116,7 @@ export class ListeningcomprehensionComponent
 
   finishAssessment(): void {
     this.dataService
-      .postAssessmentDataToMongo(
+      .postAssessmentDataToFileSystem(
         {
           assess_name: 'listeningcomprehension',
           data: { selection_data: this.imageSelections },

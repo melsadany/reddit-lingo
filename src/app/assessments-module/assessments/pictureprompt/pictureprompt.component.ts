@@ -169,7 +169,7 @@ export class PicturepromptComponent
 
   finishAssessment(): void {
     this.dataService
-      .postAssessmentDataToMongo(
+      .postAssessmentDataToFileSystem(
         {
           assess_name: 'pictureprompt',
           data: { recorded_data: this.recordedData },

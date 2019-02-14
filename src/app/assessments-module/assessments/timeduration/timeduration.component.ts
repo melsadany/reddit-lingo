@@ -114,7 +114,7 @@ export class TimedurationComponent
 
   finishAssessment(): void {
     this.dataService
-      .postAssessmentDataToMongo(
+      .postAssessmentDataToFileSystem(
         {
           assess_name: 'timeduration',
           data: { held_data: this.heldData },

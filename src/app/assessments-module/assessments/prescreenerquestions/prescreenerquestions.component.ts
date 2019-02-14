@@ -41,7 +41,7 @@ export class PrescreenerquestionsComponent
   englishOptions = ['Yes', 'No'];
   musicAbilityOptions = [
     'I have never had any formal training in any kind of music',
-    "I have some musical traning but don't routinely play or sing",
+    'I have some musical traning but don\'t routinely play or sing',
     'I can play an instrument, or have formal training in singing',
     'I play or sing professionally / I study music as a major / I teach music'
   ];
@@ -67,7 +67,7 @@ export class PrescreenerquestionsComponent
       musicAbility: this.dataForm.get('musicAbility').value
     };
     this.dataService
-      .postAssessmentDataToMongo(
+      .postAssessmentDataToFileSystem(
         {
           assess_name: 'prescreenerquestions',
           data: { prescreenerQuestions: data },

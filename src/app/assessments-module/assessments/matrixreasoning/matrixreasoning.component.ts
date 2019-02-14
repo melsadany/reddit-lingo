@@ -201,7 +201,7 @@ export class MatrixreasoningComponent
 
   finishAssessment(): void {
     this.dataService
-      .postAssessmentDataToMongo(
+      .postAssessmentDataToFileSystem(
         {
           assess_name: 'matrixreasoning',
           data: { selection_data: this.imageSelections },

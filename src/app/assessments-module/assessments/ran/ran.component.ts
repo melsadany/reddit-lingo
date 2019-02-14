@@ -132,7 +132,7 @@ export class RanComponent implements OnInit, OnDestroy, CanComponentDeactivate {
     reader.onloadend = (): any => {
       this.recordedBlobAsBase64 = reader.result.slice(22);
       this.dataService
-        .postAssessmentDataToMongo(
+        .postAssessmentDataToFileSystem(
           {
             assess_name: 'ran',
             data: { recorded_data: this.recordedBlobAsBase64 },

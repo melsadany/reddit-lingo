@@ -12,7 +12,7 @@ import { UserIdObject } from '../structures/useridobject';
   providedIn: 'root'
 })
 export class StateManagerService {
-  private _DEBUG_MODE = true; // KRM: FOR BEBUGGING ONLY. GIVES DEBUG BUTTONS IN ASSESSMENTS
+  private _DEBUG_MODE = true; // KRM: FOR DEBUGGING ONLY. GIVES DEBUG BUTTONS IN ASSESSMENTS
   private _isInAssessment = false;
   private _showAssessmentFrontPage = true;
   private _showInnerAssessmentButton = true;

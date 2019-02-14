@@ -17,51 +17,7 @@ export class AssessmentDataService {
   private _partialAssessmentData: AssessmentData;
   private _partialAssessmentDataSubscription: Observable<
     AssessmentData
-  > = this.getUserAssessmentDataFromMongo(this.getUserIdCookie());
-
-  // assessmentsData = [
-  //   // KRM: Load assessment data into here
-  //   {
-  //     assess_name: 'prescreenerquestions',
-  //     data: {}
-  //   },
-  //   {
-  //     assess_name: 'wordfinding',
-  //     data: {}
-  //   },
-  //   {
-  //     assess_name: 'sentencerepetition',
-  //     data: {}
-  //   },
-  //   {
-  //     assess_name: 'matrixreasoning',
-  //     data: {}
-  //   },
-  //   {
-  //     assess_name: 'syncvoice',
-  //     data: {}
-  //   },
-  //   {
-  //     assess_name: 'timeduration',
-  //     data: {}
-  //   },
-  //   {
-  //     assess_name: 'ran',
-  //     data: {}
-  //   },
-  //   {
-  //     assess_name: 'pictureprompt',
-  //     data: {}
-  //   },
-  //   {
-  //     assess_name: 'listeningcomprehension',
-  //     completed: {}
-  //   },
-  //   {
-  //     assess_name: 'postscreenerquestions',
-  //     completed: {}
-  //   }
-  // ];
+  > = this.getUserAssessmentDataFromFileSystem(this.getUserIdCookie());
   constructor(
     private cookieService: CookieService,
     private http: HttpClient,
@@ -120,7 +76,7 @@ export class AssessmentDataService {
   public setData(): void {
     // KRM: Get the data for the current user
     // that has already been put in the database from pervious assessments
-    this._partialAssessmentDataSubscription = this.getUserAssessmentDataFromMongo(
+    this._partialAssessmentDataSubscription = this.getUserAssessmentDataFromFileSystem(
       this.getUserIdCookie()
     );
     this._partialAssessmentDataSubscription.subscribe(
@@ -135,20 +91,7 @@ export class AssessmentDataService {
     );
   }
 
-  // private initializeData(data: AssessmentData): void {
-  //   for (const assessmentData of data.assessments) {
-  //     const assessmentName = assessmentData['assess_name'];
-  //     for (const assessmentRecord of this.assessmentsData) {
-  //       if (assessmentRecord['assess_name'] === assessmentName) {
-  //         assessmentRecord['data'] = assessmentData['data'];
-  //         console.log('Updating data for: ' + assessmentName);
-  //         break;
-  //       }
-  //     }
-  //   }
-  // }
-
-  public getUserAssessmentDataFromMongo(
+  public getUserAssessmentDataFromFileSystem(
     user_id: string
   ): Observable<AssessmentData> {
     return <Observable<AssessmentData>>(
@@ -156,7 +99,7 @@ export class AssessmentDataService {
     );
   }
 
-  public postAssessmentDataToMongo(
+  public postAssessmentDataToFileSystem(
     assessmentsData: AssessmentDataStructure,
     googleData: GoogleSpeechToTextDataStructure
   ): Observable<string> {

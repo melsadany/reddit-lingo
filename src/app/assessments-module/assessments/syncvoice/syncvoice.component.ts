@@ -167,7 +167,7 @@ export class SyncvoiceComponent
 
   finishAssessment(): void {
     this.dataService
-      .postAssessmentDataToMongo(
+      .postAssessmentDataToFileSystem(
         {
           assess_name: 'syncvoice',
           data: { recorded_data: this.recordedData },
