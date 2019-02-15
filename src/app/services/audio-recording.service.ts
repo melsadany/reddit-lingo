@@ -17,6 +17,18 @@ export class AudioRecordingService {
   private _recorded = new Subject<RecordedAudioOutput>();
   private _recordingTime = new Subject<string>();
   private _recordingFailed = new Subject<string>();
+  private _currentlyRecording = false;
+
+  isCurrentlyRecording(): Boolean {
+    return this._currentlyRecording;
+  }
+
+  setCurrentlyRecording(set: boolean): void {
+    if (set === this._currentlyRecording) {
+      console.log('error, already set to this value');
+    }
+    this._currentlyRecording = set;
+  }
 
   getRecordedBlob(): Observable<RecordedAudioOutput> {
     return this._recorded.asObservable();
@@ -41,6 +53,7 @@ export class AudioRecordingService {
       .then(s => {
         this.stream = s;
         this.record();
+        this.setCurrentlyRecording(true);
       })
       .catch(error => {
         this._recordingFailed.next();
@@ -83,6 +96,7 @@ export class AudioRecordingService {
 
   stopRecording(): void {
     if (this.recorder) {
+      this.setCurrentlyRecording(false);
       this.recorder.stop(
         (blob: Blob) => {
           if (this.startTime) {

@@ -1,0 +1,34 @@
+<div class="mx-lg-5">
+  <div *ngIf="stateManager.showAssessmentFrontPage">
+    <p class="py-4">
+      In this task, you will be shown a set of related pictures.
+      Select the image that you feel best fits in with the other
+      pictures.
+    </p>
+    <div *ngIf="stateManager.showInnerAssessmentButton" class="text-center button-down">
+      <button *ngIf="!stateManager.isInAssessment" type="button" class="start-button btn btn-success" (click)="setStateAndStart()">{{stateManager.textOnInnerAssessmentButton}}</button>
+      <button *ngIf="stateManager.isInAssessment" type="button" class="start-button btn btn-success" (click)="advanceToNextPrompt()">{{stateManager.textOnInnerAssessmentButton}}</button>
+    </div>
+  </div>
+  <div *ngIf="showMatrix">
+    <table class="table-bordered table-active custom-table">
+      <tbody>
+        <tr *ngFor="let row of imageMatrices['frameSets'][promptNumber]">
+          <td *ngFor="let image of row">
+            <img class="img-fluid" [src]="image">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <table class="table-bordered">
+      <tbody>
+        <tr class="table-primary" *ngFor="let row of imageMatrices['solutionSets'][promptNumber]">
+          <td *ngFor="let image of row">
+            <img class="img-fluid" [src]="image" (click)="selectImage(image)">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p *ngIf="countingDown" class="text-center display-1">{{timeLeft}}</p>
+</div>

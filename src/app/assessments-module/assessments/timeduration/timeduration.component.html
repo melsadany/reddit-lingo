@@ -1,0 +1,33 @@
+<div class="mx-lg-5">
+  <div *ngIf="stateManager.showAssessmentFrontPage">
+    <p class="py-4">
+      You will see a line that moves around the outside of a circle. The speed of the line will change from trial to
+      trial. When the line stops moving, hold down the button for as long as you think it took the line to complete its
+      course
+      around the circle. We’ll have you do a trial run so you get the idea. Click the button when you’re ready to try
+      it.
+    </p>
+  <div *ngIf="stateManager.showInnerAssessmentButton" class="text-center button-down">
+    <button *ngIf="!stateManager.isInAssessment" type="button" class="start-button btn btn-success" (click)="setStateAndStart()">{{stateManager.textOnInnerAssessmentButton}}</button>
+    <button *ngIf="stateManager.isInAssessment" type="button" class="start-button btn btn-success" (click)="advanceToNextPrompt()">{{stateManager.textOnInnerAssessmentButton}}</button>
+  </div>
+  </div>
+  <div class="imageParent" *ngIf="showAnimation">
+    <circle-progress (mousedown)="startTimer()" (mouseup)="pauseTimer()" [responsive]="true" [percent]="displayPercentage"
+      [radius]="100" [outerStrokeWidth]="16" [innerStrokeWidth]="8" [outerStrokeColor]="outerStrokeColor"
+      [innerStrokeColor]="innerStrokeColor" [animation]="canAnimate" [animationDuration]="animationDuration"
+      [maxPercent]="100" [renderOnClick]="false" [showTitle]='false' [subtitle]="displaySubtitle" [showUnits]='false'>
+    </circle-progress>
+  </div>
+  <div class="text-center">
+    <!-- <button type="button" class="stop-button btn btn-outline-secondary" *ngIf="isRecording && !blobUrl" (click)="stopRecording()">DONE</button> -->
+    <div *ngIf="showAnimation"> {{currentTimeHeld}} </div>
+
+  </div>
+  <!-- <div>
+    <audio *ngIf="!isRecording && blobUrl"  controls>
+      <source [src]="blobUrl" type="audio/webm">
+    </audio>
+</div> KRM: For debugging usage only. -->
+  <p *ngIf="countingDown" class="text-center display-1">{{timeLeft}}</p>
+</div>

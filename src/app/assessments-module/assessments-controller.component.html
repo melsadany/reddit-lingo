@@ -1,17 +1,24 @@
-<ng-container *ngIf="!dataService.inAssessment && dataService.showWelcomePage && !dataService.allAssessmentsCompleted then welcome; else inAssessment"></ng-container>
-<ng-template #welcome>
-  <div class='py-4 text-center'>
-    Welcome to the assessments.
-  </div>
-  <div class='pb-5 text-center'>
-    <button type='button' class='btn btn-primary btn-lg' (click)="dataService.nextAssessment()">START</button>
-  </div>
-</ng-template>
-<ng-template #inAssessment>
-  <router-outlet></router-outlet>
-</ng-template>
-<div class='py-4 text-center'>
-  <div *ngIf="!dataService.inAssessment && !dataService.showWelcomePage && !dataService.allAssessmentsCompleted">
-    <button type='button' class='btn btn-primary btn-lg' (click)="dataService.nextAssessment()">Continue Assessments</button>
-  </div>
+<!-- <ng-container *ngIf=""></ng-container>
+<ng-template #welcome> -->
+<!-- <div class='py-4 text-center'>
+  {{stateManager.currentAssessment}}
+</div> -->
+<!-- </ng-template> -->
+<!-- <ng-template #inAssessment> -->
+<router-outlet></router-outlet>
+<!-- </ng-template> -->
+<!-- <div *ngIf="dataService.showButton() && dataService.currentAssessment != 'done'"> -->
+<!-- <div class='py-4 text-center'>
+    <div *ngIf="dataService.showThankYou()">
+      <p class="pt4"> Thank you for completing this assessment.</p>
+    </div> KRM: Let each assessment handle this case-->
+<button *ngIf="this.stateManager.showOutsideAssessmentButton" type='button' class='btn btn-primary btn-lg' (click)="stateManager.goToNextAssessment()">{{stateManager.textOnOutsideAssessmentButton}}</button>
+<!-- </div>
+</div> -->
+<div *ngIf="stateManager.DEBUG_MODE" class="py-4 text-center">
+  <button type='button' class='btn btn-outline-danger btn-lg button-down' (click)="stateManager.nextAssessmentDebugMode()">DEBUG
+    ENABLED: NEXT
+    ASSESSMENT</button>
+  <button type='button' class='btn btn-outline-danger btn-lg button-down' (click)="dataService.deleteUserCookieDebugMode()">DEBUG
+    ENABLED: CLEAR USER_ID COOKIE</button>
 </div>

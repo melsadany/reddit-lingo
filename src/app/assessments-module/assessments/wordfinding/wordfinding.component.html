@@ -1,0 +1,17 @@
+<div class="mx-lg-5">
+  <div *ngIf="stateManager.showAssessmentFrontPage">
+    <p class="py-4">
+      You will be shown a letter. Say as many words as you can that begin
+      with this letter. You will have 30 seconds for each letter shown to you.
+    </p>
+  </div>
+  <div *ngIf="stateManager.showInnerAssessmentButton" class="text-center button-down">
+    <button *ngIf="!stateManager.isInAssessment" type="button" class="start-button btn btn-success" (click)="setStateAndStart()">{{stateManager.textOnInnerAssessmentButton}}</button>
+    <button *ngIf="stateManager.isInAssessment" type="button" class="start-button btn btn-success" (click)="advanceToNextPrompt()">{{stateManager.textOnInnerAssessmentButton}}</button>
+  </div>
+  <p *ngIf="showLetter" class="text-center display-1">{{currentLetter}}</p>
+  <div class="text-center" *ngIf="isRecording">
+    <button type="button" class="cancel-button btn btn-danger button-down">Recording</button>
+  </div>
+  <p *ngIf="countingDown" class="text-center display-1">{{timeLeft}}</p>
+</div>

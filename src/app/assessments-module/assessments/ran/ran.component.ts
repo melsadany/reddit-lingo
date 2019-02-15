@@ -4,47 +4,56 @@ import {
   RecordedAudioOutput
 } from '../../../services/audio-recording.service';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { Subscription } from 'rxjs';
+import { DialogService } from '../../../services/dialog.service';
+import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
+import { StateManagerService } from '../../../services/state-manager.service';
 
 @Component({
   selector: 'app-ran',
   templateUrl: './ran.component.html',
   styleUrls: ['./ran.component.scss']
 })
-export class RanComponent implements OnInit, OnDestroy {
+export class RanComponent implements OnInit, OnDestroy, CanComponentDeactivate {
   isRecording = false;
   recordedTime: string;
   recordedBlob: Blob;
   recordedBlobAsBase64: ArrayBuffer | string;
-  blobUrl: SafeUrl;
   intervalCountdown: NodeJS.Timer;
   intervalCountup: NodeJS.Timer;
-  splashPage = true;
   countingDown = false;
   doneCountingDown = false;
   showImage = false;
   doneRecording = false;
   timeLeft = 3;
-  startedAssessment = false;
-  assessmentAlreadyCompleted = false;
-  ranAssessment;
+  failSubscription: Subscription;
+  recordingTimeSubscription: Subscription;
+  recordedOutputSubscription: Subscription;
+  completed = false;
 
   constructor(
+    private stateManager: StateManagerService,
     private audioRecordingService: AudioRecordingService,
-    private sanitizer: DomSanitizer,
     private dataService: AssessmentDataService,
+    private dialogService: DialogService
   ) {
-    this.audioRecordingService.recordingFailed().subscribe(() => {
-      this.isRecording = false;
-    });
+    this.failSubscription = this.audioRecordingService
+      .recordingFailed()
+      .subscribe(() => {
+        this.isRecording = false;
+      });
 
-    this.audioRecordingService.getRecordedTime().subscribe(time => {
-      this.recordedTime = time;
-    });
+    this.recordingTimeSubscription = this.audioRecordingService
+      .getRecordedTime()
+      .subscribe(time => {
+        this.recordedTime = time;
+      });
 
-    this.audioRecordingService.getRecordedBlob().subscribe(data => {
-      this.handleRecordedOutput(data);
-    });
+    this.recordedOutputSubscription = this.audioRecordingService
+      .getRecordedBlob()
+      .subscribe(data => {
+        this.handleRecordedOutput(data);
+      });
   }
 
   startRecording(): void {
@@ -71,28 +80,31 @@ export class RanComponent implements OnInit, OnDestroy {
       this.isRecording = false;
       this.doneRecording = true;
       this.showImage = false;
+      this.completed = true;
+      this.stateManager.showInnerAssessmentButton = true;
       clearTimeout(this.intervalCountup);
     }
   }
 
-  clearRecordedData(): void {
-    this.blobUrl = null;
-  }
-
   ngOnDestroy(): void {
     this.abortRecording();
+    this.failSubscription.unsubscribe();
+    this.recordingTimeSubscription.unsubscribe();
+    this.recordedOutputSubscription.unsubscribe();
   }
 
-  ngOnInit(): void {
-    if (this.dataService.isAssessmentCompleted('ran')) {
-      this.assessmentAlreadyCompleted = true;
-    }
+  ngOnInit(): void {}
+
+  setStateAndStart(): void {
+    this.stateManager.showInnerAssessmentButton = false;
+    this.stateManager.textOnInnerAssessmentButton =
+      'FINISH ASSESSMENT AND ADVANCE';
+    this.stateManager.isInAssessment = true;
+    this.startDisplayedCountdownTimer();
   }
 
   startDisplayedCountdownTimer(): void {
-    this.startedAssessment = true;
     this.countingDown = true;
-    this.splashPage = false;
     this.intervalCountdown = setInterval(() => {
       if (this.timeLeft > 0) {
         this.timeLeft--;
@@ -108,38 +120,34 @@ export class RanComponent implements OnInit, OnDestroy {
   }
 
   handleRecordedOutput(data: RecordedAudioOutput): void {
-    this.blobUrl = this.sanitizer.bypassSecurityTrustUrl(
-      URL.createObjectURL(data.blob)
-    );
     this.recordedBlob = data.blob;
     const reader: FileReader = new FileReader();
     reader.readAsDataURL(this.recordedBlob);
     reader.onloadend = (): any => {
       this.recordedBlobAsBase64 = reader.result.slice(22);
       this.dataService
-        .postAssessmentDataToMongo({
-          user_id: this.dataService.getCookie('user_id'),
-          assessments: [
-            {
-              assess_name: 'ran',
-              data: { recorded_data: this.recordedBlobAsBase64 },
-              completed: true
+        .postAssessmentDataToFileSystem(
+          {
+            assess_name: 'ran',
+            data: { recorded_data: this.recordedBlobAsBase64 },
+            completed: true
+          },
+          {
+            assess_name: 'ran',
+            data: {
+              text: 'Fake speech to text'
             }
-          ],
-          google_speech_to_text_assess: [
-            {
-              assess_name: 'ran',
-              data: {
-                text: 'Fake speech to text'
-              }
-            }
-          ]
-        })
-        .subscribe();
+          }
+        )
+        .subscribe(); // KRN: Fix how this output is handled to be updated like other assessments
     };
-    this.dataService.setIsInAssessment(false);
-    this.dataService.setCookie('ran', 'completed', 200);
+  }
 
-    // KRM: Each assessment will handle the structure of its assessment data before posting it to mongo
+  finishAssessment(): void {
+    this.stateManager.finishThisAssessmentAndAdvance('ran');
+  }
+
+  canDeactivate(): boolean {
+    return this.dialogService.canRedirect();
   }
 }

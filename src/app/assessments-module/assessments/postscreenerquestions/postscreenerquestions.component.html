@@ -1,0 +1,48 @@
+<div class="mx-lg-5">
+  <div *ngIf="stateManager.showAssessmentFrontPage">
+    <form [formGroup]="dataForm" (ngSubmit)="postData()">
+      <div class="form-group text-center">
+        <mat-form-field>
+          <input matInput placeholder="Enter your name" formControlName="name">
+        </mat-form-field>
+      </div>
+      <div class="form-group text-center">
+        <mat-form-field>
+          <input matInput placeholder="Enter your email" formControlName="email">
+          <mat-error *ngIf="dataForm.hasError('email')">
+            Please enter a valid email address
+          </mat-error>
+          <mat-error *ngIf="dataForm.hasError('required') && dataForm.hasError('email')">
+            Email is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="form-group text-center">
+        <mat-form-field>
+          <input matInput placeholder="Enter your city of birth" formControlName="cityOfBirth">
+        </mat-form-field>
+      </div>
+      <div class="form-group text-center">
+        <mat-form-field>
+          <mat-select placeholder="Select your state of birth" formControlName="stateOfBirthOption">
+            <mat-option *ngFor="let stateOfBirthOption of stateOfBirthOptions" [value]="stateOfBirthOption">
+              {{ stateOfBirthOption }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="form-group text-center">
+        <mat-form-field>
+          <mat-select placeholder="Public school option" formControlName="publicSchoolOption">
+            <mat-option *ngFor="let publicSchoolOption of publicSchoolOptions" [value]="publicSchoolOption">
+              {{ publicSchoolOption }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="text-center">
+        <button type='submit' [disabled]="!dataForm.valid" class='btn btn-primary btn-lg'>Finish</button>
+      </div>
+    </form>
+  </div>
+</div>

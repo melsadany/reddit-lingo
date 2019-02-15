@@ -18,6 +18,7 @@ import { ContactComponent } from './contact/contact.component';
 import { AssessmentsModule } from './assessments-module/assessments-controller.module';
 import { AssessmentDataService } from './services/assessment-data.service';
 import { DialogService } from './services/dialog.service';
+import { StateManagerService } from './services/state-manager.service';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,7 @@ import { DialogService } from './services/dialog.service';
     HeaderComponent,
     HomeComponent,
     AboutComponent,
-    ContactComponent
+    ContactComponent,
   ],
   imports: [
     BrowserModule,
@@ -35,9 +36,15 @@ import { DialogService } from './services/dialog.service';
     AuthModule,
     AdminModule,
     AssessmentsModule,
-    AppRoutingModule
+    AppRoutingModule,
   ],
-  providers: [CookieService, AssessmentDataService, DialogService],
+  providers: [
+    CookieService,
+    AssessmentDataService,
+    DialogService,
+    StateManagerService
+
+  ],
   entryComponents: [],
   bootstrap: [AppComponent]
 })

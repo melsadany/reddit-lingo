@@ -6,8 +6,7 @@
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 
 
-$custom-typography: mat-typography-config(
-    $font-family: 'Poppins'
+$custom-typography: mat-typography-config($font-family: 'Poppins'
 );
 
 @include mat-core($custom-typography);
@@ -18,8 +17,7 @@ $custom-typography: mat-typography-config(
 @import '~@angular/material/theming';
 @import '~dragula/dist/dragula.css';
 
-$custom-typography: mat-typography-config(
-    $font-family: 'Poppins'
+$custom-typography: mat-typography-config($font-family: 'Poppins'
 );
 
 @include mat-core($custom-typography);
@@ -27,6 +25,7 @@ $custom-typography: mat-typography-config(
 body {
   background-color: #f4f3f3;
   margin: 0;
+
   app-root * {
     font-family: 'Poppins', sans-serif;
     font-weight: 300;

@@ -20,14 +20,6 @@ const routes: Routes = [
     redirectTo: 'home/',
     pathMatch: 'full'
   },
-  // {
-  //   path: "auth",
-  //   loadChildren: "app/auth/auth.module#AuthModule"
-  // },
-  // {
-  //   path: "admin",
-  //   loadChildren: "app/admin/admin.module#AdminModule"
-  // },
   {
     path: 'about',
     component: AboutComponent

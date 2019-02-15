@@ -12,10 +12,57 @@ import { AuthHeaderInterceptor } from '../interceptors/header.interceptor';
 import { CatchErrorInterceptor } from '../interceptors/http-error.interceptor';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AssessmentsDoneComponent } from './assessments-done/assessments-done.component';
+import { ListeningcomprehensionComponent } from './assessments/listeningcomprehension/listeningcomprehension.component';
+import { PrescreenerquestionsComponent } from './assessments/prescreenerquestions/prescreenerquestions.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  MatDatepickerModule,
+  MatFormFieldModule,
+  MatNativeDateModule,
+  MatInputModule,
+  MatSelectModule,
+  MatCheckboxModule
+} from '@angular/material';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { PicturepromptComponent } from './assessments/pictureprompt/pictureprompt.component';
+import { TimedurationComponent } from './assessments/timeduration/timeduration.component';
+import { NgCircleProgressModule } from 'ng-circle-progress';
+import { SyncvoiceComponent } from './assessments/syncvoice/syncvoice.component';
+import { MatrixreasoningComponent } from './assessments/matrixreasoning/matrixreasoning.component';
+import { SentencerepetitionComponent } from './assessments/sentencerepetition/sentencerepetition.component';
+import { WordfindingComponent } from './assessments/wordfinding/wordfinding.component';
+import { PostscreenerquestionsComponent } from './assessments/postscreenerquestions/postscreenerquestions.component';
 
 @NgModule({
-  imports: [CommonModule, BrowserModule, AssessmentsControllerRoutingModule],
-  declarations: [AssessmentsControllerComponent, RanComponent, AssessmentsDoneComponent],
+  imports: [
+    CommonModule,
+    BrowserModule,
+    AssessmentsControllerRoutingModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatNativeDateModule,
+    MatInputModule,
+    BrowserAnimationsModule,
+    MatSelectModule,
+    MatCheckboxModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NgCircleProgressModule.forRoot()
+  ],
+  declarations: [
+    AssessmentsControllerComponent,
+    RanComponent,
+    AssessmentsDoneComponent,
+    ListeningcomprehensionComponent,
+    PrescreenerquestionsComponent,
+    PicturepromptComponent,
+    TimedurationComponent,
+    SyncvoiceComponent,
+    MatrixreasoningComponent,
+    SentencerepetitionComponent,
+    WordfindingComponent,
+    PostscreenerquestionsComponent
+  ],
   providers: [
     AudioRecordingService,
     {
