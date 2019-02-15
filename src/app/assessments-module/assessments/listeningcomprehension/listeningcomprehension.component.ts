@@ -49,7 +49,6 @@ export class ListeningcomprehensionComponent
 
   startDisplayedCountdownTimer(): void {
     this.countingDown = true;
-    this.stateManager.showAssessmentFrontPage = false;
     this.intervalCountdown = setInterval(() => {
       if (this.timeLeft > 0) {
         this.timeLeft--;
@@ -105,7 +104,6 @@ export class ListeningcomprehensionComponent
 
   nextImageSet(): void {
     this.calculateImageNames();
-    this.stateManager.showAssessmentFrontPage = true;
     this.startAudioInstructionForSet();
   }
 

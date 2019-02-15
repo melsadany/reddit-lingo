@@ -16,10 +16,13 @@ import { StateManagerService } from '../../../services/state-manager.service';
 })
 export class PicturepromptComponent
   implements OnInit, OnDestroy, CanComponentDeactivate {
-  imagesLocation = 'assets/img/pictureprompt/';
-  imageNames = ['despair.jpg', 'he_texted.jpg', 'joke.jpg', 'antagonism.jpg'];
+  imageNames = [
+    'assets/img/pictureprompt/0/despair.jpg',
+    'assets/img/pictureprompt/1/he_texted.jpg',
+    'assets/img/pictureprompt/2/joke.jpg',
+    'assets/img/pictureprompt/3/antagonism.jpg'
+  ];
   promptNumber = 0;
-  imagePaths: string[] = [];
   countingDown = false;
   intervalCountup: NodeJS.Timer;
   intervalCountdown: NodeJS.Timer;
@@ -31,10 +34,10 @@ export class PicturepromptComponent
   doneRecording = false;
   recordedData = [];
   recordedTime;
-  recordingNumber = 1;
   failSubscription: Subscription;
   recordingTimeSubscription: Subscription;
   recordedOutputSubscription: Subscription;
+  lastPrompt = false;
 
   constructor(
     private stateManager: StateManagerService,
@@ -61,13 +64,18 @@ export class PicturepromptComponent
       });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    for (const assessmentRecord of this.stateManager.assessments) {
+      if (assessmentRecord['assess_name'] === 'pictureprompt') {
+        this.promptNumber = assessmentRecord['prompt_number'];
+      }
+    }
+  }
 
   setStateAndStart(): void {
     this.stateManager.showInnerAssessmentButton = false;
     this.stateManager.textOnInnerAssessmentButton = 'CONTINUE ASSESSMENT';
     this.stateManager.isInAssessment = true;
-    this.calculateImagePaths();
     this.advanceToNextPrompt();
   }
 
@@ -80,24 +88,12 @@ export class PicturepromptComponent
     this.recordedOutputSubscription.unsubscribe();
   }
 
-  calculateImagePaths(): void {
-    for (let i = 0; i < this.imageNames.length; i++) {
-      this.imagePaths.push(
-        `${this.imagesLocation}${i + 1}/${this.imageNames[i]}`
-      );
-    }
-  }
-
   getNextImagePath(): void {
-    this.currentImagePrompt = this.imagePaths[this.promptNumber - 1];
+    this.currentImagePrompt = this.imageNames[this.promptNumber];
   }
 
   startDisplayedCountdownTimer(): void {
-    console.log(this.currentImagePrompt);
     this.countingDown = true;
-    if (this.stateManager.showAssessmentFrontPage) {
-      this.stateManager.showAssessmentFrontPage = false;
-    }
     this.intervalCountdown = setInterval(() => {
       if (this.timeLeft > 0) {
         this.timeLeft--;
@@ -136,17 +132,23 @@ export class PicturepromptComponent
       this.isRecording = false;
       this.doneRecording = true;
       this.showPromptImage = false;
+      this.stateManager.showInnerAssessmentButton = true;
       clearTimeout(this.intervalCountup);
     }
   }
 
   advanceToNextPrompt(): void {
-    if (this.promptNumber >= this.imageNames.length) {
-      this.finishAssessment();
-    } else {
-      this.promptNumber++;
+    this.stateManager.showInnerAssessmentButton = false;
+    if (this.promptNumber < this.imageNames.length) {
+      if (this.promptNumber + 1 === this.imageNames.length) {
+        this.lastPrompt = true;
+        this.stateManager.textOnInnerAssessmentButton =
+          'FINISH ASSESSMENT AND ADVANCE';
+      }
       this.getNextImagePath();
       this.startDisplayedCountdownTimer();
+    } else {
+      this.finishAssessment();
     }
   }
 
@@ -157,31 +159,41 @@ export class PicturepromptComponent
     reader.onloadend = (): any => {
       const currentRecordedBlobAsBase64 = reader.result.slice(22);
       this.recordedData.push({
-        prompt_number: this.recordingNumber, // KRM: this code doesn't get executed until after the promptNumber got incremented already
+        prompt_number: this.promptNumber, // KRM: this code doesn't get executed until after the promptNumber got incremented already
         recorded_data: currentRecordedBlobAsBase64
       }); // KRM: Adding recording to the array is done in sync. Currently wait for the recording to load.
       // Might be btter to do this async so we don't have the chance of blocking for a short
       // period before moving to the next prompt.
-      this.recordingNumber++;
-      this.advanceToNextPrompt();
+      this.pushAudioData();
+      this.promptNumber++;
+      // this.advanceToNextPrompt();
     };
   }
 
   finishAssessment(): void {
-    this.dataService
-      .postAssessmentDataToFileSystem(
-        {
-          assess_name: 'pictureprompt',
-          data: { recorded_data: this.recordedData },
-          completed: true
-        },
-        {
-          assess_name: 'pictureprompt',
-          data: { text: 'Fake speech to text' }
-        }
-      )
-      .subscribe();
     this.stateManager.finishThisAssessmentAndAdvance('pictureprompt');
+  }
+
+  pushAudioData(): void {
+    const assessmentData = {
+      assess_name: 'pictureprompt',
+      data: { recorded_data: this.recordedData },
+      completed: this.lastPrompt
+    };
+    const assessmentGoogleData = {
+      assess_name: 'pictureprompt',
+      data: { text: 'None' }
+    };
+    if (this.promptNumber === 0) {
+      this.dataService
+        .postAssessmentDataToFileSystem(assessmentData, assessmentGoogleData)
+        .subscribe();
+    } else {
+      this.dataService
+        .postSingleAudioDataToMongo(assessmentData, assessmentGoogleData)
+        .subscribe();
+    }
+    this.recordedData = [];
   }
 
   canDeactivate(): boolean {

@@ -109,6 +109,7 @@ export class StateManagerService {
     },
     {
       assess_name: 'pictureprompt',
+      prompt_number: 0,
       completed: false
     },
     {
