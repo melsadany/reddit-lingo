@@ -15,13 +15,13 @@ async function insertFreshAssessmentData(reqData) {
     abortEarly: false
   })
   const userID = reqData.user_id
-  if (!fs.existsSync(path.join('assessmentData', userID))) {
-    fs.mkdirSync(path.join('assessmentData', userID), {
+  if (!fs.existsSync(path.join('assessment_data', userID))) {
+    fs.mkdirSync(path.join('assessment_data', userID), {
       recursive: true
     })
   }
   const freshData = JSON.stringify(reqData)
-  const fileName = path.join('assessmentData', userID, userID + '.json')
+  const fileName = path.join('assessment_data', userID, userID + '.json')
   return new Promise((resolve, reject) => {
     fs.writeFile(fileName, freshData, (err) => {
       if (err) {
@@ -34,7 +34,7 @@ async function insertFreshAssessmentData(reqData) {
 
 async function updateAssessmentData(reqData) {
   const userID = reqData.user_id
-  const fileName = path.join('assessmentData', userID, userID + '.json')
+  const fileName = path.join('assessment_data', userID, userID + '.json')
   fs.readFile(fileName, 'utf-8', (err, data) => {
     if (err) console.log(err)
     const dataFile = JSON.parse(data)
@@ -57,7 +57,7 @@ async function pushOnePieceAssessmentData(reqData) {
   } else {
     console.log('Selector error')
   }
-  const fileName = path.join('assessmentData', userID, userID + '.json')
+  const fileName = path.join('assessment_data', userID, userID + '.json')
   fs.readFile(fileName, 'utf-8', (err, data) => {
     if (err) console.log(err)
     const dataFile = JSON.parse(data)
@@ -81,7 +81,7 @@ async function pushOnePieceAssessmentData(reqData) {
 
 function getUserAssessmentData(searchUserId) {
   const userID = searchUserId
-  const fileName = path.join('assessmentData', userID, userID + '.json')
+  const fileName = path.join('assessment_data', userID, userID + '.json')
   return new Promise((resolve, reject) => {
     fs.readFile(fileName, 'utf-8', (err, data) => {
       if (err) {
@@ -98,11 +98,11 @@ function getUserAssessmentData(searchUserId) {
 }
 
 function insertNewIDJson() {
-  const fileName = path.join('assessmentData', 'userID', 'nextUserID' + '.json')
+  const fileName = path.join('assessment_data', 'userID', 'next_user_ID' + '.json')
   return new Promise((resolve, reject) => {
-    if (!fs.existsSync(path.join('assessmentData', 'userID'))) {
+    if (!fs.existsSync(path.join('assessment_data', 'userID'))) {
       console.log('Making UserIDJson directory')
-      fs.mkdirSync(path.join('assessmentData', 'userID'), {
+      fs.mkdirSync(path.join('assessment_data', 'userID'), {
         recursive: true
       })
       fs.writeFile(fileName, JSON.stringify({
@@ -120,7 +120,7 @@ function insertNewIDJson() {
 }
 
 function getNextUserID() {
-  const fileName = path.join('assessmentData', 'userID', 'nextUserID' + '.json')
+  const fileName = path.join('assessment_data', 'userID', 'next_user_ID' + '.json')
   return new Promise((resolve, reject) => {
     fs.readFile(fileName, 'utf-8', (err, data) => {
       if (err) {
@@ -129,7 +129,7 @@ function getNextUserID() {
       } else {
         let currentID = JSON.parse(data).userID
         fs.writeFile(fileName, JSON.stringify({
-          'userID': ++currentID
+          'userID': (currentID + 1)
         }), (err) => {
           if (err) {
             console.log(err)
