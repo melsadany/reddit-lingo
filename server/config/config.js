@@ -9,15 +9,15 @@ const envVarsSchema = Joi.object({
     .allow(['development', 'production', 'test', 'provision'])
     .default('development'),
   SERVER_PORT: Joi.number()
-    .default(4040),
+    .default(4040) ,
   // MONGOOSE_DEBUG: Joi.boolean()
   //   .when('NODE_ENV', {
   //     is: Joi.string().equal('development'),
   //     then: Joi.boolean().default(true),
   //     otherwise: Joi.boolean().default(false)
   //   }),
-  // JWT_SECRET: Joi.string().required()
-  //   .description('JWT Secret required to sign')// ,
+  JWT_SECRET: Joi.string().required()
+    .description('JWT Secret required to sign')// ,
   // MONGO_HOST: Joi.string().required()
   //   .description('Mongo DB host url'),
   // MONGO_PORT: Joi.number()
@@ -33,9 +33,12 @@ if (error) {
 }
 
 const config = {
-  env: envVars.NODE_ENV,
-  port: envVars.SERVER_PORT,
+  // env: envVars.NODE_ENV,
+  env: ENV['NODE_ENV'],
+  port: ENV['SEVER_PORT'],
+  // port: envVars.SERVER_PORT,
   // mongooseDebug: envVars.MONGOOSE_DEBUG,
+  jwtSecret: ENV['JWT_SECRET'],
   // jwtSecret: envVars.JWT_SECRET,
   frontend: envVars.MEAN_FRONTEND || 'angular'// ,
   // mongo: {
