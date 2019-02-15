@@ -121,7 +121,7 @@ export class AssessmentDataService {
     googleData: GoogleSpeechToTextDataStructure
   ): Observable<string> {
     return this.http.post(
-      '/api/assessmentsAPI/PushOneSingleAudioData',
+      '/api/assessmentsAPI/PushOnePieceData',
       {
         user_id: this.getUserIdCookie(),
         assessments: [assessmentsData],

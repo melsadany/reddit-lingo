@@ -48,16 +48,25 @@ async function updateAssessmentData(reqData) {
   })
 }
 
-async function pushOneAudioAssessmentData(reqData) {
+async function pushOnePieceAssessmentData(reqData) {
+  let selector = ''
   const userID = reqData.user_id
+  if (reqData.assessments[0].data.recorded_data) {
+    selector = 'recorded_data'
+  } else if (reqData.assessments[0].data.selection_data) {
+    selector = 'selection_data'
+  } else {
+    console.log('Selector error')
+  }
+  console.log(selector)
   const fileName = path.join('assessmentData', userID, userID + '.json')
   fs.readFile(fileName, 'utf-8', (err, data) => {
     if (err) console.log(err)
     const dataFile = JSON.parse(data)
     for (let i = 0; i < dataFile.assessments.length; i++) {
       if (dataFile.assessments[i].assess_name === reqData.assessments[0].assess_name) {
-        dataFile.assessments[i].data.recorded_data.push(
-          reqData.assessments[0].data.recorded_data[0]
+        dataFile.assessments[i].data[selector].push(
+          reqData.assessments[0].data[selector][0]
         )
         if (reqData.assessments[0].completed === true) {
           dataFile.assessments[i].completed = true
@@ -138,7 +147,7 @@ function getNextUserID() {
 
 module.exports = {
   insertFreshAssessmentData,
-  pushOneAudioAssessmentData,
+  pushOnePieceAssessmentData,
   getUserAssessmentData,
   updateAssessmentData,
   getNextUserID

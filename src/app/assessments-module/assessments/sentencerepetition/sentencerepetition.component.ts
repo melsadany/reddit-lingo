@@ -110,12 +110,9 @@ export class SentencerepetitionComponent
       this.recordedData.push({
         prompt_number: this.promptNumber,
         recorded_data: currentRecordedBlobAsBase64
-      }); // KRM: Adding recording to the array is done in sync. Currently wait for the recording to load.
-      // Might be better to do this async so we don't have the chance of blocking for a short
-      // period before moving to the next prompt.
+      });
       this.pushAudioData();
       this.promptNumber++;
-      console.log(this.recordedData);
     };
   }
 

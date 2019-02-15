@@ -90,6 +90,7 @@ export class StateManagerService {
     },
     {
       assess_name: 'matrixreasoning',
+      prompt_number: 0,
       completed: false
     },
     {
@@ -110,6 +111,7 @@ export class StateManagerService {
     },
     {
       assess_name: 'listeningcomprehension',
+      prompt_number: 0,
       completed: false
     },
     {
@@ -118,7 +120,7 @@ export class StateManagerService {
     }
   ];
 
-  public printAllCompletedAssessments(): void {
+  public printCurrentAssessmentData(): void {
     this.assessments.forEach(value => console.log(value));
   }
 
@@ -126,12 +128,24 @@ export class StateManagerService {
     for (const existingAssessment of existingAssessmentData.assessments) {
       const existingAssessmentName = existingAssessment['assess_name'];
       for (const assessmentRecord of this.assessments) {
-        if (assessmentRecord['assess_name'] === existingAssessmentName && existingAssessment['completed'] === true) {
+        if (
+          assessmentRecord['assess_name'] === existingAssessmentName &&
+          existingAssessment['completed'] === true
+        ) {
           assessmentRecord['completed'] = true;
           console.log('Already completed: ' + existingAssessmentName);
           break;
         } else {
-          const currentPromptNumber = this.determineCurrentRecordingPromptNumber(existingAssessment['data']['recorded_data']);
+          let selector = '';
+          if (existingAssessment['data']['recorded_data']) {
+            selector = 'recorded_data';
+          } else if (existingAssessment['data']['selection_data']) {
+            selector = 'selection_data';
+          }
+          console.log(selector);
+          const currentPromptNumber = this.determineCurrentPromptNumber(
+            existingAssessment['data'][selector]
+          );
           assessmentRecord['prompt_number'] = currentPromptNumber;
         }
       }
@@ -139,10 +153,9 @@ export class StateManagerService {
     this.currentAssessment = this.determineNextAssessment();
   }
 
-  private determineCurrentRecordingPromptNumber(recordedData: Array<Object>): number {
-    const latestEntryIndex = recordedData.length - 1;
-    console.log(recordedData[latestEntryIndex]['prompt_number'] + 1);
-    return recordedData[latestEntryIndex]['prompt_number'] + 1;
+  private determineCurrentPromptNumber(existingData: Array<Object>): number {
+    const latestEntryIndex = existingData.length - 1;
+    return existingData[latestEntryIndex]['prompt_number'] + 1;
   }
 
   private determineNextAssessment(): string {

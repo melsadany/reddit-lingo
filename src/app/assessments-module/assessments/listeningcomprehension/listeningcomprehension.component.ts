@@ -17,10 +17,11 @@ export class ListeningcomprehensionComponent
   doneCountingDown = false;
   showImage = false;
   imagePaths: string[][];
-  currentQuestionSetNumber = 1;
+  promptNumber = 0;
   imagesLocation = 'assets/img/listeningcomprehension/';
   audioInstructionsLocation = 'assets/audio/listeningcomprehension/';
-  imageSelections = [];
+  selectionData = [];
+  lastPrompt = false;
 
   constructor(
     private dataService: AssessmentDataService,
@@ -29,14 +30,21 @@ export class ListeningcomprehensionComponent
   ) {}
 
   ngOnInit(): void {
-    // if (this.dataService.isAssessmentCompleted('listeningcomprehension')) {
-    //   this.assessmentAlreadyCompleted = true;
-    // }
-    this.calculateImageNames();
+    for (const assessmentRecord of this.stateManager.assessments) {
+      if (assessmentRecord['assess_name'] === 'sentencerepetition') {
+        this.promptNumber = assessmentRecord['prompt_number'];
+      }
+    }
   }
 
-  ngOnDestroy(): void {
-    // this.dataService.goTo('');
+  ngOnDestroy(): void {}
+
+  setStateAndStart(): void {
+    this.stateManager.showInnerAssessmentButton = false;
+    this.stateManager.textOnInnerAssessmentButton = 'CONTINUE ASSESSMENT';
+    this.stateManager.isInAssessment = true;
+    this.calculateImageNames();
+    this.startAudioInstructionForSet();
   }
 
   startDisplayedCountdownTimer(): void {
@@ -58,25 +66,19 @@ export class ListeningcomprehensionComponent
   calculateImageNames(): void {
     this.imagePaths = [];
     this.imagesLocation = `assets/img/listeningcomprehension/${
-      this.currentQuestionSetNumber
+      this.promptNumber
     }/image/`;
     const firstRow: string[] = [];
     const secondRow: string[] = [];
     const thirdRow: string[] = [];
     for (let i = 1; i <= 3; i++) {
-      firstRow.push(
-        `${this.imagesLocation}${i}a_q${this.currentQuestionSetNumber}.png`
-      );
+      firstRow.push(`${this.imagesLocation}${i}a_q${this.promptNumber}.png`);
     }
     for (let i = 4; i <= 6; i++) {
-      secondRow.push(
-        `${this.imagesLocation}${i}a_q${this.currentQuestionSetNumber}.png`
-      );
+      secondRow.push(`${this.imagesLocation}${i}a_q${this.promptNumber}.png`);
     }
     for (let i = 7; i <= 9; i++) {
-      thirdRow.push(
-        `${this.imagesLocation}${i}a_q${this.currentQuestionSetNumber}.png`
-      );
+      thirdRow.push(`${this.imagesLocation}${i}a_q${this.promptNumber}.png`);
     }
     this.imagePaths.push(firstRow, secondRow, thirdRow);
   }
@@ -84,16 +86,20 @@ export class ListeningcomprehensionComponent
   selectImage(image: string): void {
     const delimited = image.split('/');
     const image_name = delimited[delimited.length - 1];
-    this.imageSelections.push({
-      setNumber: this.currentQuestionSetNumber,
-      imageSelected: image_name
+    this.selectionData.push({
+      prompt_number: this.promptNumber,
+      image_selected: image_name
     });
-    this.currentQuestionSetNumber++;
+    this.pushSelectionData();
+    this.promptNumber++;
     this.showImage = false;
-    if (this.currentQuestionSetNumber > 12) {
-      this.finishAssessment();
-    } else {
+    if (this.promptNumber < 12) {
+      if (this.promptNumber + 1 === 12) {
+        this.lastPrompt = true;
+      }
       this.nextImageSet();
+    } else {
+      this.finishAssessment();
     }
   }
 
@@ -106,32 +112,37 @@ export class ListeningcomprehensionComponent
   startAudioInstructionForSet(): void {
     // KRM: Main function
     const audio = new Audio();
-    audio.src = `${this.audioInstructionsLocation}q${
-      this.currentQuestionSetNumber
-    }.mp3`;
+    audio.src = `${this.audioInstructionsLocation}q${this.promptNumber}.mp3`;
     audio.addEventListener('ended', () => this.startDisplayedCountdownTimer());
     audio.play();
-    this.stateManager.showInnerAssessmentButton = true;
+  }
+
+  pushSelectionData(): void {
+    const assessmentData = {
+      assess_name: 'listeningcomprehension',
+      data: { selection_data: this.selectionData },
+      completed: this.lastPrompt
+    };
+    const assessmentGoogleData = {
+      assess_name: 'listeningcomprehension',
+      data: { text: 'None' }
+    };
+    if (this.promptNumber === 0) {
+      this.dataService
+        .postAssessmentDataToFileSystem(assessmentData, assessmentGoogleData)
+        .subscribe();
+    } else {
+      this.dataService
+        .postSingleAudioDataToMongo(assessmentData, assessmentGoogleData)
+        .subscribe();
+    }
+    this.selectionData = [];
   }
 
   finishAssessment(): void {
-    this.dataService
-      .postAssessmentDataToFileSystem(
-        {
-          assess_name: 'listeningcomprehension',
-          data: { selection_data: this.imageSelections },
-          completed: true
-        },
-        {
-          assess_name: 'listeningComprehension',
-          data: {
-            text: 'Fake speech to text'
-          }
-        }
-      )
-      .subscribe();
     this.stateManager.finishThisAssessmentAndAdvance('listeningcomprehension');
   }
+
   canDeactivate(): boolean {
     return this.dialogService.canRedirect();
   }

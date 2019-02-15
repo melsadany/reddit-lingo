@@ -12,7 +12,7 @@
   <div *ngIf="showMatrix">
     <table class="table-bordered table-active custom-table">
       <tbody>
-        <tr *ngFor="let row of imageMatrices['frameSets'][questionNumber]">
+        <tr *ngFor="let row of imageMatrices['frameSets'][promptNumber]">
           <td *ngFor="let image of row">
             <img class="img-fluid" [src]="image">
           </td>
@@ -21,7 +21,7 @@
     </table>
     <table class="table-bordered">
       <tbody>
-        <tr class="table-primary" *ngFor="let row of imageMatrices['solutionSets'][questionNumber]">
+        <tr class="table-primary" *ngFor="let row of imageMatrices['solutionSets'][promptNumber]">
           <td *ngFor="let image of row">
             <img class="img-fluid" [src]="image" (click)="selectImage(image)">
           </td>

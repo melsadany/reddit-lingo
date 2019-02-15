@@ -15,6 +15,11 @@ export class MatrixreasoningComponent
   imageTypes = ['frameSets', 'solutionSets'];
   dimensions = {
     frameSets: {
+      0: {
+        height: 2,
+        width: 2,
+        images: 4
+      },
       1: {
         height: 2,
         width: 2,
@@ -36,22 +41,22 @@ export class MatrixreasoningComponent
         images: 4
       },
       5: {
-        height: 2,
-        width: 2,
-        images: 4
-      },
-      6: {
         height: 7,
         width: 1,
         images: 7
       },
-      7: {
+      6: {
         height: 1,
         width: 1,
         images: 1
       }
     },
     solutionSets: {
+      0: {
+        height: 4,
+        width: 1,
+        images: 4
+      },
       1: {
         height: 4,
         width: 1,
@@ -81,15 +86,10 @@ export class MatrixreasoningComponent
         height: 4,
         width: 1,
         images: 4
-      },
-      7: {
-        height: 4,
-        width: 1,
-        images: 4
       }
     }
   };
-  questionNumber = 1;
+  promptNumber = 0;
   imageMatrices = {
     frameSets: {},
     solutionSets: {}
@@ -99,7 +99,8 @@ export class MatrixreasoningComponent
   timeLeft = 3;
   doneCountingDown = false;
   showMatrix = false;
-  imageSelections = {};
+  selectionData = [];
+  lastPrompt = false;
 
   constructor(
     private stateManager: StateManagerService,
@@ -107,14 +108,20 @@ export class MatrixreasoningComponent
     private dialogService: DialogService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    for (const assessmentRecord of this.stateManager.assessments) {
+      if (assessmentRecord['assess_name'] === 'matrixreasoning') {
+        this.promptNumber = assessmentRecord['prompt_number'];
+      }
+    }
+    this.calculateImageNames();
+    console.log(this.imageMatrices);
+  }
 
   setStateAndStart(): void {
     this.stateManager.showInnerAssessmentButton = false;
     this.stateManager.textOnInnerAssessmentButton = 'CONTINUE ASSESSMENT';
     this.stateManager.isInAssessment = true;
-    this.calculateFrameSets();
-    this.calculateSolutionSets();
     this.startDisplayedCountdownTimer();
   }
 
@@ -124,12 +131,12 @@ export class MatrixreasoningComponent
   }
 
   calculateFrameSets(): void {
-    for (let i = 1; i <= 7; i++) {
+    for (let i = 0; i <= 6; i++) {
       // KRM: Question number
       let currentRow: string[] = [];
       let currentMatrix: string[][] = [];
       const questionWidth = this.dimensions['frameSets'][i]['width'];
-      for (let j = 1; j <= this.dimensions['frameSets'][i]['images']; j++) {
+      for (let j = 0; j < this.dimensions['frameSets'][i]['images']; j++) {
         // KRM: Image number
         const currentImage = `${
           this.imagesLocation
@@ -149,12 +156,12 @@ export class MatrixreasoningComponent
   }
 
   calculateSolutionSets(): void {
-    for (let i = 1; i <= 7; i++) {
+    for (let i = 0; i <= 6; i++) {
       // KRM: Question number
       let currentRow: string[] = [];
       let currentMatrix: string[][] = [];
       const questionHeight = this.dimensions['solutionSets'][i]['height'];
-      for (let j = 1; j <= this.dimensions['solutionSets'][i]['images']; j++) {
+      for (let j = 0; j < this.dimensions['solutionSets'][i]['images']; j++) {
         // KRM: Image number
         const currentImage = `${
           this.imagesLocation
@@ -189,32 +196,46 @@ export class MatrixreasoningComponent
   }
 
   selectImage(image: string): void {
+    this.selectionData.push({
+      prompt_number: this.promptNumber,
+      image_selected: image
+    });
+    this.pushSelectionData();
+    this.promptNumber++;
     this.showMatrix = false;
-    this.imageSelections[this.questionNumber] = image;
-    this.questionNumber++;
-    if (this.questionNumber >= 8) {
-      this.finishAssessment();
-    } else {
+    if (this.promptNumber < 7) {
+      if (this.promptNumber + 1 === 7) {
+        this.lastPrompt = true;
+      }
       this.startDisplayedCountdownTimer();
+    } else {
+      this.finishAssessment();
     }
   }
 
+  pushSelectionData(): void {
+    const assessmentData = {
+      assess_name: 'matrixreasoning',
+      data: { selection_data: this.selectionData },
+      completed: this.lastPrompt
+    };
+    const assessmentGoogleData = {
+      assess_name: 'matrixreasoning',
+      data: { text: 'None' }
+    };
+    if (this.promptNumber === 0) {
+      this.dataService
+        .postAssessmentDataToFileSystem(assessmentData, assessmentGoogleData)
+        .subscribe();
+    } else {
+      this.dataService
+        .postSingleAudioDataToMongo(assessmentData, assessmentGoogleData)
+        .subscribe();
+    }
+    this.selectionData = [];
+  }
+
   finishAssessment(): void {
-    this.dataService
-      .postAssessmentDataToFileSystem(
-        {
-          assess_name: 'matrixreasoning',
-          data: { selection_data: this.imageSelections },
-          completed: true
-        },
-        {
-          assess_name: 'matrixreasoning',
-          data: {
-            text: 'none'
-          }
-        }
-      )
-      .subscribe();
     this.stateManager.finishThisAssessmentAndAdvance('matrixreasoning');
   }
 

@@ -12,8 +12,8 @@ router.post('/SaveAssessments', (req, res) => {
     })
 })
 
-router.post('/PushOneSingleAudioData', (req, res) => {
-  assessCtrl.pushOneAudioAssessmentData(req.body)
+router.post('/PushOnePieceData', (req, res) => {
+  assessCtrl.pushOnePieceAssessmentData(req.body)
     .then(res.send('Success'))
     .catch((err) => {
       console.log(err)
