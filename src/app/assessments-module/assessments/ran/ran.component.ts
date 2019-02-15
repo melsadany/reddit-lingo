@@ -4,7 +4,6 @@ import {
   RecordedAudioOutput
 } from '../../../services/audio-recording.service';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Subscription } from 'rxjs';
 import { DialogService } from '../../../services/dialog.service';
 import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
@@ -20,7 +19,6 @@ export class RanComponent implements OnInit, OnDestroy, CanComponentDeactivate {
   recordedTime: string;
   recordedBlob: Blob;
   recordedBlobAsBase64: ArrayBuffer | string;
-  blobUrl: SafeUrl;
   intervalCountdown: NodeJS.Timer;
   intervalCountup: NodeJS.Timer;
   countingDown = false;
@@ -31,11 +29,11 @@ export class RanComponent implements OnInit, OnDestroy, CanComponentDeactivate {
   failSubscription: Subscription;
   recordingTimeSubscription: Subscription;
   recordedOutputSubscription: Subscription;
+  completed = false;
 
   constructor(
     private stateManager: StateManagerService,
     private audioRecordingService: AudioRecordingService,
-    private sanitizer: DomSanitizer,
     private dataService: AssessmentDataService,
     private dialogService: DialogService
   ) {
@@ -82,12 +80,10 @@ export class RanComponent implements OnInit, OnDestroy, CanComponentDeactivate {
       this.isRecording = false;
       this.doneRecording = true;
       this.showImage = false;
+      this.completed = true;
+      this.stateManager.showInnerAssessmentButton = true;
       clearTimeout(this.intervalCountup);
     }
-  }
-
-  clearRecordedData(): void {
-    this.blobUrl = null;
   }
 
   ngOnDestroy(): void {
@@ -101,7 +97,8 @@ export class RanComponent implements OnInit, OnDestroy, CanComponentDeactivate {
 
   setStateAndStart(): void {
     this.stateManager.showInnerAssessmentButton = false;
-    this.stateManager.textOnInnerAssessmentButton = 'CONTINUE ASSESSMENT';
+    this.stateManager.textOnInnerAssessmentButton =
+      'FINISH ASSESSMENT AND ADVANCE';
     this.stateManager.isInAssessment = true;
     this.startDisplayedCountdownTimer();
   }
@@ -123,9 +120,6 @@ export class RanComponent implements OnInit, OnDestroy, CanComponentDeactivate {
   }
 
   handleRecordedOutput(data: RecordedAudioOutput): void {
-    this.blobUrl = this.sanitizer.bypassSecurityTrustUrl(
-      URL.createObjectURL(data.blob)
-    );
     this.recordedBlob = data.blob;
     const reader: FileReader = new FileReader();
     reader.readAsDataURL(this.recordedBlob);
@@ -147,9 +141,12 @@ export class RanComponent implements OnInit, OnDestroy, CanComponentDeactivate {
         )
         .subscribe(); // KRN: Fix how this output is handled to be updated like other assessments
     };
-    this.stateManager.finishThisAssessmentAndAdvance('ran');
-    // KRM: Each assessment will handle the structure of its assessment data before posting it to mongo
   }
+
+  finishAssessment(): void {
+    this.stateManager.finishThisAssessmentAndAdvance('ran');
+  }
+
   canDeactivate(): boolean {
     return this.dialogService.canRedirect();
   }

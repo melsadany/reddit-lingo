@@ -95,10 +95,12 @@ export class StateManagerService {
     },
     {
       assess_name: 'syncvoice',
+      prompt_number: 0,
       completed: false
     },
     {
       assess_name: 'timeduration',
+      prompt_number: 0,
       completed: false
     },
     {

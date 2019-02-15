@@ -57,14 +57,20 @@ export class SyncvoiceComponent
   timeLeft = 3;
   doneCountingDown = false;
   isRecording = false;
-  recordingNumber = 1;
   failSubscription: Subscription;
   recordingTimeSubscription: Subscription;
   recordedOutputSubscription: Subscription;
   recordedData = [];
   doneRecording = false;
+  lastPrompt = false;
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    for (const assessmentRecord of this.stateManager.assessments) {
+      if (assessmentRecord['assess_name'] === 'syncvoice') {
+        this.promptNumber = assessmentRecord['prompt_number'];
+      }
+    }
+  }
 
   setStateAndStart(): void {
     this.stateManager.showInnerAssessmentButton = false;
@@ -137,22 +143,23 @@ export class SyncvoiceComponent
     reader.onloadend = (): any => {
       const currentRecordedBlobAsBase64 = reader.result.slice(22);
       this.recordedData.push({
-        prompt_number: this.recordingNumber,
+        prompt_number: this.promptNumber,
         recorded_data: currentRecordedBlobAsBase64
       }); // KRM: Adding recording to the array is done in sync. Currently wait for the recording to load.
       // Might be btter to do this async so we don't have the chance of blocking for a short
       // period before moving to the next prompt.
-      if (this.promptNumber === 0) {
-        this.textOnButton = 'Continue'; // KRM: Update the button after the first press prompt finsihes
-      }
-      this.recordingNumber++;
+      this.pushAudioData();
       this.promptNumber++;
-      console.log(this.recordedData);
     };
   }
 
   nextLalaPrompt(): void {
     if (this.promptNumber < this.audioNames.length) {
+      if (this.promptNumber + 1 === this.audioNames.length) {
+        this.lastPrompt = true;
+        this.stateManager.textOnInnerAssessmentButton =
+          'FINISH ASSESSMENT AND ADVANCE';
+      }
       this.stateManager.showInnerAssessmentButton = false;
       const audio = new Audio();
       audio.src = this.audioNames[this.promptNumber];
@@ -165,20 +172,29 @@ export class SyncvoiceComponent
     }
   }
 
+  pushAudioData(): void {
+    const assessmentData = {
+      assess_name: 'syncvoice',
+      data: { recorded_data: this.recordedData },
+      completed: this.lastPrompt
+    };
+    const assessmentGoogleData = {
+      assess_name: 'syncvoice',
+      data: { text: 'None' }
+    };
+    if (this.promptNumber === 0) {
+      this.dataService
+        .postAssessmentDataToFileSystem(assessmentData, assessmentGoogleData)
+        .subscribe();
+    } else {
+      this.dataService
+        .postSingleAudioDataToMongo(assessmentData, assessmentGoogleData)
+        .subscribe();
+    }
+    this.recordedData = [];
+  }
+
   finishAssessment(): void {
-    this.dataService
-      .postAssessmentDataToFileSystem(
-        {
-          assess_name: 'syncvoice',
-          data: { recorded_data: this.recordedData },
-          completed: true
-        },
-        {
-          assess_name: 'syncvoice',
-          data: { text: 'None' }
-        }
-      )
-      .subscribe();
     this.stateManager.finishThisAssessmentAndAdvance('syncvoice');
   }
   canDeactivate(): boolean {

@@ -16,7 +16,6 @@ async function insertFreshAssessmentData(reqData) {
   })
   const userID = reqData.user_id
   if (!fs.existsSync(path.join('assessmentData', userID))) {
-    console.log('making directory')
     fs.mkdirSync(path.join('assessmentData', userID), {
       recursive: true
     })
@@ -58,7 +57,6 @@ async function pushOnePieceAssessmentData(reqData) {
   } else {
     console.log('Selector error')
   }
-  console.log(selector)
   const fileName = path.join('assessmentData', userID, userID + '.json')
   fs.readFile(fileName, 'utf-8', (err, data) => {
     if (err) console.log(err)

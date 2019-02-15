@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import { DialogService } from '../../../services/dialog.service';
 import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
@@ -12,7 +12,6 @@ import { StateManagerService } from '../../../services/state-manager.service';
 export class MatrixreasoningComponent
   implements OnInit, CanComponentDeactivate {
   imagesLocation = 'assets/img/matrixreasoning/';
-  imageTypes = ['frameSets', 'solutionSets'];
   dimensions = {
     frameSets: {
       0: {
@@ -122,7 +121,7 @@ export class MatrixreasoningComponent
     this.stateManager.showInnerAssessmentButton = false;
     this.stateManager.textOnInnerAssessmentButton = 'CONTINUE ASSESSMENT';
     this.stateManager.isInAssessment = true;
-    this.startDisplayedCountdownTimer();
+    this.advanceToNextPrompt();
   }
 
   calculateImageNames(): void {
@@ -132,7 +131,7 @@ export class MatrixreasoningComponent
 
   calculateFrameSets(): void {
     for (let i = 0; i <= 6; i++) {
-      // KRM: Question number
+      // KRM: Prompt number
       let currentRow: string[] = [];
       let currentMatrix: string[][] = [];
       const questionWidth = this.dimensions['frameSets'][i]['width'];
@@ -157,7 +156,7 @@ export class MatrixreasoningComponent
 
   calculateSolutionSets(): void {
     for (let i = 0; i <= 6; i++) {
-      // KRM: Question number
+      // KRM: Prompt number
       let currentRow: string[] = [];
       let currentMatrix: string[][] = [];
       const questionHeight = this.dimensions['solutionSets'][i]['height'];
@@ -177,6 +176,19 @@ export class MatrixreasoningComponent
       currentRow = [];
       this.imageMatrices['solutionSets'][i] = currentMatrix;
       currentMatrix = [];
+    }
+  }
+
+  advanceToNextPrompt(): void {
+    if (this.promptNumber < 7) {
+      if (this.promptNumber + 1 === 7) {
+        this.lastPrompt = true;
+        this.stateManager.textOnInnerAssessmentButton =
+          'FINISH ASSESSMENT AND ADVANCE';
+      }
+      this.startDisplayedCountdownTimer();
+    } else {
+      this.finishAssessment();
     }
   }
 
@@ -203,13 +215,10 @@ export class MatrixreasoningComponent
     this.pushSelectionData();
     this.promptNumber++;
     this.showMatrix = false;
-    if (this.promptNumber < 7) {
-      if (this.promptNumber + 1 === 7) {
-        this.lastPrompt = true;
-      }
-      this.startDisplayedCountdownTimer();
+    if (this.lastPrompt) {
+      this.stateManager.showInnerAssessmentButton = true;
     } else {
-      this.finishAssessment();
+      this.advanceToNextPrompt();
     }
   }
 

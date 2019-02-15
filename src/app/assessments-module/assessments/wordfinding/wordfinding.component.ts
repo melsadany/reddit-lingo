@@ -119,7 +119,7 @@ export class WordfindingComponent
       this.audioRecordingService.startRecording();
       this.intervalCountup = setTimeout(() => {
         this.stopRecording();
-      }, 20000); // KRM: 30 seconds results in too big of a file right now
+      }, 30000);
     }
   }
 
