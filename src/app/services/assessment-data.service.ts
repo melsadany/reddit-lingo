@@ -44,11 +44,11 @@ export class AssessmentDataService {
   }
 
   public setUserIdCookie(value: string): void {
-    this.cookieService.set('user_id', value, 200);
+    this.cookieService.set('user_id', value, 200, '/assessments');
   }
 
   public deleteUserIdCookie(): void {
-    this.cookieService.delete('user_id');
+    this.cookieService.delete('user_id', '/assessments');
   }
 
   public checkUserIdCookie(): boolean {
