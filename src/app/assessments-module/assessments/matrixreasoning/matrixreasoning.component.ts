@@ -102,12 +102,13 @@ export class MatrixreasoningComponent
   lastPrompt = false;
 
   constructor(
-    private stateManager: StateManagerService,
+    public stateManager: StateManagerService,
     private dataService: AssessmentDataService,
     private dialogService: DialogService
   ) {}
 
   ngOnInit(): void {
+    this.stateManager.showOutsideAssessmentButton = false;
     for (const assessmentRecord of this.stateManager.assessments) {
       if (assessmentRecord['assess_name'] === 'matrixreasoning') {
         this.promptNumber = assessmentRecord['prompt_number'];

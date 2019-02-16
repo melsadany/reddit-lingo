@@ -32,7 +32,7 @@ export class RanComponent implements OnInit, OnDestroy, CanComponentDeactivate {
   completed = false;
 
   constructor(
-    private stateManager: StateManagerService,
+    public stateManager: StateManagerService,
     private audioRecordingService: AudioRecordingService,
     private dataService: AssessmentDataService,
     private dialogService: DialogService
@@ -93,7 +93,9 @@ export class RanComponent implements OnInit, OnDestroy, CanComponentDeactivate {
     this.recordedOutputSubscription.unsubscribe();
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.stateManager.showOutsideAssessmentButton = false;
+  }
 
   setStateAndStart(): void {
     this.stateManager.showInnerAssessmentButton = false;

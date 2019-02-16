@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { StateManagerService } from '../../services/state-manager.service';
 
 @Component({
   selector: 'app-assessments-done',
@@ -7,9 +8,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AssessmentsDoneComponent implements OnInit {
 
-  constructor() { }
+  constructor(public stateManager: StateManagerService) { }
 
   ngOnInit(): void {
+    this.stateManager.showOutsideAssessmentButton = false;
   }
 
 }

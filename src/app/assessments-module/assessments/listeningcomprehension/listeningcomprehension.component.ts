@@ -25,11 +25,12 @@ export class ListeningcomprehensionComponent
 
   constructor(
     private dataService: AssessmentDataService,
-    private stateManager: StateManagerService,
+    public stateManager: StateManagerService,
     private dialogService: DialogService
   ) {}
 
   ngOnInit(): void {
+    this.stateManager.showOutsideAssessmentButton = false;
     for (const assessmentRecord of this.stateManager.assessments) {
       if (assessmentRecord['assess_name'] === 'sentencerepetition') {
         this.promptNumber = assessmentRecord['prompt_number'];

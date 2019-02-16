@@ -92,10 +92,11 @@ export class PostscreenerquestionsComponent
     private dataService: AssessmentDataService,
     private fb: FormBuilder,
     private dialogService: DialogService,
-    private stateManager: StateManagerService
+    public stateManager: StateManagerService
   ) {}
 
   ngOnInit(): void {
+    this.stateManager.showOutsideAssessmentButton = false;
     this.stateManager.isInAssessment = true;
     this.stateManager.showAssessmentFrontPage = true;
   }

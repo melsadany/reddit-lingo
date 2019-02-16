@@ -12,13 +12,13 @@
   <div class="imageParent" *ngIf="showPromptImage">
     <img class="rounded img-fluid" src="{{currentImagePrompt}}">
   </div>
-  <div class="text-center">
-    <button type="button" class="stop-button btn btn-outline-secondary" *ngIf="isRecording && !blobUrl" (click)="stopRecording()">DONE</button>
+  <!-- <div class="text-center"> -->
+    <!-- <button type="button" class="stop-button btn btn-outline-secondary" *ngIf="isRecording && !blobUrl" (click)="stopRecording()">DONE</button> -->
     <!-- Done button is for debugging only for this assessment -->
     <!-- <button type="button" class="cancel-button btn btn-danger" *ngIf="!isRecording && blobUrl" (click)="clearRecordedData()">Clear Recording</button> KRM: For debugging usage only. -->
     <!-- <div *ngIf="isRecording && !blobUrl"> {{recordedTime}} </div> Not needed for this assessment -->
 
-  </div>
+  <!-- </div> -->
   <!-- <div>
     <audio *ngIf="!isRecording && blobUrl"  controls>
       <source [src]="blobUrl" type="audio/webm">

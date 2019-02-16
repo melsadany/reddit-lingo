@@ -47,7 +47,7 @@ export class PrescreenerquestionsComponent
   ];
 
   constructor(
-    private stateManager: StateManagerService,
+    public stateManager: StateManagerService,
     private dataService: AssessmentDataService,
     private fb: FormBuilder,
     private dialogService: DialogService
@@ -55,6 +55,7 @@ export class PrescreenerquestionsComponent
 
   ngOnInit(): void {
     this.stateManager.isInAssessment = true;
+    this.stateManager.showOutsideAssessmentButton = false;
   }
 
   postData(): void {

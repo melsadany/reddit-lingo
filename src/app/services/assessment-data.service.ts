@@ -21,7 +21,7 @@ export class AssessmentDataService {
   constructor(
     private cookieService: CookieService,
     private http: HttpClient,
-    private stateManager: StateManagerService
+    public stateManager: StateManagerService
   ) {
     if (!this.checkUserIdCookie()) {
       this.setUserIdCookieAndSetData();

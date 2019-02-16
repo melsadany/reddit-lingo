@@ -59,10 +59,10 @@ export class StateManagerService {
   public set showAssessmentFrontPage(value: boolean) {
     this._showAssessmentFrontPage = value;
   }
-  public get showContinueOutsideAssessmentButton(): boolean {
+  public get showOutsideAssessmentButton(): boolean {
     return this._showOutsideAssessmentButton;
   }
-  public set showContinueOutsideAssessmentButton(value: boolean) {
+  public set showOutsideAssessmentButton(value: boolean) {
     this._showOutsideAssessmentButton = value;
   }
   public get textOnContinueOutsideAssessmentButton(): string {
@@ -181,7 +181,7 @@ export class StateManagerService {
 
   public navigateTo(assessmentName: string): void {
     this.showAssessmentFrontPage = true;
-    this.showContinueOutsideAssessmentButton = false;
+    this.showOutsideAssessmentButton = false;
     this.showInnerAssessmentButton = true;
     this.routerService.navigate(['/assessments/', assessmentName]);
   }

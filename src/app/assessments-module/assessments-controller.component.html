@@ -12,7 +12,7 @@
     <div *ngIf="dataService.showThankYou()">
       <p class="pt4"> Thank you for completing this assessment.</p>
     </div> KRM: Let each assessment handle this case-->
-<button *ngIf="this.stateManager.showOutsideAssessmentButton" type='button' class='btn btn-primary btn-lg' (click)="stateManager.goToNextAssessment()">{{stateManager.textOnOutsideAssessmentButton}}</button>
+<button *ngIf="stateManager.showOutsideAssessmentButton" type='button' class='btn btn-primary btn-lg' (click)="stateManager.goToNextAssessment()">{{stateManager.textOnOutsideAssessmentButton}}</button>
 <!-- </div>
 </div> -->
 <div *ngIf="stateManager.DEBUG_MODE" class="py-4 text-center">

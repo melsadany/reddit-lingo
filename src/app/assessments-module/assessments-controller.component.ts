@@ -1,6 +1,5 @@
-import { Component, OnInit, HostListener, Host } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { AssessmentDataService } from '../services/assessment-data.service';
-import { AppComponent } from '../app.component';
 import { DialogService } from '../services/dialog.service';
 import { CanComponentDeactivate } from '../guards/can-deactivate.guard';
 import { StateManagerService } from '../services/state-manager.service';
@@ -18,7 +17,7 @@ export class AssessmentsControllerComponent
   constructor(
     private dataService: AssessmentDataService,
     private dialogService: DialogService,
-    private stateManager: StateManagerService
+    public stateManager: StateManagerService
   ) {}
 
   ngOnInit(): void {
@@ -26,10 +25,6 @@ export class AssessmentsControllerComponent
     if (this.stateManager.finishedAllAssessments) {
       this.stateManager.navigateTo('done');
     }
-    // if (this.dataService.doRedirectBackToStart()) {
-    //   this.dataService.router.navigate(['/assessments/']);
-    // }
-    // this.dataService.nextAssessment();
   }
 
   // @HostListener('window:beforeunload', ['$event'])

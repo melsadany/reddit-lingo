@@ -11,7 +11,7 @@ export class HomeComponent implements OnInit {
   single: boolean;
 
   constructor(
-    private stateManager: StateManagerService,
+    public stateManager: StateManagerService,
     private route: ActivatedRoute
   ) {}
 

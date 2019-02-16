@@ -33,7 +33,7 @@ export class SentencerepetitionComponent
   lastPrompt = false;
 
   constructor(
-    private stateManager: StateManagerService,
+    public stateManager: StateManagerService,
     private dataService: AssessmentDataService,
     private audioRecordingService: AudioRecordingService,
     private dialogService: DialogService
@@ -73,6 +73,7 @@ export class SentencerepetitionComponent
   filePathsToPlay = [];
 
   ngOnInit(): void {
+    this.stateManager.showOutsideAssessmentButton = false;
     for (const assessmentRecord of this.stateManager.assessments) {
       if (assessmentRecord['assess_name'] === 'sentencerepetition') {
         this.promptNumber = assessmentRecord['prompt_number'];

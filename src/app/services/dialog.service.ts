@@ -7,7 +7,7 @@ import { StateManagerService } from './state-manager.service';
 })
 export class DialogService {
   constructor(
-    private stateManager: StateManagerService,
+    public stateManager: StateManagerService,
     private dataService: AssessmentDataService
   ) {}
 

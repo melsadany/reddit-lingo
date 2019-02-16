@@ -5,7 +5,7 @@
   demonstration, you may close out of this window at any point.</p>
 <p> Thank you very much for your consideration! To indicate your willingness to participate in this demonstration <b>please
     click the START button below.</b></p>
-<div *ngIf="!single; else elseBlock" class='pb-5 text-center'>
+<div class='pb-5 text-center'>
   <!-- KRM: Get rid of this for the single assessment path -->
   <a [routerLink]="['/assessments', stateManager.currentAssessment]">
     <button type='button' class='btn btn-primary btn-lg'>START</button>

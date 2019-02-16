@@ -50,7 +50,7 @@ export class WordfindingComponent
     }
   ];
   constructor(
-    private stateManager: StateManagerService,
+    public stateManager: StateManagerService,
     private audioRecordingService: AudioRecordingService,
     private dataService: AssessmentDataService,
     private dialogService: DialogService
@@ -75,6 +75,7 @@ export class WordfindingComponent
   }
 
   ngOnInit(): void {
+    this.stateManager.showOutsideAssessmentButton = false;
     for (const assessmentRecord of this.stateManager.assessments) {
       if (assessmentRecord['assess_name'] === 'wordfinding') {
         this.promptNumber = assessmentRecord['prompt_number'];

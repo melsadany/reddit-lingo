@@ -33,13 +33,10 @@ if (error) {
 }
 
 const config = {
-  // env: envVars.NODE_ENV,
-  env: process.env.NODE_ENV,
-  port: process.env.SEVER_PORT,
-  // port: envVars.SERVER_PORT,
+  env: process.env.NODE_ENV || envVars.NODE_ENV,
+  port: process.env.SEVER_PORT || envVars.SERVER_PORT,
   // mongooseDebug: envVars.MONGOOSE_DEBUG,
-  jwtSecret: process.env.JWT_SECRET,
-  // jwtSecret: envVars.JWT_SECRET,
+  jwtSecret: process.env.JWT_SECRET || envVars.JWT_SECRET,
   frontend: envVars.MEAN_FRONTEND || 'angular'// ,
   // mongo: {
   //   host: envVars.MONGO_HOST,

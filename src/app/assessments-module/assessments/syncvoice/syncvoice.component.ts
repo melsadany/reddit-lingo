@@ -17,7 +17,7 @@ import { StateManagerService } from '../../../services/state-manager.service';
 export class SyncvoiceComponent
   implements OnInit, OnDestroy, CanComponentDeactivate {
   constructor(
-    private stateManager: StateManagerService,
+    public stateManager: StateManagerService,
     private dataService: AssessmentDataService,
     private audioRecordingService: AudioRecordingService,
     private dialogService: DialogService
@@ -65,6 +65,7 @@ export class SyncvoiceComponent
   lastPrompt = false;
 
   ngOnInit(): void {
+    this.stateManager.showOutsideAssessmentButton = false;
     for (const assessmentRecord of this.stateManager.assessments) {
       if (assessmentRecord['assess_name'] === 'syncvoice') {
         this.promptNumber = assessmentRecord['prompt_number'];

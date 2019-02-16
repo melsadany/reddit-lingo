@@ -15,7 +15,7 @@ export class HeaderComponent implements OnInit {
   @Input() user: any = {};
 
   constructor(
-    private stateManager: StateManagerService,
+    public stateManager: StateManagerService,
     private authService: AuthService,
     private router: Router,
     private dataService: AssessmentDataService
