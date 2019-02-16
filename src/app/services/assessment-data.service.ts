@@ -44,6 +44,7 @@ export class AssessmentDataService {
   }
 
   public setUserIdCookie(value: string): void {
+    console.log('Setting user cookie: ' + value);
     this.cookieService.set('user_id', value, 200, '/assessments');
   }
 
