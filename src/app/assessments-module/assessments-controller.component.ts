@@ -12,8 +12,6 @@ import { StateManagerService } from '../services/state-manager.service';
 })
 export class AssessmentsControllerComponent
   implements OnInit, CanComponentDeactivate {
-  allAssessmentsCompleted: Boolean = false;
-
   constructor(
     private dataService: AssessmentDataService,
     private dialogService: DialogService,

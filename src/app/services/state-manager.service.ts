@@ -65,10 +65,10 @@ export class StateManagerService {
   public set showOutsideAssessmentButton(value: boolean) {
     this._showOutsideAssessmentButton = value;
   }
-  public get textOnContinueOutsideAssessmentButton(): string {
+  public get textOnOutsideAssessmentButton(): string {
     return this._textOnOutsideAssessmentButton;
   }
-  public set textOnContinueOutsideAssessmentButton(value: string) {
+  public set textOnOutsideAssessmentButton(value: string) {
     this._textOnOutsideAssessmentButton = value;
   }
 
