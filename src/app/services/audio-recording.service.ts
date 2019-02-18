@@ -23,6 +23,7 @@ export class AudioRecordingService {
   private _recordingTime = new Subject<string>();
   private _recordingFailed = new Subject<string>();
   private _currentlyRecording = false;
+  public mediaRecorder = MediaRecorder;
 
   isCurrentlyRecording(): Boolean {
     return this._currentlyRecording;

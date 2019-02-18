@@ -51,7 +51,7 @@ export class WordfindingComponent
   ];
   constructor(
     public stateManager: StateManagerService,
-    private audioRecordingService: AudioRecordingService,
+    public audioRecordingService: AudioRecordingService,
     private dataService: AssessmentDataService,
     private dialogService: DialogService
   ) {

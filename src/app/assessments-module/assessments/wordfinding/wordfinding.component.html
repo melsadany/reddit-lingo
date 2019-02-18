@@ -13,5 +13,8 @@
   <div class="text-center" *ngIf="isRecording">
     <button type="button" class="cancel-button btn btn-danger button-down">Recording</button>
   </div>
+    <div class="text-center" *ngIf="audioRecordingService.mediaRecorder.notSupported">
+      <button type="button" class="cancel-button btn btn-danger button-down">Using iOS recorder</button>
+    </div>
   <p *ngIf="countingDown" class="text-center display-1">{{timeLeft}}</p>
 </div>
