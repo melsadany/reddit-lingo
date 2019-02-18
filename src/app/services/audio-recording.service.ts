@@ -2,7 +2,6 @@ import { Injectable, NgZone } from '@angular/core';
 import * as RecordRTC from 'recordrtc';
 import * as moment from 'moment';
 import { Observable, Subject } from 'rxjs';
-import * as MediaRecorder from 'audio-recorder-polyfill';
 
 export interface RecordedAudioOutput {
   blob: Blob;
@@ -16,15 +15,13 @@ export class AudioRecordingService {
     record: () => void;
     stop: (arg0: (blob: any) => void, arg1: () => void) => void;
   };
-  private iOSRecorder;
   private interval: NodeJS.Timeout;
   private startTime: moment.MomentInput;
   private _recorded = new Subject<RecordedAudioOutput>();
   private _recordingTime = new Subject<string>();
   private _recordingFailed = new Subject<string>();
   private _currentlyRecording = false;
-  public mediaRecorder = MediaRecorder;
-  public iOSdata;
+  public debugError = false;
 
   isCurrentlyRecording(): Boolean {
     return this._currentlyRecording;
@@ -58,23 +55,13 @@ export class AudioRecordingService {
     navigator.mediaDevices
       .getUserMedia({ audio: true })
       .then(stream => {
-        if (MediaRecorder.notSupported) {
-          this.stream = stream;
-          this.iOSRecorder = new MediaRecorder(this.stream);
-          this.iOSRecorder.addEventListener('dataavailable', e => {
-            this.iOSdata = URL.createObjectURL(e.data);
-          });
-          this.iOSRecorder.start();
-          this.setCurrentlyRecording(true);
-          console.log('using iOS recorder');
-        } else {
-          console.log('using RTCRecorder');
           this.stream = stream;
           this.record();
           this.setCurrentlyRecording(true);
-        }
       })
       .catch(error => {
+        console.log('error');
+        this.debugError = true;
         this._recordingFailed.next();
       });
   }
@@ -114,10 +101,6 @@ export class AudioRecordingService {
   }
 
   stopRecording(): void {
-    if (this.iOSRecorder) {
-      this.setCurrentlyRecording(false);
-      this.iOSRecorder.stop();
-    }
     if (this.recorder) {
       this.setCurrentlyRecording(false);
       this.recorder.stop(
