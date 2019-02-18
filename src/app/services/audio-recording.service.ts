@@ -27,6 +27,7 @@ export class AudioRecordingService {
   private audioContext: AudioContext = new (window['AudioContext'] ||
     window['webkitAudioContext'])();
   private audioNode;
+  private audioInput;
 
   constructor() {
     if (this.audioContext.createScriptProcessor) {
