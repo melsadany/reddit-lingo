@@ -2,6 +2,7 @@ import { Injectable, NgZone } from '@angular/core';
 import * as RecordRTC from 'recordrtc';
 import * as moment from 'moment';
 import { Observable, Subject } from 'rxjs';
+declare var MediaRecorder: any;
 
 export interface RecordedAudioOutput {
   blob: Blob;
@@ -22,6 +23,8 @@ export class AudioRecordingService {
   private _recordingFailed = new Subject<string>();
   private _currentlyRecording = false;
   public debugError = false;
+  private chunks;
+  private mediaRecorder;
 
   isCurrentlyRecording(): Boolean {
     return this._currentlyRecording;
@@ -55,12 +58,12 @@ export class AudioRecordingService {
     navigator.mediaDevices
       .getUserMedia({ audio: true })
       .then(stream => {
-          this.stream = stream;
-          this.record();
-          this.setCurrentlyRecording(true);
+        this.stream = stream;
+        this.record();
+        this.setCurrentlyRecording(true);
       })
       .catch(error => {
-        console.log('error');
+        console.log(error);
         this.debugError = true;
         this._recordingFailed.next();
       });
@@ -71,22 +74,27 @@ export class AudioRecordingService {
   }
 
   private record(): void {
-    this.recorder = new RecordRTC.StereoAudioRecorder(this.stream, {
-      type: 'audio',
-      mimeType: 'audio/webm'
-    });
+    // this.recorder = new RecordRTC.StereoAudioRecorder(this.stream, {
+    //   type: 'audio',
+    //   mimeType: 'audio/webm'
+    // });
+    this.chunks = [];
+    this.mediaRecorder = new MediaRecorder(this.stream);
+    this.mediaRecorder.start();
+    console.log(this.mediaRecorder.state);
+    this.mediaRecorder.ondataavailable = (e): any => this.chunks.push(e.data);
 
-    this.recorder.record();
-    this.startTime = moment();
-    this.interval = setInterval(() => {
-      const currentTime = moment();
-      const diffTime = moment.duration(currentTime.diff(this.startTime));
-      const time =
-        this.toString(diffTime.minutes()) +
-        ':' +
-        this.toString(diffTime.seconds());
-      this._recordingTime.next(time);
-    }, 1000);
+    // this.recorder.record();
+    // this.startTime = moment();
+    // this.interval = setInterval(() => {
+    //   const currentTime = moment();
+    //   const diffTime = moment.duration(currentTime.diff(this.startTime));
+    //   const time =
+    //     this.toString(diffTime.minutes()) +
+    //     ':' +
+    //     this.toString(diffTime.seconds());
+    //   this._recordingTime.next(time);
+    // }, 1000);
   }
 
   private toString(value: string | number): string | number {
@@ -101,24 +109,27 @@ export class AudioRecordingService {
   }
 
   stopRecording(): void {
-    if (this.recorder) {
-      this.setCurrentlyRecording(false);
-      this.recorder.stop(
-        (blob: Blob) => {
-          if (this.startTime) {
-            const wavName = encodeURIComponent(
-              'audio_' + new Date().getTime() + '.wav'
-            );
-            this.stopMedia();
-            this._recorded.next({ blob: blob, user_id: wavName });
-          }
-        },
-        () => {
-          this.stopMedia();
-          this._recordingFailed.next();
-        }
-      );
-    }
+    // if (this.recorder) {
+    //   this.setCurrentlyRecording(false);
+    //   this.recorder.stop(
+    //     (blob: Blob) => {
+    //       if (this.startTime) {
+    //         const wavName = encodeURIComponent(
+    //           'audio_' + new Date().getTime() + '.wav'
+    //         );
+    //         this.stopMedia();
+    //         this._recorded.next({ blob: blob, user_id: wavName });
+    //       }
+    //     },
+    //     () => {
+    //       this.stopMedia();
+    //       this._recordingFailed.next();
+    //     }
+    //   );
+    // }
+    this.mediaRecorder.stop();
+    console.log(this.mediaRecorder.state);
+    console.log(this.chunks);
   }
 
   private stopMedia(): void {
