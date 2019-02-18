@@ -24,6 +24,7 @@ export class AudioRecordingService {
   private _recordingFailed = new Subject<string>();
   private _currentlyRecording = false;
   public mediaRecorder = MediaRecorder;
+  public iOSdata;
 
   isCurrentlyRecording(): Boolean {
     return this._currentlyRecording;
@@ -58,8 +59,13 @@ export class AudioRecordingService {
       .getUserMedia({ audio: true })
       .then(stream => {
         if (MediaRecorder.notSupported) {
-          this.iOSRecorder = new MediaRecorder(stream);
+          this.stream = stream;
+          this.iOSRecorder = new MediaRecorder(this.stream);
+          this.iOSRecorder.addEventListener('dataavailable', e => {
+            this.iOSdata = URL.createObjectURL(e.data);
+          });
           this.iOSRecorder.start();
+          this.setCurrentlyRecording(true);
           console.log('using iOS recorder');
         } else {
           console.log('using RTCRecorder');
@@ -108,6 +114,10 @@ export class AudioRecordingService {
   }
 
   stopRecording(): void {
+    if (this.iOSRecorder) {
+      this.setCurrentlyRecording(false);
+      this.iOSRecorder.stop();
+    }
     if (this.recorder) {
       this.setCurrentlyRecording(false);
       this.recorder.stop(
