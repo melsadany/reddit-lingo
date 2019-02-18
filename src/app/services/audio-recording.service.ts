@@ -2,6 +2,7 @@ import { Injectable, NgZone } from '@angular/core';
 import * as RecordRTC from 'recordrtc';
 import * as moment from 'moment';
 import { Observable, Subject } from 'rxjs';
+import * as MediaRecorder from 'audio-recorder-polyfill';
 
 export interface RecordedAudioOutput {
   blob: Blob;
@@ -11,7 +12,11 @@ export interface RecordedAudioOutput {
 @Injectable()
 export class AudioRecordingService {
   private stream: MediaStream;
-  private recorder: { record: () => void; stop: (arg0: (blob: any) => void, arg1: () => void) => void; };
+  private recorder: {
+    record: () => void;
+    stop: (arg0: (blob: any) => void, arg1: () => void) => void;
+  };
+  private iOSRecorder;
   private interval: NodeJS.Timeout;
   private startTime: moment.MomentInput;
   private _recorded = new Subject<RecordedAudioOutput>();
@@ -50,10 +55,17 @@ export class AudioRecordingService {
     this._recordingTime.next('00:00');
     navigator.mediaDevices
       .getUserMedia({ audio: true })
-      .then(s => {
-        this.stream = s;
-        this.record();
-        this.setCurrentlyRecording(true);
+      .then(stream => {
+        if (MediaRecorder.notSupported) {
+          this.iOSRecorder = new MediaRecorder(stream);
+          this.iOSRecorder.start();
+          console.log('using iOS recorder');
+        } else {
+          console.log('using RTCRecorder');
+          this.stream = stream;
+          this.record();
+          this.setCurrentlyRecording(true);
+        }
       })
       .catch(error => {
         this._recordingFailed.next();
@@ -121,7 +133,9 @@ export class AudioRecordingService {
       clearInterval(this.interval);
       this.startTime = null;
       if (this.stream) {
-        this.stream.getAudioTracks().forEach((track: { stop: () => void; }) => track.stop());
+        this.stream
+          .getAudioTracks()
+          .forEach((track: { stop: () => void }) => track.stop());
         this.stream = null;
       }
     }
