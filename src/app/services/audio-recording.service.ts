@@ -3,7 +3,6 @@ import * as RecordRTC from 'recordrtc';
 import * as moment from 'moment';
 import { Observable, Subject } from 'rxjs';
 declare var MediaRecorder: any;
-
 export interface RecordedAudioOutput {
   blob: Blob;
   user_id: string;
@@ -25,6 +24,24 @@ export class AudioRecordingService {
   public debugError = false;
   private chunks;
   private mediaRecorder;
+  private audioContext: AudioContext = new (window['AudioContext'] ||
+    window['webkitAudioContext'])();
+  private audioNode;
+
+  constructor() {
+    if (this.audioContext.createScriptProcessor) {
+      this.audioNode = this.audioContext.createScriptProcessor(4096, 1, 1);
+    } else {
+      console.log('WebAudio not supported');
+    }
+    this.audioNode.connect(this.audioContext.destination);
+    navigator.mediaDevices
+      .getUserMedia({
+        audio: true
+      })
+      .then(stream => (this.stream = stream))
+      .catch(error => console.log(error));
+  }
 
   isCurrentlyRecording(): Boolean {
     return this._currentlyRecording;
@@ -50,9 +67,9 @@ export class AudioRecordingService {
   }
 
   startRecording(): void {
-    if (this.recorder) {
-      return;
-    }
+    // if (this.recorder) {
+    //   return;
+    // }
 
     this._recordingTime.next('00:00');
     navigator.mediaDevices
