@@ -333,7 +333,7 @@ export class WzRecorder {
 
   onMicrophoneError(e: any): any {
     console.log(e);
-    alert('Unable to access the microphone.');
+    alert('Unable to access the microphone.' + e);
   }
 
   onAudioProcess(e: any): any {
