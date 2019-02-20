@@ -1,8 +1,7 @@
 import { Injectable, ElementRef } from '@angular/core';
-import * as RecordRTC from 'recordrtc';
 import * as moment from 'moment';
 import { Observable, Subject } from 'rxjs';
-import { AssessmentsControllerComponent } from '../assessments-module/assessments-controller.component';
+import * as getUserMedia from 'getusermedia';
 declare var MediaRecorder: any;
 export interface RecordedAudioOutput {
   blob: Blob;
@@ -244,12 +243,20 @@ export class WzRecorder {
       console.log('WebAudio not supported!');
     }
     this.audioNode.connect(this.audioCtx.destination);
-    navigator.mediaDevices
-      .getUserMedia({
-        audio: true
-      })
-      .then(stream => this.onMicrophoneCaptured(stream))
-      .catch(this.onMicrophoneError);
+    // navigator.mediaDevices
+    //   .getUserMedia({
+    //     audio: true,
+    //     video: false
+    //   })
+    //   .then(stream => this.onMicrophoneCaptured(stream))
+    //   .catch(this.onMicrophoneError);
+    getUserMedia({ audio: true, video: false }, (err, stream) => {
+      if (err) {
+        this.onMicrophoneError(err);
+      } else {
+        this.onMicrophoneCaptured(stream);
+      }
+    });
   }
   stop(): void {
     this.stopRecording(
@@ -324,12 +331,12 @@ export class WzRecorder {
     this.sampleRate = this.audioCtx.sampleRate;
   }
 
-  onMicrophoneError(e) {
+  onMicrophoneError(e: any): any {
     console.log(e);
     alert('Unable to access the microphone.');
   }
 
-  onAudioProcess(e) {
+  onAudioProcess(e: any): any {
     if (!this.recording) {
       return;
     }
