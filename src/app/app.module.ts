@@ -19,6 +19,8 @@ import { AssessmentsModule } from './assessments-module/assessments-controller.m
 import { AssessmentDataService } from './services/assessment-data.service';
 import { DialogService } from './services/dialog.service';
 import { StateManagerService } from './services/state-manager.service';
+import { AudioRecordingService } from './services/audio-recording.service';
+import { AssessmentsControllerComponent } from './assessments-module/assessments-controller.component';
 
 @NgModule({
   declarations: [
@@ -42,8 +44,8 @@ import { StateManagerService } from './services/state-manager.service';
     CookieService,
     AssessmentDataService,
     DialogService,
-    StateManagerService
-
+    StateManagerService,
+    AudioRecordingService,
   ],
   entryComponents: [],
   bootstrap: [AppComponent]

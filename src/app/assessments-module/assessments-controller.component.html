@@ -15,6 +15,7 @@
 <button *ngIf="stateManager.showOutsideAssessmentButton" type='button' class='btn btn-primary btn-lg' (click)="stateManager.goToNextAssessment()">{{stateManager.textOnOutsideAssessmentButton}}</button>
 <!-- </div>
 </div> -->
+<canvas #canvas>Hello</canvas>
 <div *ngIf="stateManager.DEBUG_MODE" class="py-4 text-center">
   <button type='button' class='btn btn-outline-danger btn-lg button-down' (click)="stateManager.nextAssessmentDebugMode()">DEBUG
     ENABLED: NEXT

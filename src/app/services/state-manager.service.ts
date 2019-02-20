@@ -75,6 +75,10 @@ export class StateManagerService {
   assessments = [
     // KRM: Load assessment data into here
     {
+      assess_name: 'diagnostics',
+      completed: false
+    },
+    {
       assess_name: 'prescreenerquestions',
       completed: false
     },
@@ -145,7 +149,6 @@ export class StateManagerService {
           } else if (existingAssessment['data']['selection_data']) {
             selector = 'selection_data';
           }
-          console.log(selector);
           const currentPromptNumber = this.determineCurrentPromptNumber(
             existingAssessment['data'][selector]
           );

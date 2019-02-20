@@ -1,0 +1,8 @@
+<div class="mx-lg-5">
+  <p class="py-4">
+    Before we get started, we need to make sure your speakers/headphones and microphone are working properly.
+  </p>
+  <div *ngIf="stateManager.showInnerAssessmentButton" class="text-center button-down">
+    <button *ngIf="!stateManager.isInAssessment" type="button" class="start-button btn btn-success" (click)="setStateAndStart()">{{stateManager.textOnInnerAssessmentButton}}</button>
+  </div>
+</div>

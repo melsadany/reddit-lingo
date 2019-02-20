@@ -7,7 +7,6 @@ import { AssessmentsControllerComponent } from './assessments-controller.compone
 
 import { AssessmentsControllerRoutingModule } from './assessments-controller-routing.module';
 import { RanComponent } from './assessments/ran/ran.component';
-import { AudioRecordingService } from '../services/audio-recording.service';
 import { AuthHeaderInterceptor } from '../interceptors/header.interceptor';
 import { CatchErrorInterceptor } from '../interceptors/http-error.interceptor';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -32,6 +31,7 @@ import { MatrixreasoningComponent } from './assessments/matrixreasoning/matrixre
 import { SentencerepetitionComponent } from './assessments/sentencerepetition/sentencerepetition.component';
 import { WordfindingComponent } from './assessments/wordfinding/wordfinding.component';
 import { PostscreenerquestionsComponent } from './assessments/postscreenerquestions/postscreenerquestions.component';
+import { DiagnosticsComponent } from './assessments/diagnostics/diagnostics.component';
 
 @NgModule({
   imports: [
@@ -61,10 +61,10 @@ import { PostscreenerquestionsComponent } from './assessments/postscreenerquesti
     MatrixreasoningComponent,
     SentencerepetitionComponent,
     WordfindingComponent,
-    PostscreenerquestionsComponent
+    PostscreenerquestionsComponent,
+    DiagnosticsComponent
   ],
   providers: [
-    AudioRecordingService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthHeaderInterceptor,

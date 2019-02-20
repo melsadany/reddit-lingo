@@ -13,6 +13,7 @@ import { MatrixreasoningComponent } from './assessments/matrixreasoning/matrixre
 import { SentencerepetitionComponent } from './assessments/sentencerepetition/sentencerepetition.component';
 import { WordfindingComponent } from './assessments/wordfinding/wordfinding.component';
 import { PostscreenerquestionsComponent } from './assessments/postscreenerquestions/postscreenerquestions.component';
+import { DiagnosticsComponent } from './assessments/diagnostics/diagnostics.component';
 
 const routes: Routes = [
   {
@@ -21,44 +22,48 @@ const routes: Routes = [
     canDeactivate: [CanDeactivateGuard],
     children: [
       {
+        path: 'diagnostics',
+        component: DiagnosticsComponent
+      },
+      {
         path: 'timeduration',
-        component: TimedurationComponent,
+        component: TimedurationComponent
       },
       {
         path: 'ran',
-        component: RanComponent,
+        component: RanComponent
       },
       {
         path: 'pictureprompt',
-        component: PicturepromptComponent,
+        component: PicturepromptComponent
       },
       {
         path: 'listeningcomprehension',
-        component: ListeningcomprehensionComponent,
+        component: ListeningcomprehensionComponent
       },
       {
         path: 'postscreenerquestions',
-        component: PostscreenerquestionsComponent,
+        component: PostscreenerquestionsComponent
       },
       {
         path: 'prescreenerquestions',
-        component: PrescreenerquestionsComponent,
+        component: PrescreenerquestionsComponent
       },
       {
         path: 'syncvoice',
-        component: SyncvoiceComponent,
+        component: SyncvoiceComponent
       },
       {
         path: 'matrixreasoning',
-        component: MatrixreasoningComponent,
+        component: MatrixreasoningComponent
       },
       {
         path: 'sentencerepetition',
-        component: SentencerepetitionComponent,
+        component: SentencerepetitionComponent
       },
       {
         path: 'wordfinding',
-        component: WordfindingComponent,
+        component: WordfindingComponent
       },
       {
         path: 'done',
