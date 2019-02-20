@@ -59,6 +59,7 @@ export class AudioRecordingService {
         this.setCurrentlyRecording(true);
       })
       .catch(error => {
+        alert('Error in getting mic: ' + error);
         this._recordingFailed.next();
       });
   }
