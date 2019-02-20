@@ -13,8 +13,5 @@
   <div class="text-center" *ngIf="isRecording">
     <button type="button" class="cancel-button btn btn-danger button-down">Recording</button>
   </div>
-  <div class="text-center" *ngIf="audioRecordingService.debugError">
-    <button type="button" class="cancel-button btn btn-danger button-down">Mobile Error in getting media stream</button>
-  </div>
   <p *ngIf="countingDown" class="text-center display-1">{{timeLeft}}</p>
 </div>
