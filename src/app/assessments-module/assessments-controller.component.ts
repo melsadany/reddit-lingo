@@ -24,7 +24,6 @@ export class AssessmentsControllerComponent
     private dataService: AssessmentDataService,
     private dialogService: DialogService,
     public stateManager: StateManagerService,
-    private audioRecordingService: AudioRecordingService
   ) {}
 
   ngOnInit(): void {
@@ -35,7 +34,6 @@ export class AssessmentsControllerComponent
   }
 
   ngAfterViewInit(): void {
-    this.audioRecordingService.setCanvasElement(this.canvas);
   }
 
   public getCanvasElement(): ElementRef {

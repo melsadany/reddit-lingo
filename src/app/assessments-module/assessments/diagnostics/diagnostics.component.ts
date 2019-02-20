@@ -16,6 +16,6 @@ export class DiagnosticsComponent implements OnInit {
   ngOnInit(): void {}
 
   setStateAndStart(): void {
-    console.log('Start');
+    this.audioRecordingService.startRecording();
   }
 }
