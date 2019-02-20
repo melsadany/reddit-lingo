@@ -20,7 +20,10 @@ import {
   MatNativeDateModule,
   MatInputModule,
   MatSelectModule,
-  MatCheckboxModule
+  MatCheckboxModule,
+  MatIconModule,
+  MatProgressBarModule,
+  MatToolbarModule
 } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PicturepromptComponent } from './assessments/pictureprompt/pictureprompt.component';
@@ -42,6 +45,9 @@ import { DiagnosticsComponent } from './assessments/diagnostics/diagnostics.comp
     MatFormFieldModule,
     MatNativeDateModule,
     MatInputModule,
+    MatIconModule,
+    MatProgressBarModule,
+    MatToolbarModule,
     BrowserAnimationsModule,
     MatSelectModule,
     MatCheckboxModule,

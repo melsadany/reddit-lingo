@@ -6,16 +6,9 @@
 <!-- </ng-template> -->
 <!-- <ng-template #inAssessment> -->
 <router-outlet></router-outlet>
-<!-- </ng-template> -->
-<!-- <div *ngIf="dataService.showButton() && dataService.currentAssessment != 'done'"> -->
-<!-- <div class='py-4 text-center'>
-    <div *ngIf="dataService.showThankYou()">
-      <p class="pt4"> Thank you for completing this assessment.</p>
-    </div> KRM: Let each assessment handle this case-->
 <button *ngIf="stateManager.showOutsideAssessmentButton" type='button' class='btn btn-primary btn-lg' (click)="stateManager.goToNextAssessment()">{{stateManager.textOnOutsideAssessmentButton}}</button>
 <!-- </div>
 </div> -->
-<canvas #canvas>Hello</canvas>
 <div *ngIf="stateManager.DEBUG_MODE" class="py-4 text-center">
   <button type='button' class='btn btn-outline-danger btn-lg button-down' (click)="stateManager.nextAssessmentDebugMode()">DEBUG
     ENABLED: NEXT
