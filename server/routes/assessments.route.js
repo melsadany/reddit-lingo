@@ -25,7 +25,8 @@ router.get('/GetUserAssessment/:user_id', (req, res) => {
   const dataPromise = assessCtrl.getUserAssessmentData(req.params.user_id)
   dataPromise.then((data) => {
     res.set({
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Content-disposition': 'attachment; filename=' + req.params.user_id + '.json'
     })
     console.log(data)
     res.send(data)

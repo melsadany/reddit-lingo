@@ -22,6 +22,19 @@ export class AudioRecordingService {
   private _recordingFailed = new Subject<string>();
   private _currentlyRecording = false;
 
+  captureStream(): void {
+    navigator.mediaDevices
+      .getUserMedia({ audio: true })
+      .then(s => {
+        this.stream = s;
+        this.record();
+      })
+      .catch(error => {
+        alert('Error in getting mic: ' + error);
+        this._recordingFailed.next();
+      });
+  }
+
   isCurrentlyRecording(): Boolean {
     return this._currentlyRecording;
   }
@@ -46,22 +59,14 @@ export class AudioRecordingService {
   }
 
   startRecording(): void {
+    this._recordingTime.next('00:00');
     if (this.recorder) {
       return;
+    } else if (!this.stream) {
+      this.captureStream();
+    } else {
+      this.record();
     }
-
-    this._recordingTime.next('00:00');
-    navigator.mediaDevices
-      .getUserMedia({ audio: true })
-      .then(s => {
-        this.stream = s;
-        this.record();
-        this.setCurrentlyRecording(true);
-      })
-      .catch(error => {
-        alert('Error in getting mic: ' + error);
-        this._recordingFailed.next();
-      });
   }
 
   abortRecording(): void {
@@ -69,6 +74,7 @@ export class AudioRecordingService {
   }
 
   private record(): void {
+    this.setCurrentlyRecording(true);
     this.recorder = new RecordRTC.StereoAudioRecorder(this.stream, {
       type: 'audio',
       mimeType: 'audio/webm'
@@ -124,12 +130,13 @@ export class AudioRecordingService {
       this.recorder = null;
       clearInterval(this.interval);
       this.startTime = null;
-      if (this.stream) {
-        this.stream
-          .getAudioTracks()
-          .forEach((track: { stop: () => void }) => track.stop());
-        this.stream = null;
-      }
+      // if (this.stream) {
+      //   this.stream
+      //     .getAudioTracks()
+      //     .forEach((track: { stop: () => void }) => track.stop());
+      //    this.stream = null;
+      // }
     }
+    // this.stream.getAudioTracks().forEach(track => console.log(track));
   }
 }
