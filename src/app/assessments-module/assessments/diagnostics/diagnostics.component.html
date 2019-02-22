@@ -10,8 +10,6 @@
       give you an opportunity to troubleshoot the audio output on your device on your end before letting you try
       again.
     </p>
-    <button *ngIf="!playingAudio" type="button" class="start-button btn btn-info" (click)="playPause()">Start
-      Testing Audio</button>
     <div *ngIf="heardOnce">
       <mat-spinner [color]="accent" class="text-center"></mat-spinner>
       <button type="button" class="start-button btn btn-success mr-2 mb-2" (click)="completeAudioTest()">I can
@@ -29,22 +27,34 @@
     <button type="button" class="start-button btn btn-info" (click)="tryAudioAgain()">Try Audio Test Again</button>
   </div>
 
-
-
-
-  <div *ngIf="testedAudio" class="text-center">
-    <p class="py-4">Testing Microphone</p>
+  <div *ngIf="testedAudio && !testedMic" class="text-center">
+    <p class="py-4">We'll test your microphone next. Press the start button to begin a test recording. Your browser
+      should request
+      access to your microphone. You need to allow the website access to your microphone to continue.
+    </p>
     <div class="text-center">
-      <button type="button" class="start-button btn btn-success" (click)="startRecording()">Start recording test</button>
-      <button type="button" class="stop-button btn btn-outline-secondary" *ngIf="isRecording && !blobUrl" (click)="stopRecording()">DONE</button>
-      <button type="button" class="cancel-button btn btn-danger" *ngIf="!isRecording && blobUrl" (click)="clearRecordedData()">Clear
-        Recording</button>
-      <div *ngIf="isRecording && !blobUrl"> {{recordedTime}} </div>
-      <button *ngIf="!isRecording&& blobUrl" type="button" class="start-button btn btn-info" (click)="playPause()">Start</button>
+      <button *ngIf="!isRecording && !blobUrl && !cantHearMic" type="button" class="start-button btn btn-info" (click)="startRecording()">Start
+        Recording Test</button>
+      <button type="button" class="stop-button btn btn-outline-secondary" *ngIf="isRecording && !blobUrl" (click)="stopRecording()">Stop
+        recording test</button>
+      <mat-spinner *ngIf="isRecording && !blobUrl" [color]="accent" class="text-center mb-2"></mat-spinner>
+      <button type="button" class="cancel-button btn btn-danger mr-2 mb-2" *ngIf="!isRecording && blobUrl" (click)="didNotRecordCorrectly()">My
+        microphone did not record properly</button>
+      <button type="button" class="cancel-button btn btn-success mb-2" *ngIf="!isRecording && blobUrl" (click)="didRecordCorrectly()">My
+        microphone is working correctly</button>
+      <div class="mt-2" *ngIf="isRecording && !blobUrl"> {{recordedTime}} </div>
     </div>
-    <div class="wavesurfer" #wavesurfer></div>
+    <div *ngIf="cantHearMic">
+      <p class="py-4">Advice for fixing your mic</p>
+      <button type="button" class="cancel-button btn btn-danger mr-2 mb-2" (click)="tryRecordingAgain()">Try
+        recording again</button>
+    </div>
   </div>
+  <div *ngIf="showWaveForm" class="text-center">
+    <button type="button" class="start-button btn btn-info" (click)="playPause()">Start/Stop
+      Test Audio</button></div>
   <div *ngIf="showWaveForm" class="ws">
     <div class="wavesurfer" #wavesurfer></div>
   </div>
+
 </div>

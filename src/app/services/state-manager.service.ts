@@ -157,6 +157,11 @@ export class StateManagerService {
       }
     }
     this.currentAssessment = this.determineNextAssessment();
+    const initialURL = this.routerService.url;
+    const URLSections = initialURL.split('/');
+    if (URLSections[1] === 'assessments' && URLSections[2]) {
+      this.showOutsideAssessmentButton = false;
+    }
   }
 
   private determineCurrentPromptNumber(existingData: Array<Object>): number {

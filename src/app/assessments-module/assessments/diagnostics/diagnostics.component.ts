@@ -54,8 +54,10 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
   intervalCountup;
   blobUrl;
   showWaveForm = false;
+  cantHearMic = false;
 
-  ngOnInit(): void {
+  ngOnInit(dataBlob?: any): void {
+    this.stateManager.isInAssessment = true;
     requestAnimationFrame(() => {
       this.wavesurfer = WaveSurfer.create({
         container: this.ws.nativeElement,
@@ -66,7 +68,11 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
         autoCenter: true,
         hideScrollbar: true
       });
-      this.wavesurfer.load('/assets/audio/diagnostics/setup_audio.mp3');
+      if (!dataBlob) {
+        this.wavesurfer.load('/assets/audio/diagnostics/setup_audio.mp3');
+      } else {
+        this.wavesurfer.loadBlob(dataBlob);
+      }
       this.wavesurfer.on('play', () => {
         this.playing = true;
       });
@@ -93,8 +99,7 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
     this.blobUrl = this.sanitizer.bypassSecurityTrustUrl(
       URL.createObjectURL(data.blob)
     );
-    this.wavesurfer.empty();
-    this.wavesurfer.loadBlob(data.blob);
+    this.ngOnInit(data.blob);
   }
 
   startRecording(): void {
@@ -140,8 +145,8 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
   }
 
   waitForTroubleshoot(): void {
-    this.playPause();
     this.cantHear = true;
+    this.showWaveForm = false;
   }
 
   tryAudioAgain(): void {
@@ -160,5 +165,19 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
         this.playingAudio = false;
       }
     }
+  }
+
+  didNotRecordCorrectly(): void {
+    this.cantHearMic = true;
+    this.showWaveForm = false;
+    this.clearRecordedData();
+  }
+
+  tryRecordingAgain(): void {
+    this.cantHearMic = false;
+  }
+
+  didRecordCorrectly(): void {
+    this.stateManager.finishThisAssessmentAndAdvance('diagnostics');
   }
 }
