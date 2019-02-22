@@ -153,6 +153,7 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
     this.ngOnInit();
     this.heardOnce = false;
     this.cantHear = false;
+    this.playingAudio = false;
   }
 
   playPause(): void {
@@ -175,6 +176,7 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
 
   tryRecordingAgain(): void {
     this.cantHearMic = false;
+    this.playingAudio = false;
   }
 
   didRecordCorrectly(): void {

@@ -51,7 +51,7 @@
     </div>
   </div>
   <div *ngIf="showWaveForm" class="text-center">
-    <button type="button" class="start-button btn btn-info" (click)="playPause()">Start/Stop
+    <button type="button" class="start-button btn btn-info" *ngIf="!playingAudio" (click)="playPause()">Start
       Test Audio</button></div>
   <div *ngIf="showWaveForm" class="ws">
     <div class="wavesurfer" #wavesurfer></div>
