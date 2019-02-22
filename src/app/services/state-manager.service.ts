@@ -5,8 +5,6 @@ import {
 } from '../structures/assessmentdata';
 import { AssessmentDataService } from './assessment-data.service';
 import { Router } from '@angular/router';
-import { Subscription, Observable } from 'rxjs';
-import { UserIdObject } from '../structures/useridobject';
 
 @Injectable({
   providedIn: 'root'

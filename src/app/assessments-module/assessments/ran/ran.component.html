@@ -6,18 +6,24 @@
       from left to right and from top to bottom. When you are finished, press the "DONE" button at the bottom of the
       page.
     </p>
-<div *ngIf="stateManager.showInnerAssessmentButton" class="text-center button-down">
-  <button *ngIf="!stateManager.isInAssessment" type="button" class="start-button btn btn-success" (click)="setStateAndStart()">{{stateManager.textOnInnerAssessmentButton}}</button>
-  <button *ngIf="stateManager.isInAssessment" type="button" class="start-button btn btn-success" (click)="finishAssessment()">{{stateManager.textOnInnerAssessmentButton}}</button>
-</div>
+    <div *ngIf="stateManager.showInnerAssessmentButton" class="text-center button-down">
+      <button *ngIf="!stateManager.isInAssessment" type="button" class="start-button btn btn-success" (click)="setStateAndStart()">{{stateManager.textOnInnerAssessmentButton}}</button>
+      <button *ngIf="stateManager.isInAssessment" type="button" class="start-button btn btn-success" (click)="finishAssessment()">{{stateManager.textOnInnerAssessmentButton}}</button>
+    </div>
   </div>
   <div class="imageParent" *ngIf="showImage">
     <img class="rounded" src="assets/img/ran/ran_1.png">
   </div>
-  <!-- <div class="text-center"> -->
-    <!-- <button type="button" class="stop-button btn btn-outline-secondary" *ngIf="isRecording && !blobUrl" (click)="stopRecording()">DONE</button> -->
-    <!-- <button type="button" class="cancel-button btn btn-danger" *ngIf="!isRecording && blobUrl" (click)="clearRecordedData()">Clear Recording</button> KRM: For debugging usage only. -->
-    <!-- <div *ngIf="isRecording && !blobUrl"> {{recordedTime}} </div> -->
+  <div class="text-center" *ngIf="audioRecordingService.isCurrentlyRecording()">
+    <mat-spinner style="margin:0 auto;" class="text-center mb-2"></mat-spinner>
+    <button type="button" class="cancel-button btn btn-danger button-down">Recording</button>
+  </div>
+  <div class="text-center">
+    <button type="button" class="stop-button btn btn-outline-secondary" *ngIf="audioRecordingService.isCurrentlyRecording() && !blobUrl"
+      (click)="stopRecording()">DONE</button>
+  </div>
+  <!-- <button type="button" class="cancel-button btn btn-danger" *ngIf="!isRecording && blobUrl" (click)="clearRecordedData()">Clear Recording</button> KRM: For debugging usage only. -->
+  <!-- <div *ngIf="isRecording && !blobUrl"> {{recordedTime}} </div> -->
   <!-- </div> -->
   <!-- <div>
     <audio *ngIf="!isRecording && blobUrl"  controls>

@@ -11,6 +11,7 @@ import { AudioRecordingService } from '../../../services/audio-recording.service
 
 import * as WaveSurfer from 'wavesurfer.js';
 import { DomSanitizer } from '@angular/platform-browser';
+import { AssessmentDataService } from '../../../services/assessment-data.service';
 
 @Component({
   selector: 'app-diagnostics',
@@ -20,6 +21,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 export class DiagnosticsComponent implements OnInit, OnDestroy {
   doneRecording: boolean;
   constructor(
+    public dataService: AssessmentDataService,
     public stateManager: StateManagerService,
     public audioRecordingService: AudioRecordingService,
     private sanitizer: DomSanitizer
@@ -44,6 +46,7 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
   playingAudio = false;
   heardOnce = false;
   wavesurfer;
+  textOnTestAudioButton = 'Listen to the audio track';
   @ViewChild('wavesurfer') ws: ElementRef;
   @Input() waveColor = '#ff1e7f';
   @Input() progressColor = '#00F';
@@ -64,7 +67,7 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
         waveColor: this.waveColor,
         progressColor: this.progressColor,
         cursorColor: this.cursorColor,
-        height: '128',
+        height: 128,
         autoCenter: true,
         hideScrollbar: true
       });
@@ -139,12 +142,18 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
     this.abortRecording();
   }
   completeAudioTest(): void {
+    this.textOnTestAudioButton = 'Listen to your microphone recording';
     this.testedAudio = true;
     this.showWaveForm = false;
-    this.playPause();
+    if (this.playingAudio) {
+      this.playPause();
+    }
   }
 
   waitForTroubleshoot(): void {
+    if (this.playingAudio) {
+      this.playPause();
+    }
     this.cantHear = true;
     this.showWaveForm = false;
   }
@@ -153,7 +162,6 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
     this.ngOnInit();
     this.heardOnce = false;
     this.cantHear = false;
-    this.playingAudio = false;
   }
 
   playPause(): void {
@@ -171,15 +179,29 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
   didNotRecordCorrectly(): void {
     this.cantHearMic = true;
     this.showWaveForm = false;
+    if (this.playingAudio) {
+      this.playPause();
+    }
     this.clearRecordedData();
   }
 
   tryRecordingAgain(): void {
     this.cantHearMic = false;
-    this.playingAudio = false;
   }
 
   didRecordCorrectly(): void {
+    const assessmentData = {
+      assess_name: 'diagnostics',
+      data: {},
+      completed: true
+    };
+    const assessmentGoogleData = {
+      assess_name: 'diagnostics',
+      data: {}
+    };
+    this.dataService
+      .postAssessmentDataToFileSystem(assessmentData, assessmentGoogleData)
+      .subscribe();
     this.stateManager.finishThisAssessmentAndAdvance('diagnostics');
   }
 }

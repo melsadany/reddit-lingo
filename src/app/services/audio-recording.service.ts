@@ -70,6 +70,7 @@ export class AudioRecordingService {
   }
 
   abortRecording(): void {
+    this.setCurrentlyRecording(false);
     this.stopMedia();
   }
 

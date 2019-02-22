@@ -22,6 +22,7 @@ export class ListeningcomprehensionComponent
   audioInstructionsLocation = 'assets/audio/listeningcomprehension/';
   selectionData = [];
   lastPrompt = false;
+  playingAudio = false;
 
   constructor(
     private dataService: AssessmentDataService,
@@ -112,7 +113,11 @@ export class ListeningcomprehensionComponent
     // KRM: Main function
     const audio = new Audio();
     audio.src = `${this.audioInstructionsLocation}q${this.promptNumber}.mp3`;
-    audio.addEventListener('ended', () => this.startDisplayedCountdownTimer());
+    audio.addEventListener('ended', () => {
+      this.startDisplayedCountdownTimer();
+      this.playingAudio = false;
+    });
+    audio.onplaying = (ev: Event): any => (this.playingAudio = true);
     audio.play();
   }
 

@@ -31,3 +31,8 @@ body {
     font-weight: 300;
   }
 }
+
+.mat-progress-spinner circle,
+.mat-spinner circle {
+  stroke: rgb(255, 74, 42) !important;
+}

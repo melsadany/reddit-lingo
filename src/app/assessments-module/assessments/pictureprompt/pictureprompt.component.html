@@ -10,19 +10,11 @@
     </div>
   </div>
   <div class="imageParent" *ngIf="showPromptImage">
-    <img class="rounded img-fluid" src="{{currentImagePrompt}}">
+    <img class="img-fluid" src="{{currentImagePrompt}}">
   </div>
-  <!-- <div class="text-center"> -->
-    <!-- <button type="button" class="stop-button btn btn-outline-secondary" *ngIf="isRecording && !blobUrl" (click)="stopRecording()">DONE</button> -->
-    <!-- Done button is for debugging only for this assessment -->
-    <!-- <button type="button" class="cancel-button btn btn-danger" *ngIf="!isRecording && blobUrl" (click)="clearRecordedData()">Clear Recording</button> KRM: For debugging usage only. -->
-    <!-- <div *ngIf="isRecording && !blobUrl"> {{recordedTime}} </div> Not needed for this assessment -->
-
-  <!-- </div> -->
-  <!-- <div>
-    <audio *ngIf="!isRecording && blobUrl"  controls>
-      <source [src]="blobUrl" type="audio/webm">
-    </audio>
-</div> KRM: For debugging usage only. -->
+  <div class="text-center" *ngIf="audioRecordingService.isCurrentlyRecording()">
+    <mat-spinner style="margin:0 auto;" class="text-center mb-2"></mat-spinner>
+    <button type="button" class="cancel-button btn btn-danger button-down">Recording</button>
+  </div>
   <p *ngIf="countingDown" class="text-center display-1">{{timeLeft}}</p>
 </div>

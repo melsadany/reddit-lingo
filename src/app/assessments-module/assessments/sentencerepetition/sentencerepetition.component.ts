@@ -31,6 +31,7 @@ export class SentencerepetitionComponent
   intervalCountup: NodeJS.Timeout;
   doneRecording = false;
   lastPrompt = false;
+  playingAudio = false;
 
   constructor(
     public stateManager: StateManagerService,
@@ -173,9 +174,11 @@ export class SentencerepetitionComponent
       }
       const audio = new Audio();
       audio.src = this.filePathsToPlay[this.promptNumber];
-      audio.addEventListener('ended', () =>
-        this.startDisplayedCountdownTimer()
-      );
+      audio.addEventListener('ended', () => {
+        this.startDisplayedCountdownTimer();
+        this.playingAudio = false;
+      });
+      audio.onplaying = (ev: Event): any => (this.playingAudio = true);
       audio.play();
     } else {
       this.finishAssessment();

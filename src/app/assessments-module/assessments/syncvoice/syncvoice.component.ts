@@ -41,6 +41,7 @@ export class SyncvoiceComponent
       });
   }
 
+  playingAudio = false;
   recordedTime;
   promptNumber = 0;
   lalaLocations = 'assets/audio/syncvoice/';
@@ -164,9 +165,11 @@ export class SyncvoiceComponent
       this.stateManager.showInnerAssessmentButton = false;
       const audio = new Audio();
       audio.src = this.audioNames[this.promptNumber];
-      audio.addEventListener('ended', () =>
-        this.startDisplayedCountdownTimer()
-      );
+      audio.addEventListener('ended', () => {
+        this.startDisplayedCountdownTimer();
+        this.playingAudio = false;
+      });
+      audio.onplaying = (ev: Event): any => (this.playingAudio = true);
       audio.play();
     } else {
       this.finishAssessment();

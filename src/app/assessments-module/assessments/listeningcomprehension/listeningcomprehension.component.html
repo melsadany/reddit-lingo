@@ -9,6 +9,9 @@
       <button *ngIf="!stateManager.isInAssessment" type="button" class="start-button btn btn-success" (click)="setStateAndStart()">{{stateManager.textOnInnerAssessmentButton}}</button>
     </div>
   </div>
+  <div class="text-center">
+    <button type="button" *ngIf="playingAudio" class="start-button btn-lg btn-warning mr-2 mb-2">Listen</button>
+  </div>
   <div *ngIf="showImage">
     <table style="margin: 0 auto;">
       <tbody>
