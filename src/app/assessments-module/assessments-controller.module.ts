@@ -23,7 +23,8 @@ import {
   MatCheckboxModule,
   MatIconModule,
   MatProgressBarModule,
-  MatToolbarModule
+  MatToolbarModule,
+  MatProgressSpinnerModule
 } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PicturepromptComponent } from './assessments/pictureprompt/pictureprompt.component';
@@ -48,6 +49,7 @@ import { DiagnosticsComponent } from './assessments/diagnostics/diagnostics.comp
     MatIconModule,
     MatProgressBarModule,
     MatToolbarModule,
+    MatProgressSpinnerModule,
     BrowserAnimationsModule,
     MatSelectModule,
     MatCheckboxModule,
