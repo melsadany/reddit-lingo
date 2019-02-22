@@ -42,7 +42,7 @@ export class PicturepromptComponent
   constructor(
     public stateManager: StateManagerService,
     private dataService: AssessmentDataService,
-    private audioRecordingService: AudioRecordingService,
+    public audioRecordingService: AudioRecordingService,
     private dialogService: DialogService
   ) {
     this.failSubscription = this.audioRecordingService
