@@ -190,6 +190,9 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
   }
 
   didRecordCorrectly(): void {
+    if (this.playingAudio) {
+      this.playPause();
+    }
     const assessmentData = {
       assess_name: 'diagnostics',
       data: {},

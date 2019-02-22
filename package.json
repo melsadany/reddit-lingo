@@ -3,13 +3,11 @@
   "version": "2.0.0",
   "license": "MIT",
   "scripts": {
-    "postinstall": "ng build --prod",
     "ng": "ng",
     "start": "node server",
     "startdev": "concurrently -c \"yellow.bold,green.bold\" -n \"NODE SERVER,NG BUILD\" \"nodemon server\" \"ng build --watch\"",
-    "buildprod": "ng build --prod",
-    "build": "ng build",
-    "buildstart": "ng build && yarn start",
+    "build": "ng build --prod",
+    "buildstart": "yarn build && yarn start",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -111,5 +109,6 @@
   },
   "prettier": {
     "singleQuote": true
-  }
+  },
+  "heroku-run-build-script": true
 }
