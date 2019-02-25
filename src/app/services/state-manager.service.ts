@@ -19,8 +19,15 @@ export class StateManagerService {
   private _showOutsideAssessmentButton = true;
   private _textOnOutsideAssessmentButton = 'START ASSESSMENTS';
   private _textOnInnerAssessmentButton = 'START ASSESSMENT';
+  private _currentAssessmentNumber = 1;
   constructor(private routerService: Router) {}
 
+  public get currentAssessmentNumber(): number {
+    return this._currentAssessmentNumber;
+  }
+  public set currentAssessmentNumber(value: number) {
+    this._currentAssessmentNumber = value;
+  }
   public get isInAssessment(): boolean {
     return this._isInAssessment;
   }
@@ -124,12 +131,14 @@ export class StateManagerService {
       completed: false
     }
   ];
+  totalAssessments: number;
 
   public printCurrentAssessmentData(): void {
     this.assessments.forEach(value => console.log(value));
   }
 
   public initializeState(existingAssessmentData: AssessmentData): void {
+    this.totalAssessments = this.assessments.length;
     for (const existingAssessment of existingAssessmentData.assessments) {
       const existingAssessmentName = existingAssessment['assess_name'];
       for (const assessmentRecord of this.assessments) {
@@ -168,10 +177,14 @@ export class StateManagerService {
   }
 
   private determineNextAssessment(): string {
+    let assessmentNumber = 1;
     for (const assessmentState of this.assessments) {
       if (!assessmentState['completed']) {
-        console.log('Next not completed: ' + assessmentState['assess_name']); // KRM: Debugging
+        console.log('Next not completed: ' + assessmentState['assess_name']); // KRM: For debugging
+        this.currentAssessmentNumber = assessmentNumber;
         return assessmentState['assess_name'];
+      } else {
+        assessmentNumber++;
       }
     }
     this.finishedAllAssessments = true;
@@ -216,7 +229,52 @@ export class StateManagerService {
   public finishThisAssessmentAndAdvance(assessment: string): void {
     this.isInAssessment = false;
     this.markAssessmentCompleted(assessment);
+    this.currentAssessmentNumber++;
     this.textOnInnerAssessmentButton = 'START ASSESSMENT';
     this.goToNextAssessment();
+  }
+
+  public translateAssessmentName(assessment: string): string {
+    let translatedName;
+    switch (assessment) {
+      case 'diagnostics':
+        translatedName = 'Diagnostics';
+        break;
+      case 'prescreenerquestions':
+        translatedName = 'Pre-screener Questions';
+        break;
+      case 'wordfinding':
+        translatedName = 'Word Finding';
+        break;
+      case 'sentencerepetition':
+        translatedName = 'Sentence Repetition';
+        break;
+      case 'matrixreasoning':
+        translatedName = 'Matrix Reasoning';
+        break;
+      case 'syncvoice':
+        translatedName = 'Sync Voice';
+        break;
+      case 'timeduration':
+        translatedName = 'Time Duration';
+        break;
+      case 'ran':
+        translatedName = 'Ran';
+        break;
+      case 'pictureprompt':
+        translatedName = 'Picture Prompt';
+        break;
+      case 'listeningcomprehension':
+        translatedName = 'Listening Comprehension';
+        break;
+      case 'postscreenerquestions':
+        translatedName = 'Post-screener Questions';
+        break;
+
+      default:
+        translatedName = 'No name';
+        break;
+    }
+    return translatedName;
   }
 }

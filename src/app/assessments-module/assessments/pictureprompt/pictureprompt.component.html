@@ -13,8 +13,9 @@
     <img class="img-fluid" src="{{currentImagePrompt}}">
   </div>
   <div class="text-center" *ngIf="audioRecordingService.isCurrentlyRecording()">
-    <mat-spinner style="margin:0 auto;" class="text-center mb-2"></mat-spinner>
-    <button type="button" class="cancel-button btn btn-danger button-down">Recording</button>
+    <!-- <mat-spinner style="margin:0 auto;" class="text-center mb-2"></mat-spinner> -->
+    <!-- <button type="button" class="cancel-button btn btn-danger button-down">Recording</button> -->
+    <img class="img-fluid" src="assets/animations/Mic-Animation.gif">
   </div>
   <p *ngIf="countingDown" class="text-center display-1">{{timeLeft}}</p>
 </div>

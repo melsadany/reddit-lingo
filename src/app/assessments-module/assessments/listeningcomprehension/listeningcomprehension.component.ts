@@ -85,6 +85,7 @@ export class ListeningcomprehensionComponent
   }
 
   selectImage(image: string): void {
+    console.log(image);
     const delimited = image.split('/');
     const image_name = delimited[delimited.length - 1];
     this.selectionData.push({
