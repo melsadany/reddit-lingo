@@ -166,7 +166,6 @@ export class StateManagerService {
       }
     }
     for (const assessmentName of Object.keys(this.assessments)) {
-      console.log(assessmentName);
       if (!this.assessments[assessmentName]['completed']) {
         this.assessmentsLeftLinkedList.append(assessmentName);
       }
@@ -193,19 +192,6 @@ export class StateManagerService {
       this.finishedAllAssessments = true;
       return 'done';
     }
-    // let assessmentNumber = 1;
-    // for (const assessmentName of Object.keys(this.assessments)) {
-    //   if (!this.assessments[assessmentName]['completed']) {
-    //     console.log('Next not completed: ' + assessmentName); // KRM: For debugging
-    //     this.currentAssessmentNumber = assessmentNumber;
-    //     return assessmentName;
-    //   } else {
-    //     assessmentNumber++;
-    //   }
-    // }
-    // this.finishedAllAssessments = true;
-    // return 'done';
-    // Done is the name of the route for the completion component
   }
 
   public goToNextAssessment(): void {
@@ -247,7 +233,6 @@ export class StateManagerService {
     this.isInAssessment = false;
     this.markAssessmentCompleted(assessment);
     this.assessmentsLeftLinkedList.removeHead();
-    console.log(this.assessmentsLeftLinkedList);
     this.textOnInnerAssessmentButton = 'START ASSESSMENT';
     this.goToNextAssessment();
   }

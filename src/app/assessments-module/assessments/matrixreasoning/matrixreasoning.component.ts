@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import { DialogService } from '../../../services/dialog.service';
 import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
@@ -10,7 +10,7 @@ import { StateManagerService } from '../../../services/state-manager.service';
   styleUrls: ['./matrixreasoning.component.scss']
 })
 export class MatrixreasoningComponent
-  implements OnInit, CanComponentDeactivate {
+  implements OnInit, CanComponentDeactivate, OnDestroy {
   imagesLocation = 'assets/img/matrixreasoning/';
   dimensions = {
     frameSets: {
@@ -105,11 +105,12 @@ export class MatrixreasoningComponent
     public stateManager: StateManagerService,
     private dataService: AssessmentDataService,
     private dialogService: DialogService
-  ) {}
+  ) {
+    this.stateManager.showOutsideAssessmentButton = false;
+  }
 
   ngOnInit(): void {
     this.stateManager.sendToCurrentIfAlreadyCompleted('matrixreasoning');
-    this.stateManager.showOutsideAssessmentButton = false;
     this.promptNumber = this.stateManager.assessments['matrixreasoning'][
       'prompt_number'
     ];
@@ -120,6 +121,10 @@ export class MatrixreasoningComponent
     }
     this.calculateImageNames();
     console.log(this.imageMatrices);
+  }
+
+  ngOnDestroy(): void {
+    clearInterval(this.intervalCountdown);
   }
 
   setStateAndStart(): void {

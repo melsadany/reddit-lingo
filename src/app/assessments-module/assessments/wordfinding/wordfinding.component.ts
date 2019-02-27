@@ -72,11 +72,11 @@ export class WordfindingComponent
       .subscribe(data => {
         this.handleRecordedOutput(data);
       });
+    this.stateManager.showOutsideAssessmentButton = false;
   }
 
   ngOnInit(): void {
     this.stateManager.sendToCurrentIfAlreadyCompleted('wordfinding');
-    this.stateManager.showOutsideAssessmentButton = false;
     this.promptNumber = this.stateManager.assessments['wordfinding'][
       'prompt_number'
     ];
@@ -92,6 +92,8 @@ export class WordfindingComponent
     this.failSubscription.unsubscribe();
     this.recordingTimeSubscription.unsubscribe();
     this.recordedOutputSubscription.unsubscribe();
+    clearInterval(this.intervalCountdown);
+    clearTimeout(this.intervalCountup);
   }
 
   setStateAndStart(): void {

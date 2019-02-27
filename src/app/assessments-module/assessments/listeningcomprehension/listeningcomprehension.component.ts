@@ -28,17 +28,20 @@ export class ListeningcomprehensionComponent
     private dataService: AssessmentDataService,
     public stateManager: StateManagerService,
     private dialogService: DialogService
-  ) {}
+  ) {
+    this.stateManager.showOutsideAssessmentButton = false;
+  }
 
   ngOnInit(): void {
     this.stateManager.sendToCurrentIfAlreadyCompleted('listeningcomprehension');
-    this.stateManager.showOutsideAssessmentButton = false;
     this.promptNumber = this.stateManager.assessments['listeningcomprehension'][
       'prompt_number'
     ];
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+    clearInterval(this.intervalCountdown);
+  }
 
   setStateAndStart(): void {
     this.stateManager.showInnerAssessmentButton = false;

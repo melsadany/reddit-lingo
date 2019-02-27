@@ -36,11 +36,12 @@ export class TimedurationComponent
     public stateManager: StateManagerService,
     private dataService: AssessmentDataService,
     private dialogService: DialogService
-  ) {}
+  ) {
+    this.stateManager.showOutsideAssessmentButton = false;
+  }
 
   ngOnInit(): void {
     this.stateManager.sendToCurrentIfAlreadyCompleted('timeduration');
-    this.stateManager.showOutsideAssessmentButton = false;
     this.promptNumber = this.stateManager.assessments['timeduration'][
       'prompt_number'
     ];
@@ -57,7 +58,9 @@ export class TimedurationComponent
     this.advanceToNextPrompt();
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+    clearInterval(this.intervalCountdown);
+  }
 
   startDisplayedCountdownTimer(): void {
     this.stateManager.showInnerAssessmentButton = false;

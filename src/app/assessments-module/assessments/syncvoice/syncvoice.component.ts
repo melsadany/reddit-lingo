@@ -39,6 +39,7 @@ export class SyncvoiceComponent
       .subscribe(data => {
         this.handleRecordedOutput(data);
       });
+    this.stateManager.showOutsideAssessmentButton = false;
   }
 
   playingAudio = false;
@@ -67,7 +68,6 @@ export class SyncvoiceComponent
 
   ngOnInit(): void {
     this.stateManager.sendToCurrentIfAlreadyCompleted('syncvoice');
-    this.stateManager.showOutsideAssessmentButton = false;
     this.promptNumber = this.stateManager.assessments['syncvoice'][
       'prompt_number'
     ];
@@ -91,6 +91,8 @@ export class SyncvoiceComponent
     this.failSubscription.unsubscribe();
     this.recordingTimeSubscription.unsubscribe();
     this.recordedOutputSubscription.unsubscribe();
+    clearInterval(this.intervalCountdown);
+    clearTimeout(this.intervalCountup);
   }
 
   calculateAudioFilePaths(): void {

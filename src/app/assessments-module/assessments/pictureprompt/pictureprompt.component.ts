@@ -62,11 +62,11 @@ export class PicturepromptComponent
       .subscribe(data => {
         this.handleRecordedOutput(data);
       });
+    this.stateManager.showOutsideAssessmentButton = false;
   }
 
   ngOnInit(): void {
     this.stateManager.sendToCurrentIfAlreadyCompleted('pictureprompt');
-    this.stateManager.showOutsideAssessmentButton = false;
     this.promptNumber = this.stateManager.assessments['pictureprompt'][
       'prompt_number'
     ];
@@ -85,12 +85,12 @@ export class PicturepromptComponent
   }
 
   ngOnDestroy(): void {
-    if (this.isRecording) {
-      this.abortRecording();
-    }
+    this.abortRecording();
     this.failSubscription.unsubscribe();
     this.recordingTimeSubscription.unsubscribe();
     this.recordedOutputSubscription.unsubscribe();
+    clearInterval(this.intervalCountdown);
+    clearTimeout(this.intervalCountup);
   }
 
   getNextImagePath(): void {

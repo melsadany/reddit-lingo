@@ -56,6 +56,7 @@ export class SentencerepetitionComponent
       .subscribe(data => {
         this.handleRecordedOutput(data);
       });
+    this.stateManager.showOutsideAssessmentButton = false;
   }
 
   audioFilesLocation = 'assets/audio/sentencerepetition/';
@@ -75,7 +76,6 @@ export class SentencerepetitionComponent
 
   ngOnInit(): void {
     this.stateManager.sendToCurrentIfAlreadyCompleted('sentencerepetition');
-    this.stateManager.showOutsideAssessmentButton = false;
     this.promptNumber = this.stateManager.assessments['sentencerepetition'][
       'prompt_number'
     ];
@@ -91,6 +91,8 @@ export class SentencerepetitionComponent
     this.failSubscription.unsubscribe();
     this.recordingTimeSubscription.unsubscribe();
     this.recordedOutputSubscription.unsubscribe();
+    clearInterval(this.intervalCountdown);
+    clearTimeout(this.intervalCountup);
   }
 
   setStateAndStart(): void {

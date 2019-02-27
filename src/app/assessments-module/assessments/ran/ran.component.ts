@@ -54,6 +54,7 @@ export class RanComponent implements OnInit, OnDestroy, CanComponentDeactivate {
       .subscribe(data => {
         this.handleRecordedOutput(data);
       });
+    this.stateManager.showOutsideAssessmentButton = false;
   }
 
   startRecording(): void {
@@ -91,11 +92,12 @@ export class RanComponent implements OnInit, OnDestroy, CanComponentDeactivate {
     this.failSubscription.unsubscribe();
     this.recordingTimeSubscription.unsubscribe();
     this.recordedOutputSubscription.unsubscribe();
+    clearInterval(this.intervalCountdown);
+    clearTimeout(this.intervalCountup);
   }
 
   ngOnInit(): void {
     this.stateManager.sendToCurrentIfAlreadyCompleted('ran');
-    this.stateManager.showOutsideAssessmentButton = false;
   }
 
   setStateAndStart(): void {

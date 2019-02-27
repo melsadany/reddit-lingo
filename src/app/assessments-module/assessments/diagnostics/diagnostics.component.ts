@@ -141,6 +141,7 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.abortRecording();
+    clearTimeout(this.intervalCountup);
   }
   completeAudioTest(): void {
     this.textOnTestAudioButton = 'Listen to your microphone recording';
@@ -196,12 +197,12 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
     }
     const assessmentData = {
       assess_name: 'diagnostics',
-      data: {data: 'none'},
+      data: { data: 'none' },
       completed: true
     };
     const assessmentGoogleData = {
       assess_name: 'diagnostics',
-      data: {data: 'none'}
+      data: { data: 'none' }
     };
     this.dataService
       .postAssessmentDataToFileSystem(assessmentData, assessmentGoogleData)
