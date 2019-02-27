@@ -56,6 +56,7 @@ export class PrescreenerquestionsComponent
   ) {}
 
   ngOnInit(): void {
+    this.stateManager.sendToCurrentIfAlreadyCompleted('prescreenerquestions');
     this.stateManager.isInAssessment = true;
     this.stateManager.showOutsideAssessmentButton = false;
   }

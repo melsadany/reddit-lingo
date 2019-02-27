@@ -39,12 +39,11 @@ export class TimedurationComponent
   ) {}
 
   ngOnInit(): void {
+    this.stateManager.sendToCurrentIfAlreadyCompleted('timeduration');
     this.stateManager.showOutsideAssessmentButton = false;
-    for (const assessmentRecord of this.stateManager.assessments) {
-      if (assessmentRecord['assess_name'] === 'timeduration') {
-        this.promptNumber = assessmentRecord['prompt_number'];
-      }
-    }
+    this.promptNumber = this.stateManager.assessments['timeduration'][
+      'prompt_number'
+    ];
     if (this.promptNumber + 1 === 8) {
       this.lastPrompt = true;
       this.stateManager.textOnInnerAssessmentButton =

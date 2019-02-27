@@ -60,6 +60,7 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
   cantHearMic = false;
 
   ngOnInit(dataBlob?: any): void {
+    this.stateManager.sendToCurrentIfAlreadyCompleted('diagnostics');
     this.stateManager.isInAssessment = true;
     requestAnimationFrame(() => {
       this.wavesurfer = WaveSurfer.create({

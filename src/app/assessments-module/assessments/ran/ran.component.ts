@@ -94,6 +94,7 @@ export class RanComponent implements OnInit, OnDestroy, CanComponentDeactivate {
   }
 
   ngOnInit(): void {
+    this.stateManager.sendToCurrentIfAlreadyCompleted('ran');
     this.stateManager.showOutsideAssessmentButton = false;
   }
 

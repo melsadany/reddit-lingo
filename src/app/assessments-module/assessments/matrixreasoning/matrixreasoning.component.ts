@@ -108,12 +108,11 @@ export class MatrixreasoningComponent
   ) {}
 
   ngOnInit(): void {
+    this.stateManager.sendToCurrentIfAlreadyCompleted('matrixreasoning');
     this.stateManager.showOutsideAssessmentButton = false;
-    for (const assessmentRecord of this.stateManager.assessments) {
-      if (assessmentRecord['assess_name'] === 'matrixreasoning') {
-        this.promptNumber = assessmentRecord['prompt_number'];
-      }
-    }
+    this.promptNumber = this.stateManager.assessments['matrixreasoning'][
+      'prompt_number'
+    ];
     if (this.promptNumber + 1 === 7) {
       this.lastPrompt = true;
       this.stateManager.textOnInnerAssessmentButton =

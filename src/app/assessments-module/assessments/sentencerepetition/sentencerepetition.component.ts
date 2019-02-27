@@ -74,12 +74,11 @@ export class SentencerepetitionComponent
   filePathsToPlay = [];
 
   ngOnInit(): void {
+    this.stateManager.sendToCurrentIfAlreadyCompleted('sentencerepetition');
     this.stateManager.showOutsideAssessmentButton = false;
-    for (const assessmentRecord of this.stateManager.assessments) {
-      if (assessmentRecord['assess_name'] === 'sentencerepetition') {
-        this.promptNumber = assessmentRecord['prompt_number'];
-      }
-    }
+    this.promptNumber = this.stateManager.assessments['sentencerepetition'][
+      'prompt_number'
+    ];
     if (this.promptNumber + 1 === this.filePathsToPlay.length) {
       this.lastPrompt = true;
       this.stateManager.textOnInnerAssessmentButton =

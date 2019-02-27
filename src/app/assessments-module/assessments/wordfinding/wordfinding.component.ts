@@ -75,12 +75,11 @@ export class WordfindingComponent
   }
 
   ngOnInit(): void {
+    this.stateManager.sendToCurrentIfAlreadyCompleted('wordfinding');
     this.stateManager.showOutsideAssessmentButton = false;
-    for (const assessmentRecord of this.stateManager.assessments) {
-      if (assessmentRecord['assess_name'] === 'wordfinding') {
-        this.promptNumber = assessmentRecord['prompt_number'];
-      }
-    }
+    this.promptNumber = this.stateManager.assessments['wordfinding'][
+      'prompt_number'
+    ];
     if (this.promptNumber + 1 === this.letterData.length) {
       this.lastPrompt = true;
       this.stateManager.textOnInnerAssessmentButton =

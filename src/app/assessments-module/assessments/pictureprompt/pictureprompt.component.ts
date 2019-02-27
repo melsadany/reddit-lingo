@@ -65,12 +65,11 @@ export class PicturepromptComponent
   }
 
   ngOnInit(): void {
+    this.stateManager.sendToCurrentIfAlreadyCompleted('pictureprompt');
     this.stateManager.showOutsideAssessmentButton = false;
-    for (const assessmentRecord of this.stateManager.assessments) {
-      if (assessmentRecord['assess_name'] === 'pictureprompt') {
-        this.promptNumber = assessmentRecord['prompt_number'];
-      }
-    }
+    this.promptNumber = this.stateManager.assessments['pictureprompt'][
+      'prompt_number'
+    ];
     if (this.promptNumber + 1 === this.imageNames.length) {
       this.lastPrompt = true;
       this.stateManager.textOnInnerAssessmentButton =

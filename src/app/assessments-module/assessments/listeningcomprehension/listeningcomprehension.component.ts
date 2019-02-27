@@ -31,12 +31,11 @@ export class ListeningcomprehensionComponent
   ) {}
 
   ngOnInit(): void {
+    this.stateManager.sendToCurrentIfAlreadyCompleted('listeningcomprehension');
     this.stateManager.showOutsideAssessmentButton = false;
-    for (const assessmentRecord of this.stateManager.assessments) {
-      if (assessmentRecord['assess_name'] === 'sentencerepetition') {
-        this.promptNumber = assessmentRecord['prompt_number'];
-      }
-    }
+    this.promptNumber = this.stateManager.assessments['listeningcomprehension'][
+      'prompt_number'
+    ];
   }
 
   ngOnDestroy(): void {}

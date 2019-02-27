@@ -1,10 +1,7 @@
 import { Injectable, OnInit } from '@angular/core';
-import {
-  AssessmentData,
-  AssessmentDataStructure
-} from '../structures/assessmentdata';
-import { AssessmentDataService } from './assessment-data.service';
+import { AssessmentData } from '../structures/assessmentdata';
 import { Router } from '@angular/router';
+import { LinkedList } from '../structures/LinkedList';
 
 @Injectable({
   providedIn: 'root'
@@ -20,8 +17,22 @@ export class StateManagerService {
   private _textOnOutsideAssessmentButton = 'START ASSESSMENTS';
   private _textOnInnerAssessmentButton = 'START ASSESSMENT';
   private _currentAssessmentNumber = 1;
-  constructor(private routerService: Router) {}
+  private _assessmentsLeftLinkedList = new LinkedList<string>();
+  private _totalAssessments: number;
 
+  constructor(private routerService: Router) {
+    this.totalAssessments = Object.keys(this.assessments).length;
+  }
+
+  public get assessmentsLeftLinkedList(): LinkedList<string> {
+    return this._assessmentsLeftLinkedList;
+  }
+  public get totalAssessments(): number {
+    return this._totalAssessments;
+  }
+  public set totalAssessments(value: number) {
+    this._totalAssessments = value;
+  }
   public get currentAssessmentNumber(): number {
     return this._currentAssessmentNumber;
   }
@@ -77,100 +88,90 @@ export class StateManagerService {
     this._textOnOutsideAssessmentButton = value;
   }
 
-  assessments = [
-    // KRM: Load assessment data into here
-    {
-      assess_name: 'diagnostics',
+  assessments = {
+    diagnostics: {
       completed: false
     },
-    {
-      assess_name: 'prescreenerquestions',
+    prescreenerquestions: {
       completed: false
     },
-    {
-      assess_name: 'wordfinding',
+    wordfinding: {
       prompt_number: 0,
       completed: false
     },
-    {
-      assess_name: 'sentencerepetition',
+    sentencerepetition: {
       prompt_number: 0,
       completed: false
     },
-    {
-      assess_name: 'matrixreasoning',
+    matrixreasoning: {
       prompt_number: 0,
       completed: false
     },
-    {
-      assess_name: 'syncvoice',
+    syncvoice: {
       prompt_number: 0,
       completed: false
     },
-    {
-      assess_name: 'timeduration',
+    timeduration: {
       prompt_number: 0,
       completed: false
     },
-    {
-      assess_name: 'ran',
+    ran: {
       completed: false
     },
-    {
-      assess_name: 'pictureprompt',
+    pictureprompt: {
       prompt_number: 0,
       completed: false
     },
-    {
-      assess_name: 'listeningcomprehension',
+    listeningcomprehension: {
       prompt_number: 0,
       completed: false
     },
-    {
-      assess_name: 'postscreenerquestions',
+    postscreenerquestions: {
       completed: false
     }
-  ];
-  totalAssessments: number;
+  };
 
   public printCurrentAssessmentState(): void {
-    this.assessments.forEach(value => console.log(value));
+    for (const assessment of Object.keys(this.assessments)) {
+      console.log(this.assessments[assessment]);
+    }
   }
 
   public initializeState(existingAssessmentData: AssessmentData): void {
-    this.totalAssessments = this.assessments.length;
     for (const existingAssessment of existingAssessmentData.assessments) {
       const existingAssessmentName = existingAssessment['assess_name'];
-      for (const assessmentRecord of this.assessments) {
-        if (assessmentRecord['assess_name'] === existingAssessmentName) {
-          if (existingAssessment['completed']) {
-            assessmentRecord['completed'] = true;
-            console.log('Already completed: ' + existingAssessmentName);
-            break;
-          } else if (!existingAssessment['completed']) {
-            console.log('Not fully completed: ' + existingAssessmentName);
-            let selector = '';
-            if (existingAssessment['data']['recorded_data']) {
-              selector = 'recorded_data';
-            } else if (existingAssessment['data']['selection_data']) {
-              selector = 'selection_data';
-            }
-            const currentPromptNumber = this.determineCurrentPromptNumber(
-              existingAssessment['data'][selector]
-            );
-            assessmentRecord['prompt_number'] = currentPromptNumber;
-            console.log(
-              'On prompt number: ' +
-                currentPromptNumber +
-                ' of ' +
-                existingAssessmentName
-            );
-            break;
-          }
+      if (existingAssessment['completed']) {
+        this.assessments[existingAssessmentName]['completed'] = true;
+        console.log('Already completed: ' + existingAssessmentName);
+      } else if (!existingAssessment['completed']) {
+        console.log('Not fully completed: ' + existingAssessmentName);
+        let selector = '';
+        if (existingAssessment['data']['recorded_data']) {
+          selector = 'recorded_data';
+        } else if (existingAssessment['data']['selection_data']) {
+          selector = 'selection_data';
         }
+        const currentPromptNumber = this.determineCurrentPromptNumber(
+          existingAssessment['data'][selector]
+        );
+        this.assessments[existingAssessmentName][
+          'prompt_number'
+        ] = currentPromptNumber;
+        console.log(
+          'On prompt number: ' +
+            currentPromptNumber +
+            ' of ' +
+            existingAssessmentName
+        );
       }
     }
-    this.currentAssessment = this.determineNextAssessment();
+    for (const assessmentName of Object.keys(this.assessments)) {
+      console.log(assessmentName);
+      if (!this.assessments[assessmentName]['completed']) {
+        this.assessmentsLeftLinkedList.append(assessmentName);
+      }
+    }
+    this.currentAssessment = this.assessmentsLeftLinkedList.head;
     const initialURL = this.routerService.url;
     const URLSections = initialURL.split('/');
     if (URLSections[1] === 'assessments' && URLSections[2]) {
@@ -184,18 +185,26 @@ export class StateManagerService {
   }
 
   private determineNextAssessment(): string {
-    let assessmentNumber = 1;
-    for (const assessmentState of this.assessments) {
-      if (!assessmentState['completed']) {
-        console.log('Next not completed: ' + assessmentState['assess_name']); // KRM: For debugging
-        this.currentAssessmentNumber = assessmentNumber;
-        return assessmentState['assess_name'];
-      } else {
-        assessmentNumber++;
-      }
+    this.currentAssessmentNumber =
+      this.totalAssessments - this.assessmentsLeftLinkedList.length + 1;
+    if (this.assessmentsLeftLinkedList.length > 0) {
+      return this.assessmentsLeftLinkedList.head;
+    } else {
+      this.finishedAllAssessments = true;
+      return 'done';
     }
-    this.finishedAllAssessments = true;
-    return 'done';
+    // let assessmentNumber = 1;
+    // for (const assessmentName of Object.keys(this.assessments)) {
+    //   if (!this.assessments[assessmentName]['completed']) {
+    //     console.log('Next not completed: ' + assessmentName); // KRM: For debugging
+    //     this.currentAssessmentNumber = assessmentNumber;
+    //     return assessmentName;
+    //   } else {
+    //     assessmentNumber++;
+    //   }
+    // }
+    // this.finishedAllAssessments = true;
+    // return 'done';
     // Done is the name of the route for the completion component
   }
 
@@ -205,14 +214,10 @@ export class StateManagerService {
   }
 
   public navigateTo(assessmentName: string): void {
-    for (const assessmentState of this.assessments) {
-      if (
-        assessmentName === assessmentState['assess_name'] &&
-        assessmentState['completed']
-      ) {
-        console.log('routing to already completed assessment');
-        return; // KRM: Do something better here to handle this
-      }
+    if (assessmentName !== 'done' && this.assessments[assessmentName]['completed']) {
+      console.log('Routing to already completed assessment: ' + assessmentName);
+      return; // KRM: Do something better here to handle this, but I don't think I would ever call this with
+      // an assessment name already completed.
     }
     console.log('Going to: ' + assessmentName); // KRM: For debugging
     this.showAssessmentFrontPage = true;
@@ -235,17 +240,14 @@ export class StateManagerService {
   }
 
   private markAssessmentCompleted(assessmentName: string): void {
-    for (const assessment of this.assessments) {
-      if (assessment['assess_name'] === assessmentName) {
-        assessment['completed'] = true;
-      }
-    }
+    this.assessments[assessmentName]['completed'] = true;
   }
 
   public finishThisAssessmentAndAdvance(assessment: string): void {
     this.isInAssessment = false;
     this.markAssessmentCompleted(assessment);
-    this.currentAssessmentNumber++;
+    this.assessmentsLeftLinkedList.removeHead();
+    console.log(this.assessmentsLeftLinkedList);
     this.textOnInnerAssessmentButton = 'START ASSESSMENT';
     this.goToNextAssessment();
   }
@@ -292,5 +294,11 @@ export class StateManagerService {
         break;
     }
     return translatedName;
+  }
+
+  public sendToCurrentIfAlreadyCompleted(assessmentName: string): void {
+    if (this.assessments[assessmentName]['completed']) {
+      this.navigateTo(this.currentAssessment);
+    }
   }
 }

@@ -96,6 +96,7 @@ export class PostscreenerquestionsComponent
   ) {}
 
   ngOnInit(): void {
+    this.stateManager.sendToCurrentIfAlreadyCompleted('postscreenerquestions');
     this.stateManager.showOutsideAssessmentButton = false;
     this.stateManager.isInAssessment = true;
     this.stateManager.showAssessmentFrontPage = true;

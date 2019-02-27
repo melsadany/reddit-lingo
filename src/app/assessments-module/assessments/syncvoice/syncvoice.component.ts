@@ -66,12 +66,11 @@ export class SyncvoiceComponent
   lastPrompt = false;
 
   ngOnInit(): void {
+    this.stateManager.sendToCurrentIfAlreadyCompleted('syncvoice');
     this.stateManager.showOutsideAssessmentButton = false;
-    for (const assessmentRecord of this.stateManager.assessments) {
-      if (assessmentRecord['assess_name'] === 'syncvoice') {
-        this.promptNumber = assessmentRecord['prompt_number'];
-      }
-    }
+    this.promptNumber = this.stateManager.assessments['syncvoice'][
+      'prompt_number'
+    ];
     if (this.promptNumber + 1 === this.audioNames.length) {
       this.lastPrompt = true;
       this.stateManager.textOnInnerAssessmentButton =

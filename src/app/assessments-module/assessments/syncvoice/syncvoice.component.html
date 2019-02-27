@@ -1,23 +1,44 @@
 <div class="mx-lg-5">
   <div *ngIf="stateManager.showAssessmentFrontPage">
     <p class="py-4">
-      'You will hear a voice saying “la la la” at a certain speed. Once the clip ends, say “la la la..” for 10 seconds,
-      trying to match the speed or tempo that you heard. There will be several trials, each with a different speed.
+      'You will hear a voice saying “la la la” at a certain speed. Once the clip
+      ends, say “la la la..” for 10 seconds, trying to match the speed or tempo
+      that you heard. There will be several trials, each with a different speed.
     </p>
   </div>
-  <div *ngIf="stateManager.showInnerAssessmentButton" class="text-center button-down">
-    <button *ngIf="!stateManager.isInAssessment" type="button" class="start-button btn btn-success" (click)="setStateAndStart()">{{stateManager.textOnInnerAssessmentButton}}</button>
-    <button *ngIf="stateManager.isInAssessment" type="button" class="start-button btn btn-success" (click)="nextLalaPrompt()">{{stateManager.textOnInnerAssessmentButton}}</button>
+  <div
+    *ngIf="stateManager.showInnerAssessmentButton"
+    class="text-center button-down"
+  >
+    <button
+      *ngIf="!stateManager.isInAssessment"
+      type="button"
+      class="start-button btn btn-success"
+      (click)="setStateAndStart()"
+    >
+      {{ stateManager.textOnInnerAssessmentButton }}
+    </button>
+    <button
+      *ngIf="stateManager.isInAssessment"
+      type="button"
+      class="start-button btn btn-success"
+      (click)="nextLalaPrompt()"
+    >
+      {{ stateManager.textOnInnerAssessmentButton }}
+    </button>
   </div>
   <div class="text-center" *ngIf="playingAudio">
     <!-- <button type="button" *ngIf="playingAudio" class="start-button btn-lg btn-warning mr-2 mb-2">Listen</button> -->
-    <img class="img-fluid" src="assets/icons/icon_speaker.svg">
+    <img class="img-fluid" src="assets/icons/icon_speaker.svg" />
   </div>
   <div class="text-center" *ngIf="audioRecordingService.isCurrentlyRecording()">
     <!-- <mat-spinner style="margin:0 auto;" class="text-center mb-2"></mat-spinner> -->
     <!-- <button type="button" class="cancel-button btn btn-danger button-down">Recording</button> -->
-    <img class="img-fluid" src="assets/animations/Mic-Animation.gif">
-
+    <img
+      class="img-fluid"
+      style="width: 120px; height: 120px;"
+      src="assets/animations/Mic-Animation.gif"
+    />
   </div>
-  <p *ngIf="countingDown" class="text-center display-1">{{timeLeft}}</p>
+  <p *ngIf="countingDown" class="text-center display-1">{{ timeLeft }}</p>
 </div>
