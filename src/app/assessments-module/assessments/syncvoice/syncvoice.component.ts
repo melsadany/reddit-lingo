@@ -72,6 +72,11 @@ export class SyncvoiceComponent
         this.promptNumber = assessmentRecord['prompt_number'];
       }
     }
+    if (this.promptNumber + 1 === this.audioNames.length) {
+      this.lastPrompt = true;
+      this.stateManager.textOnInnerAssessmentButton =
+        'FINISH ASSESSMENT AND ADVANCE';
+    }
   }
 
   setStateAndStart(): void {

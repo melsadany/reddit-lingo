@@ -71,6 +71,11 @@ export class PicturepromptComponent
         this.promptNumber = assessmentRecord['prompt_number'];
       }
     }
+    if (this.promptNumber + 1 === this.imageNames.length) {
+      this.lastPrompt = true;
+      this.stateManager.textOnInnerAssessmentButton =
+        'FINISH ASSESSMENT AND ADVANCE';
+    }
   }
 
   setStateAndStart(): void {

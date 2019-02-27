@@ -80,6 +80,11 @@ export class SentencerepetitionComponent
         this.promptNumber = assessmentRecord['prompt_number'];
       }
     }
+    if (this.promptNumber + 1 === this.filePathsToPlay.length) {
+      this.lastPrompt = true;
+      this.stateManager.textOnInnerAssessmentButton =
+        'FINISH ASSESSMENT AND ADVANCE';
+    }
   }
 
   ngOnDestroy(): void {

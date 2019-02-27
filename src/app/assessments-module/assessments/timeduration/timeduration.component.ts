@@ -45,6 +45,11 @@ export class TimedurationComponent
         this.promptNumber = assessmentRecord['prompt_number'];
       }
     }
+    if (this.promptNumber + 1 === 8) {
+      this.lastPrompt = true;
+      this.stateManager.textOnInnerAssessmentButton =
+        'FINISH ASSESSMENT AND ADVANCE';
+    }
   }
 
   setStateAndStart(): void {

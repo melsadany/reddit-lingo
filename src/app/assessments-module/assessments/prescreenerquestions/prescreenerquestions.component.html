@@ -5,7 +5,7 @@
         <mat-form-field class="form-group">
           <input matInput [matDatepicker]="picker" placeholder="Select your date of birth" formControlName="date">
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
+          <mat-datepicker [startAt]="startDate" #picker></mat-datepicker>
         </mat-form-field>
       </div>
       <div class="form-group text-center">
@@ -57,5 +57,10 @@
         <button type='submit' [disabled]="!dataForm.valid" class='btn btn-primary btn-lg'>Next</button>
       </div>
     </form>
+  </div>
+  <div *ngIf="englishNotFirstLanguage" class="text-center">
+    <p class="py-4">
+      English is not your first language.
+    </p>
   </div>
 </div>

@@ -41,10 +41,12 @@ export class PrescreenerquestionsComponent
   englishOptions = ['Yes', 'No'];
   musicAbilityOptions = [
     'I have never had any formal training in any kind of music',
-    'I have some musical traning but don\'t routinely play or sing',
+    'I have some musical traning but do not routinely play or sing',
     'I can play an instrument, or have formal training in singing',
     'I play or sing professionally / I study music as a major / I teach music'
   ];
+  startDate = new Date(1995, 0, 1);
+  englishNotFirstLanguage;
 
   constructor(
     public stateManager: StateManagerService,
@@ -59,7 +61,7 @@ export class PrescreenerquestionsComponent
   }
 
   postData(): void {
-    const data = {
+    const selection_data = {
       date: this.dataForm.get('date').value,
       gender: this.dataForm.get('gender').value,
       ethnicity: this.dataForm.get('ethnicity').value,
@@ -67,23 +69,31 @@ export class PrescreenerquestionsComponent
       englishOption: this.dataForm.get('englishOption').value,
       musicAbility: this.dataForm.get('musicAbility').value
     };
-    this.dataService
-      .postAssessmentDataToFileSystem(
-        {
-          assess_name: 'prescreenerquestions',
-          data: { prescreenerQuestions: data },
-          completed: true
-        },
-        {
-          assess_name: 'prescreenerquestions',
-          data: {
-            text: 'None'
+    if (selection_data.englishOption === 'No') {
+      this.englishNotFirst();
+    } else {
+      this.dataService
+        .postAssessmentDataToFileSystem(
+          {
+            assess_name: 'prescreenerquestions',
+            data: { selection_data: selection_data },
+            completed: true
+          },
+          {
+            assess_name: 'prescreenerquestions',
+            data: {
+              text: 'None'
+            }
           }
-        }
-      )
-      .subscribe(); // KRM: Do this for every assessment
-    // this.dataService.setData();
-    this.stateManager.finishThisAssessmentAndAdvance('prescreenerquestions');
+        )
+        .subscribe();
+      this.stateManager.finishThisAssessmentAndAdvance('prescreenerquestions');
+    }
+  }
+
+  englishNotFirst(): void {
+    this.stateManager.showAssessmentFrontPage = false;
+    this.englishNotFirstLanguage = true;
   }
 
   canDeactivate(): boolean {

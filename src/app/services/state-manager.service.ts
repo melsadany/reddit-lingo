@@ -133,7 +133,7 @@ export class StateManagerService {
   ];
   totalAssessments: number;
 
-  public printCurrentAssessmentData(): void {
+  public printCurrentAssessmentState(): void {
     this.assessments.forEach(value => console.log(value));
   }
 
@@ -142,24 +142,31 @@ export class StateManagerService {
     for (const existingAssessment of existingAssessmentData.assessments) {
       const existingAssessmentName = existingAssessment['assess_name'];
       for (const assessmentRecord of this.assessments) {
-        if (
-          assessmentRecord['assess_name'] === existingAssessmentName &&
-          existingAssessment['completed'] === true
-        ) {
-          assessmentRecord['completed'] = true;
-          console.log('Already completed: ' + existingAssessmentName);
-          break;
-        } else {
-          let selector = '';
-          if (existingAssessment['data']['recorded_data']) {
-            selector = 'recorded_data';
-          } else if (existingAssessment['data']['selection_data']) {
-            selector = 'selection_data';
+        if (assessmentRecord['assess_name'] === existingAssessmentName) {
+          if (existingAssessment['completed']) {
+            assessmentRecord['completed'] = true;
+            console.log('Already completed: ' + existingAssessmentName);
+            break;
+          } else if (!existingAssessment['completed']) {
+            console.log('Not fully completed: ' + existingAssessmentName);
+            let selector = '';
+            if (existingAssessment['data']['recorded_data']) {
+              selector = 'recorded_data';
+            } else if (existingAssessment['data']['selection_data']) {
+              selector = 'selection_data';
+            }
+            const currentPromptNumber = this.determineCurrentPromptNumber(
+              existingAssessment['data'][selector]
+            );
+            assessmentRecord['prompt_number'] = currentPromptNumber;
+            console.log(
+              'On prompt number: ' +
+                currentPromptNumber +
+                ' of ' +
+                existingAssessmentName
+            );
+            break;
           }
-          const currentPromptNumber = this.determineCurrentPromptNumber(
-            existingAssessment['data'][selector]
-          );
-          assessmentRecord['prompt_number'] = currentPromptNumber;
         }
       }
     }
@@ -194,11 +201,20 @@ export class StateManagerService {
 
   public goToNextAssessment(): void {
     this.currentAssessment = this.determineNextAssessment();
-    console.log('Going to: ' + this.currentAssessment); // KRM: For debugging
     this.navigateTo(this.currentAssessment);
   }
 
   public navigateTo(assessmentName: string): void {
+    for (const assessmentState of this.assessments) {
+      if (
+        assessmentName === assessmentState['assess_name'] &&
+        assessmentState['completed']
+      ) {
+        console.log('routing to already completed assessment');
+        return; // KRM: Do something better here to handle this
+      }
+    }
+    console.log('Going to: ' + assessmentName); // KRM: For debugging
     this.showAssessmentFrontPage = true;
     this.showOutsideAssessmentButton = false;
     this.showInnerAssessmentButton = true;

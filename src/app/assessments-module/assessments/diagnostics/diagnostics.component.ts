@@ -195,12 +195,12 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
     }
     const assessmentData = {
       assess_name: 'diagnostics',
-      data: {},
+      data: {data: 'none'},
       completed: true
     };
     const assessmentGoogleData = {
       assess_name: 'diagnostics',
-      data: {}
+      data: {data: 'none'}
     };
     this.dataService
       .postAssessmentDataToFileSystem(assessmentData, assessmentGoogleData)

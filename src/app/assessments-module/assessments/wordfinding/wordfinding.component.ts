@@ -81,6 +81,11 @@ export class WordfindingComponent
         this.promptNumber = assessmentRecord['prompt_number'];
       }
     }
+    if (this.promptNumber + 1 === this.letterData.length) {
+      this.lastPrompt = true;
+      this.stateManager.textOnInnerAssessmentButton =
+        'FINISH ASSESSMENT AND ADVANCE';
+    }
   }
 
   ngOnDestroy(): void {

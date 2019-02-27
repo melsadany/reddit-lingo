@@ -114,6 +114,11 @@ export class MatrixreasoningComponent
         this.promptNumber = assessmentRecord['prompt_number'];
       }
     }
+    if (this.promptNumber + 1 === 7) {
+      this.lastPrompt = true;
+      this.stateManager.textOnInnerAssessmentButton =
+        'FINISH ASSESSMENT AND ADVANCE';
+    }
     this.calculateImageNames();
     console.log(this.imageMatrices);
   }
