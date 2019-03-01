@@ -44,23 +44,6 @@ export class WordfindingComponent extends AudioAssessment
     public dialogService: DialogService
   ) {
     super(stateManager, audioRecordingService, dataService, dialogService);
-    // this.failSubscription = this.audioRecordingService
-    //   .recordingFailed()
-    //   .subscribe(() => {
-    //     this.isRecording = false;
-    //   });
-
-    // this.recordingTimeSubscription = this.audioRecordingService
-    //   .getRecordedTime()
-    //   .subscribe(time => {
-    //     this.recordedTime = time;
-    //   });
-
-    // this.recordedOutputSubscription = this.audioRecordingService
-    //   .getRecordedBlob()
-    //   .subscribe(data => {
-    //     this.handleRecordedOutput(data);
-    //   });
   }
 
   ngOnInit(): void {
@@ -91,62 +74,15 @@ export class WordfindingComponent extends AudioAssessment
     this.calculateNextLetter();
     this.startDisplayedCountdownTimer(() => {
       this.showLetter = true;
-      this.startRecording(30000, () => this.showLetter = false);
+      this.startRecording(30000, () => (this.showLetter = false));
     });
   }
-
-  // startRecording(): void {
-  //   if (!this.isRecording) {
-  //     this.isRecording = true;
-  //     this.audioRecordingService.startRecording();
-  //     this.intervalCountup = setTimeout(() => {
-  //       this.stopRecording();
-  //     }, 30000);
-  //   }
-  // }
-
-  // abortRecording(): void {
-  //   if (this.isRecording) {
-  //     this.isRecording = false;
-  //     this.audioRecordingService.abortRecording();
-  //     this.doneRecording = true;
-  //   }
-  // }
-
-  // stopRecording(): void {
-  //   if (this.isRecording) {
-  //     this.audioRecordingService.stopRecording();
-  //     this.isRecording = false;
-  //     this.doneRecording = true;
-  //     this.showLetter = false;
-  //     this.stateManager.showInnerAssessmentButton = true;
-  //     clearTimeout(this.intervalCountup);
-  //   }
-  // }
 
   calculateNextLetter(): void {
     const currentChoices = this.letterData[this.promptNumber]['chars'];
     this.currentLetter =
       currentChoices[Math.floor(Math.random() * currentChoices.length)];
   }
-
-  // handleRecordedOutput(data: RecordedAudioOutput): void {
-  //   const currentBlob = data.blob;
-  //   const reader: FileReader = new FileReader();
-  //   reader.readAsDataURL(currentBlob);
-  //   reader.onloadend = (): any => {
-  //     const currentRecordedBlobAsBase64 = reader.result.slice(22);
-  //     this.recordedData.push({
-  //       prompt_number: this.promptNumber,
-  //       recorded_data: currentRecordedBlobAsBase64
-  //     }); // KRM: Adding recording to the array is done in sync. Currently wait for the recording to load.
-  //     // Might be better to do this async so we don't have the chance of blocking for a short
-  //     // period before moving to the next prompt.
-  //     this.pushAudioData();
-  //     this.promptNumber++;
-  //     // this.advanceToNextPrompt();  KRM: For automatic advancement
-  //   };
-  // }
 
   advanceToNextPrompt(): void {
     if (this.promptNumber < this.letterData.length) {
@@ -159,40 +95,10 @@ export class WordfindingComponent extends AudioAssessment
       this.stateManager.showInnerAssessmentButton = false;
       this.startDisplayedCountdownTimer(() => {
         this.showLetter = true;
-        this.startRecording(30000, () => this.showLetter = false);
+        this.startRecording(30000, () => (this.showLetter = false));
       });
     } else {
       this.finishAssessment();
     }
   }
-
-  // pushAudioData(): void {
-  //   const assessmentData = {
-  //     assess_name: 'wordfinding',
-  //     data: { recorded_data: this.recordedData },
-  //     completed: this.lastPrompt
-  //   };
-  //   const assessmentGoogleData = {
-  //     assess_name: 'wordfinding',
-  //     data: { text: 'None' }
-  //   };
-  //   if (this.promptNumber === 0) {
-  //     this.dataService
-  //       .postAssessmentDataToFileSystem(assessmentData, assessmentGoogleData)
-  //       .subscribe();
-  //   } else {
-  //     this.dataService
-  //       .postSingleAudioDataToMongo(assessmentData, assessmentGoogleData)
-  //       .subscribe();
-  //   }
-  //   this.recordedData = [];
-  // }
-
-  // finishAssessment(): void {
-  //   this.stateManager.finishThisAssessmentAndAdvance('wordfinding');
-  // }
-
-  // canDeactivate(): boolean {
-  //   return this.dialogService.canRedirect();
-  // }
 }

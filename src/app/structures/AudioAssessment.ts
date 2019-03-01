@@ -14,7 +14,7 @@ export class AudioAssessment extends BaseAssessment {
   recordedData = [];
   intervalCountup: NodeJS.Timeout;
   doneRecording: boolean;
-  promptNumber = 0;
+  promptNumber: number;
   failSubscription: Subscription;
   recordingTimeSubscription: Subscription;
   recordedTime: string;
