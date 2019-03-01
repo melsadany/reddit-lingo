@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs';
 import { DialogService } from '../../../services/dialog.service';
 import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 import { StateManagerService } from '../../../services/state-manager.service';
+import { BaseAssessment } from '../../../structures/BaseAssessment';
 
 @Component({
   selector: 'app-syncvoice',
@@ -15,13 +16,15 @@ import { StateManagerService } from '../../../services/state-manager.service';
   styleUrls: ['./syncvoice.component.scss']
 })
 export class SyncvoiceComponent
+  extends BaseAssessment
   implements OnInit, OnDestroy, CanComponentDeactivate {
   constructor(
     public stateManager: StateManagerService,
     private dataService: AssessmentDataService,
     public audioRecordingService: AudioRecordingService,
-    private dialogService: DialogService
+    public dialogService: DialogService
   ) {
+    super(stateManager, dialogService);
     this.failSubscription = this.audioRecordingService
       .recordingFailed()
       .subscribe(() => {
@@ -39,9 +42,9 @@ export class SyncvoiceComponent
       .subscribe(data => {
         this.handleRecordedOutput(data);
       });
-    this.stateManager.showOutsideAssessmentButton = false;
   }
 
+  assessmentName = 'syncvoice';
   playingAudio = false;
   recordedTime;
   promptNumber = 0;
@@ -53,11 +56,7 @@ export class SyncvoiceComponent
     '1_2_one.mp3',
     '1_3_threequarters.mp3'
   ];
-  countingDown = false;
-  intervalCountdown: NodeJS.Timer;
   intervalCountup: NodeJS.Timer;
-  timeLeft = 3;
-  doneCountingDown = false;
   isRecording = false;
   failSubscription: Subscription;
   recordingTimeSubscription: Subscription;
@@ -99,21 +98,6 @@ export class SyncvoiceComponent
     for (let i = 0; i < this.audioNames.length; i++) {
       this.audioNames[i] = this.lalaLocations + this.audioNames[i];
     }
-  }
-
-  startDisplayedCountdownTimer(): void {
-    this.countingDown = true;
-    this.intervalCountdown = setInterval(() => {
-      if (this.timeLeft > 0) {
-        this.timeLeft--;
-      } else {
-        this.timeLeft = 3;
-        this.countingDown = false;
-        this.doneCountingDown = true;
-        this.startRecording();
-        clearInterval(this.intervalCountdown);
-      }
-    }, 1000);
   }
 
   startRecording(): void {
@@ -172,7 +156,7 @@ export class SyncvoiceComponent
       const audio = new Audio();
       audio.src = this.audioNames[this.promptNumber];
       audio.addEventListener('ended', () => {
-        this.startDisplayedCountdownTimer();
+        this.startDisplayedCountdownTimer(() => this.startRecording());
         this.playingAudio = false;
       });
       audio.onplaying = (ev: Event): any => (this.playingAudio = true);
@@ -204,10 +188,10 @@ export class SyncvoiceComponent
     this.recordedData = [];
   }
 
-  finishAssessment(): void {
-    this.stateManager.finishThisAssessmentAndAdvance('syncvoice');
-  }
-  canDeactivate(): boolean {
-    return this.dialogService.canRedirect();
-  }
+  // finishAssessment(): void {
+  //   this.stateManager.finishThisAssessmentAndAdvance('syncvoice');
+  // }
+  // canDeactivate(): boolean {
+  //   return this.dialogService.canRedirect();
+  // }
 }

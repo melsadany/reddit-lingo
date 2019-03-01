@@ -3,18 +3,16 @@ import { AssessmentDataService } from '../../../services/assessment-data.service
 import { DialogService } from '../../../services/dialog.service';
 import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 import { StateManagerService } from '../../../services/state-manager.service';
+import { BaseAssessment } from '../../../structures/BaseAssessment';
 
 @Component({
   selector: 'app-timeduration',
   templateUrl: './timeduration.component.html',
   styleUrls: ['./timeduration.component.scss']
 })
-export class TimedurationComponent
+export class TimedurationComponent extends BaseAssessment
   implements OnInit, OnDestroy, CanComponentDeactivate {
-  countingDown = false;
-  intervalCountdown: NodeJS.Timer;
-  timeLeft = 3;
-  doneCountingDown = false;
+  assessmentName = 'timeduration';
   showAnimation = false;
   timerInterval: NodeJS.Timer;
   animationInterval: NodeJS.Timer;
@@ -34,10 +32,10 @@ export class TimedurationComponent
   lastPrompt = false;
   constructor(
     public stateManager: StateManagerService,
-    private dataService: AssessmentDataService,
-    private dialogService: DialogService
+    public dataService: AssessmentDataService,
+    public dialogService: DialogService
   ) {
-    this.stateManager.showOutsideAssessmentButton = false;
+    super(stateManager, dialogService);
   }
 
   ngOnInit(): void {
@@ -62,23 +60,6 @@ export class TimedurationComponent
     clearInterval(this.intervalCountdown);
   }
 
-  startDisplayedCountdownTimer(): void {
-    this.stateManager.showInnerAssessmentButton = false;
-    this.countingDown = true;
-    this.intervalCountdown = setInterval(() => {
-      if (this.timeLeft > 0) {
-        this.timeLeft--;
-      } else {
-        this.timeLeft = 3;
-        this.countingDown = false;
-        this.doneCountingDown = true;
-        this.showAnimation = true;
-        this.displayAnimation(this.durations[this.promptNumber]);
-        clearInterval(this.intervalCountdown);
-      }
-    }, 1000);
-  }
-
   startTimer(): void {
     if (this.canSelect && !this.selecting) {
       this.startTime = Date.now();
@@ -95,13 +76,17 @@ export class TimedurationComponent
   }
 
   advanceToNextPrompt(): void {
+    this.stateManager.showInnerAssessmentButton = false;
     if (this.promptNumber < 8) {
       if (this.promptNumber + 1 === 8) {
         this.lastPrompt = true;
         this.stateManager.textOnInnerAssessmentButton =
           'FINISH ASSESSMENT AND ADVANCE';
       }
-      this.startDisplayedCountdownTimer();
+      this.startDisplayedCountdownTimer(() => {
+        this.showAnimation = true;
+        this.displayAnimation(this.durations[this.promptNumber]);
+      });
     } else {
       this.finishAssessment();
     }
@@ -164,10 +149,10 @@ export class TimedurationComponent
     this.selectionData = [];
   }
 
-  finishAssessment(): void {
-    this.stateManager.finishThisAssessmentAndAdvance('timeduration');
-  }
-  canDeactivate(): boolean {
-    return this.dialogService.canRedirect();
-  }
+  // finishAssessment(): void {
+  //   this.stateManager.finishThisAssessmentAndAdvance('timeduration');
+  // }
+  // canDeactivate(): boolean {
+  //   return this.dialogService.canRedirect();
+  // }
 }

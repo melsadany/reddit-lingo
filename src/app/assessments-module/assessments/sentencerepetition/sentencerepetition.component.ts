@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs';
 import { DialogService } from '../../../services/dialog.service';
 import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 import { StateManagerService } from '../../../services/state-manager.service';
+import { BaseAssessment } from '../../../structures/BaseAssessment';
 
 @Component({
   selector: 'app-sentencerepetition',
@@ -15,7 +16,9 @@ import { StateManagerService } from '../../../services/state-manager.service';
   styleUrls: ['./sentencerepetition.component.scss']
 })
 export class SentencerepetitionComponent
+  extends BaseAssessment
   implements OnInit, OnDestroy, CanComponentDeactivate {
+  assessmentName = 'sentencerepetition';
   failSubscription: Subscription;
   isRecording = false;
   recordingTimeSubscription: Subscription;
@@ -23,10 +26,6 @@ export class SentencerepetitionComponent
   recordedOutputSubscription: Subscription;
   recordedData = [];
   promptNumber = 0;
-  countingDown = false;
-  intervalCountdown: NodeJS.Timeout;
-  timeLeft = 3;
-  doneCountingDown = false;
   showRecordingIcon = false;
   intervalCountup: NodeJS.Timeout;
   doneRecording = false;
@@ -37,8 +36,9 @@ export class SentencerepetitionComponent
     public stateManager: StateManagerService,
     private dataService: AssessmentDataService,
     public audioRecordingService: AudioRecordingService,
-    private dialogService: DialogService
+    public dialogService: DialogService
   ) {
+    super(stateManager, dialogService);
     this.failSubscription = this.audioRecordingService
       .recordingFailed()
       .subscribe(() => {
@@ -56,7 +56,6 @@ export class SentencerepetitionComponent
       .subscribe(data => {
         this.handleRecordedOutput(data);
       });
-    this.stateManager.showOutsideAssessmentButton = false;
   }
 
   audioFilesLocation = 'assets/audio/sentencerepetition/';
@@ -124,21 +123,6 @@ export class SentencerepetitionComponent
     };
   }
 
-  startDisplayedCountdownTimer(): void {
-    this.countingDown = true;
-    this.intervalCountdown = setInterval(() => {
-      if (this.timeLeft > 0) {
-        this.timeLeft--;
-      } else {
-        this.timeLeft = 3;
-        this.countingDown = false;
-        this.doneCountingDown = true;
-        this.startRecording();
-        clearInterval(this.intervalCountdown);
-      }
-    }, 1000);
-  }
-
   startRecording(): void {
     if (!this.isRecording) {
       this.isRecording = true;
@@ -181,7 +165,7 @@ export class SentencerepetitionComponent
       const audio = new Audio();
       audio.src = this.filePathsToPlay[this.promptNumber];
       audio.addEventListener('ended', () => {
-        this.startDisplayedCountdownTimer();
+        this.startDisplayedCountdownTimer(() => this.startRecording());
         this.playingAudio = false;
       });
       audio.onplaying = (ev: Event): any => (this.playingAudio = true);

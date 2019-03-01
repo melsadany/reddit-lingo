@@ -3,6 +3,7 @@ import { AssessmentDataService } from '../../../services/assessment-data.service
 import { DialogService } from '../../../services/dialog.service';
 import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 import { StateManagerService } from '../../../services/state-manager.service';
+import { BaseAssessment } from '../../../structures/BaseAssessment';
 
 @Component({
   selector: 'app-listeningcomprehension',
@@ -10,11 +11,9 @@ import { StateManagerService } from '../../../services/state-manager.service';
   styleUrls: ['./listeningcomprehension.component.scss']
 })
 export class ListeningcomprehensionComponent
+  extends BaseAssessment
   implements OnInit, OnDestroy, CanComponentDeactivate {
-  countingDown = false;
-  intervalCountdown: NodeJS.Timeout;
-  timeLeft = 3;
-  doneCountingDown = false;
+  assessmentName = 'listeningcomprehension';
   showImage = false;
   imagePaths: string[][];
   promptNumber = 0;
@@ -27,9 +26,9 @@ export class ListeningcomprehensionComponent
   constructor(
     private dataService: AssessmentDataService,
     public stateManager: StateManagerService,
-    private dialogService: DialogService
+    public dialogService: DialogService
   ) {
-    this.stateManager.showOutsideAssessmentButton = false;
+    super(stateManager, dialogService);
   }
 
   ngOnInit(): void {
@@ -49,21 +48,6 @@ export class ListeningcomprehensionComponent
     this.stateManager.isInAssessment = true;
     this.calculateImageNames();
     this.startAudioInstructionForSet();
-  }
-
-  startDisplayedCountdownTimer(): void {
-    this.countingDown = true;
-    this.intervalCountdown = setInterval(() => {
-      if (this.timeLeft > 0) {
-        this.timeLeft--;
-      } else {
-        this.timeLeft = 3;
-        this.countingDown = false;
-        this.doneCountingDown = true;
-        this.showImage = true;
-        clearInterval(this.intervalCountdown);
-      }
-    }, 1000);
   }
 
   calculateImageNames(): void {
@@ -117,7 +101,7 @@ export class ListeningcomprehensionComponent
     const audio = new Audio();
     audio.src = `${this.audioInstructionsLocation}q${this.promptNumber}.mp3`;
     audio.addEventListener('ended', () => {
-      this.startDisplayedCountdownTimer();
+      this.startDisplayedCountdownTimer(() => this.showImage = true);
       this.playingAudio = false;
     });
     audio.onplaying = (ev: Event): any => (this.playingAudio = true);
@@ -146,11 +130,11 @@ export class ListeningcomprehensionComponent
     this.selectionData = [];
   }
 
-  finishAssessment(): void {
-    this.stateManager.finishThisAssessmentAndAdvance('listeningcomprehension');
-  }
+  // finishAssessment(): void {
+  //   this.stateManager.finishThisAssessmentAndAdvance('listeningcomprehension');
+  // }
 
-  canDeactivate(): boolean {
-    return this.dialogService.canRedirect();
-  }
+  // canDeactivate(): boolean {
+  //   return this.dialogService.canRedirect();
+  // }
 }

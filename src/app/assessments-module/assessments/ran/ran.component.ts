@@ -8,24 +8,24 @@ import { Subscription } from 'rxjs';
 import { DialogService } from '../../../services/dialog.service';
 import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 import { StateManagerService } from '../../../services/state-manager.service';
+import { BaseAssessment } from '../../../structures/BaseAssessment';
 
 @Component({
   selector: 'app-ran',
   templateUrl: './ran.component.html',
   styleUrls: ['./ran.component.scss']
 })
-export class RanComponent implements OnInit, OnDestroy, CanComponentDeactivate {
+export class RanComponent
+  extends BaseAssessment
+  implements OnInit, OnDestroy, CanComponentDeactivate {
+  assessmentName = 'ran';
   isRecording = false;
   recordedTime: string;
   recordedBlob: Blob;
   recordedBlobAsBase64: ArrayBuffer | string;
-  intervalCountdown: NodeJS.Timer;
   intervalCountup: NodeJS.Timer;
-  countingDown = false;
-  doneCountingDown = false;
   showImage = false;
   doneRecording = false;
-  timeLeft = 3;
   failSubscription: Subscription;
   recordingTimeSubscription: Subscription;
   recordedOutputSubscription: Subscription;
@@ -35,8 +35,9 @@ export class RanComponent implements OnInit, OnDestroy, CanComponentDeactivate {
     public stateManager: StateManagerService,
     public audioRecordingService: AudioRecordingService,
     private dataService: AssessmentDataService,
-    private dialogService: DialogService
+    public dialogService: DialogService
   ) {
+    super(stateManager, dialogService);
     this.failSubscription = this.audioRecordingService
       .recordingFailed()
       .subscribe(() => {
@@ -54,7 +55,6 @@ export class RanComponent implements OnInit, OnDestroy, CanComponentDeactivate {
       .subscribe(data => {
         this.handleRecordedOutput(data);
       });
-    this.stateManager.showOutsideAssessmentButton = false;
   }
 
   startRecording(): void {
@@ -105,23 +105,10 @@ export class RanComponent implements OnInit, OnDestroy, CanComponentDeactivate {
     this.stateManager.textOnInnerAssessmentButton =
       'FINISH ASSESSMENT AND ADVANCE';
     this.stateManager.isInAssessment = true;
-    this.startDisplayedCountdownTimer();
-  }
-
-  startDisplayedCountdownTimer(): void {
-    this.countingDown = true;
-    this.intervalCountdown = setInterval(() => {
-      if (this.timeLeft > 0) {
-        this.timeLeft--;
-      } else {
-        this.timeLeft = 3;
-        this.countingDown = false;
-        this.doneCountingDown = true;
-        this.showImage = true;
-        this.startRecording();
-        clearInterval(this.intervalCountdown);
-      }
-    }, 1000);
+    this.startDisplayedCountdownTimer(() => {
+      this.showImage = true;
+      this.startRecording();
+    });
   }
 
   handleRecordedOutput(data: RecordedAudioOutput): void {
@@ -148,11 +135,11 @@ export class RanComponent implements OnInit, OnDestroy, CanComponentDeactivate {
     };
   }
 
-  finishAssessment(): void {
-    this.stateManager.finishThisAssessmentAndAdvance('ran');
-  }
+  // finishAssessment(): void {
+  //   this.stateManager.finishThisAssessmentAndAdvance('ran');
+  // }
 
-  canDeactivate(): boolean {
-    return this.dialogService.canRedirect();
-  }
+  // canDeactivate(): boolean {
+  //   return this.dialogService.canRedirect();
+  // }
 }

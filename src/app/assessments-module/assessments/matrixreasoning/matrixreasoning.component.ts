@@ -3,6 +3,7 @@ import { AssessmentDataService } from '../../../services/assessment-data.service
 import { DialogService } from '../../../services/dialog.service';
 import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 import { StateManagerService } from '../../../services/state-manager.service';
+import { BaseAssessment } from '../../../structures/BaseAssessment';
 
 @Component({
   selector: 'app-matrixreasoning',
@@ -10,6 +11,7 @@ import { StateManagerService } from '../../../services/state-manager.service';
   styleUrls: ['./matrixreasoning.component.scss']
 })
 export class MatrixreasoningComponent
+  extends BaseAssessment
   implements OnInit, CanComponentDeactivate, OnDestroy {
   imagesLocation = 'assets/img/matrixreasoning/';
   dimensions = {
@@ -88,15 +90,12 @@ export class MatrixreasoningComponent
       }
     }
   };
+  assessmentName = 'matrixreasoning';
   promptNumber = 0;
   imageMatrices = {
     frameSets: {},
     solutionSets: {}
   };
-  countingDown = false;
-  intervalCountdown: NodeJS.Timeout;
-  timeLeft = 3;
-  doneCountingDown = false;
   showMatrix = false;
   selectionData = [];
   lastPrompt = false;
@@ -104,9 +103,9 @@ export class MatrixreasoningComponent
   constructor(
     public stateManager: StateManagerService,
     private dataService: AssessmentDataService,
-    private dialogService: DialogService
+    public dialogService: DialogService
   ) {
-    this.stateManager.showOutsideAssessmentButton = false;
+    super(stateManager, dialogService);
   }
 
   ngOnInit(): void {
@@ -196,25 +195,10 @@ export class MatrixreasoningComponent
         this.stateManager.textOnInnerAssessmentButton =
           'FINISH ASSESSMENT AND ADVANCE';
       }
-      this.startDisplayedCountdownTimer();
+      this.startDisplayedCountdownTimer(() => this.showMatrix = true);
     } else {
       this.finishAssessment();
     }
-  }
-
-  startDisplayedCountdownTimer(): void {
-    this.countingDown = true;
-    this.intervalCountdown = setInterval(() => {
-      if (this.timeLeft > 0) {
-        this.timeLeft--;
-      } else {
-        this.timeLeft = 3;
-        this.countingDown = false;
-        this.doneCountingDown = true;
-        this.showMatrix = true;
-        clearInterval(this.intervalCountdown);
-      }
-    }, 1000);
   }
 
   selectImage(image: string): void {
@@ -254,11 +238,11 @@ export class MatrixreasoningComponent
     this.selectionData = [];
   }
 
-  finishAssessment(): void {
-    this.stateManager.finishThisAssessmentAndAdvance('matrixreasoning');
-  }
+  // finishAssessment(): void {
+  //   this.stateManager.finishThisAssessmentAndAdvance('matrixreasoning');
+  // }
 
-  canDeactivate(): boolean {
-    return this.dialogService.canRedirect();
-  }
+  // canDeactivate(): boolean {
+  //   return this.dialogService.canRedirect();
+  // }
 }

@@ -8,14 +8,16 @@ import { Subscription } from 'rxjs';
 import { DialogService } from '../../../services/dialog.service';
 import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 import { StateManagerService } from '../../../services/state-manager.service';
+import { BaseAssessment } from '../../../structures/BaseAssessment';
 
 @Component({
   selector: 'app-pictureprompt',
   templateUrl: './pictureprompt.component.html',
   styleUrls: ['./pictureprompt.component.scss']
 })
-export class PicturepromptComponent
+export class PicturepromptComponent extends BaseAssessment
   implements OnInit, OnDestroy, CanComponentDeactivate {
+  assessmentName = 'pictureprompt';
   imageNames = [
     'assets/img/pictureprompt/0/despair.jpg',
     'assets/img/pictureprompt/1/he_texted.jpg',
@@ -23,11 +25,7 @@ export class PicturepromptComponent
     'assets/img/pictureprompt/3/antagonism.jpg'
   ];
   promptNumber = 0;
-  countingDown = false;
   intervalCountup: NodeJS.Timer;
-  intervalCountdown: NodeJS.Timer;
-  timeLeft = 3;
-  doneCountingDown = false;
   showPromptImage = false;
   currentImagePrompt = '';
   isRecording = false;
@@ -43,8 +41,9 @@ export class PicturepromptComponent
     public stateManager: StateManagerService,
     private dataService: AssessmentDataService,
     public audioRecordingService: AudioRecordingService,
-    private dialogService: DialogService
+    public dialogService: DialogService
   ) {
+    super(stateManager, dialogService);
     this.failSubscription = this.audioRecordingService
       .recordingFailed()
       .subscribe(() => {
@@ -62,7 +61,6 @@ export class PicturepromptComponent
       .subscribe(data => {
         this.handleRecordedOutput(data);
       });
-    this.stateManager.showOutsideAssessmentButton = false;
   }
 
   ngOnInit(): void {
@@ -95,22 +93,6 @@ export class PicturepromptComponent
 
   getNextImagePath(): void {
     this.currentImagePrompt = this.imageNames[this.promptNumber];
-  }
-
-  startDisplayedCountdownTimer(): void {
-    this.countingDown = true;
-    this.intervalCountdown = setInterval(() => {
-      if (this.timeLeft > 0) {
-        this.timeLeft--;
-      } else {
-        this.timeLeft = 3;
-        this.countingDown = false;
-        this.doneCountingDown = true;
-        this.showPromptImage = true;
-        this.startRecording();
-        clearInterval(this.intervalCountdown);
-      }
-    }, 1000);
   }
 
   startRecording(): void {
@@ -151,7 +133,10 @@ export class PicturepromptComponent
           'FINISH ASSESSMENT AND ADVANCE';
       }
       this.getNextImagePath();
-      this.startDisplayedCountdownTimer();
+      this.startDisplayedCountdownTimer(() => {
+        this.startRecording();
+        this.showPromptImage = true;
+      });
     } else {
       this.finishAssessment();
     }
@@ -175,9 +160,9 @@ export class PicturepromptComponent
     };
   }
 
-  finishAssessment(): void {
-    this.stateManager.finishThisAssessmentAndAdvance('pictureprompt');
-  }
+  // finishAssessment(): void {
+  //   this.stateManager.finishThisAssessmentAndAdvance('pictureprompt');
+  // }
 
   pushAudioData(): void {
     const assessmentData = {
@@ -201,7 +186,7 @@ export class PicturepromptComponent
     this.recordedData = [];
   }
 
-  canDeactivate(): boolean {
-    return this.dialogService.canRedirect();
-  }
+  // canDeactivate(): boolean {
+  //   return this.dialogService.canRedirect();
+  // }
 }
