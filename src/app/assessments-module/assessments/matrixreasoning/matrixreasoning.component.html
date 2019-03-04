@@ -24,7 +24,7 @@
       <tbody>
         <tr class="table-primary" *ngFor="let row of imageMatrices['solutionSets'][promptNumber]">
           <td *ngFor="let image of row">
-            <button type="button" class="btn btn-outline-primary" (click)="selectImage(image)">
+            <button type="button" class="btn btn-outline-primary" (click)="clickImage(image)">
 
               <img class="img-fluid" [src]="image">
             </button>
