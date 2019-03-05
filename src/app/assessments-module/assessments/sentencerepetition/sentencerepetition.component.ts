@@ -2,60 +2,30 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import {
   AudioRecordingService,
-  RecordedAudioOutput
 } from '../../../services/audio-recording.service';
-import { Subscription } from 'rxjs';
 import { DialogService } from '../../../services/dialog.service';
 import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 import { StateManagerService } from '../../../services/state-manager.service';
-import { BaseAssessment } from '../../../structures/BaseAssessment';
+import { AudioAssessment } from '../../../structures/AudioAssessment';
 
 @Component({
   selector: 'app-sentencerepetition',
   templateUrl: './sentencerepetition.component.html',
   styleUrls: ['./sentencerepetition.component.scss']
 })
-export class SentencerepetitionComponent
-  extends BaseAssessment
+export class SentencerepetitionComponent extends AudioAssessment
   implements OnInit, OnDestroy, CanComponentDeactivate {
   assessmentName = 'sentencerepetition';
-  failSubscription: Subscription;
-  isRecording = false;
-  recordingTimeSubscription: Subscription;
-  recordedTime: string;
-  recordedOutputSubscription: Subscription;
-  recordedData = [];
   promptNumber = 0;
-  showRecordingIcon = false;
-  intervalCountup: NodeJS.Timeout;
-  doneRecording = false;
-  lastPrompt = false;
   playingAudio = false;
 
   constructor(
     public stateManager: StateManagerService,
-    private dataService: AssessmentDataService,
+    public dataService: AssessmentDataService,
     public audioRecordingService: AudioRecordingService,
     public dialogService: DialogService
   ) {
-    super(stateManager, dialogService);
-    this.failSubscription = this.audioRecordingService
-      .recordingFailed()
-      .subscribe(() => {
-        this.isRecording = false;
-      });
-
-    this.recordingTimeSubscription = this.audioRecordingService
-      .getRecordedTime()
-      .subscribe(time => {
-        this.recordedTime = time;
-      });
-
-    this.recordedOutputSubscription = this.audioRecordingService
-      .getRecordedBlob()
-      .subscribe(data => {
-        this.handleRecordedOutput(data);
-      });
+    super(stateManager, audioRecordingService, dataService, dialogService);
   }
 
   audioFilesLocation = 'assets/audio/sentencerepetition/';
@@ -72,26 +42,13 @@ export class SentencerepetitionComponent
     '27'
   ];
   filePathsToPlay = [];
+  promptsLength = this.audioFileNumbersToPlay.length;
 
   ngOnInit(): void {
     this.stateManager.sendToCurrentIfAlreadyCompleted('sentencerepetition');
     this.promptNumber = this.stateManager.assessments['sentencerepetition'][
       'prompt_number'
     ];
-    if (this.promptNumber + 1 === this.filePathsToPlay.length) {
-      this.lastPrompt = true;
-      this.stateManager.textOnInnerAssessmentButton =
-        'FINISH ASSESSMENT AND ADVANCE';
-    }
-  }
-
-  ngOnDestroy(): void {
-    this.abortRecording();
-    this.failSubscription.unsubscribe();
-    this.recordingTimeSubscription.unsubscribe();
-    this.recordedOutputSubscription.unsubscribe();
-    clearInterval(this.intervalCountdown);
-    clearTimeout(this.intervalCountup);
   }
 
   setStateAndStart(): void {
@@ -99,7 +56,7 @@ export class SentencerepetitionComponent
     this.stateManager.textOnInnerAssessmentButton = 'CONTINUE ASSESSMENT';
     this.stateManager.isInAssessment = true;
     this.calculateFilePaths();
-    this.startAudioForSet();
+    this.advance();
   }
 
   calculateFilePaths(): void {
@@ -108,100 +65,36 @@ export class SentencerepetitionComponent
     }
   }
 
-  handleRecordedOutput(data: RecordedAudioOutput): void {
-    const currentBlob = data.blob;
-    const reader: FileReader = new FileReader();
-    reader.readAsDataURL(currentBlob);
-    reader.onloadend = (): any => {
-      const currentRecordedBlobAsBase64 = reader.result.slice(22);
-      this.recordedData.push({
-        prompt_number: this.promptNumber,
-        recorded_data: currentRecordedBlobAsBase64
-      });
-      this.pushAudioData();
-      this.promptNumber++;
-    };
+  advance(): void {
+    this.advanceToNextPrompt(
+      () =>
+        this.startRecording(5000, () =>
+          this.stopRecording(
+            () => (this.stateManager.showInnerAssessmentButton = true)
+          )
+        ),
+      () => this.startAudioForSet()
+    );
   }
 
-  startRecording(): void {
-    if (!this.isRecording) {
-      this.isRecording = true;
-      this.showRecordingIcon = true;
-      this.audioRecordingService.startRecording();
-      this.intervalCountup = setTimeout(() => {
-        this.stopRecording();
-      }, 5000);
-    }
-  }
-
-  abortRecording(): void {
-    if (this.isRecording) {
-      this.isRecording = false;
-      this.audioRecordingService.abortRecording();
-      this.doneRecording = true;
-    }
-  }
-
-  stopRecording(): void {
-    if (this.isRecording) {
-      this.audioRecordingService.stopRecording();
-      this.isRecording = false;
-      this.doneRecording = true;
-      this.showRecordingIcon = false;
-      this.stateManager.showInnerAssessmentButton = true; // KRM: manual advance
-      // this.startAudioForSet() // automatic advance
-      clearTimeout(this.intervalCountup);
-    }
-  }
-
-  startAudioForSet(): void {
-    this.stateManager.showInnerAssessmentButton = false;
-    if (this.promptNumber < this.filePathsToPlay.length) {
-      if (this.promptNumber + 1 === this.filePathsToPlay.length) {
-        this.lastPrompt = true;
-        this.stateManager.textOnInnerAssessmentButton =
-          'FINISH ASSESSMENT AND ADVANCE';
+  startAudioForSet(): Promise<string> {
+    const audio = this.setupPrompt();
+    audio.play();
+    return new Promise(
+      (resolve, reject): void => {
+        audio.addEventListener('ended', () => {
+          this.playingAudio = false;
+          resolve('done');
+        });
       }
-      const audio = new Audio();
-      audio.src = this.filePathsToPlay[this.promptNumber];
-      audio.addEventListener('ended', () => {
-        this.startDisplayedCountdownTimer(() => this.startRecording());
-        this.playingAudio = false;
-      });
-      audio.onplaying = (ev: Event): any => (this.playingAudio = true);
-      audio.play();
-    } else {
-      this.finishAssessment();
-    }
+    );
   }
 
-  pushAudioData(): void {
-    const assessmentData = {
-      assess_name: 'sentencerepetition',
-      data: { recorded_data: this.recordedData },
-      completed: this.lastPrompt
-    };
-    const assessmentGoogleData = {
-      assess_name: 'sentencerepetition',
-      data: { text: 'None' }
-    };
-    if (this.promptNumber === 0) {
-      this.dataService
-        .postAssessmentDataToFileSystem(assessmentData, assessmentGoogleData)
-        .subscribe();
-    } else {
-      this.dataService
-        .postSingleAudioDataToMongo(assessmentData, assessmentGoogleData)
-        .subscribe();
-    }
-    this.recordedData = [];
-  }
-
-  finishAssessment(): void {
-    this.stateManager.finishThisAssessmentAndAdvance('sentencerepetition');
-  }
-
-  canDeactivate(): boolean {
-    return this.dialogService.canRedirect();
+  setupPrompt(): HTMLAudioElement {
+    this.stateManager.showInnerAssessmentButton = false;
+    const audio = new Audio();
+    audio.src = this.filePathsToPlay[this.promptNumber];
+    audio.onplaying = (ev: Event): any => (this.playingAudio = true);
+    return audio;
   }
 }

@@ -7,9 +7,9 @@ import {
 import { AssessmentDataService } from '../services/assessment-data.service';
 import { DialogService } from '../services/dialog.service';
 import { Subscription } from 'rxjs';
+import { OnDestroy } from '@angular/core';
 
-
-export class AudioAssessment extends BaseAssessment {
+export class AudioAssessment extends BaseAssessment implements OnDestroy {
   isRecording = false;
   recordedData = [];
   intervalCountup: NodeJS.Timeout;
@@ -20,6 +20,7 @@ export class AudioAssessment extends BaseAssessment {
   recordedTime: string;
   recordedOutputSubscription: Subscription;
   lastPrompt = false;
+  promptsLength: number;
 
   constructor(
     public stateManager: StateManagerService,
@@ -45,6 +46,15 @@ export class AudioAssessment extends BaseAssessment {
       .subscribe(data => {
         this.handleRecordedOutput(data);
       });
+  }
+
+  ngOnDestroy(): void {
+    this.abortRecording();
+    this.failSubscription.unsubscribe();
+    this.recordingTimeSubscription.unsubscribe();
+    this.recordedOutputSubscription.unsubscribe();
+    clearInterval(this.intervalCountdown);
+    clearTimeout(this.intervalCountup);
   }
 
   handleRecordedOutput(data: RecordedAudioOutput): void {
@@ -116,6 +126,29 @@ export class AudioAssessment extends BaseAssessment {
       this.isRecording = false;
       this.audioRecordingService.abortRecording();
       this.doneRecording = true;
+    }
+  }
+
+  advanceToNextPrompt(
+    afterAdvanceCallBack: Function,
+    beforeAdvanceCall?: Function
+  ): void {
+    if (this.promptNumber < this.promptsLength) {
+      if (this.promptNumber + 1 === this.promptsLength) {
+        this.lastPrompt = true;
+        this.stateManager.textOnInnerAssessmentButton =
+          'FINISH ASSESSMENT AND ADVANCE';
+      }
+      if (beforeAdvanceCall) {
+        // KRM: This call must return a promise
+        beforeAdvanceCall().then(() => {
+          this.startDisplayedCountdownTimer(() => afterAdvanceCallBack());
+        });
+      } else {
+        this.startDisplayedCountdownTimer(() => afterAdvanceCallBack());
+      }
+    } else {
+      this.finishAssessment();
     }
   }
 }
