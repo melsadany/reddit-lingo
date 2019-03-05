@@ -58,14 +58,23 @@ export class SelectionAssessment extends BaseAssessment {
     this.selectionData = [];
   }
 
-  advanceToNextPrompt(afterAdvanceCallBack: Function): void {
+  advanceToNextPrompt(
+    afterAdvanceCallBack: Function,
+    beforeAdvanceCall?: Function
+  ): void {
     if (this.promptNumber < this.promptsLength) {
       if (this.promptNumber + 1 === this.promptsLength) {
         this.lastPrompt = true;
         this.stateManager.textOnInnerAssessmentButton =
           'FINISH ASSESSMENT AND ADVANCE';
       }
-      this.startDisplayedCountdownTimer(() => afterAdvanceCallBack());
+      if (beforeAdvanceCall) { // KRM: This call must return a promise
+        beforeAdvanceCall().then(() => {
+          this.startDisplayedCountdownTimer(() => afterAdvanceCallBack());
+        });
+      } else {
+        this.startDisplayedCountdownTimer(() => afterAdvanceCallBack());
+      }
     } else {
       this.finishAssessment();
     }

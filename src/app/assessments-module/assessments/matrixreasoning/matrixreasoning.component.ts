@@ -191,19 +191,6 @@ export class MatrixreasoningComponent extends SelectionAssessment
     }
   }
 
-  // advanceToNextPrompt(afterAdvanceCallBack: Function): void {
-  //   if (this.promptNumber < this.promptsLength) {
-  //     if (this.promptNumber + 1 === this.promptsLength) {
-  //       this.lastPrompt = true;
-  //       this.stateManager.textOnInnerAssessmentButton =
-  //         'FINISH ASSESSMENT AND ADVANCE';
-  //     }
-  //     this.startDisplayedCountdownTimer(() => afterAdvanceCallBack());
-  //   } else {
-  //     this.finishAssessment();
-  //   }
-  // }
-
   clickImage(image: string): void {
     this.sendImageSelectionAndAdvance(
       image,
@@ -211,48 +198,4 @@ export class MatrixreasoningComponent extends SelectionAssessment
       () => this.advanceToNextPrompt(() => (this.showMatrix = true))
     );
   }
-  // selectImage(image: string): void {
-  //   this.selectionData.push({
-  //     prompt_number: this.promptNumber,
-  //     image_selected: image
-  //   });
-  //   this.pushSelectionData();
-  //   this.promptNumber++;
-  //   this.showMatrix = false;
-  //   if (this.lastPrompt) {
-  //     this.stateManager.showInnerAssessmentButton = true;
-  //   } else {
-  //     this.advanceToNextPrompt();
-  //   }
-  // }
-
-  // pushSelectionData(): void {
-  //   const assessmentData = {
-  //     assess_name: this.assessmentName,
-  //     data: { selection_data: this.selectionData },
-  //     completed: this.lastPrompt
-  //   };
-  //   const assessmentGoogleData = {
-  //     assess_name: this.assessmentName,
-  //     data: { text: 'None' }
-  //   };
-  //   if (this.promptNumber === 0) {
-  //     this.dataService
-  //       .postAssessmentDataToFileSystem(assessmentData, assessmentGoogleData)
-  //       .subscribe();
-  //   } else {
-  //     this.dataService
-  //       .postSingleAudioDataToMongo(assessmentData, assessmentGoogleData)
-  //       .subscribe();
-  //   }
-  //   this.selectionData = [];
-  // }
-
-  // finishAssessment(): void {
-  //   this.stateManager.finishThisAssessmentAndAdvance('matrixreasoning');
-  // }
-
-  // canDeactivate(): boolean {
-  //   return this.dialogService.canRedirect();
-  // }
 }

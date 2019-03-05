@@ -9,7 +9,7 @@
     </p>
   <div *ngIf="stateManager.showInnerAssessmentButton" class="text-center button-down">
     <button *ngIf="!stateManager.isInAssessment" type="button" class="start-button btn btn-success" (click)="setStateAndStart()">{{stateManager.textOnInnerAssessmentButton}}</button>
-    <button *ngIf="stateManager.isInAssessment" type="button" class="start-button btn btn-success" (click)="advanceToNextPrompt()">{{stateManager.textOnInnerAssessmentButton}}</button>
+    <button *ngIf="stateManager.isInAssessment" type="button" class="start-button btn btn-success" (click)="advance()">{{stateManager.textOnInnerAssessmentButton}}</button>
   </div>
   </div>
   <div class="imageParent" *ngIf="showAnimation">

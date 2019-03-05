@@ -3,32 +3,29 @@ import { AssessmentDataService } from '../../../services/assessment-data.service
 import { DialogService } from '../../../services/dialog.service';
 import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 import { StateManagerService } from '../../../services/state-manager.service';
-import { BaseAssessment } from '../../../structures/BaseAssessment';
+import { SelectionAssessment } from '../../../structures/SelectionAssessment';
 
 @Component({
   selector: 'app-listeningcomprehension',
   templateUrl: './listeningcomprehension.component.html',
   styleUrls: ['./listeningcomprehension.component.scss']
 })
-export class ListeningcomprehensionComponent
-  extends BaseAssessment
+export class ListeningcomprehensionComponent extends SelectionAssessment
   implements OnInit, OnDestroy, CanComponentDeactivate {
   assessmentName = 'listeningcomprehension';
   showImage = false;
   imagePaths: string[][];
-  promptNumber = 0;
   imagesLocation = 'assets/img/listeningcomprehension/';
   audioInstructionsLocation = 'assets/audio/listeningcomprehension/';
-  selectionData = [];
-  lastPrompt = false;
   playingAudio = false;
+  promptsLength = 12; // KRM: Voodoo constant
 
   constructor(
-    private dataService: AssessmentDataService,
+    public dataService: AssessmentDataService,
     public stateManager: StateManagerService,
     public dialogService: DialogService
   ) {
-    super(stateManager, dialogService);
+    super(stateManager, dialogService, dataService);
   }
 
   ngOnInit(): void {
@@ -46,8 +43,29 @@ export class ListeningcomprehensionComponent
     this.stateManager.showInnerAssessmentButton = false;
     this.stateManager.textOnInnerAssessmentButton = 'CONTINUE ASSESSMENT';
     this.stateManager.isInAssessment = true;
+    this.advanceToNextPrompt(
+      () => (this.showImage = true),
+      () => {
+        const audio = this.setupPrompt();
+        audio.play();
+        return new Promise(
+          (resolve, reject): void => {
+            audio.addEventListener('ended', () => {
+              this.playingAudio = false;
+              resolve('done');
+            });
+          }
+        );
+      }
+    );
+  }
+
+  setupPrompt(): HTMLAudioElement {
     this.calculateImageNames();
-    this.startAudioInstructionForSet();
+    const audio = new Audio();
+    audio.src = `${this.audioInstructionsLocation}q${this.promptNumber}.mp3`;
+    audio.onplaying = (ev: Event): any => (this.playingAudio = true);
+    return audio;
   }
 
   calculateImageNames(): void {
@@ -70,65 +88,85 @@ export class ListeningcomprehensionComponent
     this.imagePaths.push(firstRow, secondRow, thirdRow);
   }
 
-  selectImage(image: string): void {
-    console.log(image);
-    const delimited = image.split('/');
-    const image_name = delimited[delimited.length - 1];
-    this.selectionData.push({
-      prompt_number: this.promptNumber,
-      image_selected: image_name
-    });
-    this.pushSelectionData();
-    this.promptNumber++;
-    this.showImage = false;
-    if (this.promptNumber < 12) {
-      if (this.promptNumber + 1 === 12) {
-        this.lastPrompt = true;
-      }
-      this.nextImageSet();
-    } else {
-      this.finishAssessment();
-    }
+  clickImage(image: string): void {
+    this.sendImageSelectionAndAdvance(
+      image,
+      () => (this.showImage = false),
+      () =>
+        this.advanceToNextPrompt(
+          () => (this.showImage = true),
+          () => {
+            const audio = this.setupPrompt();
+            audio.play();
+            return new Promise(
+              (resolve, reject): void => {
+                audio.addEventListener('ended', () => {
+                  this.playingAudio = false;
+                  resolve('done');
+                });
+              }
+            );
+          }
+        )
+    );
   }
 
-  nextImageSet(): void {
-    this.calculateImageNames();
-    this.startAudioInstructionForSet();
-  }
+  // selectImage(image: string): void {
+  // this.selectionData.push({
+  //   prompt_number: this.promptNumber,
+  //   image_selected: image
+  // });
+  // this.pushSelectionData();
+  // this.promptNumber++;
+  //   this.showImage = false;
+  //   if (this.promptNumber < this.promptsLength) {
+  //     if (this.promptNumber + 1 === this.promptsLength) {
+  //       this.lastPrompt = true;
+  //     }
+  //     this.nextImageSet();
+  //   } else {
+  //     this.finishAssessment();
+  //   }
+  // }
 
-  startAudioInstructionForSet(): void {
-    // KRM: Main function
-    const audio = new Audio();
-    audio.src = `${this.audioInstructionsLocation}q${this.promptNumber}.mp3`;
-    audio.addEventListener('ended', () => {
-      this.startDisplayedCountdownTimer(() => this.showImage = true);
-      this.playingAudio = false;
-    });
-    audio.onplaying = (ev: Event): any => (this.playingAudio = true);
-    audio.play();
-  }
+  // nextImageSet(): void {
+  //   this.calculateImageNames();
+  //   this.startAudioInstructionForSet();
+  // }
 
-  pushSelectionData(): void {
-    const assessmentData = {
-      assess_name: 'listeningcomprehension',
-      data: { selection_data: this.selectionData },
-      completed: this.lastPrompt
-    };
-    const assessmentGoogleData = {
-      assess_name: 'listeningcomprehension',
-      data: { text: 'None' }
-    };
-    if (this.promptNumber === 0) {
-      this.dataService
-        .postAssessmentDataToFileSystem(assessmentData, assessmentGoogleData)
-        .subscribe();
-    } else {
-      this.dataService
-        .postSingleAudioDataToMongo(assessmentData, assessmentGoogleData)
-        .subscribe();
-    }
-    this.selectionData = [];
-  }
+  // startAudioInstructionForSet(): void {
+  //   // KRM: Main function
+  //   const audio = new Audio();
+  //   audio.src = `${this.audioInstructionsLocation}q${this.promptNumber}.mp3`;
+  //   // audio.addEventListener('ended', () => {
+  //   //   this.startDisplayedCountdownTimer(() => (this.showImage = true));
+  //   //   this.playingAudio = false;
+  //   // });
+  //   audio.onplaying = (ev: Event): any => (this.playingAudio = true);
+  //   audio.play();
+  // }
+
+  // pushSelectionData(): void {
+  //   const assessmentData = {
+  //     assess_name: 'listeningcomprehension',
+  //     data: { selection_data: this.selectionData },
+  //     completed: this.lastPrompt
+  //   };
+  //   const assessmentGoogleData = {
+  //     assess_name: 'listeningcomprehension',
+  //     data: { text: 'None' }
+  //   };
+  //   if (this.promptNumber === 0) {
+  //     this.dataService
+  //       .postAssessmentDataToFileSystem(assessmentData, assessmentGoogleData)
+  //       .subscribe();
+  //   } else {
+  //     this.dataService
+  //       .postSingleAudioDataToMongo(assessmentData, assessmentGoogleData)
+  //       .subscribe();
+  //   }
+  //   this.selectionData = [];
+  // }
 
   // finishAssessment(): void {
   //   this.stateManager.finishThisAssessmentAndAdvance('listeningcomprehension');

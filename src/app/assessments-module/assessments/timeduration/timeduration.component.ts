@@ -3,39 +3,37 @@ import { AssessmentDataService } from '../../../services/assessment-data.service
 import { DialogService } from '../../../services/dialog.service';
 import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 import { StateManagerService } from '../../../services/state-manager.service';
-import { BaseAssessment } from '../../../structures/BaseAssessment';
+import { SelectionAssessment } from '../../../structures/SelectionAssessment';
 
 @Component({
   selector: 'app-timeduration',
   templateUrl: './timeduration.component.html',
   styleUrls: ['./timeduration.component.scss']
 })
-export class TimedurationComponent extends BaseAssessment
+export class TimedurationComponent extends SelectionAssessment
   implements OnInit, OnDestroy, CanComponentDeactivate {
   assessmentName = 'timeduration';
+  promptsLength = 8; // KRM: Voodoo constant here
   showAnimation = false;
   timerInterval: NodeJS.Timer;
   animationInterval: NodeJS.Timer;
   selecting = false;
   currentTimeSelected;
-  promptNumber = 0;
   canSelect = false;
   durations = [5, 1.5, 0.5, 11, 5, 1, 7, 0.75];
   displayPercentage = 100;
   animationDuration;
-  selectionData = [];
   displaySubtitle = 'Wait';
   canAnimate = true;
   outerStrokeColor = '#78C000';
   innerStrokeColor = '#C7E596';
   startTime;
-  lastPrompt = false;
   constructor(
     public stateManager: StateManagerService,
     public dataService: AssessmentDataService,
     public dialogService: DialogService
   ) {
-    super(stateManager, dialogService);
+    super(stateManager, dialogService, dataService);
   }
 
   ngOnInit(): void {
@@ -53,7 +51,7 @@ export class TimedurationComponent extends BaseAssessment
   setStateAndStart(): void {
     this.stateManager.textOnInnerAssessmentButton = 'CONTINUE ASSESSMENT';
     this.stateManager.isInAssessment = true;
-    this.advanceToNextPrompt();
+    this.advance();
   }
 
   ngOnDestroy(): void {
@@ -75,22 +73,39 @@ export class TimedurationComponent extends BaseAssessment
     }
   }
 
-  advanceToNextPrompt(): void {
-    this.stateManager.showInnerAssessmentButton = false;
-    if (this.promptNumber < 8) {
-      if (this.promptNumber + 1 === 8) {
-        this.lastPrompt = true;
-        this.stateManager.textOnInnerAssessmentButton =
-          'FINISH ASSESSMENT AND ADVANCE';
-      }
-      this.startDisplayedCountdownTimer(() => {
+  advance(): void {
+    this.advanceToNextPrompt(
+      () => {
         this.showAnimation = true;
         this.displayAnimation(this.durations[this.promptNumber]);
-      });
-    } else {
-      this.finishAssessment();
-    }
+      },
+      () => {
+        return new Promise(
+          (resolve, reject): void => {
+            this.stateManager.showInnerAssessmentButton = false;
+            resolve('done');
+          }
+        );
+      }
+    );
   }
+
+  // advanceToNextPrompt(): void {
+  //   this.stateManager.showInnerAssessmentButton = false;
+  //   if (this.promptNumber < this.promptsLength) {
+  //     if (this.promptNumber + 1 === this.promptsLength) {
+  //       this.lastPrompt = true;
+  //       this.stateManager.textOnInnerAssessmentButton =
+  //         'FINISH ASSESSMENT AND ADVANCE';
+  //     }
+  //     this.startDisplayedCountdownTimer(() => {
+  //       this.showAnimation = true;
+  //       this.displayAnimation(this.durations[this.promptNumber]);
+  //     });
+  //   } else {
+  //     this.finishAssessment();
+  //   }
+  // }
 
   pauseTimer(): void {
     if (this.selecting) {
@@ -119,7 +134,7 @@ export class TimedurationComponent extends BaseAssessment
   }
 
   displayAnimation(animationLength: number): void {
-    this.animationDuration = this.durations[this.promptNumber] * 1000; // KRM: Duration from s -> ms
+    this.animationDuration = animationLength * 1000; // KRM: Duration from s -> ms
     setTimeout(() => {
       this.canSelect = true;
       this.displaySubtitle = 'Press And Hold Here';
@@ -127,27 +142,27 @@ export class TimedurationComponent extends BaseAssessment
     }, this.animationDuration);
   }
 
-  pushSelectionData(): void {
-    const assessmentData = {
-      assess_name: 'timeduration',
-      data: { selection_data: this.selectionData },
-      completed: this.lastPrompt
-    };
-    const assessmentGoogleData = {
-      assess_name: 'timeduration',
-      data: { text: 'None' }
-    };
-    if (this.promptNumber === 0) {
-      this.dataService
-        .postAssessmentDataToFileSystem(assessmentData, assessmentGoogleData)
-        .subscribe();
-    } else {
-      this.dataService
-        .postSingleAudioDataToMongo(assessmentData, assessmentGoogleData)
-        .subscribe();
-    }
-    this.selectionData = [];
-  }
+  // pushSelectionData(): void {
+  //   const assessmentData = {
+  //     assess_name: 'timeduration',
+  //     data: { selection_data: this.selectionData },
+  //     completed: this.lastPrompt
+  //   };
+  //   const assessmentGoogleData = {
+  //     assess_name: 'timeduration',
+  //     data: { text: 'None' }
+  //   };
+  //   if (this.promptNumber === 0) {
+  //     this.dataService
+  //       .postAssessmentDataToFileSystem(assessmentData, assessmentGoogleData)
+  //       .subscribe();
+  //   } else {
+  //     this.dataService
+  //       .postSingleAudioDataToMongo(assessmentData, assessmentGoogleData)
+  //       .subscribe();
+  //   }
+  //   this.selectionData = [];
+  // }
 
   // finishAssessment(): void {
   //   this.stateManager.finishThisAssessmentAndAdvance('timeduration');

@@ -18,7 +18,7 @@
       <tbody>
         <tr *ngFor="let row of imagePaths">
           <td *ngFor="let image of row">
-            <button type="button" class="btn btn-outline-primary" (click)="selectImage(image)">
+            <button type="button" class="btn btn-outline-primary" (click)="clickImage(image)">
               <img class="img-fluid" [src]="image">
             </button>
           </td>
