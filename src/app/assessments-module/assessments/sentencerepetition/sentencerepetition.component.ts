@@ -44,12 +44,12 @@ export class SentencerepetitionComponent extends AudioAssessment
   filePathsToPlay = [];
   promptsLength = this.audioFileNumbersToPlay.length;
 
-  ngOnInit(): void {
-    this.stateManager.sendToCurrentIfAlreadyCompleted('sentencerepetition');
-    this.promptNumber = this.stateManager.assessments['sentencerepetition'][
-      'prompt_number'
-    ];
-  }
+  // ngOnInit(): void {
+  //   this.stateManager.sendToCurrentIfAlreadyCompleted('sentencerepetition');
+  //   this.promptNumber = this.stateManager.assessments['sentencerepetition'][
+  //     'prompt_number'
+  //   ];
+  // }
 
   setStateAndStart(): void {
     this.stateManager.showInnerAssessmentButton = false;
