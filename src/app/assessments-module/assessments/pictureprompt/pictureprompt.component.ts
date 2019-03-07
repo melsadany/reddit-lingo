@@ -26,7 +26,7 @@ export class PicturepromptComponent extends AudioAssessment
   ];
   showPromptImage = false;
   currentImagePrompt = '';
-  lastPrompt = false;
+  promptsLength = this.imageNames.length;
 
   constructor(
     public stateManager: StateManagerService,
@@ -53,17 +53,17 @@ export class PicturepromptComponent extends AudioAssessment
     this.stateManager.showInnerAssessmentButton = false;
     this.stateManager.textOnInnerAssessmentButton = 'CONTINUE ASSESSMENT';
     this.stateManager.isInAssessment = true;
-    this.advanceToNextPrompt();
+    this.advance();
   }
 
-  ngOnDestroy(): void {
-    this.abortRecording();
-    this.failSubscription.unsubscribe();
-    this.recordingTimeSubscription.unsubscribe();
-    this.recordedOutputSubscription.unsubscribe();
-    clearInterval(this.intervalCountdown);
-    clearTimeout(this.intervalCountup);
-  }
+  // ngOnDestroy(): void {
+  //   this.abortRecording();
+  //   this.failSubscription.unsubscribe();
+  //   this.recordingTimeSubscription.unsubscribe();
+  //   this.recordedOutputSubscription.unsubscribe();
+  //   clearInterval(this.intervalCountdown);
+  //   clearTimeout(this.intervalCountup);
+  // }
 
   getNextImagePath(): void {
     this.currentImagePrompt = this.imageNames[this.promptNumber];
@@ -97,26 +97,40 @@ export class PicturepromptComponent extends AudioAssessment
   //     clearTimeout(this.intervalCountup);
   //   }
   // }
+  // advanceToNextPrompt(): void {
+  //   this.stateManager.showInnerAssessmentButton = false;
+  //     this.getNextImagePath();
+  //     this.startDisplayedCountdownTimer(() => {
+  //       this.showPromptImage = true;
+  //       this.startRecording(30000, () => {
+  //         this.showPromptImage = false;
+  //         this.stateManager.showInnerAssessmentButton = true;
+  //       });
+  //     });
+  //   } else {
+  //     this.finishAssessment();
+  //   }
+  // }
 
-  advanceToNextPrompt(): void {
-    this.stateManager.showInnerAssessmentButton = false;
-    if (this.promptNumber < this.imageNames.length) {
-      if (this.promptNumber + 1 === this.imageNames.length) {
-        this.lastPrompt = true;
-        this.stateManager.textOnInnerAssessmentButton =
-          'FINISH ASSESSMENT AND ADVANCE';
-      }
-      this.getNextImagePath();
-      this.startDisplayedCountdownTimer(() => {
+  advance(): void {
+    this.advanceToNextPrompt(
+      () => {
         this.showPromptImage = true;
         this.startRecording(30000, () => {
           this.showPromptImage = false;
           this.stateManager.showInnerAssessmentButton = true;
         });
-      });
-    } else {
-      this.finishAssessment();
-    }
+      },
+      () => {
+        return new Promise(
+          (resolve, reject): void => {
+            this.stateManager.showInnerAssessmentButton = false;
+            this.getNextImagePath();
+            resolve('done');
+          }
+        );
+      }
+    );
   }
 
   // handleRecordedOutput(data: RecordedAudioOutput): void {
