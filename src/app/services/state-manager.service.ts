@@ -19,11 +19,18 @@ export class StateManagerService {
   private _currentAssessmentNumber = 1;
   private _assessmentsLeftLinkedList = new LinkedList<string>();
   private _totalAssessments: number;
+  private _loadingState = true;
 
   constructor(private routerService: Router) {
     this.totalAssessments = Object.keys(this.assessments).length;
   }
 
+  public get loadingState(): boolean {
+    return this._loadingState;
+  }
+  public set loadingState(value: boolean) {
+    this._loadingState = value;
+  }
   public get assessmentsLeftLinkedList(): LinkedList<string> {
     return this._assessmentsLeftLinkedList;
   }
@@ -116,6 +123,7 @@ export class StateManagerService {
       completed: false
     },
     ran: {
+      prompt_number: 0,
       completed: false
     },
     pictureprompt: {
@@ -142,9 +150,9 @@ export class StateManagerService {
       const existingAssessmentName = existingAssessment['assess_name'];
       if (existingAssessment['completed']) {
         this.assessments[existingAssessmentName]['completed'] = true;
-        console.log('Already completed: ' + existingAssessmentName);
+        console.log('Already completed: ' + existingAssessmentName); // KRM: For debugging
       } else if (!existingAssessment['completed']) {
-        console.log('Not fully completed: ' + existingAssessmentName);
+        console.log('Not fully completed: ' + existingAssessmentName); // KRM: For debugging
         let selector = '';
         if (existingAssessment['data']['recorded_data']) {
           selector = 'recorded_data';
@@ -162,7 +170,7 @@ export class StateManagerService {
             currentPromptNumber +
             ' of ' +
             existingAssessmentName
-        );
+        ); // KRM: For debugging
       }
     }
     for (const assessmentName of Object.keys(this.assessments)) {
@@ -176,6 +184,7 @@ export class StateManagerService {
     if (URLSections[1] === 'assessments' && URLSections[2]) {
       this.showOutsideAssessmentButton = false;
     }
+    this.loadingState = false;
   }
 
   private determineCurrentPromptNumber(existingData: Array<Object>): number {
@@ -200,7 +209,10 @@ export class StateManagerService {
   }
 
   public navigateTo(assessmentName: string): void {
-    if (assessmentName !== 'done' && this.assessments[assessmentName]['completed']) {
+    if (
+      assessmentName !== 'done' &&
+      this.assessments[assessmentName]['completed']
+    ) {
       console.log('Routing to already completed assessment: ' + assessmentName);
       return; // KRM: Do something better here to handle this, but I don't think I would ever call this with
       // an assessment name already completed.

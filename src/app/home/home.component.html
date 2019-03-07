@@ -8,7 +8,14 @@
 <div class='pb-5 text-center'>
   <!-- KRM: Get rid of this for the single assessment path -->
   <!-- <a [routerLink]="['/assessments', stateManager.currentAssessment]"> -->
+  <div *ngIf="stateManager.loadingState">
+    <button type='button' class='btn btn-info btn-lg' disabled>
+      Loading. Please wait.
+    </button>
+  </div>
+  <div *ngIf="!stateManager.loadingState">
     <button type='button' class='btn btn-primary btn-lg' (click)="stateManager.navigateTo(stateManager.currentAssessment)">START</button>
+  </div>
   <!-- </a> -->
 </div>
 <!-- <ng-template #elseBlock>

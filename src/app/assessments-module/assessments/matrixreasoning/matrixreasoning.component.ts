@@ -105,29 +105,23 @@ export class MatrixreasoningComponent extends SelectionAssessment
     super(stateManager, dialogService, dataService);
   }
 
-  ngOnInit(): void {
-    window.addEventListener('beforeunload', e => {
-      const confirmationMessage = 'o/';
-      console.log('cond');
-      e.returnValue = confirmationMessage; // Gecko, Trident, Chrome 34+
-      return confirmationMessage; // Gecko, WebKit, Chrome <34
-    });
-    this.stateManager.sendToCurrentIfAlreadyCompleted(this.assessmentName);
-    this.promptNumber = this.stateManager.assessments[this.assessmentName][
-      'prompt_number'
-    ];
-    if (this.promptNumber + 1 === this.promptsLength) {
-      this.lastPrompt = true;
-      this.stateManager.textOnInnerAssessmentButton =
-        'FINISH ASSESSMENT AND ADVANCE';
-    }
-    this.calculateImageNames();
-    console.log(this.imageMatrices);
-  }
+  // ngOnInit(): void {
+  //   this.stateManager.sendToCurrentIfAlreadyCompleted(this.assessmentName);
+  //   this.promptNumber = this.stateManager.assessments[this.assessmentName][
+  //     'prompt_number'
+  //   ];
+  //   if (this.promptNumber + 1 === this.promptsLength) {
+  //     this.lastPrompt = true;
+  //     this.stateManager.textOnInnerAssessmentButton =
+  //       'FINISH ASSESSMENT AND ADVANCE';
+  //   }
+  //   this.calculateImageNames();
+  //   console.log(this.imageMatrices);
+  // }
 
-  ngOnDestroy(): void {
-    clearInterval(this.intervalCountdown);
-  }
+  // ngOnDestroy(): void {
+  //   clearInterval(this.intervalCountdown);
+  // }
 
   setStateAndStart(): void {
     this.stateManager.showInnerAssessmentButton = false;

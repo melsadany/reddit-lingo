@@ -28,16 +28,16 @@ export class ListeningcomprehensionComponent extends SelectionAssessment
     super(stateManager, dialogService, dataService);
   }
 
-  ngOnInit(): void {
-    this.stateManager.sendToCurrentIfAlreadyCompleted('listeningcomprehension');
-    this.promptNumber = this.stateManager.assessments['listeningcomprehension'][
-      'prompt_number'
-    ];
-  }
+  // ngOnInit(): void {
+  //   this.stateManager.sendToCurrentIfAlreadyCompleted('listeningcomprehension');
+  //   this.promptNumber = this.stateManager.assessments['listeningcomprehension'][
+  //     'prompt_number'
+  //   ];
+  // }
 
-  ngOnDestroy(): void {
-    clearInterval(this.intervalCountdown);
-  }
+  // ngOnDestroy(): void {
+  //   clearInterval(this.intervalCountdown);
+  // }
 
   setStateAndStart(): void {
     this.stateManager.showInnerAssessmentButton = false;

@@ -22,7 +22,7 @@
   </div>
   <div class="text-center">
     <button type="button" class="stop-button btn btn-outline-secondary" *ngIf="audioRecordingService.isCurrentlyRecording()"
-      (click)="stopRecording()">DONE</button>
+      (click)="stopEarly()">DONE</button>
   </div>
   <!-- <button type="button" class="cancel-button btn btn-danger" *ngIf="!isRecording && blobUrl" (click)="clearRecordedData()">Clear Recording</button> KRM: For debugging usage only. -->
   <!-- <div *ngIf="isRecording && !blobUrl"> {{recordedTime}} </div> -->

@@ -7,9 +7,10 @@ import {
 import { AssessmentDataService } from '../services/assessment-data.service';
 import { DialogService } from '../services/dialog.service';
 import { Subscription } from 'rxjs';
-import { OnDestroy } from '@angular/core';
+import { OnDestroy, OnInit } from '@angular/core';
 
-export class AudioAssessment extends BaseAssessment implements OnDestroy {
+export class AudioAssessment extends BaseAssessment
+  implements OnInit, OnDestroy {
   isRecording = false;
   recordedData = [];
   intervalCountup: NodeJS.Timeout;
@@ -46,6 +47,24 @@ export class AudioAssessment extends BaseAssessment implements OnDestroy {
       .subscribe(data => {
         this.handleRecordedOutput(data);
       });
+  }
+
+  ngOnInit(): void {
+    window.addEventListener('beforeunload', e => {
+      const confirmationMessage = 'o/';
+      console.log('cond');
+      e.returnValue = confirmationMessage; // Gecko, Trident, Chrome 34+
+      return confirmationMessage; // Gecko, WebKit, Chrome <34
+    });
+    this.stateManager.sendToCurrentIfAlreadyCompleted(this.assessmentName);
+    this.promptNumber = this.stateManager.assessments[this.assessmentName][
+      'prompt_number'
+    ];
+    // if (this.promptNumber + 1 === this.promptsLength) {
+    //   this.lastPrompt = true;
+    //   this.stateManager.textOnInnerAssessmentButton =
+    //     'FINISH ASSESSMENT AND ADVANCE';
+    // }
   }
 
   ngOnDestroy(): void {
