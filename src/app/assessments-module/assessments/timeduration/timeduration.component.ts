@@ -13,7 +13,6 @@ import { SelectionAssessment } from '../../../structures/SelectionAssessment';
 export class TimedurationComponent extends SelectionAssessment
   implements OnInit, OnDestroy, CanComponentDeactivate {
   assessmentName = 'timeduration';
-  promptsLength = 8; // KRM: Voodoo constant here
   showAnimation = false;
   timerInterval: NodeJS.Timer;
   animationInterval: NodeJS.Timer;
@@ -21,6 +20,7 @@ export class TimedurationComponent extends SelectionAssessment
   currentTimeSelected;
   canSelect = false;
   durations = [5, 1.5, 0.5, 11, 5, 1, 7, 0.75];
+  promptsLength = this.durations.length;
   displayPercentage = 100;
   animationDuration;
   displaySubtitle = 'Wait';
@@ -36,26 +36,10 @@ export class TimedurationComponent extends SelectionAssessment
     super(stateManager, dialogService, dataService);
   }
 
-  ngOnInit(): void {
-    this.stateManager.sendToCurrentIfAlreadyCompleted('timeduration');
-    this.promptNumber = this.stateManager.assessments['timeduration'][
-      'prompt_number'
-    ];
-    if (this.promptNumber + 1 === 8) {
-      this.lastPrompt = true;
-      this.stateManager.textOnInnerAssessmentButton =
-        'FINISH ASSESSMENT AND ADVANCE';
-    }
-  }
-
   setStateAndStart(): void {
     this.stateManager.textOnInnerAssessmentButton = 'CONTINUE ASSESSMENT';
     this.stateManager.isInAssessment = true;
     this.advance();
-  }
-
-  ngOnDestroy(): void {
-    clearInterval(this.intervalCountdown);
   }
 
   startTimer(): void {
@@ -89,23 +73,6 @@ export class TimedurationComponent extends SelectionAssessment
       }
     );
   }
-
-  // advanceToNextPrompt(): void {
-  //   this.stateManager.showInnerAssessmentButton = false;
-  //   if (this.promptNumber < this.promptsLength) {
-  //     if (this.promptNumber + 1 === this.promptsLength) {
-  //       this.lastPrompt = true;
-  //       this.stateManager.textOnInnerAssessmentButton =
-  //         'FINISH ASSESSMENT AND ADVANCE';
-  //     }
-  //     this.startDisplayedCountdownTimer(() => {
-  //       this.showAnimation = true;
-  //       this.displayAnimation(this.durations[this.promptNumber]);
-  //     });
-  //   } else {
-  //     this.finishAssessment();
-  //   }
-  // }
 
   pauseTimer(): void {
     if (this.selecting) {
@@ -141,33 +108,4 @@ export class TimedurationComponent extends SelectionAssessment
       this.canAnimate = false;
     }, this.animationDuration);
   }
-
-  // pushSelectionData(): void {
-  //   const assessmentData = {
-  //     assess_name: 'timeduration',
-  //     data: { selection_data: this.selectionData },
-  //     completed: this.lastPrompt
-  //   };
-  //   const assessmentGoogleData = {
-  //     assess_name: 'timeduration',
-  //     data: { text: 'None' }
-  //   };
-  //   if (this.promptNumber === 0) {
-  //     this.dataService
-  //       .postAssessmentDataToFileSystem(assessmentData, assessmentGoogleData)
-  //       .subscribe();
-  //   } else {
-  //     this.dataService
-  //       .postSingleAudioDataToMongo(assessmentData, assessmentGoogleData)
-  //       .subscribe();
-  //   }
-  //   this.selectionData = [];
-  // }
-
-  // finishAssessment(): void {
-  //   this.stateManager.finishThisAssessmentAndAdvance('timeduration');
-  // }
-  // canDeactivate(): boolean {
-  //   return this.dialogService.canRedirect();
-  // }
 }
