@@ -1,8 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
-import {
-  AudioRecordingService,
-} from '../../../services/audio-recording.service';
+import { AudioRecordingService } from '../../../services/audio-recording.service';
 import { DialogService } from '../../../services/dialog.service';
 import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 import { StateManagerService } from '../../../services/state-manager.service';
@@ -18,6 +16,7 @@ export class SentencerepetitionComponent extends AudioAssessment
   assessmentName = 'sentencerepetition';
   promptNumber = 0;
   playingAudio = false;
+  audioDurationMs: number;
 
   constructor(
     public stateManager: StateManagerService,
@@ -68,7 +67,7 @@ export class SentencerepetitionComponent extends AudioAssessment
   advance(): void {
     this.advanceToNextPrompt(
       () =>
-        this.startRecording(5000, () =>
+        this.startRecording(this.audioDurationMs, () =>
           this.stopRecording(
             () => (this.stateManager.showInnerAssessmentButton = true)
           )
@@ -95,6 +94,8 @@ export class SentencerepetitionComponent extends AudioAssessment
     const audio = new Audio();
     audio.src = this.filePathsToPlay[this.promptNumber];
     audio.onplaying = (ev: Event): any => (this.playingAudio = true);
+    audio.ondurationchange = (en: Event): number =>
+      (this.audioDurationMs = audio.duration * 1000 + 3000);
     return audio;
   }
 }
