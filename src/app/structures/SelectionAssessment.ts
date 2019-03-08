@@ -60,6 +60,25 @@ export class SelectionAssessment extends BaseAssessment
     }
   }
 
+  sendWordSelectionAndAdvance(
+    words: string,
+    intermediateFunction: Function,
+    advanceCallBack: Function
+  ): void {
+    this.selectionData.push({
+      prompt_number: this.promptNumber,
+      words_selected: words
+    });
+    this.pushSelectionData();
+    this.promptNumber++;
+    intermediateFunction();
+    if (this.lastPrompt) {
+      this.stateManager.showInnerAssessmentButton = true;
+    } else {
+      advanceCallBack();
+    }
+  }
+
   pushSelectionData(): void {
     const assessmentData = {
       assess_name: this.assessmentName,

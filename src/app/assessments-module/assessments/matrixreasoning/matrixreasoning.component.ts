@@ -105,34 +105,20 @@ export class MatrixreasoningComponent extends SelectionAssessment
     super(stateManager, dialogService, dataService);
   }
 
-  // ngOnInit(): void {
-  //   this.stateManager.sendToCurrentIfAlreadyCompleted(this.assessmentName);
-  //   this.promptNumber = this.stateManager.assessments[this.assessmentName][
-  //     'prompt_number'
-  //   ];
-  //   if (this.promptNumber + 1 === this.promptsLength) {
-  //     this.lastPrompt = true;
-  //     this.stateManager.textOnInnerAssessmentButton =
-  //       'FINISH ASSESSMENT AND ADVANCE';
-  //   }
-  //   this.calculateImageNames();
-  //   console.log(this.imageMatrices);
-  // }
-
-  // ngOnDestroy(): void {
-  //   clearInterval(this.intervalCountdown);
-  // }
-
   setStateAndStart(): void {
     this.stateManager.showInnerAssessmentButton = false;
     this.stateManager.textOnInnerAssessmentButton = 'CONTINUE ASSESSMENT';
     this.stateManager.isInAssessment = true;
-    this.advanceToNextPrompt(() => (this.showMatrix = true));
+    this.advance();
   }
 
   calculateImageNames(): void {
     this.calculateFrameSets();
     this.calculateSolutionSets();
+  }
+
+  advance(): void {
+    this.advanceToNextPrompt(() => (this.showMatrix = true));
   }
 
   calculateFrameSets(): void {

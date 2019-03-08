@@ -102,6 +102,11 @@ export class StateManagerService {
     prescreenerquestions: {
       completed: false
     },
+    wordassociation: {
+      prompt_number: 0,
+      selected_words: [],
+      completed: false
+    },
     wordfinding: {
       prompt_number: 0,
       completed: false
@@ -171,6 +176,12 @@ export class StateManagerService {
             ' of ' +
             existingAssessmentName
         ); // KRM: For debugging
+        if (existingAssessmentName === 'wordassociation') {
+          this.assessments.wordassociation.selected_words =
+            existingAssessment['data']['selection_data'][
+              currentPromptNumber - 1
+            ]['words_selected'];
+        }
       }
     }
     for (const assessmentName of Object.keys(this.assessments)) {
@@ -257,6 +268,9 @@ export class StateManagerService {
         break;
       case 'prescreenerquestions':
         translatedName = 'Pre-screener Questions';
+        break;
+      case 'wordassociation':
+        translatedName = 'Word Association';
         break;
       case 'wordfinding':
         translatedName = 'Word Finding';

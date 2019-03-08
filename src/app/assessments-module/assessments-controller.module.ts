@@ -36,6 +36,7 @@ import { SentencerepetitionComponent } from './assessments/sentencerepetition/se
 import { WordfindingComponent } from './assessments/wordfinding/wordfinding.component';
 import { PostscreenerquestionsComponent } from './assessments/postscreenerquestions/postscreenerquestions.component';
 import { DiagnosticsComponent } from './assessments/diagnostics/diagnostics.component';
+import { WordassociationComponent } from './assessments/wordassociation/wordassociation.component';
 
 @NgModule({
   imports: [
@@ -70,7 +71,8 @@ import { DiagnosticsComponent } from './assessments/diagnostics/diagnostics.comp
     SentencerepetitionComponent,
     WordfindingComponent,
     PostscreenerquestionsComponent,
-    DiagnosticsComponent
+    DiagnosticsComponent,
+    WordassociationComponent
   ],
   providers: [
     {
