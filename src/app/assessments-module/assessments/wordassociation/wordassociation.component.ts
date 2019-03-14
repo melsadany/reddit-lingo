@@ -3,6 +3,7 @@ import { SelectionAssessment } from '../../../structures/SelectionAssessment';
 import { StateManagerService } from '../../../services/state-manager.service';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import { DialogService } from '../../../services/dialog.service';
+import * as data from '../../../../assets/data/wordmappings.json';
 
 @Component({
   selector: 'app-wordassociation',
@@ -10,113 +11,109 @@ import { DialogService } from '../../../services/dialog.service';
   styleUrls: ['./wordassociation.component.scss']
 })
 export class WordassociationComponent extends SelectionAssessment {
+  assessmentName = 'wordassociation';
+  wordAssociations: Object = data['words'];
+  wordSack = Object.keys(data['words']);
+  startWords = this.getStartWords();
+  promptsLength = this.startWords.length;
+  showWords = false;
+  spanNumber = 12;
+  selectedWordsThisPrompt: string[];
+  currentPromptMatrix: string[][];
   constructor(
     stateManager: StateManagerService,
     dialogService: DialogService,
     dataService: AssessmentDataService
   ) {
     super(stateManager, dialogService, dataService);
-    this.selectedWords = this.stateManager.assessments.wordassociation.selected_words;
+    this.promptNumber = this.stateManager.assessments.wordassociation.prompt_number;
+    console.log(this.stateManager.getCurrentURL());
   }
-
-  assessmentName = 'wordassociation';
-  showWords = false;
-  selectedWords;
-  startWords = [
-    'hello',
-    'barn',
-    'car',
-    'hawkeyes',
-    'seven',
-    'rainbow',
-    'explosion'
-  ];
-  wordsSack = [
-    'combative',
-    'woebegone',
-    'hilarious',
-    'three',
-    'annoying',
-    'curl',
-    'whisper',
-    'gullible',
-    'base',
-    'taste',
-    'man',
-    'property',
-    'playground',
-    'birds',
-    'tawdry',
-    'crayon',
-    'discovery',
-    'release',
-    'aromatic',
-    'upbeat',
-    'swim',
-    'brown',
-    'mist',
-    'public'
-  ];
-  promptsLength = this.startWords.length;
-  currentPromptWords = [];
-  currentPromptMatrix = [];
 
   setStateAndStart(): void {
     this.stateManager.showInnerAssessmentButton = false;
     this.stateManager.textOnInnerAssessmentButton = 'CONTINUE ASSESSMENT';
     this.stateManager.isInAssessment = true;
-    this.selectedWords.push(this.startWords.pop());
-    this.setupPrompt();
+    this.showExample = false;
     this.advance();
   }
 
   getRandomIndex(): number {
-    return Math.floor(Math.random() * this.wordsSack.length);
+    return Math.floor(Math.random() * this.wordSack.length);
   }
 
-  addUniqueRandomWordToPrompt(): void {
-    let index = this.getRandomIndex();
-    let word = this.wordsSack[index];
-    while (this.currentPromptWords.includes(word)) {
-      index = this.getRandomIndex();
-      word = this.wordsSack[index];
+  getStartWords(): string[] {
+    const returnList = [];
+    for (let i = 0; i < 5; i++) {
+      // KRM: Determines prompt length
+      const index = this.getRandomIndex();
+      returnList.push(this.wordSack[index]);
     }
-    this.currentPromptWords.push(word);
-  }
-
-  buildPrompt(): void {
-    this.currentPromptWords = [];
-    for (let i = 0; i < 9; i++) {
-      this.addUniqueRandomWordToPrompt();
-    }
+    return returnList;
   }
 
   makeMatrix(): void {
     this.currentPromptMatrix = [];
+    const nextAssociationWord = this.selectedWordsThisPrompt.slice(-1)[0];
+    const currentWordsForPrompt: string[] = Object.assign(
+      [],
+      this.wordAssociations[nextAssociationWord]
+    );
     for (let i = 0; i < 3; i++) {
       const row = [];
       for (let j = 0; j < 3; j++) {
-        row.push(this.currentPromptWords.pop());
+        row.push(currentWordsForPrompt.pop());
       }
       this.currentPromptMatrix.push(row);
     }
   }
 
-  setupPrompt(): void {
-    this.buildPrompt();
-    this.makeMatrix();
-  }
-
   advance(): void {
-    this.advanceToNextPrompt(() => (this.showWords = true));
+    // this.selectedWordsThisPrompt = [];
+    this.advanceToNextPrompt(
+      () => (this.showWords = true),
+      () => {
+        return new Promise(
+          (resolve, reject): void => {
+            this.handleNewPrompt();
+            resolve('done');
+          }
+        );
+      }
+    );
   }
 
   clickWord(word: string): void {
-    this.selectedWords.push(word);
-    this.sendWordSelectionAndAdvance(
-      this.selectedWords,
-      () => (this.showWords = false),
-      () => this.advanceToNextPrompt(() => (this.showWords = true))
-    );
+    this.selectedWordsThisPrompt.push(word);
+    this.spanNumber = Math.ceil(12 / this.selectedWordsThisPrompt.length);
+    console.log(this.spanNumber);
+    if (this.selectedWordsThisPrompt.length === 6) {
+      // KRM: You get 5 selections
+      this.sendWordSelectionAndAdvance(
+        this.selectedWordsThisPrompt,
+        () => (this.showWords = false),
+        () =>
+          this.advanceToNextPrompt(
+            () => (this.showWords = true),
+            () => {
+              return new Promise(
+                (resolve, reject): void => {
+                  this.handleNewPrompt();
+                  resolve('done');
+                }
+              );
+            }
+          )
+      );
+    } else {
+      this.makeMatrix();
+    }
+  }
+
+  handleNewPrompt(): void {
+    this.selectedWordsThisPrompt = [];
+    this.selectedWordsThisPrompt.push(this.startWords[this.promptNumber]);
+    this.spanNumber = Math.ceil(12 / this.selectedWordsThisPrompt.length);
+    this.makeMatrix();
   }
 }

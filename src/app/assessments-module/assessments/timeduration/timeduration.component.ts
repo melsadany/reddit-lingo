@@ -4,6 +4,10 @@ import { DialogService } from '../../../services/dialog.service';
 import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 import { StateManagerService } from '../../../services/state-manager.service';
 import { SelectionAssessment } from '../../../structures/SelectionAssessment';
+import {
+  HammerGestureConfig,
+  HAMMER_GESTURE_CONFIG
+} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-timeduration',
@@ -28,6 +32,8 @@ export class TimedurationComponent extends SelectionAssessment
   outerStrokeColor = '#78C000';
   innerStrokeColor = '#C7E596';
   startTime;
+  hammerStage: HTMLElement;
+  hammerManager;
   constructor(
     public stateManager: StateManagerService,
     public dataService: AssessmentDataService,
@@ -37,8 +43,10 @@ export class TimedurationComponent extends SelectionAssessment
   }
 
   setStateAndStart(): void {
+    this.stateManager.showInnerAssessmentButton = false;
     this.stateManager.textOnInnerAssessmentButton = 'CONTINUE ASSESSMENT';
     this.stateManager.isInAssessment = true;
+    this.showExample = false;
     this.advance();
   }
 

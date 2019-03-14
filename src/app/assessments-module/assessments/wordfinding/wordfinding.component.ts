@@ -43,35 +43,11 @@ export class WordfindingComponent extends AudioAssessment
     super(stateManager, audioRecordingService, dataService, dialogService);
   }
 
-  // ngOnInit(): void {
-  //   this.stateManager.sendToCurrentIfAlreadyCompleted(this.assessmentName);
-  //   this.promptNumber = this.stateManager.assessments[this.assessmentName][
-  //     'prompt_number'
-  //   ];
-  //   if (this.promptNumber + 1 === this.letterData.length) {
-  //     this.lastPrompt = true;
-  //     this.stateManager.textOnInnerAssessmentButton =
-  //       'FINISH ASSESSMENT AND ADVANCE';
-  //   }
-  // }
-
-  // ngOnDestroy(): void {
-  //   this.abortRecording();
-  //   this.failSubscription.unsubscribe();
-  //   this.recordingTimeSubscription.unsubscribe();
-  //   this.recordedOutputSubscription.unsubscribe();
-  //   clearInterval(this.intervalCountdown);
-  //   clearTimeout(this.intervalCountup);
-  // }
-
   setStateAndStart(): void {
+    this.stateManager.showInnerAssessmentButton = false;
     this.stateManager.textOnInnerAssessmentButton = 'CONTINUE ASSESSMENT';
     this.stateManager.isInAssessment = true;
     this.advance();
-    // this.startDisplayedCountdownTimer(() => {
-    //   this.showLetter = true;
-    //   this.startRecording(30000, () => (this.showLetter = false));
-    // });
   }
 
   calculateNextLetter(): void {
@@ -79,24 +55,6 @@ export class WordfindingComponent extends AudioAssessment
     this.currentLetter =
       currentChoices[Math.floor(Math.random() * currentChoices.length)];
   }
-
-  // advanceToNextPrompt(): void {
-  //   if (this.promptNumber < this.letterData.length) {
-  //     if (this.promptNumber + 1 === this.letterData.length) {
-  //       this.lastPrompt = true;
-  //       this.stateManager.textOnInnerAssessmentButton =
-  //         'FINISH ASSESSMENT AND ADVANCE';
-  //     }
-  //     this.calculateNextLetter();
-  //     this.stateManager.showInnerAssessmentButton = false;
-  //     this.startDisplayedCountdownTimer(() => {
-  //       this.showLetter = true;
-  //       this.startRecording(30000, () => (this.showLetter = false));
-  //     });
-  //   } else {
-  //     this.finishAssessment();
-  //   }
-  // }
 
   advance(): void {
     this.stateManager.showInnerAssessmentButton = false;

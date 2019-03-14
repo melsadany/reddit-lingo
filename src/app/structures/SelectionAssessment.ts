@@ -61,7 +61,7 @@ export class SelectionAssessment extends BaseAssessment
   }
 
   sendWordSelectionAndAdvance(
-    words: string,
+    words: string | string[],
     intermediateFunction: Function,
     advanceCallBack: Function
   ): void {
@@ -122,5 +122,9 @@ export class SelectionAssessment extends BaseAssessment
     } else {
       this.finishAssessment();
     }
+  }
+
+  selectSingleWordInPrompt(word: string, afterCallBack: Function): void {
+    afterCallBack();
   }
 }

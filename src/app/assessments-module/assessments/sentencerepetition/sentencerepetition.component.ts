@@ -17,16 +17,6 @@ export class SentencerepetitionComponent extends AudioAssessment
   promptNumber = 0;
   playingAudio = false;
   audioDurationMs: number;
-
-  constructor(
-    public stateManager: StateManagerService,
-    public dataService: AssessmentDataService,
-    public audioRecordingService: AudioRecordingService,
-    public dialogService: DialogService
-  ) {
-    super(stateManager, audioRecordingService, dataService, dialogService);
-  }
-
   audioFilesLocation = 'assets/audio/sentencerepetition/';
   audioFileNumbersToPlay: string[] = [
     '1',
@@ -43,18 +33,19 @@ export class SentencerepetitionComponent extends AudioAssessment
   filePathsToPlay = [];
   promptsLength = this.audioFileNumbersToPlay.length;
 
-  // ngOnInit(): void {
-  //   this.stateManager.sendToCurrentIfAlreadyCompleted('sentencerepetition');
-  //   this.promptNumber = this.stateManager.assessments['sentencerepetition'][
-  //     'prompt_number'
-  //   ];
-  // }
+  constructor(
+    public stateManager: StateManagerService,
+    public dataService: AssessmentDataService,
+    public audioRecordingService: AudioRecordingService,
+    public dialogService: DialogService
+  ) {
+    super(stateManager, audioRecordingService, dataService, dialogService);
+    this.calculateFilePaths();
+  }
 
   setStateAndStart(): void {
-    this.stateManager.showInnerAssessmentButton = false;
     this.stateManager.textOnInnerAssessmentButton = 'CONTINUE ASSESSMENT';
     this.stateManager.isInAssessment = true;
-    this.calculateFilePaths();
     this.advance();
   }
 

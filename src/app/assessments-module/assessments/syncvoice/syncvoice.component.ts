@@ -11,17 +11,7 @@ import { AudioAssessment } from '../../../structures/AudioAssessment';
   templateUrl: './syncvoice.component.html',
   styleUrls: ['./syncvoice.component.scss']
 })
-export class SyncvoiceComponent extends AudioAssessment
-  implements OnInit, OnDestroy, CanComponentDeactivate {
-  constructor(
-    public stateManager: StateManagerService,
-    public dataService: AssessmentDataService,
-    public audioRecordingService: AudioRecordingService,
-    public dialogService: DialogService
-  ) {
-    super(stateManager, audioRecordingService, dataService, dialogService);
-  }
-
+export class SyncvoiceComponent extends AudioAssessment {
   assessmentName = 'syncvoice';
   playingAudio = false;
   lalaLocations = 'assets/audio/syncvoice/';
@@ -33,10 +23,20 @@ export class SyncvoiceComponent extends AudioAssessment
   ];
   promptsLength = this.audioNames.length;
 
+  constructor(
+    public stateManager: StateManagerService,
+    public dataService: AssessmentDataService,
+    public audioRecordingService: AudioRecordingService,
+    public dialogService: DialogService
+  ) {
+    super(stateManager, audioRecordingService, dataService, dialogService);
+    this.calculateAudioFilePaths();
+  }
+
   setStateAndStart(): void {
+    this.stateManager.showInnerAssessmentButton = false;
     this.stateManager.textOnInnerAssessmentButton = 'CONTINUE ASSESSMENT';
     this.stateManager.isInAssessment = true;
-    this.calculateAudioFilePaths();
     this.advance();
   }
 

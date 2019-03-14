@@ -33,18 +33,6 @@ export class PicturepromptComponent extends AudioAssessment
     super(stateManager, audioRecordingService, dataService, dialogService);
   }
 
-  // ngOnInit(): void {
-  //   this.stateManager.sendToCurrentIfAlreadyCompleted('pictureprompt');
-  //   this.promptNumber = this.stateManager.assessments['pictureprompt'][
-  //     'prompt_number'
-  //   ];
-  //   if (this.promptNumber + 1 === this.imageNames.length) {
-  //     this.lastPrompt = true;
-  //     this.stateManager.textOnInnerAssessmentButton =
-  //       'FINISH ASSESSMENT AND ADVANCE';
-  //   }
-  // }
-
   setStateAndStart(): void {
     this.stateManager.showInnerAssessmentButton = false;
     this.stateManager.textOnInnerAssessmentButton = 'CONTINUE ASSESSMENT';

@@ -1,14 +1,19 @@
 import { StateManagerService } from '../services/state-manager.service';
 import { DialogService } from '../services/dialog.service';
+import { CanComponentDeactivate } from '../guards/can-deactivate.guard';
 
-export class BaseAssessment {
+export class BaseAssessment implements CanComponentDeactivate {
   assessmentName: string;
   countingDown = false;
   intervalCountdown: NodeJS.Timeout;
   timeLeft = 3;
   doneCountingDown = false;
+  showExample = true;
 
-  constructor(public stateManager: StateManagerService, public dialogService: DialogService) {
+  constructor(
+    public stateManager: StateManagerService,
+    public dialogService: DialogService
+  ) {
     this.stateManager.showOutsideAssessmentButton = false;
   }
 
@@ -34,5 +39,4 @@ export class BaseAssessment {
   canDeactivate(): boolean {
     return this.dialogService.canRedirect();
   }
-
 }

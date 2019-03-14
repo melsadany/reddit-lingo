@@ -7,25 +7,25 @@
       around the circle. We’ll have you do a trial run so you get the idea. Click the button when you’re ready to try
       it.
     </p>
-  <div *ngIf="stateManager.showInnerAssessmentButton" class="text-center button-down">
-    <button *ngIf="!stateManager.isInAssessment" type="button" class="start-button btn btn-success" (click)="setStateAndStart()">{{stateManager.textOnInnerAssessmentButton}}</button>
-    <button *ngIf="stateManager.isInAssessment" type="button" class="start-button btn btn-success" (click)="advance()">{{stateManager.textOnInnerAssessmentButton}}</button>
+    <div *ngIf="showExample" class="text-center">
+      <img class="img-fluid" src="assets/animations/examples/timeduration_example.gif" style="margin-bottom: 20px;" />
+    </div>
+    <div *ngIf="stateManager.showInnerAssessmentButton" class="text-center button-down">
+      <button *ngIf="!stateManager.isInAssessment" type="button" class="start-button btn btn-success" (click)="setStateAndStart()">{{stateManager.textOnInnerAssessmentButton}}</button>
+      <button *ngIf="stateManager.isInAssessment" type="button" class="start-button btn btn-success" (click)="advance()">{{stateManager.textOnInnerAssessmentButton}}</button>
+    </div>
   </div>
-  </div>
-  <div class="imageParent" *ngIf="showAnimation">
-    <circle-progress (mousedown)="startTimer()" (mouseup)="pauseTimer()" [responsive]="true" [percent]="displayPercentage"
-      [radius]="100" [outerStrokeWidth]="16" [innerStrokeWidth]="8" [outerStrokeColor]="outerStrokeColor"
-      [innerStrokeColor]="innerStrokeColor" [animation]="canAnimate" [animationDuration]="animationDuration"
-      [maxPercent]="100" [renderOnClick]="false" [showTitle]='false' [subtitle]="displaySubtitle" [showUnits]='false'>
-    </circle-progress>
+  <div class="text-center" *ngIf="showAnimation">
+    <button class="btn btn-outline-light" style="max-height: 900px;" (press)="startTimer()" (pressup)="pauseTimer()">
+      <circle-progress [responsive]="true" [percent]="displayPercentage" [radius]="100" [outerStrokeWidth]="16"
+        [innerStrokeWidth]="8" [outerStrokeColor]="outerStrokeColor" [innerStrokeColor]="innerStrokeColor" [animation]="canAnimate"
+        [animationDuration]="animationDuration" [maxPercent]="100" [renderOnClick]="false" [showTitle]='false'
+        [subtitle]="displaySubtitle" [showUnits]='false'>
+      </circle-progress>
+    </button>
   </div>
   <div class="text-center">
     <div *ngIf="showAnimation"> {{currentTimeHeld}} </div>
   </div>
-  <!-- <div>
-    <audio *ngIf="!isRecording && blobUrl"  controls>
-      <source [src]="blobUrl" type="audio/webm">
-    </audio>
-</div> KRM: For debugging usage only. -->
   <p *ngIf="countingDown" class="text-center display-1">{{timeLeft}}</p>
 </div>

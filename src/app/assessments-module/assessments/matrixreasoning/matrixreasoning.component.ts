@@ -10,8 +10,7 @@ import { SelectionAssessment } from '../../../structures/SelectionAssessment';
   templateUrl: './matrixreasoning.component.html',
   styleUrls: ['./matrixreasoning.component.scss']
 })
-export class MatrixreasoningComponent extends SelectionAssessment
-  implements OnInit, CanComponentDeactivate, OnDestroy {
+export class MatrixreasoningComponent extends SelectionAssessment {
   imagesLocation = 'assets/img/matrixreasoning/';
   dimensions = {
     frameSets: {
@@ -103,6 +102,7 @@ export class MatrixreasoningComponent extends SelectionAssessment
     public dialogService: DialogService
   ) {
     super(stateManager, dialogService, dataService);
+    this.calculateImageNames();
   }
 
   setStateAndStart(): void {

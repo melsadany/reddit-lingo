@@ -104,7 +104,6 @@ export class StateManagerService {
     },
     wordassociation: {
       prompt_number: 0,
-      selected_words: [],
       completed: false
     },
     wordfinding: {
@@ -176,12 +175,6 @@ export class StateManagerService {
             ' of ' +
             existingAssessmentName
         ); // KRM: For debugging
-        if (existingAssessmentName === 'wordassociation') {
-          this.assessments.wordassociation.selected_words =
-            existingAssessment['data']['selection_data'][
-              currentPromptNumber - 1
-            ]['words_selected'];
-        }
       }
     }
     for (const assessmentName of Object.keys(this.assessments)) {
@@ -258,6 +251,10 @@ export class StateManagerService {
     this.assessmentsLeftLinkedList.removeHead();
     this.textOnInnerAssessmentButton = 'START ASSESSMENT';
     this.goToNextAssessment();
+  }
+
+  public getCurrentURL(): string {
+    return this.routerService.url;
   }
 
   public translateAssessmentName(assessment: string): string {

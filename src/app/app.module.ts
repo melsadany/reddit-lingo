@@ -1,4 +1,8 @@
-import { BrowserModule } from '@angular/platform-browser';
+import {
+  BrowserModule,
+  HammerGestureConfig,
+  HAMMER_GESTURE_CONFIG
+} from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
@@ -20,7 +24,13 @@ import { AssessmentDataService } from './services/assessment-data.service';
 import { DialogService } from './services/dialog.service';
 import { StateManagerService } from './services/state-manager.service';
 import { AudioRecordingService } from './services/audio-recording.service';
-import { AssessmentsControllerComponent } from './assessments-module/assessments-controller.component';
+
+export class HammerJSConfig extends HammerGestureConfig {
+  overrides = <any>{
+    // Set override settings for hammerjs configuration
+    press: { time: 3 } // In MS
+  };
+}
 
 @NgModule({
   declarations: [
@@ -28,7 +38,7 @@ import { AssessmentsControllerComponent } from './assessments-module/assessments
     HeaderComponent,
     HomeComponent,
     AboutComponent,
-    ContactComponent,
+    ContactComponent
   ],
   imports: [
     BrowserModule,
@@ -38,7 +48,7 @@ import { AssessmentsControllerComponent } from './assessments-module/assessments
     AuthModule,
     AdminModule,
     AssessmentsModule,
-    AppRoutingModule,
+    AppRoutingModule
   ],
   providers: [
     CookieService,
@@ -46,6 +56,10 @@ import { AssessmentsControllerComponent } from './assessments-module/assessments
     DialogService,
     StateManagerService,
     AudioRecordingService,
+    {
+      provide: HAMMER_GESTURE_CONFIG,
+      useClass: HammerJSConfig
+    }
   ],
   entryComponents: [],
   bootstrap: [AppComponent]
