@@ -17,7 +17,7 @@
   </div>
   <div class="text-center" *ngIf="showAnimation">
     <!-- <button class="btn btn-lg btn-outline-light"> -->
-    <circle-progress (press)="toggle()" [responsive]="false" [percent]="displayPercentage" [radius]="245"
+    <circle-progress (press)="toggle()" [responsive]="false" [percent]="displayPercentage" [radius]="radius"
       [outerStrokeWidth]="16" [innerStrokeWidth]="8" [outerStrokeColor]="outerStrokeColor" [innerStrokeColor]="innerStrokeColor"
       [animation]="canAnimate" [animationDuration]="animationDuration" [maxPercent]="100" [renderOnClick]="false"
       [showTitle]='false' [subtitle]="displaySubtitle" [showUnits]='false' [subtitleFontSize]='25'>

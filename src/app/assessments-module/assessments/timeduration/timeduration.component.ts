@@ -30,12 +30,18 @@ export class TimedurationComponent extends SelectionAssessment
   startTime;
   hammerStage: HTMLElement;
   hammerManager;
+  radius: number;
   constructor(
     public stateManager: StateManagerService,
     public dataService: AssessmentDataService,
     public dialogService: DialogService
   ) {
     super(stateManager, dialogService, dataService);
+    if (this.stateManager.inMobileBrowser) {
+      this.radius = 200;
+    } else {
+      this.radius = 245;
+    }
   }
 
   setStateAndStart(): void {
