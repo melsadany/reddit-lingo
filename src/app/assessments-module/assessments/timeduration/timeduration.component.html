@@ -2,10 +2,12 @@
   <div *ngIf="stateManager.showAssessmentFrontPage">
     <p class="py-4 text-center">
       You will see a line that moves around the outside of a circle. The speed of the line will change from trial to
-      trial. When the line stops moving, hold down the button for as long as you think it took the line to complete its
-      course
-      around the circle. We’ll have you do a trial run so you get the idea. Click the button when you’re ready to try
-      it.
+      trial. Observe how long you think it takes for the line to move around the circle. When the line stops moving,
+      you will be able to press the circle to begin a timer. When you think the timer has been enabled for as long as
+      it
+      took for the line to originally move around the circle, press the circle again to stop the timer. Watch the
+      animation below
+      to get the idea of what a trial will look like. Click the button when you’re ready to try it.
     </p>
     <div *ngIf="showExample" class="text-center">
       <img class="img-fluid" src="assets/animations/examples/timeduration_example.gif" style="margin-bottom: 20px;" />
@@ -16,13 +18,12 @@
     </div>
   </div>
   <div class="text-center" *ngIf="showAnimation">
-    <!-- <button class="btn btn-lg btn-outline-light"> -->
     <circle-progress (press)="toggle()" [responsive]="false" [percent]="displayPercentage" [radius]="radius"
-      [outerStrokeWidth]="16" [innerStrokeWidth]="8" [outerStrokeColor]="outerStrokeColor" [innerStrokeColor]="innerStrokeColor"
-      [animation]="canAnimate" [animationDuration]="animationDuration" [maxPercent]="100" [renderOnClick]="false"
-      [showTitle]='false' [subtitle]="displaySubtitle" [showUnits]='false' [subtitleFontSize]='25'>
+      [outerStrokeWidth]="16" [innerStrokeWidth]="innerStrokeWidth" [outerStrokeColor]="outerStrokeColor"
+      [innerStrokeColor]="innerStrokeColor" [animation]="canAnimate" [animationDuration]="animationDuration"
+      [maxPercent]="100" [renderOnClick]="false" [showTitle]='false' [subtitle]="displaySubtitle" [showUnits]='false'
+      [subtitleFontSize]='subtitleFontSize' [space]='currentSpace'>
     </circle-progress>
-    <!-- </button> -->
   </div>
   <div class="text-center">
     <div *ngIf="showAnimation"> {{currentTimeHeld}} </div>

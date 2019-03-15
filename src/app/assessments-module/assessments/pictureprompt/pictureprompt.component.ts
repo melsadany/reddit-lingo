@@ -22,7 +22,7 @@ export class PicturepromptComponent extends AudioAssessment
   ];
   showPromptImage = false;
   currentImagePrompt = '';
-  promptsLength = this.imageNames.length;
+  promptsLength = this.imageNames.length - 1;
 
   constructor(
     public stateManager: StateManagerService,

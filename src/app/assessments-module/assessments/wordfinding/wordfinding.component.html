@@ -17,7 +17,8 @@
   <div class="text-center" *ngIf="audioRecordingService.isCurrentlyRecording()">
     <!-- <mat-spinner style="margin:0 auto;" class="text-center mb-2"></mat-spinner> -->
     <!-- <button type="button" class="cancel-button btn btn-danger button-down">Recording</button> -->
-    <img class="img-fluid" style="width: 120px; height: 120px;" src="assets/animations/Mic-Animation.gif" />
+    <img class="img-fluid mt-4" style="width: 120px; height: 120px;" src="assets/icons/recording_mic.png" />
+    <p class="py-4">You are recording.</p>
   </div>
   <p *ngIf="countingDown" class="text-center display-1">{{ timeLeft }}</p>
 </div>

@@ -15,10 +15,8 @@
     <img class="rounded" src="assets/img/ran/ran_1.png">
   </div>
   <div class="text-center" *ngIf="audioRecordingService.isCurrentlyRecording()">
-    <!-- <mat-spinner style="margin:0 auto;" class="text-center mb-2"></mat-spinner> -->
-    <!-- <button type="button" class="cancel-button btn btn-danger button-down">Recording</button> -->
-    <img class="img-fluid" style="width: 120px; height: 120px;" src="assets/animations/Mic-Animation.gif">
-
+    <img class="img-fluid mt-4" style="width: 120px; height: 120px;" src="assets/icons/recording_mic.png">
+    <p class="text-center py-4">You are recording.</p>
   </div>
   <div class="text-center">
     <button type="button" class="stop-button btn btn-outline-secondary" *ngIf="audioRecordingService.isCurrentlyRecording()"

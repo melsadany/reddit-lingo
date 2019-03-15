@@ -13,7 +13,7 @@
       <div>
         <button type="button" style="margin-bottom:4px; white-space: normal;" class="btn btn-outline-info">
           <img class="img-fluid" src="assets/icons/icon_speaker.svg">
-          <p class="py-4 text-center">
+          <p class="text-center">
             Whenever you see this icon during an assessment, you should be hearing audio.
           </p>
         </button>
@@ -56,9 +56,9 @@
         </button>
         <div>
           <button type="button" style="margin-bottom:4px;white-space: normal;" class="btn btn-outline-info">
-            <img class="img-fluid" style="width: 120px; height: 120px;" src="assets/animations/Mic-Animation.gif">
-            <p class="py-4 text-center">
-              Whenever you see this animation in an assessment, your microphone is recording.
+            <img class="img-fluid" style="width: 120px; height: 120px;" src="assets/icons/recording_mic.png">
+            <p class="text-center">
+              Whenever you see this icon in an assessment, your microphone is recording.
             </p>
           </button>
         </div>
@@ -81,6 +81,9 @@
         (click)="didRecordCorrectly()">
         Click here if you were able to hear your recording
       </button>
+      <div>
+        <img class="img-fluid" src="assets/icons/icon_speaker.svg">
+      </div>
     </div>
     <div *ngIf="cantHearMic">
       <p class="py-4 text-center">

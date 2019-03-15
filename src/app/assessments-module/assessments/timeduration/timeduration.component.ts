@@ -31,6 +31,9 @@ export class TimedurationComponent extends SelectionAssessment
   hammerStage: HTMLElement;
   hammerManager;
   radius: number;
+  currentSpace = 4;
+  innerStrokeWidth = 4;
+  subtitleFontSize: string;
   constructor(
     public stateManager: StateManagerService,
     public dataService: AssessmentDataService,
@@ -38,9 +41,11 @@ export class TimedurationComponent extends SelectionAssessment
   ) {
     super(stateManager, dialogService, dataService);
     if (this.stateManager.inMobileBrowser) {
-      this.radius = 200;
+      this.radius = 150;
+      this.subtitleFontSize = '15';
     } else {
       this.radius = 245;
+      this.subtitleFontSize = '25';
     }
   }
 
@@ -71,6 +76,8 @@ export class TimedurationComponent extends SelectionAssessment
 
   pauseTimer(): void {
     if (this.selecting) {
+      this.currentSpace = 4;
+      this.innerStrokeWidth = 4;
       this.selecting = false;
       this.currentTimeSelected = (Date.now() - this.startTime) / 1000; // KRM: Store in seconds with 3 decimal points
       this.selectionData.push({
@@ -87,6 +94,8 @@ export class TimedurationComponent extends SelectionAssessment
 
   startTimer(): void {
     if (this.canSelect && !this.selecting) {
+      this.currentSpace = 27;
+      this.innerStrokeWidth = 24;
       this.startTime = Date.now();
       this.selecting = true;
       this.outerStrokeColor = '#4286f4';
