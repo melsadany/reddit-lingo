@@ -4,10 +4,6 @@ import { DialogService } from '../../../services/dialog.service';
 import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 import { StateManagerService } from '../../../services/state-manager.service';
 import { SelectionAssessment } from '../../../structures/SelectionAssessment';
-import {
-  HammerGestureConfig,
-  HAMMER_GESTURE_CONFIG
-} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-timeduration',
@@ -27,10 +23,10 @@ export class TimedurationComponent extends SelectionAssessment
   promptsLength = this.durations.length;
   displayPercentage = 100;
   animationDuration;
-  displaySubtitle = 'Wait';
+  displaySubtitle = 'Watch.';
   canAnimate = true;
-  outerStrokeColor = '#78C000';
-  innerStrokeColor = '#C7E596';
+  outerStrokeColor = '#ff8080';
+  innerStrokeColor = '#ffb3b3';
   startTime;
   hammerStage: HTMLElement;
   hammerManager;
@@ -48,21 +44,6 @@ export class TimedurationComponent extends SelectionAssessment
     this.stateManager.isInAssessment = true;
     this.showExample = false;
     this.advance();
-  }
-
-  startTimer(): void {
-    if (this.canSelect && !this.selecting) {
-      this.startTime = Date.now();
-      this.selecting = true;
-      this.outerStrokeColor = '#4286f4';
-      this.innerStrokeColor = '#4286f4';
-      this.displaySubtitle = 'Holding. Let go when finished.';
-      this.timerInterval = setInterval(() => {
-        if (!this.selecting) {
-          clearInterval(this.timerInterval);
-        }
-      }, 1); // KRM: Counting time button held in miliseconds
-    }
   }
 
   advance(): void {
@@ -98,12 +79,35 @@ export class TimedurationComponent extends SelectionAssessment
     }
   }
 
+  startTimer(): void {
+    if (this.canSelect && !this.selecting) {
+      this.startTime = Date.now();
+      this.selecting = true;
+      this.outerStrokeColor = '#4286f4';
+      this.innerStrokeColor = '#4286f4';
+      this.displaySubtitle = 'Timing. Tap to stop.';
+      this.timerInterval = setInterval(() => {
+        if (!this.selecting) {
+          clearInterval(this.timerInterval);
+        }
+      }, 1); // KRM: Counting time button held in miliseconds
+    }
+  }
+
+  toggle(): void {
+    if (this.selecting) {
+      this.pauseTimer();
+    } else if (!this.selecting) {
+      this.startTimer();
+    }
+  }
+
   updateCircleState(): void {
     this.currentTimeSelected = 0;
     this.canAnimate = true;
-    this.outerStrokeColor = '#78C000';
-    this.innerStrokeColor = '#C7E596';
-    this.displaySubtitle = 'Wait';
+    this.outerStrokeColor = '#ff8080';
+    this.innerStrokeColor = '#ffb3b3';
+    this.displaySubtitle = 'Watch.';
     this.canSelect = false;
     this.showAnimation = false;
   }
@@ -111,8 +115,10 @@ export class TimedurationComponent extends SelectionAssessment
   displayAnimation(animationLength: number): void {
     this.animationDuration = animationLength * 1000; // KRM: Duration from s -> ms
     setTimeout(() => {
+      this.outerStrokeColor = '#78C000';
+      this.innerStrokeColor = '#C7E596';
       this.canSelect = true;
-      this.displaySubtitle = 'Press And Hold Here';
+      this.displaySubtitle = 'Tap to start.';
       this.canAnimate = false;
     }, this.animationDuration);
   }

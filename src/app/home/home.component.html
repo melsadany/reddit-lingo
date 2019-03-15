@@ -14,7 +14,7 @@
     </button>
   </div>
   <div *ngIf="!stateManager.loadingState">
-    <button type='button' class='btn btn-primary btn-lg' (click)="stateManager.navigateTo(stateManager.currentAssessment)">START</button>
+    <button type='button' class='btn btn-primary btn-lg' (click)="stateManager.goToNextAssessment()">START</button>
   </div>
   <!-- </a> -->
 </div>

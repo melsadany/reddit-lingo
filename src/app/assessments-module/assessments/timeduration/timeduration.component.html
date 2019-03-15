@@ -1,6 +1,6 @@
 <div class="mx-lg-5">
   <div *ngIf="stateManager.showAssessmentFrontPage">
-    <p class="py-4">
+    <p class="py-4 text-center">
       You will see a line that moves around the outside of a circle. The speed of the line will change from trial to
       trial. When the line stops moving, hold down the button for as long as you think it took the line to complete its
       course
@@ -16,13 +16,13 @@
     </div>
   </div>
   <div class="text-center" *ngIf="showAnimation">
-    <button class="btn btn-outline-light" style="max-height: 900px;" (press)="startTimer()" (pressup)="pauseTimer()">
-      <circle-progress [responsive]="true" [percent]="displayPercentage" [radius]="100" [outerStrokeWidth]="16"
-        [innerStrokeWidth]="8" [outerStrokeColor]="outerStrokeColor" [innerStrokeColor]="innerStrokeColor" [animation]="canAnimate"
-        [animationDuration]="animationDuration" [maxPercent]="100" [renderOnClick]="false" [showTitle]='false'
-        [subtitle]="displaySubtitle" [showUnits]='false'>
-      </circle-progress>
-    </button>
+    <!-- <button class="btn btn-lg btn-outline-light"> -->
+    <circle-progress (press)="toggle()" [responsive]="false" [percent]="displayPercentage" [radius]="245"
+      [outerStrokeWidth]="16" [innerStrokeWidth]="8" [outerStrokeColor]="outerStrokeColor" [innerStrokeColor]="innerStrokeColor"
+      [animation]="canAnimate" [animationDuration]="animationDuration" [maxPercent]="100" [renderOnClick]="false"
+      [showTitle]='false' [subtitle]="displaySubtitle" [showUnits]='false' [subtitleFontSize]='25'>
+    </circle-progress>
+    <!-- </button> -->
   </div>
   <div class="text-center">
     <div *ngIf="showAnimation"> {{currentTimeHeld}} </div>
