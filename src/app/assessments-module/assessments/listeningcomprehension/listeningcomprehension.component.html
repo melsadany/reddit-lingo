@@ -1,6 +1,6 @@
 <div class="mx-lg-5">
   <div *ngIf="stateManager.showAssessmentFrontPage">
-    <p class="py-4">
+    <p class="py-4 text-center">
       In this task, you will listen to an audio clip. When the clip ends,
       pick the image that matches what you heard. We'll
       do a practice round so you get the idea.
@@ -18,7 +18,7 @@
       <tbody>
         <tr *ngFor="let row of imagePaths">
           <td *ngFor="let image of row">
-            <button type="button" class="btn btn-outline-primary" (click)="selectImage(image)">
+            <button type="button" class="btn btn-outline-primary" (click)="clickImage(image)">
               <img class="img-fluid" [src]="image">
             </button>
           </td>

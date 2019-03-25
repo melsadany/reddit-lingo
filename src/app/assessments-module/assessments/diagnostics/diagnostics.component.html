@@ -1,85 +1,103 @@
-<div class="mx-lg-5">
+<div class="mx-lg-5 text-center">
   <p class="py-4 text-center">
-    Before we get started, we need to make sure your speakers/headphones and microphone are working properly.
+    Before we get started, we need to make sure your speakers/headphones and microphone are working properly and
+    that your device supports recording in the browser.
   </p>
-  <div *ngIf="!testedAudio && !cantHear" class="text-center">
-    <p class="py-4">
+  <div *ngIf="!testedAudio && !cantHear">
+    <p class="py-4 text-center">
       We will play an audio track so you can see if you can hear through your speakers/headphones properly. If you
-      can't hear
-      the audio, we'll
-      give you an opportunity to troubleshoot the audio output on your device on your end before letting you try
-      again.
+      can't hear the audio, we'll give you an opportunity to troubleshoot the audio output on your device on your
+      end before having you try it again.
     </p>
     <div *ngIf="heardOnce">
-      <!-- <mat-spinner class="text-center"></mat-spinner> -->
       <div>
-        <button type="button" style="margin-bottom:4px;white-space: normal;" class="btn btn-outline-info">
+        <button type="button" style="margin-bottom:4px; white-space: normal;" class="btn btn-outline-info">
           <img class="img-fluid" src="assets/icons/icon_speaker.svg">
-          <p class="py-4">
+          <p class="text-center">
             Whenever you see this icon during an assessment, you should be hearing audio.
           </p>
         </button>
       </div>
-      <!-- <div><button type="button" class="start-button btn btn-warning mr-2 mb-2">Listen for audio being played now</button></div> -->
       <button type="button" class="start-button btn btn-success mr-2 mb-2" style="margin-bottom:4px;white-space: normal;"
-        (click)="completeAudioTest()">Click here if
-        you can hear the audio track being played</button>
+        (click)="completeAudioTest()">
+        Click here if you can hear the audio track being played.
+      </button>
       <button type="button" class="start-button btn btn-danger mb-2" style="margin-bottom:4px;white-space: normal;"
-        (click)="waitForTroubleshoot()">Click
-        here if you
-        can't hear any audio</button>
+        (click)="waitForTroubleshoot()">
+        Click here if you can't hear any audio.
+      </button>
     </div>
   </div>
-  <div *ngIf="cantHear" class="text-center">
-    <p class="py-4">
+  <div *ngIf="cantHear">
+    <p class="py-4 text-center">
       Tune the audio output device on your end to ensure that it is not muted and that its volume is turned up far
-      enough. When you
-      are ready to try the audio diagnostics again, press the button.
+      enough. When you are ready to try the audio diagnostics again, press the button.
     </p>
     <button type="button" class="start-button btn btn-info" style="margin-bottom:4px;white-space: normal;" (click)="tryAudioAgain()">Try
       Audio Test Again</button>
   </div>
-  <div *ngIf="testedAudio && !testedMic" class="text-center">
-    <p class="py-4">We'll test your microphone next. Press the start button to begin a test recording. Your browser
-      should request
-      access to your microphone. You need to allow the website access to your microphone to continue.
+  <div *ngIf="testedAudio && !testedMic">
+    <p class="py-4 text-center">
+      We'll test your microphone next. Press the start button to begin a test recording.
     </p>
-    <div class="text-center">
-      <button *ngIf="!isRecording && !blobUrl && !cantHearMic" type="button" class="start-button btn btn-info" (click)="startRecording()">Start
-        Recording Test</button>
-      <button type="button" class="stop-button btn btn-outline-secondary mb-2" *ngIf="audioRecordingService.isCurrentlyRecording() && !blobUrl"
-        (click)="stopRecording()">Stop
-        recording test</button>
-      <!-- <mat-spinner *ngIf="audioRecordingService.isCurrentlyRecording()" class="text-center mb-2"></mat-spinner> -->
-      <div *ngIf="audioRecordingService.isCurrentlyRecording()">
-        <button type="button" style="margin-bottom:4px;white-space: normal;" class="btn btn-outline-info">
-          <img class="img-fluid" src="assets/animations/Mic-Animation.gif">
-          <p class="py-4">
-            Whenever you see this animation in an assessment, your microphone is recording.
-          </p>
+    <div *ngIf="!cantHearMic && !blobUrl && !audioRecordingService.inMicrophoneError">
+      <div *ngIf="!audioRecordingService.isCurrentlyRecording()">
+        <button class="btn btn-outline-info" style="margin-bottom:4px;white-space: normal;">
+          After pressing the blue button below, your browser should request access to your microphone.
+          You need to allow the website access to your microphone to continue.
+        </button>
+        <button type="button" class="start-button btn btn-info" (click)="startRecording()">
+          Start Recording Test
         </button>
       </div>
-      <!-- <div><button type="button" *ngIf="playingAudio && blobUrl" class="start-button btn btn-warning mr-2 mb-2">Listen
-          for audio being played now</button></div> -->
-      <!-- <button *ngIf="audioRecordingService.isCurrentlyRecording()" type="button" class="cancel-button btn btn-danger button-down">Recording</button> -->
+      <div *ngIf="audioRecordingService.isCurrentlyRecording()">
+        <button type="button" class="stop-button btn btn-outline-secondary mb-2" (click)="stopRecording()">
+          Stop recording test
+        </button>
+        <div>
+          <button type="button" style="margin-bottom:4px;white-space: normal;" class="btn btn-outline-info">
+            <img class="img-fluid" style="width: 120px; height: 120px;" src="assets/icons/recording_mic.png">
+            <p class="text-center">
+              Whenever you see this icon in an assessment, your microphone is recording.
+            </p>
+          </button>
+        </div>
+        <div class="mt-2">
+          {{recordedTime}}
+        </div>
+      </div>
+    </div>
+    <div *ngIf="audioRecordingService.inMicrophoneError">
+      <button type="button" class="stop-button btn btn-outline-secondary mb-2" style="margin-bottom:4px;white-space: normal;">
+        {{audioRecordingService.gettingMicErrorText}}
+      </button>
+    </div>
+    <div *ngIf="playingAudio && blobUrl">
       <button type="button" style="margin-bottom:4px;white-space: normal;" class="cancel-button btn btn-danger mr-2 mb-2"
-        *ngIf="playingAudio && blobUrl" (click)="didNotRecordCorrectly()">Click
-        here
-        if your microphone did not record properly</button>
+        (click)="didNotRecordCorrectly()">
+        Click here if your microphone did not record properly
+      </button>
       <button style="margin-bottom:4px;white-space: normal;" type="button" class="cancel-button btn btn-success mb-2"
-        *ngIf="playingAudio && blobUrl" (click)="didRecordCorrectly()">Click
-        here
-        if you were able to hear your recording</button>
-      <div class="mt-2" *ngIf="audioRecordingService.isCurrentlyRecording()"> {{recordedTime}} </div>
+        (click)="didRecordCorrectly()">
+        Click here if you were able to hear your recording
+      </button>
+      <div>
+        <img class="img-fluid" src="assets/icons/icon_speaker.svg">
+      </div>
     </div>
     <div *ngIf="cantHearMic">
-      <p class="py-4">Advice for fixing your mic</p>
-      <button type="button" class="cancel-button btn btn-danger mr-2 mb-2" (click)="tryRecordingAgain()">Try
-        recording again</button>
+      <p class="py-4 text-center">
+        Advice for fixing your mic.
+      </p>
+      <button type="button" class="cancel-button btn btn-danger mr-2 mb-2" (click)="tryRecordingAgain()">
+        Click here when you are ready to try again.
+      </button>
     </div>
   </div>
-  <div *ngIf="showWaveForm && !playingAudio" class="text-center">
-    <button type="button" class="start-button btn btn-info" (click)="playPause()">{{textOnTestAudioButton}}</button>
+  <div *ngIf="showWaveForm && !playingAudio">
+    <button type="button" class="start-button btn btn-info" (click)="playPause()">
+      {{textOnTestAudioButton}}
+    </button>
   </div>
   <div *ngIf="showWaveForm" class="ws">
     <div class="wavesurfer" #wavesurfer></div>

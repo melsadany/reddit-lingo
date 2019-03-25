@@ -1,16 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import { DialogService } from '../../../services/dialog.service';
 import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 import { StateManagerService } from '../../../services/state-manager.service';
+import { SelectionAssessment } from '../../../structures/SelectionAssessment';
 
 @Component({
   selector: 'app-matrixreasoning',
   templateUrl: './matrixreasoning.component.html',
   styleUrls: ['./matrixreasoning.component.scss']
 })
-export class MatrixreasoningComponent
-  implements OnInit, CanComponentDeactivate {
+export class MatrixreasoningComponent extends SelectionAssessment {
   imagesLocation = 'assets/img/matrixreasoning/';
   dimensions = {
     frameSets: {
@@ -88,51 +88,37 @@ export class MatrixreasoningComponent
       }
     }
   };
-  promptNumber = 0;
+  assessmentName = 'matrixreasoning';
   imageMatrices = {
     frameSets: {},
     solutionSets: {}
   };
-  countingDown = false;
-  intervalCountdown: NodeJS.Timeout;
-  timeLeft = 3;
-  doneCountingDown = false;
   showMatrix = false;
-  selectionData = [];
-  lastPrompt = false;
+  promptsLength = Object.keys(this.dimensions.frameSets).length;
 
   constructor(
     public stateManager: StateManagerService,
-    private dataService: AssessmentDataService,
-    private dialogService: DialogService
-  ) {}
-
-  ngOnInit(): void {
-    this.stateManager.showOutsideAssessmentButton = false;
-    for (const assessmentRecord of this.stateManager.assessments) {
-      if (assessmentRecord['assess_name'] === 'matrixreasoning') {
-        this.promptNumber = assessmentRecord['prompt_number'];
-      }
-    }
-    if (this.promptNumber + 1 === 7) {
-      this.lastPrompt = true;
-      this.stateManager.textOnInnerAssessmentButton =
-        'FINISH ASSESSMENT AND ADVANCE';
-    }
+    public dataService: AssessmentDataService,
+    public dialogService: DialogService
+  ) {
+    super(stateManager, dialogService, dataService);
     this.calculateImageNames();
-    console.log(this.imageMatrices);
   }
 
   setStateAndStart(): void {
     this.stateManager.showInnerAssessmentButton = false;
     this.stateManager.textOnInnerAssessmentButton = 'CONTINUE ASSESSMENT';
     this.stateManager.isInAssessment = true;
-    this.advanceToNextPrompt();
+    this.advance();
   }
 
   calculateImageNames(): void {
     this.calculateFrameSets();
     this.calculateSolutionSets();
+  }
+
+  advance(): void {
+    this.advanceToNextPrompt(() => (this.showMatrix = true));
   }
 
   calculateFrameSets(): void {
@@ -185,76 +171,11 @@ export class MatrixreasoningComponent
     }
   }
 
-  advanceToNextPrompt(): void {
-    if (this.promptNumber < 7) {
-      if (this.promptNumber + 1 === 7) {
-        this.lastPrompt = true;
-        this.stateManager.textOnInnerAssessmentButton =
-          'FINISH ASSESSMENT AND ADVANCE';
-      }
-      this.startDisplayedCountdownTimer();
-    } else {
-      this.finishAssessment();
-    }
-  }
-
-  startDisplayedCountdownTimer(): void {
-    this.countingDown = true;
-    this.intervalCountdown = setInterval(() => {
-      if (this.timeLeft > 0) {
-        this.timeLeft--;
-      } else {
-        this.timeLeft = 3;
-        this.countingDown = false;
-        this.doneCountingDown = true;
-        this.showMatrix = true;
-        clearInterval(this.intervalCountdown);
-      }
-    }, 1000);
-  }
-
-  selectImage(image: string): void {
-    this.selectionData.push({
-      prompt_number: this.promptNumber,
-      image_selected: image
-    });
-    this.pushSelectionData();
-    this.promptNumber++;
-    this.showMatrix = false;
-    if (this.lastPrompt) {
-      this.stateManager.showInnerAssessmentButton = true;
-    } else {
-      this.advanceToNextPrompt();
-    }
-  }
-
-  pushSelectionData(): void {
-    const assessmentData = {
-      assess_name: 'matrixreasoning',
-      data: { selection_data: this.selectionData },
-      completed: this.lastPrompt
-    };
-    const assessmentGoogleData = {
-      assess_name: 'matrixreasoning',
-      data: { text: 'None' }
-    };
-    if (this.promptNumber === 0) {
-      this.dataService
-        .postAssessmentDataToFileSystem(assessmentData, assessmentGoogleData)
-        .subscribe();
-    } else {
-      this.dataService
-        .postSingleAudioDataToMongo(assessmentData, assessmentGoogleData)
-        .subscribe();
-    }
-    this.selectionData = [];
-  }
-
-  finishAssessment(): void {
-    this.stateManager.finishThisAssessmentAndAdvance('matrixreasoning');
-  }
-
-  canDeactivate(): boolean {
-    return this.dialogService.canRedirect();
+  clickImage(image: string): void {
+    this.sendImageSelectionAndAdvance(
+      image,
+      () => (this.showMatrix = false),
+      () => this.advanceToNextPrompt(() => (this.showMatrix = true))
+    );
   }
 }

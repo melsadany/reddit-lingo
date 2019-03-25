@@ -14,6 +14,7 @@ import { SentencerepetitionComponent } from './assessments/sentencerepetition/se
 import { WordfindingComponent } from './assessments/wordfinding/wordfinding.component';
 import { PostscreenerquestionsComponent } from './assessments/postscreenerquestions/postscreenerquestions.component';
 import { DiagnosticsComponent } from './assessments/diagnostics/diagnostics.component';
+import { WordassociationComponent } from './assessments/wordassociation/wordassociation.component';
 
 const routes: Routes = [
   {
@@ -24,6 +25,10 @@ const routes: Routes = [
       {
         path: 'diagnostics',
         component: DiagnosticsComponent
+      },
+      {
+        path: 'wordassociation',
+        component: WordassociationComponent
       },
       {
         path: 'timeduration',

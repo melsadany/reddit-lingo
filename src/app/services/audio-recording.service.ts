@@ -1,4 +1,4 @@
-import { Injectable, NgZone } from '@angular/core';
+import { Injectable } from '@angular/core';
 import * as RecordRTC from 'recordrtc';
 import * as moment from 'moment';
 import { Observable, Subject } from 'rxjs';
@@ -11,6 +11,7 @@ export interface RecordedAudioOutput {
 @Injectable()
 export class AudioRecordingService {
   private stream: MediaStream;
+  public inMicrophoneError = false;
   private recorder: {
     record: () => void;
     stop: (arg0: (blob: any) => void, arg1: () => void) => void;
@@ -21,16 +22,27 @@ export class AudioRecordingService {
   private _recordingTime = new Subject<string>();
   private _recordingFailed = new Subject<string>();
   private _currentlyRecording = false;
+  private _gettingMicErrorText: string;
+
+  public get gettingMicErrorText(): string {
+    return this._gettingMicErrorText;
+  }
+  public set gettingMicErrorText(value: string) {
+    this._gettingMicErrorText = value;
+  }
 
   captureStream(): void {
     navigator.mediaDevices
       .getUserMedia({ audio: true })
       .then(s => {
+        if (this.inMicrophoneError) {
+          this.inMicrophoneError = false;
+        }
         this.stream = s;
         this.record();
       })
       .catch(error => {
-        alert('Error in getting mic: ' + error);
+        this.handleMicError(error);
         this._recordingFailed.next();
       });
   }
@@ -139,5 +151,35 @@ export class AudioRecordingService {
       // }
     }
     // this.stream.getAudioTracks().forEach(track => console.log(track));
+  }
+
+  private handleMicError(error: Error): void {
+    this.inMicrophoneError = true;
+    switch (error.name) {
+      case 'NotAllowedError':
+        this.gettingMicErrorText =
+          'You did not give the browser access to your microphone when it asked for it. \
+          In your browser options, you will need to manually give the website access to \
+          your microphone. You may need to try refreshing your browser page after making changes ';
+        break;
+      case 'AbortError':
+        this.gettingMicErrorText = 'Abort error';
+        break;
+      case 'NotFoundError':
+        this.gettingMicErrorText = 'Not found error';
+        break;
+      case 'NotReadableError':
+        this.gettingMicErrorText = 'Not readable error';
+        break;
+      case 'OverconstrainedError':
+        this.gettingMicErrorText = 'Overconstrained error';
+        break;
+      case 'SecurityError':
+        this.gettingMicErrorText = 'Security error';
+        break;
+      default:
+        this.gettingMicErrorText = 'Unknown error';
+        break;
+    }
   }
 }

@@ -10,7 +10,6 @@ import { AssessmentDataService } from '../services/assessment-data.service';
 import { DialogService } from '../services/dialog.service';
 import { CanComponentDeactivate } from '../guards/can-deactivate.guard';
 import { StateManagerService } from '../services/state-manager.service';
-import { AudioRecordingService } from '../services/audio-recording.service';
 
 @Component({
   selector: 'app-assessments-controller',
@@ -23,18 +22,20 @@ export class AssessmentsControllerComponent
   constructor(
     private dataService: AssessmentDataService,
     private dialogService: DialogService,
-    public stateManager: StateManagerService,
+    public stateManager: StateManagerService
   ) {}
 
   ngOnInit(): void {
+    if (!this.stateManager.startedByHandFromHome) {
+      this.stateManager.goHome();
+    }
     this.stateManager.isInAssessment = false;
     if (this.stateManager.finishedAllAssessments) {
       this.stateManager.navigateTo('done');
     }
   }
 
-  ngAfterViewInit(): void {
-  }
+  ngAfterViewInit(): void {}
 
   public getCanvasElement(): ElementRef {
     console.log('getting canvas');

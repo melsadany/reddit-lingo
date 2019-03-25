@@ -3,110 +3,81 @@ import { AssessmentDataService } from '../../../services/assessment-data.service
 import { DialogService } from '../../../services/dialog.service';
 import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 import { StateManagerService } from '../../../services/state-manager.service';
+import { SelectionAssessment } from '../../../structures/SelectionAssessment';
 
 @Component({
   selector: 'app-timeduration',
   templateUrl: './timeduration.component.html',
   styleUrls: ['./timeduration.component.scss']
 })
-export class TimedurationComponent
+export class TimedurationComponent extends SelectionAssessment
   implements OnInit, OnDestroy, CanComponentDeactivate {
-  countingDown = false;
-  intervalCountdown: NodeJS.Timer;
-  timeLeft = 3;
-  doneCountingDown = false;
+  assessmentName = 'timeduration';
   showAnimation = false;
   timerInterval: NodeJS.Timer;
   animationInterval: NodeJS.Timer;
   selecting = false;
   currentTimeSelected;
-  promptNumber = 0;
   canSelect = false;
   durations = [5, 1.5, 0.5, 11, 5, 1, 7, 0.75];
+  promptsLength = this.durations.length;
   displayPercentage = 100;
   animationDuration;
-  selectionData = [];
-  displaySubtitle = 'Wait';
+  displaySubtitle = 'Watch.';
   canAnimate = true;
-  outerStrokeColor = '#78C000';
-  innerStrokeColor = '#C7E596';
+  outerStrokeColor = '#ff8080';
+  innerStrokeColor = '#ffb3b3';
   startTime;
-  lastPrompt = false;
+  hammerStage: HTMLElement;
+  hammerManager;
+  radius: number;
+  currentSpace = 4;
+  innerStrokeWidth = 4;
+  subtitleFontSize: string;
   constructor(
     public stateManager: StateManagerService,
-    private dataService: AssessmentDataService,
-    private dialogService: DialogService
-  ) {}
-
-  ngOnInit(): void {
-    this.stateManager.showOutsideAssessmentButton = false;
-    for (const assessmentRecord of this.stateManager.assessments) {
-      if (assessmentRecord['assess_name'] === 'timeduration') {
-        this.promptNumber = assessmentRecord['prompt_number'];
-      }
-    }
-    if (this.promptNumber + 1 === 8) {
-      this.lastPrompt = true;
-      this.stateManager.textOnInnerAssessmentButton =
-        'FINISH ASSESSMENT AND ADVANCE';
+    public dataService: AssessmentDataService,
+    public dialogService: DialogService
+  ) {
+    super(stateManager, dialogService, dataService);
+    if (this.stateManager.inMobileBrowser) {
+      this.radius = 150;
+      this.subtitleFontSize = '15';
+    } else {
+      this.radius = 245;
+      this.subtitleFontSize = '25';
     }
   }
 
   setStateAndStart(): void {
+    this.stateManager.showInnerAssessmentButton = false;
     this.stateManager.textOnInnerAssessmentButton = 'CONTINUE ASSESSMENT';
     this.stateManager.isInAssessment = true;
-    this.advanceToNextPrompt();
+    this.showExample = false;
+    this.advance();
   }
 
-  ngOnDestroy(): void {}
-
-  startDisplayedCountdownTimer(): void {
-    this.stateManager.showInnerAssessmentButton = false;
-    this.countingDown = true;
-    this.intervalCountdown = setInterval(() => {
-      if (this.timeLeft > 0) {
-        this.timeLeft--;
-      } else {
-        this.timeLeft = 3;
-        this.countingDown = false;
-        this.doneCountingDown = true;
+  advance(): void {
+    this.advanceToNextPrompt(
+      () => {
         this.showAnimation = true;
         this.displayAnimation(this.durations[this.promptNumber]);
-        clearInterval(this.intervalCountdown);
+      },
+      () => {
+        return new Promise(
+          (resolve, reject): void => {
+            this.stateManager.showInnerAssessmentButton = false;
+            resolve('done');
+          }
+        );
       }
-    }, 1000);
-  }
-
-  startTimer(): void {
-    if (this.canSelect && !this.selecting) {
-      this.startTime = Date.now();
-      this.selecting = true;
-      this.outerStrokeColor = '#4286f4';
-      this.innerStrokeColor = '#4286f4';
-      this.displaySubtitle = 'Holding. Let go when finished.';
-      this.timerInterval = setInterval(() => {
-        if (!this.selecting) {
-          clearInterval(this.timerInterval);
-        }
-      }, 1); // KRM: Counting time button held in miliseconds
-    }
-  }
-
-  advanceToNextPrompt(): void {
-    if (this.promptNumber < 8) {
-      if (this.promptNumber + 1 === 8) {
-        this.lastPrompt = true;
-        this.stateManager.textOnInnerAssessmentButton =
-          'FINISH ASSESSMENT AND ADVANCE';
-      }
-      this.startDisplayedCountdownTimer();
-    } else {
-      this.finishAssessment();
-    }
+    );
   }
 
   pauseTimer(): void {
     if (this.selecting) {
+      this.currentSpace = 4;
+      this.innerStrokeWidth = 4;
       this.selecting = false;
       this.currentTimeSelected = (Date.now() - this.startTime) / 1000; // KRM: Store in seconds with 3 decimal points
       this.selectionData.push({
@@ -121,51 +92,49 @@ export class TimedurationComponent
     }
   }
 
+  startTimer(): void {
+    if (this.canSelect && !this.selecting) {
+      this.currentSpace = 27;
+      this.innerStrokeWidth = 24;
+      this.startTime = Date.now();
+      this.selecting = true;
+      this.outerStrokeColor = '#4286f4';
+      this.innerStrokeColor = '#4286f4';
+      this.displaySubtitle = 'Timing. Tap to stop.';
+      this.timerInterval = setInterval(() => {
+        if (!this.selecting) {
+          clearInterval(this.timerInterval);
+        }
+      }, 1); // KRM: Counting time button held in miliseconds
+    }
+  }
+
+  toggle(): void {
+    if (this.selecting) {
+      this.pauseTimer();
+    } else if (!this.selecting) {
+      this.startTimer();
+    }
+  }
+
   updateCircleState(): void {
     this.currentTimeSelected = 0;
     this.canAnimate = true;
-    this.outerStrokeColor = '#78C000';
-    this.innerStrokeColor = '#C7E596';
-    this.displaySubtitle = 'Wait';
+    this.outerStrokeColor = '#ff8080';
+    this.innerStrokeColor = '#ffb3b3';
+    this.displaySubtitle = 'Watch.';
     this.canSelect = false;
     this.showAnimation = false;
   }
 
   displayAnimation(animationLength: number): void {
-    this.animationDuration = this.durations[this.promptNumber] * 1000; // KRM: Duration from s -> ms
+    this.animationDuration = animationLength * 1000; // KRM: Duration from s -> ms
     setTimeout(() => {
+      this.outerStrokeColor = '#78C000';
+      this.innerStrokeColor = '#C7E596';
       this.canSelect = true;
-      this.displaySubtitle = 'Press And Hold Here';
+      this.displaySubtitle = 'Tap to start.';
       this.canAnimate = false;
     }, this.animationDuration);
-  }
-
-  pushSelectionData(): void {
-    const assessmentData = {
-      assess_name: 'timeduration',
-      data: { selection_data: this.selectionData },
-      completed: this.lastPrompt
-    };
-    const assessmentGoogleData = {
-      assess_name: 'timeduration',
-      data: { text: 'None' }
-    };
-    if (this.promptNumber === 0) {
-      this.dataService
-        .postAssessmentDataToFileSystem(assessmentData, assessmentGoogleData)
-        .subscribe();
-    } else {
-      this.dataService
-        .postSingleAudioDataToMongo(assessmentData, assessmentGoogleData)
-        .subscribe();
-    }
-    this.selectionData = [];
-  }
-
-  finishAssessment(): void {
-    this.stateManager.finishThisAssessmentAndAdvance('timeduration');
-  }
-  canDeactivate(): boolean {
-    return this.dialogService.canRedirect();
   }
 }

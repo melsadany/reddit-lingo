@@ -60,6 +60,7 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
   cantHearMic = false;
 
   ngOnInit(dataBlob?: any): void {
+    this.stateManager.sendToCurrentIfAlreadyCompleted('diagnostics');
     this.stateManager.isInAssessment = true;
     requestAnimationFrame(() => {
       this.wavesurfer = WaveSurfer.create({
@@ -71,7 +72,7 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
         autoCenter: true,
         hideScrollbar: true
       });
-      if (!dataBlob) {
+      if (!this.testedAudio) {
         this.wavesurfer.load('/assets/audio/diagnostics/setup_audio.mp3');
       } else {
         this.wavesurfer.loadBlob(dataBlob);
@@ -140,6 +141,7 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.abortRecording();
+    clearTimeout(this.intervalCountup);
   }
   completeAudioTest(): void {
     this.textOnTestAudioButton = 'Listen to your microphone recording';
@@ -195,12 +197,12 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
     }
     const assessmentData = {
       assess_name: 'diagnostics',
-      data: {data: 'none'},
+      data: { data: 'none' },
       completed: true
     };
     const assessmentGoogleData = {
       assess_name: 'diagnostics',
-      data: {data: 'none'}
+      data: { data: 'none' }
     };
     this.dataService
       .postAssessmentDataToFileSystem(assessmentData, assessmentGoogleData)

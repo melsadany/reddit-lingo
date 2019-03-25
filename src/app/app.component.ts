@@ -1,4 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+// import { StateManagerService } from './services/state-manager.service';
+// import { ActivatedRoute } from '@angular/router';
+// import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',

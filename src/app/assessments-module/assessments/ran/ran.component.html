@@ -1,6 +1,6 @@
 <div class="mx-lg-5">
   <div *ngIf="stateManager.showAssessmentFrontPage">
-    <p class="py-4">
+    <p class="py-4 text-center">
       In this assessment, there will be a three second count-down,
       then you will see a grid of shapes or a grid of numbers. Read off the numbers or shapes as quickly as you can,
       from left to right and from top to bottom. When you are finished, press the "DONE" button at the bottom of the
@@ -15,13 +15,12 @@
     <img class="rounded" src="assets/img/ran/ran_1.png">
   </div>
   <div class="text-center" *ngIf="audioRecordingService.isCurrentlyRecording()">
-    <!-- <mat-spinner style="margin:0 auto;" class="text-center mb-2"></mat-spinner> -->
-    <!-- <button type="button" class="cancel-button btn btn-danger button-down">Recording</button> -->
-    <img class="img-fluid" src="assets/animations/Mic-Animation.gif">
+    <img class="img-fluid mt-4" style="width: 120px; height: 120px;" src="assets/icons/recording_mic.png">
+    <p class="text-center py-4">You are recording.</p>
   </div>
   <div class="text-center">
     <button type="button" class="stop-button btn btn-outline-secondary" *ngIf="audioRecordingService.isCurrentlyRecording()"
-      (click)="stopRecording()">DONE</button>
+      (click)="stopEarly()">DONE</button>
   </div>
   <!-- <button type="button" class="cancel-button btn btn-danger" *ngIf="!isRecording && blobUrl" (click)="clearRecordedData()">Clear Recording</button> KRM: For debugging usage only. -->
   <!-- <div *ngIf="isRecording && !blobUrl"> {{recordedTime}} </div> -->

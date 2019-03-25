@@ -7,11 +7,9 @@ import { StateManagerService } from '../../services/state-manager.service';
   styleUrls: ['./assessments-done.component.scss']
 })
 export class AssessmentsDoneComponent implements OnInit {
-
-  constructor(public stateManager: StateManagerService) { }
-
-  ngOnInit(): void {
+  constructor(public stateManager: StateManagerService) {
     this.stateManager.showOutsideAssessmentButton = false;
   }
 
+  ngOnInit(): void {}
 }

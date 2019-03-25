@@ -22,13 +22,7 @@ export class AssessmentDataService {
     private cookieService: CookieService,
     private http: HttpClient,
     public stateManager: StateManagerService
-  ) {
-    if (!this.checkUserIdCookie()) {
-      this.setUserIdCookieAndSetData();
-    } else {
-      this.setData();
-    }
-  }
+  ) {}
 
   public get currentUserId(): string {
     return this._currentUserId;
@@ -43,6 +37,14 @@ export class AssessmentDataService {
     this._partialAssessmentData = value;
   }
 
+  public initializeData(): void {
+    if (!this.checkUserIdCookie()) {
+      this.setUserIdCookieAndSetData();
+    } else {
+      this.setData();
+    }
+  }
+
   public setUserIdCookie(value: string): void {
     console.log('Setting user cookie: ' + value);
     this.cookieService.set('user_id', value, 200);
@@ -54,6 +56,10 @@ export class AssessmentDataService {
 
   public checkUserIdCookie(): boolean {
     return this.cookieService.check('user_id');
+  }
+
+  public checkHashKeyCooke(): boolean {
+    return this.cookieService.check('hash_key');
   }
 
   public getUserIdCookie(): string {

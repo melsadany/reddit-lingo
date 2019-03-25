@@ -93,10 +93,12 @@ export class PostscreenerquestionsComponent
     private fb: FormBuilder,
     private dialogService: DialogService,
     public stateManager: StateManagerService
-  ) {}
+  ) {
+    this.stateManager.showOutsideAssessmentButton = false;
+  }
 
   ngOnInit(): void {
-    this.stateManager.showOutsideAssessmentButton = false;
+    this.stateManager.sendToCurrentIfAlreadyCompleted('postscreenerquestions');
     this.stateManager.isInAssessment = true;
     this.stateManager.showAssessmentFrontPage = true;
   }

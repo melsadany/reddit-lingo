@@ -53,11 +53,13 @@ export class PrescreenerquestionsComponent
     private dataService: AssessmentDataService,
     private fb: FormBuilder,
     private dialogService: DialogService
-  ) {}
+  ) {
+    this.stateManager.showOutsideAssessmentButton = false;
+  }
 
   ngOnInit(): void {
+    this.stateManager.sendToCurrentIfAlreadyCompleted('prescreenerquestions');
     this.stateManager.isInAssessment = true;
-    this.stateManager.showOutsideAssessmentButton = false;
   }
 
   postData(): void {

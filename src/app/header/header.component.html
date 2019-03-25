@@ -27,8 +27,10 @@
           <li class="nav-item">
             <a class="nav-link" [routerLink]="['contact']">Contact</a>
           </li>
-          <li> <a class="nav-link" [routerLink]="['assessments', stateManager.currentAssessment]">Assessments <span
+          <!-- <li> <a class="nav-link" [routerLink]="['assessments', stateManager.currentAssessment]">Assessments <span
                 class="sr-only">(current)</span></a>
+          </li> -->
+          <li> <a class="nav-link" (click)="stateManager.goToNextAssessment()">Assessments <span class="sr-only">(current)</span></a>
           </li>
         </ng-template>
       </ul>
