@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { StateManagerService } from './services/state-manager.service';
-import { Router } from '@angular/router';
+// import { StateManagerService } from './services/state-manager.service';
+// import { ActivatedRoute } from '@angular/router';
+// import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -8,11 +9,9 @@ import { Router } from '@angular/router';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, OnDestroy {
-  constructor(private routerServie: Router) {}
+  constructor() {}
 
-  public ngOnInit(): void {
-    this.routerServie.navigate(['']);
-  }
+  public ngOnInit(): void {}
 
   ngOnDestroy(): void {}
 }

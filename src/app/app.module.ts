@@ -24,6 +24,7 @@ import { AssessmentDataService } from './services/assessment-data.service';
 import { DialogService } from './services/dialog.service';
 import { StateManagerService } from './services/state-manager.service';
 import { AudioRecordingService } from './services/audio-recording.service';
+import { HashkeyinitializeComponent } from './hashkeyinitialize/hashkeyinitialize.component';
 
 export class HammerJSConfig extends HammerGestureConfig {
   overrides = <any>{
@@ -38,7 +39,8 @@ export class HammerJSConfig extends HammerGestureConfig {
     HeaderComponent,
     HomeComponent,
     AboutComponent,
-    ContactComponent
+    ContactComponent,
+    HashkeyinitializeComponent
   ],
   imports: [
     BrowserModule,

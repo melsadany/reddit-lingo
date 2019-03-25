@@ -26,6 +26,9 @@ export class AssessmentsControllerComponent
   ) {}
 
   ngOnInit(): void {
+    if (!this.stateManager.startedByHandFromHome) {
+      this.stateManager.goHome();
+    }
     this.stateManager.isInAssessment = false;
     if (this.stateManager.finishedAllAssessments) {
       this.stateManager.navigateTo('done');

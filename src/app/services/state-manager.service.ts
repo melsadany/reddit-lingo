@@ -21,13 +21,26 @@ export class StateManagerService {
   private _totalAssessments: number;
   private _loadingState = true;
   private _inMobileBrowser = false;
+  private _hashKey: string;
+  private _startedByHandFromHome = false;
 
   constructor(private routerService: Router) {
     this.totalAssessments = Object.keys(this.assessments).length;
     this.inMobileBrowser = this.mobileCheck();
-
   }
 
+  public set startedByHandFromHome(value: boolean) {
+    this._startedByHandFromHome = value;
+  }
+  public get startedByHandFromHome(): boolean {
+    return this._startedByHandFromHome;
+  }
+  public get hashKey(): string {
+    return this._hashKey;
+  }
+  public set hashKey(value: string) {
+    this._hashKey = value;
+  }
   public get inMobileBrowser(): boolean {
     return this._inMobileBrowser;
   }
@@ -221,6 +234,11 @@ export class StateManagerService {
     this.navigateTo(this.currentAssessment);
   }
 
+  public goToNextAssessmentFromHome(): void {
+    this.startedByHandFromHome = true;
+    this.goToNextAssessment();
+  }
+
   public navigateTo(assessmentName: string): void {
     if (
       assessmentName !== 'done' &&
@@ -235,6 +253,10 @@ export class StateManagerService {
     this.showOutsideAssessmentButton = false;
     this.showInnerAssessmentButton = true;
     this.routerService.navigate(['/assessments/', assessmentName]);
+  }
+
+  public goHome(): void {
+    this.routerService.navigate(['home']);
   }
 
   public get DEBUG_MODE(): boolean {

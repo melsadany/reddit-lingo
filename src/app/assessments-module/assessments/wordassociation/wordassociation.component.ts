@@ -27,7 +27,6 @@ export class WordassociationComponent extends SelectionAssessment {
   ) {
     super(stateManager, dialogService, dataService);
     this.promptNumber = this.stateManager.assessments.wordassociation.prompt_number;
-    console.log(this.stateManager.getCurrentURL());
   }
 
   setStateAndStart(): void {

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { StateManagerService } from '../services/state-manager.service';
+import { AssessmentDataService } from '../services/assessment-data.service';
 
 @Component({
   selector: 'app-home',
@@ -13,12 +13,15 @@ export class HomeComponent implements OnInit {
 
   constructor(
     public stateManager: StateManagerService,
-    private route: ActivatedRoute
+    private dataService: AssessmentDataService
   ) {}
 
   ngOnInit(): void {
-    // KRM: Not how we want to do single assessment
-    this.single = this.route.snapshot.params['bool'] === 'single';
-    console.log(this.stateManager.inMobileBrowser);
+    if (!this.stateManager.hashKey) {
+      console.log('No hash key provided. Using user_id');
+      this.dataService.initializeData();
+    } else {
+      console.log('Hash key provided. Doing single user assessment');
+    }
   }
 }
