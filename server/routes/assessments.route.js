@@ -82,4 +82,11 @@ router.get('/NextUserId', (req, res) => {
   // })
 })
 
+router.get('/InitializeSingleUserAssessment/:hash_key', (req, res) => {
+  assessCtrl.sendHashKey(req.params.hash_key).then((data) => res.send(data)).catch((err) => {
+    console.log(err)
+    res.send(err)
+  })
+})
+
 module.exports = router

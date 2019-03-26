@@ -143,10 +143,50 @@ function getNextUserID() {
   })
 }
 
+function sendHashKey(hashKey) {
+  const fileName = path.join('assessment_data', 'single_assessment', hashKey + '.json')
+  return new Promise((resolve, reject) => {
+    fs.readFile(fileName, 'utf-8', (err, data) => {
+      if (err) {
+        console.log(err) // KRM: User hasn't used this hash key before
+        resolve(insertNewHashKeyJson(hashKey))
+      } else {
+        resolve(JSON.parse(data)) // KRM: Send back their data if it already exists
+      }
+    })
+  })
+}
+
+function insertNewHashKeyJson(hashKey) {
+  const freshData = JSON.stringify({
+    hash_key: hashKey,
+    assessments: [],
+    google_speech_to_text_assess: []
+  })
+  const fileName = path.join('assessment_data', 'single_assessment', hashKey + '.json')
+  return new Promise((resolve, reject) => {
+    if (!fs.existsSync(path.join('assessment_data', 'single_assessment'))) {
+      console.log('Making HashKey directory')
+      fs.mkdirSync(path.join('assessment_data', 'single_assessment'), {
+        recursive: true
+      })
+    }
+    fs.writeFile(fileName, freshData, (err) => {
+      if (err) {
+        reject(err)
+      } else {
+        console.log('Successfully saved new HashKey json')
+        resolve(freshData)
+      }
+    })
+  })
+}
+
 module.exports = {
   insertFreshAssessmentData,
   pushOnePieceAssessmentData,
   getUserAssessmentData,
   updateAssessmentData,
-  getNextUserID
+  getNextUserID,
+  sendHashKey
 }

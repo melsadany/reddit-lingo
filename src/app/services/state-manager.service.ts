@@ -1,5 +1,8 @@
 import { Injectable, OnInit } from '@angular/core';
-import { AssessmentData } from '../structures/assessmentdata';
+import {
+  AssessmentData,
+  SingleAssessmentData
+} from '../structures/assessmentdata';
 import { Router } from '@angular/router';
 import { LinkedList } from '../structures/LinkedList';
 
@@ -171,6 +174,34 @@ export class StateManagerService {
     }
   }
 
+  public initializeSingleAssessmentState(
+    singleAssessmentData: SingleAssessmentData
+  ): void {
+    const singleAssessmentName = this.hashKeyFirstFourMap(
+      this.hashKey.slice(0, 4)
+    );
+    for (const existingAssessment of singleAssessmentData.assessments) {
+      const existingAssessmentName = existingAssessment['assess_name'];
+      if (existingAssessment['completed']) {
+        this.assessments[existingAssessmentName]['completed'] = true;
+      }
+    }
+    if (!this.assessments['diagnostics']['completed']) {
+      this.assessmentsLeftLinkedList.append('diagnostics');
+    }
+    if (!this.assessments['prescreenerquestions']['completed']) {
+      this.assessmentsLeftLinkedList.append('prescreenerquestions');
+    }
+    if (this.assessments[singleAssessmentName]['completed']) {
+      this.finishedAllAssessments = true;
+      this.navigateTo('done');
+    } else {
+      this.assessmentsLeftLinkedList.append(singleAssessmentName);
+    }
+    this.loadingState = false;
+    // Remember to set the cookie for hash key over user id
+  }
+
   public initializeState(existingAssessmentData: AssessmentData): void {
     for (const existingAssessment of existingAssessmentData.assessments) {
       const existingAssessmentName = existingAssessment['assess_name'];
@@ -333,6 +364,42 @@ export class StateManagerService {
         break;
     }
     return translatedName;
+  }
+
+  hashKeyFirstFourMap(firstFour: string): string {
+    let assessmentName = '';
+    switch (firstFour) {
+      case 'licr':
+        assessmentName = 'listeningcomprehension';
+        break;
+      case 'mtxr':
+        assessmentName = 'matrixreasoning';
+        break;
+      case 'pcpt':
+        assessmentName = 'pictureprompt';
+        break;
+      case 'rnan':
+        assessmentName = 'ran';
+        break;
+      case 'snpt':
+        assessmentName = 'sentencerepetition';
+        break;
+      case 'svie':
+        assessmentName = 'syncvoice';
+        break;
+      case 'tmdt':
+        assessmentName = 'timeduration';
+        break;
+      case 'wdas':
+        assessmentName = 'wordassociation';
+        break;
+      case 'rdfn':
+        assessmentName = 'wordfinding';
+        break;
+      default:
+        assessmentName = 'home';
+    }
+    return assessmentName;
   }
 
   public sendToCurrentIfAlreadyCompleted(assessmentName: string): void {

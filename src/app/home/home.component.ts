@@ -20,8 +20,6 @@ export class HomeComponent implements OnInit {
     if (!this.stateManager.hashKey) {
       console.log('No hash key provided. Using user_id');
       this.dataService.initializeData();
-    } else {
-      console.log('Hash key provided. Doing single user assessment');
     }
   }
 }

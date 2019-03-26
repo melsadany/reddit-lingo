@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { routerNgProbeToken } from '@angular/router/src/router_module';
 import { StateManagerService } from '../services/state-manager.service';
+import { AssessmentDataService } from '../services/assessment-data.service';
+import { SingleAssessmentData } from '../structures/assessmentdata';
 
 @Component({
   selector: 'app-hashkeyinitialize',
@@ -12,11 +13,18 @@ export class HashkeyinitializeComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private routerServie: Router,
-    private stateManager: StateManagerService
+    private stateManager: StateManagerService,
+    private dataService: AssessmentDataService
   ) {
     const userHashKey = this.route.snapshot.paramMap.get('hashKey');
-    console.log('User hashkey', userHashKey);
     this.stateManager.hashKey = userHashKey;
+    this.dataService
+      .sendHashKeyToServer(userHashKey)
+      .subscribe((data: SingleAssessmentData) => {
+        console.log('Single assessment data', data);
+        this.dataService.initializeHashKeyData(userHashKey);
+        this.stateManager.initializeSingleAssessmentState(data);
+      });
     this.routerServie.navigate(['home']);
   }
 

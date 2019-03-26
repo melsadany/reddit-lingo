@@ -42,7 +42,26 @@ export class AssessmentDataService {
       this.setUserIdCookieAndSetData();
     } else {
       this.setData();
+      // KRM: Seting the data will initialize the state of the assessments
     }
+  }
+
+  public initializeHashKeyData(userHashKey: string): void {
+    if (this.checkUserIdCookie()) {
+      this.deleteUserIdCookie();
+    }
+    if (!this.checkHashKeyCooke()) {
+      this.setHashKeyCookie(userHashKey);
+    }
+  }
+
+  public setHashKeyCookie(value: string): void {
+    console.log('Setting hash key cookie: ' + value);
+    this.cookieService.set('hash_key', value, 200);
+  }
+
+  public deleteHashKeyCookie(): void {
+    this.cookieService.delete('hash_key');
   }
 
   public setUserIdCookie(value: string): void {
@@ -64,6 +83,10 @@ export class AssessmentDataService {
 
   public getUserIdCookie(): string {
     return this.cookieService.get('user_id');
+  }
+
+  public getHashKeyCookie(): string {
+    return this.cookieService.get('hash_key');
   }
 
   public deleteUserCookieDebugMode(): void {
@@ -91,7 +114,6 @@ export class AssessmentDataService {
         this.partialAssessmentData = data;
         // console.log(JSON.stringify(this.partialAssessmentData));
         this.stateManager.initializeState(this.partialAssessmentData);
-        // this.initializeData(this.partialAssessmentData);
         // KRM: Initialize the current state of the assessments based
         // on the past assessments already completed
       }
@@ -143,6 +165,13 @@ export class AssessmentDataService {
   public getNextUserID(): Observable<UserIdObject> {
     return <Observable<UserIdObject>>(
       this.http.get('/api/assessmentsAPI/NextUserID', {})
+    );
+  }
+
+  public sendHashKeyToServer(hashKey: string): Observable<Object> {
+    return this.http.get(
+      '/api/assessmentsAPI/InitializeSingleUserAssessment/' + hashKey,
+      {}
     );
   }
 }

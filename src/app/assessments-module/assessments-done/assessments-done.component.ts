@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { StateManagerService } from '../../services/state-manager.service';
+import { AssessmentDataService } from '../../services/assessment-data.service';
 
 @Component({
   selector: 'app-assessments-done',
@@ -7,9 +8,14 @@ import { StateManagerService } from '../../services/state-manager.service';
   styleUrls: ['./assessments-done.component.scss']
 })
 export class AssessmentsDoneComponent implements OnInit {
-  constructor(public stateManager: StateManagerService) {
+  constructor(
+    public stateManager: StateManagerService,
+    public dataService: AssessmentDataService
+  ) {
     this.stateManager.showOutsideAssessmentButton = false;
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.dataService.deleteHashKeyCookie();
+  }
 }
