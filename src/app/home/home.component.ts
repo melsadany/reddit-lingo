@@ -8,18 +8,30 @@ import { AssessmentDataService } from '../services/assessment-data.service';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  single: boolean;
-  mobile: boolean;
-
   constructor(
     public stateManager: StateManagerService,
     private dataService: AssessmentDataService
   ) {}
 
   ngOnInit(): void {
-    if (!this.stateManager.hashKey) {
-      console.log('No hash key provided. Using user_id');
+    if (this.stateManager.hashKey && this.dataService.checkHashKeyCooke()) {
+      console.log('Single assessment set');
+    } else if (
+      !this.stateManager.hashKey &&
+      !this.dataService.checkHashKeyCooke()
+    ) {
+      console.log('No hash key provided. Using user_id for full assessment');
       this.dataService.initializeData();
+    } else if (
+      !this.stateManager.hashKey &&
+      this.dataService.checkHashKeyCooke()
+    ) {
+      console.log(
+        'Hash key in cookie, using the cookie for single user assessment'
+      );
+      this.stateManager.goToHashKeyInitializer(
+        this.dataService.getHashKeyCookie()
+      );
     }
   }
 }

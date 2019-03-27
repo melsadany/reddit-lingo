@@ -33,8 +33,17 @@ async function insertFreshAssessmentData(reqData) {
 }
 
 async function updateAssessmentData(reqData) {
-  const userID = reqData.user_id
-  const fileName = path.join('assessment_data', userID, userID + '.json')
+  console.log(reqData)
+  let hashKey
+  let userID
+  let fileName
+  if (reqData.hash_key) {
+    hashKey = reqData.hash_key
+    fileName = path.join('assessment_data', 'single_assessment', hashKey + '.json')
+  } else {
+    userID = reqData.user_id
+    fileName = path.join('assessment_data', userID, userID + '.json')
+  }
   fs.readFile(fileName, 'utf-8', (err, data) => {
     if (err) console.log(err)
     const dataFile = JSON.parse(data)

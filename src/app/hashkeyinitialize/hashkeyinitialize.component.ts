@@ -18,6 +18,11 @@ export class HashkeyinitializeComponent implements OnInit {
   ) {
     const userHashKey = this.route.snapshot.paramMap.get('hashKey');
     this.stateManager.hashKey = userHashKey;
+    // if (
+    //   this.dataService.checkHashKeyCooke() ||
+    //   this.dataService.getHashKeyCookie() !== userHashKey
+    // ) {
+    // }
     this.dataService
       .sendHashKeyToServer(userHashKey)
       .subscribe((data: SingleAssessmentData) => {

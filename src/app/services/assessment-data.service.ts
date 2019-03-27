@@ -50,9 +50,7 @@ export class AssessmentDataService {
     if (this.checkUserIdCookie()) {
       this.deleteUserIdCookie();
     }
-    if (!this.checkHashKeyCooke()) {
-      this.setHashKeyCookie(userHashKey);
-    }
+    this.setHashKeyCookie(userHashKey);
   }
 
   public setHashKeyCookie(value: string): void {
@@ -128,38 +126,60 @@ export class AssessmentDataService {
     );
   }
 
+  public getHashKeyAssessmentDataFromFileSystem(
+    hash_key: string
+  ): Observable<AssessmentData> {
+    return <Observable<AssessmentData>>(
+      this.http.get('/api/assessmentsAPI/GetUserAssessment/' + hash_key)
+    );
+  }
+
   public postAssessmentDataToFileSystem(
     assessmentsData: AssessmentDataStructure,
     googleData: GoogleSpeechToTextDataStructure
   ): Observable<string> {
-    return this.http.post(
-      '/api/assessmentsAPI/SaveAssessments',
-      {
+    let structure;
+    if (this.stateManager.hashKey) {
+      console.log('Has hash key');
+      structure = {
+        hash_key: this.getHashKeyCookie(),
+        assessments: [assessmentsData],
+        google_speech_to_text_assess: [googleData]
+      };
+    } else {
+      console.log('Has user id');
+      structure = {
         user_id: this.getUserIdCookie(),
         assessments: [assessmentsData],
         google_speech_to_text_assess: [googleData]
-      },
-      {
-        responseType: 'text'
-      }
-    );
+      };
+    }
+    return this.http.post('/api/assessmentsAPI/SaveAssessments', structure, {
+      responseType: 'text'
+    });
   }
 
   public postSingleAudioDataToMongo(
     assessmentsData: AssessmentDataStructure,
     googleData: GoogleSpeechToTextDataStructure
   ): Observable<string> {
-    return this.http.post(
-      '/api/assessmentsAPI/PushOnePieceData',
-      {
+    let structure;
+    if (this.stateManager.hashKey) {
+      structure = {
+        hash_key: this.getHashKeyCookie(),
+        assessments: [assessmentsData],
+        google_speech_to_text_assess: [googleData]
+      };
+    } else {
+      structure = {
         user_id: this.getUserIdCookie(),
         assessments: [assessmentsData],
         google_speech_to_text_assess: [googleData]
-      },
-      {
-        responseType: 'text'
-      }
-    );
+      };
+    }
+    return this.http.post('/api/assessmentsAPI/PushOnePieceData', structure, {
+      responseType: 'text'
+    });
   }
 
   public getNextUserID(): Observable<UserIdObject> {

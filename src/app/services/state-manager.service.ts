@@ -270,6 +270,10 @@ export class StateManagerService {
     this.goToNextAssessment();
   }
 
+  public goToHashKeyInitializer(hashKey: string): void {
+    this.routerService.navigate(['/' + hashKey]);
+  }
+
   public navigateTo(assessmentName: string): void {
     if (
       assessmentName !== 'done' &&
@@ -303,10 +307,12 @@ export class StateManagerService {
     }
   }
 
+  // KRM: Update the local assessment structure with the newly completed assessment.
   private markAssessmentCompleted(assessmentName: string): void {
     this.assessments[assessmentName]['completed'] = true;
   }
 
+  // KRM: Close out this assessment and get to the next one on the stack.
   public finishThisAssessmentAndAdvance(assessment: string): void {
     this.isInAssessment = false;
     this.markAssessmentCompleted(assessment);
@@ -315,10 +321,13 @@ export class StateManagerService {
     this.goToNextAssessment();
   }
 
+  // KRM: The current entire URL
   public getCurrentURL(): string {
     return this.routerService.url;
   }
 
+  // KRM: Used for translating the 'in code' name of an assessment to an understandable
+  // English version for presenting in the view
   public translateAssessmentName(assessment: string): string {
     let translatedName;
     switch (assessment) {
@@ -366,6 +375,8 @@ export class StateManagerService {
     return translatedName;
   }
 
+  // KRM: If the hash key has been provided, translate the first four chars to find which
+  // assessment has been assigned with that hash key
   hashKeyFirstFourMap(firstFour: string): string {
     let assessmentName = '';
     switch (firstFour) {
