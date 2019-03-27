@@ -148,7 +148,7 @@ export class AudioRecordingService {
         this.stream
           .getAudioTracks()
           .forEach((track: { stop: () => void }) => track.stop());
-        this.stream = null;
+        // this.stream = null;
       }
     }
     // this.stream.getAudioTracks().forEach(track => console.log(track));
