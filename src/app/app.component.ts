@@ -11,7 +11,11 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 export class AppComponent implements OnInit, OnDestroy {
   constructor() {}
 
-  public ngOnInit(): void {}
+  public ngOnInit(): void {
+    if (navigator.userAgent.match('CriOS')) {
+      alert('On chrome on IOS');
+    }
+  }
 
   ngOnDestroy(): void {}
 }
