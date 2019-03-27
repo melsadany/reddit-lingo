@@ -169,7 +169,6 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
 
   playPause(): void {
     if (this.wavesurfer && this.wavesurfer.isReady) {
-      window.alert('Playing');
       this.wavesurfer.playPause();
       if (!this.playingAudio) {
         this.playingAudio = true;
