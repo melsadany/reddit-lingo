@@ -63,16 +63,29 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
     this.stateManager.sendToCurrentIfAlreadyCompleted('diagnostics');
     this.stateManager.isInAssessment = true;
     requestAnimationFrame(() => {
-      this.wavesurfer = WaveSurfer.create({
-        container: this.ws.nativeElement,
-        waveColor: this.waveColor,
-        progressColor: this.progressColor,
-        cursorColor: this.cursorColor,
-        height: 128,
-        autoCenter: true,
-        hideScrollbar: true,
-        backend: 'MediaElement'
-      });
+      if (!this.testedAudio) {
+        this.wavesurfer = WaveSurfer.create({
+          container: this.ws.nativeElement,
+          waveColor: this.waveColor,
+          progressColor: this.progressColor,
+          cursorColor: this.cursorColor,
+          height: 128,
+          autoCenter: true,
+          hideScrollbar: true,
+          backend: 'MediaElement'
+        });
+      } else {
+        this.wavesurfer = WaveSurfer.create({
+          container: this.ws.nativeElement,
+          waveColor: this.waveColor,
+          progressColor: this.progressColor,
+          cursorColor: this.cursorColor,
+          height: 128,
+          autoCenter: true,
+          hideScrollbar: true
+        });
+      }
+
       if (!this.testedAudio) {
         this.wavesurfer.load('/assets/audio/diagnostics/setup_audio.mp3');
       } else {

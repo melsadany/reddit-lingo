@@ -32,7 +32,6 @@ export class AudioRecordingService {
   }
 
   captureStream(): void {
-    alert('Trying to get mic');
     navigator.mediaDevices
       .getUserMedia({ audio: true })
       .then(s => {
