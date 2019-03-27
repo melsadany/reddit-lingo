@@ -28,7 +28,10 @@ export class SentencerepetitionComponent extends AudioAssessment
     '23',
     '24',
     '25',
-    '27'
+    '27',
+    '29',
+    '30',
+    '31'
   ];
   filePathsToPlay = [];
   promptsLength = this.audioFileNumbersToPlay.length;
