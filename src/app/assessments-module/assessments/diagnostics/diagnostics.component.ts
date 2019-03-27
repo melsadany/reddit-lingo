@@ -70,7 +70,8 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
         cursorColor: this.cursorColor,
         height: 128,
         autoCenter: true,
-        hideScrollbar: true
+        hideScrollbar: true,
+        backend: 'MediaElement'
       });
       if (!this.testedAudio) {
         this.wavesurfer.load('/assets/audio/diagnostics/setup_audio.mp3');
