@@ -184,6 +184,26 @@ export class StateManagerService {
       const existingAssessmentName = existingAssessment['assess_name'];
       if (existingAssessment['completed']) {
         this.assessments[existingAssessmentName]['completed'] = true;
+      } else if (!existingAssessment['completed']) {
+        console.log('Not fully completed: ' + existingAssessmentName); // KRM: For debugging
+        let selector = '';
+        if (existingAssessment['data']['recorded_data']) {
+          selector = 'recorded_data';
+        } else if (existingAssessment['data']['selection_data']) {
+          selector = 'selection_data';
+        }
+        const currentPromptNumber = this.determineCurrentPromptNumber(
+          existingAssessment['data'][selector]
+        );
+        this.assessments[existingAssessmentName][
+          'prompt_number'
+        ] = currentPromptNumber;
+        console.log(
+          'On prompt number: ' +
+            currentPromptNumber +
+            ' of ' +
+            existingAssessmentName
+        ); // KRM: For debugging
       }
     }
     if (!this.assessments['diagnostics']['completed']) {

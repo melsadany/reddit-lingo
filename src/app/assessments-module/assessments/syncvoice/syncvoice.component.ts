@@ -14,7 +14,7 @@ import { AudioAssessment } from '../../../structures/AudioAssessment';
 export class SyncvoiceComponent extends AudioAssessment {
   assessmentName = 'syncvoice';
   playingAudio = false;
-  lalaLocations = 'assets/audio/syncvoice/';
+  lalaLocations = 'assets/in_use/audio/syncvoice/';
   audioNames = [
     '1_0_half.mp3',
     '1_1_fivequarters.mp3',

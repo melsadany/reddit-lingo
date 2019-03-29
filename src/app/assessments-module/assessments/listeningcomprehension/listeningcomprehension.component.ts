@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import { DialogService } from '../../../services/dialog.service';
-import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 import { StateManagerService } from '../../../services/state-manager.service';
 import { SelectionAssessment } from '../../../structures/SelectionAssessment';
+import { AssetsObject } from '../../../structures/assessmentdata';
 
 @Component({
   selector: 'app-listeningcomprehension',
@@ -14,10 +14,12 @@ export class ListeningcomprehensionComponent extends SelectionAssessment {
   assessmentName = 'listeningcomprehension';
   showImage = false;
   imagePaths: string[][];
-  imagesLocation = 'assets/img/listeningcomprehension/';
-  audioInstructionsLocation = 'assets/audio/listeningcomprehension/';
+  imagesLocation = 'assets/in_use/img/listeningcomprehension/';
+  audioInstructionsLocation = 'assets/in_use/audio/listeningcomprehension/';
   playingAudio = false;
-  promptsLength = 12; // KRM: Voodoo constant
+  promptsLength: number;
+  audioPromptStructure: {};
+  imgsPromptStructure: {};
 
   constructor(
     public dataService: AssessmentDataService,
@@ -25,18 +27,20 @@ export class ListeningcomprehensionComponent extends SelectionAssessment {
     public dialogService: DialogService
   ) {
     super(stateManager, dialogService, dataService);
+    this.dataService
+      .getAssets('audio', this.assessmentName)
+      .subscribe((value: AssetsObject) => {
+        this.promptsLength = value.assetsLength;
+        this.audioPromptStructure = value.promptStructure;
+        console.log(this.audioPromptStructure);
+      });
+    this.dataService
+      .getAssets('img', this.assessmentName)
+      .subscribe((value: AssetsObject) => {
+        this.imgsPromptStructure = value.promptStructure;
+        console.log(this.imgsPromptStructure);
+      });
   }
-
-  // ngOnInit(): void {
-  //   this.stateManager.sendToCurrentIfAlreadyCompleted('listeningcomprehension');
-  //   this.promptNumber = this.stateManager.assessments['listeningcomprehension'][
-  //     'prompt_number'
-  //   ];
-  // }
-
-  // ngOnDestroy(): void {
-  //   clearInterval(this.intervalCountdown);
-  // }
 
   setStateAndStart(): void {
     this.stateManager.showInnerAssessmentButton = false;
@@ -55,9 +59,9 @@ export class ListeningcomprehensionComponent extends SelectionAssessment {
 
   calculateImageNames(): void {
     this.imagePaths = [];
-    this.imagesLocation = `assets/img/listeningcomprehension/${
-      this.promptNumber
-    }/image/`;
+    // this.imagesLocation = `assets/in_use/img/listeningcomprehension/${
+    //   this.promptNumber
+    // }/image/`;
     const firstRow: string[] = [];
     const secondRow: string[] = [];
     const thirdRow: string[] = [];

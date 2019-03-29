@@ -16,10 +16,10 @@
   </div>
   <div class="text-center" *ngIf="playingAudio">
     <!-- <button type="button" *ngIf="playingAudio" class="start-button btn-lg btn-warning mr-2 mb-2">Listen</button> -->
-    <img class="img-fluid" src="assets/icons/icon_speaker.svg" />
+    <img class="img-fluid" src="assets/in_use/icons/icon_speaker.svg" />
   </div>
   <div class="text-center" *ngIf="audioRecordingService.isCurrentlyRecording()">
-    <img class="img-fluid mt-4" style="width: 120px; height: 120px;" src="assets/icons/recording_mic.png" />
+    <img class="img-fluid mt-4" style="width: 120px; height: 120px;" src="assets/in_use/icons/recording_mic.png" />
     <p class="py-4">You are recording.</p>
   </div>
   <p *ngIf="countingDown" class="text-center display-1">{{ timeLeft }}</p>

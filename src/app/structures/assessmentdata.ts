@@ -20,3 +20,8 @@ export interface SingleAssessmentData {
   assessments: Array<AssessmentDataStructure>;
   google_speech_to_text_assess: Array<GoogleSpeechToTextDataStructure>;
 }
+
+export interface AssetsObject {
+  promptStructure: Object;
+  assetsLength: number;
+}

@@ -87,7 +87,7 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
       }
 
       if (!this.testedAudio) {
-        this.wavesurfer.load('/assets/audio/diagnostics/setup_audio.mp3');
+        this.wavesurfer.load('/assets/in_use/audio/diagnostics/setup_audio.mp3');
       } else {
         this.wavesurfer.loadBlob(dataBlob);
       }

@@ -5,6 +5,7 @@ import { DialogService } from '../../../services/dialog.service';
 import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 import { StateManagerService } from '../../../services/state-manager.service';
 import { AudioAssessment } from '../../../structures/AudioAssessment';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-pictureprompt',
@@ -15,10 +16,10 @@ export class PicturepromptComponent extends AudioAssessment
   implements OnInit, OnDestroy, CanComponentDeactivate {
   assessmentName = 'pictureprompt';
   imageNames = [
-    'assets/img/pictureprompt/0/despair.jpg',
-    'assets/img/pictureprompt/1/he_texted.jpg',
-    'assets/img/pictureprompt/2/joke.jpg',
-    'assets/img/pictureprompt/3/antagonism.jpg'
+    'assets/in_use/img/pictureprompt/0/despair.jpg',
+    'assets/in_use/img/pictureprompt/1/he_texted.jpg',
+    'assets/in_use/img/pictureprompt/2/joke.jpg',
+    'assets/in_use/img/pictureprompt/3/antagonism.jpg'
   ];
   showPromptImage = false;
   currentImagePrompt = '';
@@ -28,7 +29,8 @@ export class PicturepromptComponent extends AudioAssessment
     public stateManager: StateManagerService,
     public dataService: AssessmentDataService,
     public audioRecordingService: AudioRecordingService,
-    public dialogService: DialogService
+    public dialogService: DialogService,
+    public http: HttpClient
   ) {
     super(stateManager, audioRecordingService, dataService, dialogService);
   }

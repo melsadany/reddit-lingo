@@ -11,10 +11,6 @@ const routes: Routes = [
     path: 'home',
     component: HomeComponent
   },
-  {
-    path: ':hashKey',
-    component: HashkeyinitializeComponent
-  },
   // {
   //   path: 'home',
   //   redirectTo: 'home/',
@@ -32,6 +28,10 @@ const routes: Routes = [
   {
     path: 'contact',
     component: ContactComponent
+  },
+  {
+    path: ':hashKey',
+    component: HashkeyinitializeComponent
   },
   {
     path: '**',

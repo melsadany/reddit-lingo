@@ -11,7 +11,7 @@ import { SelectionAssessment } from '../../../structures/SelectionAssessment';
   styleUrls: ['./matrixreasoning.component.scss']
 })
 export class MatrixreasoningComponent extends SelectionAssessment {
-  imagesLocation = 'assets/img/matrixreasoning/';
+  imagesLocation = 'assets/in_use/img/matrixreasoning/';
   dimensions = {
     frameSets: {
       0: {

@@ -3,6 +3,7 @@ import { DialogService } from '../services/dialog.service';
 import { CanComponentDeactivate } from '../guards/can-deactivate.guard';
 
 export class BaseAssessment implements CanComponentDeactivate {
+  assetType: string;
   assessmentName: string;
   countingDown = false;
   intervalCountdown: NodeJS.Timeout;

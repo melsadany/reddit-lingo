@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
 import { Observable } from 'rxjs';
 import { UserIdObject } from '../structures/useridobject';
 import {
   AssessmentData,
   AssessmentDataStructure,
-  GoogleSpeechToTextDataStructure
+  GoogleSpeechToTextDataStructure,
+  AssetsObject
 } from '../structures/assessmentdata';
 import 'rxjs/add/operator/map';
 import { StateManagerService } from './state-manager.service';
@@ -18,12 +19,16 @@ export class AssessmentDataService {
   private _partialAssessmentDataSubscription: Observable<
     AssessmentData
   > = this.getUserAssessmentDataFromFileSystem(this.getUserIdCookie());
+  private _audioAssetsLocation = 'assets/in_use/audio/';
   constructor(
     private cookieService: CookieService,
     private http: HttpClient,
     public stateManager: StateManagerService
   ) {}
 
+  public get audioAssetsLocation(): string {
+    return this._audioAssetsLocation;
+  }
   public get currentUserId(): string {
     return this._currentUserId;
   }
@@ -194,4 +199,33 @@ export class AssessmentDataService {
       {}
     );
   }
+
+  public getAssets(
+    assetType: string,
+    assessmentName: string
+  ): Observable<AssetsObject> {
+    const options = {
+      params: new HttpParams()
+        .set('assetType', assetType)
+        .set('assessmentName', assessmentName)
+    };
+    return <Observable<AssetsObject>>(
+      this.http.get('/api/assessmentsAPI/GetAssets', options)
+    );
+  }
+
+  //   public getFileNamesForCurrentAssessment(
+  //     assessmentName: string,
+  //     assetType: string
+  //   ): Observable<Object> {
+  //     const options = {
+  //       params: new HttpParams()
+  //         .set('assetType', assetType)
+  //         .set('assessmentName', assessmentName)
+  //     };
+  //     return this.http.get(
+  //       '/api/assessmentsAPI/GetFileNamesForCurrentAssessment',
+  //       options
+  //     );
+  //   }
 }

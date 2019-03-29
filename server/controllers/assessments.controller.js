@@ -45,7 +45,9 @@ async function updateAssessmentData(reqData) {
     fileName = path.join('assessment_data', userID, userID + '.json')
   }
   fs.readFile(fileName, 'utf-8', (err, data) => {
-    if (err) console.log(err)
+    if (err) {
+      console.log(err)
+    }
     const dataFile = JSON.parse(data)
     dataFile.assessments.push(reqData.assessments[0])
     fs.writeFile(fileName, JSON.stringify(dataFile), (err) => {
@@ -57,8 +59,17 @@ async function updateAssessmentData(reqData) {
 }
 
 async function pushOnePieceAssessmentData(reqData) {
+  let hashKey
+  let userID
+  let fileName
+  if (reqData.hash_key) {
+    hashKey = reqData.hash_key
+    fileName = path.join('assessment_data', 'single_assessment', hashKey + '.json')
+  } else {
+    userID = reqData.user_id
+    fileName = path.join('assessment_data', userID, userID + '.json')
+  }
   let selector = ''
-  const userID = reqData.user_id
   if (reqData.assessments[0].data.recorded_data) {
     selector = 'recorded_data'
   } else if (reqData.assessments[0].data.selection_data) {
@@ -66,7 +77,6 @@ async function pushOnePieceAssessmentData(reqData) {
   } else {
     console.log('Selector error')
   }
-  const fileName = path.join('assessment_data', userID, userID + '.json')
   fs.readFile(fileName, 'utf-8', (err, data) => {
     if (err) console.log(err)
     const dataFile = JSON.parse(data)
@@ -191,11 +201,40 @@ function insertNewHashKeyJson(hashKey) {
   })
 }
 
+function getAssets(query) {
+  const assetsBaseDir = 'dist/assets/in_use/'
+  const promptStructure = {}
+  const assetType = query.assetType
+  const assessmentName = query.assessmentName
+  const assetFolder = assetsBaseDir + assetType + '/' + assessmentName
+  return new Promise((resolve, reject) => {
+    const files = fs.readdirSync(assetFolder)
+    files.sort((a, b) => a - b)
+    console.log(files)
+    for (let i = 0; i < files.length; i++) {
+      promptStructure[i] = []
+      const individualFile = fs.readdirSync('dist/assets/in_use/' + assetType + '/' + assessmentName + '/' + files[i])
+      for (let j = 0; j < individualFile.length; j++) {
+        promptStructure[i].push(assetFolder.slice(5) + '/' + i + '/' + individualFile[j])
+      }
+      // console.log(returnList)
+    }
+    console.log(promptStructure)
+    resolve({
+      promptStructure: promptStructure,
+      assetsLength: Object.keys(promptStructure).length
+    })
+    // console.log(returnList)
+    // resolve(files.length)
+  })
+}
+
 module.exports = {
   insertFreshAssessmentData,
   pushOnePieceAssessmentData,
   getUserAssessmentData,
   updateAssessmentData,
   getNextUserID,
-  sendHashKey
+  sendHashKey,
+  getAssets
 }

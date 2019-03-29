@@ -5,6 +5,7 @@ import { DialogService } from '../../../services/dialog.service';
 import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 import { StateManagerService } from '../../../services/state-manager.service';
 import { AudioAssessment } from '../../../structures/AudioAssessment';
+import { AssetsObject } from '../../../structures/assessmentdata';
 
 @Component({
   selector: 'app-sentencerepetition',
@@ -17,24 +18,10 @@ export class SentencerepetitionComponent extends AudioAssessment
   promptNumber = 0;
   playingAudio = false;
   audioDurationMs: number;
-  audioFilesLocation = 'assets/audio/sentencerepetition/';
-  audioFileNumbersToPlay: string[] = [
-    '1',
-    '2',
-    '8',
-    '11',
-    '15',
-    '19',
-    '23',
-    '24',
-    '25',
-    '27',
-    '29',
-    '30',
-    '31'
-  ];
-  filePathsToPlay = [];
-  promptsLength = this.audioFileNumbersToPlay.length;
+  // audioFilesLocation =
+  //   this.dataService.audioAssetsLocation + 'sentencerepetition/';
+  promptStructure: {};
+  promptsLength: number;
 
   constructor(
     public stateManager: StateManagerService,
@@ -43,7 +30,12 @@ export class SentencerepetitionComponent extends AudioAssessment
     public dialogService: DialogService
   ) {
     super(stateManager, audioRecordingService, dataService, dialogService);
-    this.calculateFilePaths();
+    this.dataService
+      .getAssets('audio', this.assessmentName)
+      .subscribe((value: AssetsObject) => {
+        this.promptsLength = value.assetsLength;
+        this.promptStructure = value.promptStructure;
+      });
   }
 
   setStateAndStart(): void {
@@ -52,11 +44,14 @@ export class SentencerepetitionComponent extends AudioAssessment
     this.advance();
   }
 
-  calculateFilePaths(): void {
-    for (const fileNumber of this.audioFileNumbersToPlay) {
-      this.filePathsToPlay.push(`${this.audioFilesLocation}${fileNumber}.mp3`);
-    }
-  }
+  // calculateFilePaths(): void {
+  //     this.filePathsToPlay =
+  //       this.dataService.getFileNamesForCurrentAssessment(
+  //         this.assessmentName,
+  //         'audio'
+  //     );
+  //   }
+  // }
 
   advance(): void {
     this.advanceToNextPrompt(
@@ -86,7 +81,7 @@ export class SentencerepetitionComponent extends AudioAssessment
   setupPrompt(): HTMLAudioElement {
     this.stateManager.showInnerAssessmentButton = false;
     const audio = new Audio();
-    audio.src = this.filePathsToPlay[this.promptNumber];
+    audio.src = this.promptStructure[this.promptNumber][0];
     audio.onplaying = (ev: Event): any => (this.playingAudio = true);
     audio.ondurationchange = (en: Event): number =>
       (this.audioDurationMs = audio.duration * 1000 + 3000);
