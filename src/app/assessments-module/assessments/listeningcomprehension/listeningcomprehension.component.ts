@@ -14,8 +14,8 @@ export class ListeningcomprehensionComponent extends SelectionAssessment {
   assessmentName = 'listeningcomprehension';
   showImage = false;
   imagePaths: string[][];
-  imagesLocation = 'assets/in_use/img/listeningcomprehension/';
-  audioInstructionsLocation = 'assets/in_use/audio/listeningcomprehension/';
+  // imagesLocation = 'assets/in_use/img/listeningcomprehension/';
+  // audioInstructionsLocation = 'assets/in_use/audio/listeningcomprehension/';
   playingAudio = false;
   promptsLength: number;
   audioPromptStructure: {};
@@ -52,27 +52,28 @@ export class ListeningcomprehensionComponent extends SelectionAssessment {
   setupPrompt(): HTMLAudioElement {
     this.calculateImageNames();
     const audio = new Audio();
-    audio.src = `${this.audioInstructionsLocation}q${this.promptNumber}.mp3`;
+    // audio.src = `${this.audioInstructionsLocation}q${this.promptNumber}.mp3`;
+    audio.src = this.audioPromptStructure[this.promptNumber][0];
     audio.onplaying = (ev: Event): any => (this.playingAudio = true);
     return audio;
   }
 
   calculateImageNames(): void {
     this.imagePaths = [];
-    // this.imagesLocation = `assets/in_use/img/listeningcomprehension/${
-    //   this.promptNumber
-    // }/image/`;
     const firstRow: string[] = [];
     const secondRow: string[] = [];
     const thirdRow: string[] = [];
     for (let i = 1; i <= 3; i++) {
-      firstRow.push(`${this.imagesLocation}${i}a_q${this.promptNumber}.png`);
+      firstRow.push(this.imgsPromptStructure[this.promptNumber][i]);
+      // firstRow.push(`${this.imagesLocation}${i}a_q${this.promptNumber}.png`);
     }
     for (let i = 4; i <= 6; i++) {
-      secondRow.push(`${this.imagesLocation}${i}a_q${this.promptNumber}.png`);
+      secondRow.push(this.imgsPromptStructure[this.promptNumber][i]);
+      // secondRow.push(`${this.imagesLocation}${i}a_q${this.promptNumber}.png`);
     }
     for (let i = 7; i <= 9; i++) {
-      thirdRow.push(`${this.imagesLocation}${i}a_q${this.promptNumber}.png`);
+      thirdRow.push(this.imgsPromptStructure[this.promptNumber][i]);
+      // thirdRow.push(`${this.imagesLocation}${i}a_q${this.promptNumber}.png`);
     }
     this.imagePaths.push(firstRow, secondRow, thirdRow);
   }
