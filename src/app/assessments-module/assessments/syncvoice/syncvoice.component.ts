@@ -2,9 +2,10 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import { AudioRecordingService } from '../../../services/audio-recording.service';
 import { DialogService } from '../../../services/dialog.service';
-import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
+// import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 import { StateManagerService } from '../../../services/state-manager.service';
 import { AudioAssessment } from '../../../structures/AudioAssessment';
+import { AssetsObject } from '../../../structures/assessmentdata';
 
 @Component({
   selector: 'app-syncvoice',
@@ -14,14 +15,15 @@ import { AudioAssessment } from '../../../structures/AudioAssessment';
 export class SyncvoiceComponent extends AudioAssessment {
   assessmentName = 'syncvoice';
   playingAudio = false;
-  lalaLocations = 'assets/in_use/audio/syncvoice/';
-  audioNames = [
-    '1_0_half.mp3',
-    '1_1_fivequarters.mp3',
-    '1_2_one.mp3',
-    '1_3_threequarters.mp3'
-  ];
-  promptsLength = this.audioNames.length;
+  audioPromptStructure: any;
+  // lalaLocations = 'assets/in_use/audio/syncvoice/';
+  // audioNames = [
+  //   '1_0_half.mp3',
+  //   '1_1_fivequarters.mp3',
+  //   '1_2_one.mp3',
+  //   '1_3_threequarters.mp3'
+  // ];
+  // promptsLength = this.audioNames.length;
 
   constructor(
     public stateManager: StateManagerService,
@@ -30,7 +32,14 @@ export class SyncvoiceComponent extends AudioAssessment {
     public dialogService: DialogService
   ) {
     super(stateManager, audioRecordingService, dataService, dialogService);
-    this.calculateAudioFilePaths();
+    // this.calculateAudioFilePaths();
+    this.dataService
+      .getAssets('audio', this.assessmentName)
+      .subscribe((value: AssetsObject) => {
+        this.promptsLength = value.assetsLength;
+        this.audioPromptStructure = value.promptStructure;
+        console.log(this.audioPromptStructure);
+      });
   }
 
   setStateAndStart(): void {
@@ -40,11 +49,11 @@ export class SyncvoiceComponent extends AudioAssessment {
     this.advance();
   }
 
-  calculateAudioFilePaths(): void {
-    for (let i = 0; i < this.audioNames.length; i++) {
-      this.audioNames[i] = this.lalaLocations + this.audioNames[i];
-    }
-  }
+  // calculateAudioFilePaths(): void {
+  //   for (let i = 0; i < this.audioNames.length; i++) {
+  //     this.audioNames[i] = this.lalaLocations + this.audioNames[i];
+  //   }
+  // }
 
   advance(): void {
     this.stateManager.showInnerAssessmentButton = false;
@@ -71,7 +80,7 @@ export class SyncvoiceComponent extends AudioAssessment {
 
   setupPrompt(): HTMLAudioElement {
     const audio = new Audio();
-    audio.src = this.audioNames[this.promptNumber];
+    audio.src = this.audioPromptStructure[this.promptNumber][0];
     audio.onplaying = (ev: Event): any => (this.playingAudio = true);
     return audio;
   }

@@ -6,6 +6,7 @@ import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 import { StateManagerService } from '../../../services/state-manager.service';
 import { AudioAssessment } from '../../../structures/AudioAssessment';
 import { HttpClient } from '@angular/common/http';
+import { AssetsObject } from '../../../structures/assessmentdata';
 
 @Component({
   selector: 'app-pictureprompt',
@@ -15,15 +16,16 @@ import { HttpClient } from '@angular/common/http';
 export class PicturepromptComponent extends AudioAssessment
   implements OnInit, OnDestroy, CanComponentDeactivate {
   assessmentName = 'pictureprompt';
-  imageNames = [
-    'assets/in_use/img/pictureprompt/0/despair.jpg',
-    'assets/in_use/img/pictureprompt/1/he_texted.jpg',
-    'assets/in_use/img/pictureprompt/2/joke.jpg',
-    'assets/in_use/img/pictureprompt/3/antagonism.jpg'
-  ];
+  // imageNames = [
+  //   'assets/in_use/img/pictureprompt/0/despair.jpg',
+  //   'assets/in_use/img/pictureprompt/1/he_texted.jpg',
+  //   'assets/in_use/img/pictureprompt/2/joke.jpg',
+  //   'assets/in_use/img/pictureprompt/3/antagonism.jpg'
+  // ];
   showPromptImage = false;
   currentImagePrompt = '';
-  promptsLength = this.imageNames.length - 1;
+  // promptsLength = this.imageNames.length - 1;
+  audioPromptStructure: Object;
 
   constructor(
     public stateManager: StateManagerService,
@@ -33,6 +35,13 @@ export class PicturepromptComponent extends AudioAssessment
     public http: HttpClient
   ) {
     super(stateManager, audioRecordingService, dataService, dialogService);
+    this.dataService
+      .getAssets('img', this.assessmentName)
+      .subscribe((value: AssetsObject) => {
+        this.promptsLength = value.assetsLength;
+        this.audioPromptStructure = value.promptStructure;
+        console.log(this.audioPromptStructure);
+      });
   }
 
   setStateAndStart(): void {
@@ -43,7 +52,7 @@ export class PicturepromptComponent extends AudioAssessment
   }
 
   getNextImagePath(): void {
-    this.currentImagePrompt = this.imageNames[this.promptNumber];
+    this.currentImagePrompt = this.audioPromptStructure[this.promptNumber][0];
   }
 
   advance(): void {

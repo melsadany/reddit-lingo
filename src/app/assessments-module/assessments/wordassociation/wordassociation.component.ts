@@ -3,7 +3,7 @@ import { SelectionAssessment } from '../../../structures/SelectionAssessment';
 import { StateManagerService } from '../../../services/state-manager.service';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import { DialogService } from '../../../services/dialog.service';
-import * as data from '../../../../assets/in_use/data/wordmappings.json';
+import * as data from '../../../../assets/in_use/data/wordassociation/wordmappings.json';
 
 @Component({
   selector: 'app-wordassociation',

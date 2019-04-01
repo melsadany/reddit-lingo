@@ -5,6 +5,7 @@ import { DialogService } from '../../../services/dialog.service';
 import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 import { StateManagerService } from '../../../services/state-manager.service';
 import { AudioAssessment } from '../../../structures/AudioAssessment';
+import * as data from '../../../../assets/in_use/data/wordfinding/lettermappings.json';
 
 @Component({
   selector: 'app-wordfinding',
@@ -16,24 +17,8 @@ export class WordfindingComponent extends AudioAssessment
   assessmentName = 'wordfinding';
   showLetter = false;
   currentLetter = '';
-  letterData = [
-    {
-      char: 'A',
-      chars: ['R', 'D', 'A', 'M', 'B', 'P', 'C', 'S'],
-      type: 'Most Frequent'
-    },
-    {
-      char: 'B',
-      chars: ['L', 'G', 'I', 'H', 'E', 'F', 'T'],
-      type: 'Medium Frequency'
-    },
-    {
-      char: 'C',
-      chars: ['K', 'J', 'V', 'U', 'N', 'O', 'W'],
-      type: 'Least Frequent'
-    }
-  ];
-  promptsLength = this.letterData.length;
+  letterData = data;
+  promptsLength = Object.keys(this.letterData).length;
   constructor(
     public stateManager: StateManagerService,
     public audioRecordingService: AudioRecordingService,
@@ -51,7 +36,7 @@ export class WordfindingComponent extends AudioAssessment
   }
 
   calculateNextLetter(): void {
-    const currentChoices = this.letterData[this.promptNumber]['chars'];
+    const currentChoices = this.letterData[this.promptNumber]['letters'];
     this.currentLetter =
       currentChoices[Math.floor(Math.random() * currentChoices.length)];
   }

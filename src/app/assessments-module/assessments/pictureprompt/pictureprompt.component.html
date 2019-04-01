@@ -7,10 +7,12 @@
       seconds.
     </p>
     <div *ngIf="stateManager.showInnerAssessmentButton" class="text-center button-down">
-      <button *ngIf="!stateManager.isInAssessment" type="button" class="start-button btn btn-success" (click)="setStateAndStart()">
+      <button *ngIf="!stateManager.isInAssessment" type="button" class="start-button btn btn-success"
+        (click)="setStateAndStart()">
         {{ stateManager.textOnInnerAssessmentButton }}
       </button>
-      <button *ngIf="stateManager.isInAssessment" type="button" class="start-button btn btn-success" (click)="advance()">
+      <button *ngIf="stateManager.isInAssessment" type="button" class="start-button btn btn-success"
+        (click)="advance()">
         {{ stateManager.textOnInnerAssessmentButton }}
       </button>
     </div>
@@ -21,6 +23,7 @@
   <div class="text-center" *ngIf="audioRecordingService.isCurrentlyRecording()">
     <img class="img-fluid mt-4" style="width: 120px; height: 120px;" src="assets/in_use/icons/recording_mic.png" />
     <p class="text-center py-4">You are recording.</p>
+    <p class="text-center py-4">Describe the picture.</p>
   </div>
   <p *ngIf="countingDown" class="text-center display-1">{{ timeLeft }}</p>
 </div>

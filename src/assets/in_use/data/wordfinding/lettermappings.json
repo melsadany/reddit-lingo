@@ -1,0 +1,17 @@
+{
+  "0": {
+    "letters": ["R", "D", "A", "M", "B", "P", "C", "S"],
+    "type": "Most Frequent"
+
+  },
+  "1": {
+    "letters": ["L", "G", "I", "H", "E", "F", "T"],
+    "type": "Medium Frequency"
+
+  },
+  "2": {
+    "letters": ["K", "J", "V", "U", "N", "O", "W"],
+    "type": "Least Frequent"
+
+  }
+}

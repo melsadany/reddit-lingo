@@ -19,6 +19,7 @@ async function insertFreshAssessmentData(reqData) {
     fs.mkdirSync(path.join('assessment_data', userID), {
       recursive: true
     })
+    fs.mkdirSync(path.join('assessment_data', userID, 'recording_data'))
   }
   const freshData = JSON.stringify(reqData)
   const fileName = path.join('assessment_data', userID, userID + '.json')
@@ -33,7 +34,8 @@ async function insertFreshAssessmentData(reqData) {
 }
 
 async function updateAssessmentData(reqData) {
-  console.log(reqData)
+  // console.log(reqData)
+  // KRM: For seeing what data was already stored for a user
   let hashKey
   let userID
   let fileName
@@ -43,6 +45,9 @@ async function updateAssessmentData(reqData) {
   } else {
     userID = reqData.user_id
     fileName = path.join('assessment_data', userID, userID + '.json')
+  }
+  if (reqData.assessments[0].data.recorded_data) {
+    saveWavFile(reqData, userID, hashKey, 'recorded_data')
   }
   fs.readFile(fileName, 'utf-8', (err, data) => {
     if (err) {
@@ -72,6 +77,7 @@ async function pushOnePieceAssessmentData(reqData) {
   let selector = ''
   if (reqData.assessments[0].data.recorded_data) {
     selector = 'recorded_data'
+    saveWavFile(reqData, userID, hashKey, selector)
   } else if (reqData.assessments[0].data.selection_data) {
     selector = 'selection_data'
   } else {
@@ -136,6 +142,38 @@ function insertNewIDJson() {
       })
     }
   })
+}
+
+function saveWavFile(reqData, userID, hashKey, selector) {
+  const promptNumber = reqData.assessments[0].data[selector][0]['prompt_number']
+  const assessmentName = reqData.assessments[0]['assess_name']
+  let wavFilePath
+  let wavFileName
+  if (hashKey) {
+    wavFilePath = path.join('assessment_data', 'single_assessment', 'recording_data', assessmentName)
+    wavFileName = path.join(wavFilePath, promptNumber + '.wav')
+    if (!fs.existsSync(wavFilePath)) {
+      fs.mkdirSync(path.join(wavFilePath), {
+        recursive: true
+      })
+    }
+  } else if (userID) {
+    wavFilePath = path.join('assessment_data', userID, 'recording_data', assessmentName)
+    wavFileName = path.join(wavFilePath, promptNumber + '.wav')
+    // wavFileName = path.join('assessment_data', userID, 'recording_data', assessmentName, promptNumber + '.wav')
+  }
+  if (!fs.existsSync(wavFilePath)) {
+    fs.mkdirSync(path.join(wavFilePath), {
+      recursive: true
+    })
+  }
+  fs.writeFile(wavFileName, reqData.assessments[0].data[selector][0]['recorded_data'], {
+    encoding: 'base64'
+  }, () => {
+    // console.log('saved file')
+    // KRM: For debugging
+  })
+  reqData.assessments[0].data[selector][0]['recorded_data'] = wavFileName
 }
 
 function getNextUserID() {
@@ -210,7 +248,7 @@ function getAssets(query) {
   return new Promise((resolve, reject) => {
     const files = fs.readdirSync(assetFolder)
     files.sort((a, b) => a - b)
-    console.log(files)
+    // console.log(files)
     for (let i = 0; i < files.length; i++) {
       promptStructure[i] = []
       const individualFile = fs.readdirSync('dist/assets/in_use/' + assetType + '/' + assessmentName + '/' + files[i])
@@ -219,7 +257,8 @@ function getAssets(query) {
       }
       // console.log(returnList)
     }
-    console.log(promptStructure)
+    // console.log(promptStructure)
+    // KRM: For debugging the asset file retreival
     resolve({
       promptStructure: promptStructure,
       assetsLength: Object.keys(promptStructure).length

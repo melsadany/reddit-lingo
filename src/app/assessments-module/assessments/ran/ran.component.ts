@@ -5,6 +5,7 @@ import { DialogService } from '../../../services/dialog.service';
 import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 import { StateManagerService } from '../../../services/state-manager.service';
 import { AudioAssessment } from '../../../structures/AudioAssessment';
+import { AssetsObject } from '../../../structures/assessmentdata';
 
 @Component({
   selector: 'app-ran',
@@ -14,9 +15,9 @@ import { AudioAssessment } from '../../../structures/AudioAssessment';
 export class RanComponent extends AudioAssessment
   implements OnInit, OnDestroy, CanComponentDeactivate {
   assessmentName = 'ran';
+  currentImagePrompt = '';
   showImage = false;
-  promptsLength = 1;
-
+  audioPromptStructure: Object;
   constructor(
     public stateManager: StateManagerService,
     public audioRecordingService: AudioRecordingService,
@@ -24,6 +25,13 @@ export class RanComponent extends AudioAssessment
     public dialogService: DialogService
   ) {
     super(stateManager, audioRecordingService, dataService, dialogService);
+    this.dataService
+      .getAssets('img', this.assessmentName)
+      .subscribe((value: AssetsObject) => {
+        this.promptsLength = value.assetsLength;
+        this.audioPromptStructure = value.promptStructure;
+        console.log(this.audioPromptStructure);
+      });
   }
 
   setStateAndStart(): void {
@@ -34,13 +42,24 @@ export class RanComponent extends AudioAssessment
   }
 
   advance(): void {
-    this.advanceToNextPrompt(() => {
-      this.showImage = true;
-      this.startRecording(30000, () => {
-        this.showImage = false;
-        this.stateManager.showInnerAssessmentButton = true;
-      });
-    });
+    this.advanceToNextPrompt(
+      () => {
+        this.showImage = true;
+        this.startRecording(30000, () => {
+          this.showImage = false;
+          this.stateManager.showInnerAssessmentButton = true;
+        });
+      },
+      () => {
+        return new Promise(
+          (resolve, reject): void => {
+            this.stateManager.showInnerAssessmentButton = false;
+            this.getNextImagePath();
+            resolve('done');
+          }
+        );
+      }
+    );
   }
 
   stopEarly(): void {
@@ -48,5 +67,9 @@ export class RanComponent extends AudioAssessment
       this.showImage = false;
       this.stateManager.showInnerAssessmentButton = true;
     });
+  }
+
+  getNextImagePath(): void {
+    this.currentImagePrompt = this.audioPromptStructure[this.promptNumber][0];
   }
 }

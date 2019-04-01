@@ -12,14 +12,14 @@
     <div *ngIf="heardOnce">
       <div>
         <button type="button" style="margin-bottom:4px; white-space: normal;" class="btn btn-outline-info">
-          <img class="img-fluid" src="assets/in_use/icons/icon_speaker.svg">
+          <img class="img-fluid" src="assets/in_use/animations/random_waveform.gif">
           <p class="text-center">
-            Whenever you see this icon during an assessment, you should be hearing audio.
+            Whenever you see this animation during an assessment, you should be hearing audio.
           </p>
         </button>
       </div>
-      <button type="button" class="start-button btn btn-success mr-2 mb-2" style="margin-bottom:4px;white-space: normal;"
-        (click)="completeAudioTest()">
+      <button type="button" class="start-button btn btn-success mr-2 mb-2"
+        style="margin-bottom:4px;white-space: normal;" (click)="completeAudioTest()">
         Click here if you can hear the audio track being played.
       </button>
       <button type="button" class="start-button btn btn-danger mb-2" style="margin-bottom:4px;white-space: normal;"
@@ -33,7 +33,8 @@
       Tune the audio output device on your end to ensure that it is not muted and that its volume is turned up far
       enough. When you are ready to try the audio diagnostics again, press the button.
     </p>
-    <button type="button" class="start-button btn btn-info" style="margin-bottom:4px;white-space: normal;" (click)="tryAudioAgain()">Try
+    <button type="button" class="start-button btn btn-info" style="margin-bottom:4px;white-space: normal;"
+      (click)="tryAudioAgain()">Try
       Audio Test Again</button>
   </div>
   <div *ngIf="testedAudio && !testedMic">
@@ -68,13 +69,14 @@
       </div>
     </div>
     <div *ngIf="audioRecordingService.inMicrophoneError">
-      <button type="button" class="stop-button btn btn-outline-secondary mb-2" style="margin-bottom:4px;white-space: normal;">
+      <button type="button" class="stop-button btn btn-outline-secondary mb-2"
+        style="margin-bottom:4px;white-space: normal;">
         {{audioRecordingService.gettingMicErrorText}}
       </button>
     </div>
     <div *ngIf="playingAudio && blobUrl">
-      <button type="button" style="margin-bottom:4px;white-space: normal;" class="cancel-button btn btn-danger mr-2 mb-2"
-        (click)="didNotRecordCorrectly()">
+      <button type="button" style="margin-bottom:4px;white-space: normal;"
+        class="cancel-button btn btn-danger mr-2 mb-2" (click)="didNotRecordCorrectly()">
         Click here if your microphone did not record properly
       </button>
       <button style="margin-bottom:4px;white-space: normal;" type="button" class="cancel-button btn btn-success mb-2"
@@ -82,7 +84,7 @@
         Click here if you were able to hear your recording
       </button>
       <div>
-        <img class="img-fluid" src="assets/in_use/icons/icon_speaker.svg">
+        <img class="img-fluid" src="assets/in_use/animations/random_waveform.gif">
       </div>
     </div>
     <div *ngIf="cantHearMic">
