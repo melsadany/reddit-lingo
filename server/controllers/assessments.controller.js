@@ -3,6 +3,7 @@ const Joi = require('joi')
 // const UserIDCounterModel = require('../models/useridcounter.model')
 const fs = require('fs')
 const path = require('path')
+const archiver = require('archiver')
 
 const AssessmentSchemaValidator = Joi.object({
   user_id: Joi.number().required(),
@@ -268,6 +269,39 @@ function getAssets(query) {
   })
 }
 
+function getAllDataOnUserId(userId, res) {
+  deleteZippedForIdIfExists(userId)
+  res.attachment(userId + '.zip')
+  const folderPath = path.join('assessment_data', userId)
+  const output = fs.createWriteStream(path.join(folderPath, userId + '.zip'))
+  const archive = archiver('zip', {})
+  output.on('close', function () {
+    console.log(archive.pointer() + ' total bytes')
+    console.log('archiver has been finalized and the output file descriptor has closed.')
+    deleteZippedForIdIfExists(userId)
+    return res.status(200).send('OK').end()
+    // KRM: Return promise here!
+  })
+  const directory = path.join('assessment_data', userId)
+  archive.directory(directory, false)
+  archive.pipe(res)
+  archive.finalize()
+}
+
+function getAudioDataForHashKey(hashKey) {
+
+}
+
+function deleteZippedForIdIfExists(userId) {
+  const deleteFile = path.join('assessment_data', userId, userId + '.zip')
+  if (fs.existsSync(deleteFile)) {
+    console.log('delete')
+    fs.unlinkSync(deleteFile, (err) => {
+      if (err) console.log(err)
+    })
+  }
+}
+
 module.exports = {
   insertFreshAssessmentData,
   pushOnePieceAssessmentData,
@@ -275,5 +309,7 @@ module.exports = {
   updateAssessmentData,
   getNextUserID,
   sendHashKey,
-  getAssets
+  getAssets,
+  getAllDataOnUserId,
+  getAudioDataForHashKey
 }

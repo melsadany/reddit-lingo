@@ -32,6 +32,7 @@
     "@types/webrtc": "^0.0.24",
     "angular-pipes": "^9.0.2",
     "angular-tree-component": "^8.0.3",
+    "archiver": "^3.0.0",
     "audio-recorder-polyfill": "^0.1.5",
     "bcrypt": "^3.0.2",
     "body-parser": "^1.18.2",

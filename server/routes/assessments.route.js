@@ -1,5 +1,6 @@
 const express = require('express')
 const assessCtrl = require('../controllers/assessments.controller')
+const path = require('path')
 
 const router = express.Router()
 
@@ -102,5 +103,11 @@ router.get('/GetAssets', (req, res) => {
     // })
   }).catch(err => console.log(err))
 })
+
+router.get('/GetAllDataOnUserId/:id', (req, res) => {
+  assessCtrl.getAllDataOnUserId(req.params.id, res)
+})
+
+router.get('/GetAllDataOnHashKey')
 
 module.exports = router
