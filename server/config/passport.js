@@ -27,13 +27,7 @@ const jwtLogin = new JwtStrategy({
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey: config.jwtSecret
 }, async (payload, done) => {
-  let user = await User.findById(payload._id)
-  if (!user) {
-    return done(null, false)
-  }
-  user = user.toObject()
-  delete user.hashedPassword
-  done(null, user)
+  done(null, payload)
 })
 
 passport.use(jwtLogin)

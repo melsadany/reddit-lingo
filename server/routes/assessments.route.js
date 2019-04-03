@@ -1,7 +1,6 @@
 const express = require('express')
 const assessCtrl = require('../controllers/assessments.controller')
-const path = require('path')
-
+const passport = require('passport')
 const router = express.Router()
 
 router.post('/SaveAssessments', (req, res) => {
@@ -104,10 +103,18 @@ router.get('/GetAssets', (req, res) => {
   }).catch(err => console.log(err))
 })
 
-router.get('/GetAllDataOnUserId/:id', (req, res) => {
+router.get('/GetAllDataOnUserId/:id', passport.authenticate('jwt', {
+  session: false
+}), (req, res) => {
   assessCtrl.getAllDataOnUserId(req.params.id, res)
 })
 
-router.get('/GetAllDataOnHashKey')
+// router.get('/GetAllDataOnHashKey')
+
+router.get('/TestCheckTone', passport.authenticate('jwt', {
+  session: false
+}), (req, res) => {
+  res.send('Success')
+})
 
 module.exports = router

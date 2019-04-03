@@ -1,5 +1,5 @@
 {
-  "swagger": "2.0",
+  "openapi": "3.0.0",
   "info": {
     "version": "1.0.0",
     "title": "Screener Application API",
@@ -9,28 +9,10 @@
       "url": "https://opensource.org/licenses/MIT"
     }
   },
-  "host": "localhost:4040",
-  "basePath": "/api/",
   "tags": [{
     "name": "Assessments",
     "description": "API for saving and loading assessment data in the system"
   }],
-  "schemes": [
-    "http"
-  ],
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
-  ],
-  "securityDefinitions": {
-    "AuthHeader": {
-      "type": "apiKey",
-      "in": "header",
-      "name": "Authorization"
-    }
-  },
   "paths": {
     "/assessmentsAPI/SaveAssessments": {
       "post": {
@@ -39,44 +21,47 @@
         ],
         "summary": "Save assessment data progress",
         "description": "Save current assessment progress",
-        "parameters": [{
-          "name": "assessment data",
-          "in": "body",
-          "description": "User assessment data",
-          "schema": {
-            "type": "object",
-            "required": [
-              "user_id",
-              "assessments,",
-              "google_speech_to_text_assess"
-            ],
-            "properties": {
-              "user_id": {
-                "type": "string"
-              },
-              "assessments": {
-                "type": "array",
-                "items": {
-                  "type": "object"
-                }
-              },
-              "google_speech_to_text_assess": {
-                "type": "array",
-                "items": {
-                  "type": "object"
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "user_id",
+                  "assessments,",
+                  "google_speech_to_text_assess"
+                ],
+                "properties": {
+                  "user_id": {
+                    "type": "string"
+                  },
+                  "assessments": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  },
+                  "google_speech_to_text_assess": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  }
                 }
               }
             }
-          }
-        }],
-        "produces": [
-          "application/json"
-        ],
+          },
+          "description": "User assessment data"
+        },
         "responses": {
           "200": {
             "description": "saved user data",
-            "schema": {
-              "$ref": "#/definitions/AssessmentData"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssessmentData"
+                }
+              }
             }
           }
         }
@@ -90,16 +75,15 @@
         "summary": "Find user by ID",
         "description": "Get user's assessment data by ID",
         "operationId": "getUserById",
-        "produces": [
-          "application/json"
-        ],
         "parameters": [{
           "name": "user_id",
           "in": "path",
           "description": "ID of user to return data for",
           "required": true,
-          "type": "integer",
-          "format": "int64"
+          "schema": {
+            "type": "integer",
+            "format": "int64"
+          }
         }],
         "responses": {
           "200": {
@@ -110,25 +94,79 @@
           }
         }
       }
+    },
+    "/assessmentsAPI/GetAllDataOnUserId/{user_id}": {
+      "get": {
+        "security": [{
+          "bearerAuth": []
+        }],
+        "tags": [
+          "Assessments"
+        ],
+        "summary": "Get all data on a user. Requires JWT auth.",
+        "description": "Get all of user's assessment data by ID",
+        "operationId": "getAllDataOnUserId",
+        "parameters": [{
+          "name": "user_id",
+          "in": "path",
+          "description": "ID of user to return data for",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "Successfully found user",
+            "type": "file",
+            "headers": {
+              "Content-Type": {
+                "type": "application/zip"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
     }
   },
-  "definitions": {
-    "AssessmentData": {
-      "required": [
-        "user_id",
-        "assessments",
-        "google_speech_to_text_assess"
-      ],
-      "properties": {
-        "user_id": {
-          "type": "number",
-          "uniqueItems": true
-        },
-        "assessments": {
-          "type": "array"
-        },
-        "google_speech_to_text_assess": {
-          "type": "array"
+  "servers": [{
+    "url": "http://localhost:8080/api/"
+  }],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "AssessmentData": {
+        "required": [
+          "user_id",
+          "assessments",
+          "google_speech_to_text_assess"
+        ],
+        "properties": {
+          "user_id": {
+            "type": "number",
+            "uniqueItems": true
+          },
+          "assessments": {
+            "type": "array",
+            "items": {}
+          },
+          "google_speech_to_text_assess": {
+            "type": "array",
+            "items": {}
+          }
         }
       }
     }
