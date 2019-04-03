@@ -42,7 +42,7 @@ async function updateAssessmentData(reqData) {
   let fileName
   if (reqData.hash_key) {
     hashKey = reqData.hash_key
-    fileName = path.join('assessment_data', 'single_assessment', hashKey + '.json')
+    fileName = path.join('assessment_data', 'single_assessment', hashKey, hashKey + '.json')
   } else {
     userID = reqData.user_id
     fileName = path.join('assessment_data', userID, userID + '.json')
@@ -70,7 +70,7 @@ async function pushOnePieceAssessmentData(reqData) {
   let fileName
   if (reqData.hash_key) {
     hashKey = reqData.hash_key
-    fileName = path.join('assessment_data', 'single_assessment', hashKey + '.json')
+    fileName = path.join('assessment_data', 'single_assessment', hashKey, hashKey + '.json')
   } else {
     userID = reqData.user_id
     fileName = path.join('assessment_data', userID, userID + '.json')
@@ -151,7 +151,7 @@ function saveWavFile(reqData, userID, hashKey, selector) {
   let wavFilePath
   let wavFileName
   if (hashKey) {
-    wavFilePath = path.join('assessment_data', 'single_assessment', 'recording_data', assessmentName)
+    wavFilePath = path.join('assessment_data', 'single_assessment', hashKey, 'recording_data', assessmentName)
     wavFileName = path.join(wavFilePath, promptNumber + '.wav')
     if (!fs.existsSync(wavFilePath)) {
       fs.mkdirSync(path.join(wavFilePath), {
@@ -202,7 +202,7 @@ function getNextUserID() {
 }
 
 function sendHashKey(hashKey) {
-  const fileName = path.join('assessment_data', 'single_assessment', hashKey + '.json')
+  const fileName = path.join('assessment_data', 'single_assessment', hashKey, hashKey + '.json')
   return new Promise((resolve, reject) => {
     fs.readFile(fileName, 'utf-8', (err, data) => {
       if (err) {
@@ -221,11 +221,11 @@ function insertNewHashKeyJson(hashKey) {
     assessments: [],
     google_speech_to_text_assess: []
   })
-  const fileName = path.join('assessment_data', 'single_assessment', hashKey + '.json')
+  const fileName = path.join('assessment_data', 'single_assessment', hashKey, hashKey + '.json')
   return new Promise((resolve, reject) => {
-    if (!fs.existsSync(path.join('assessment_data', 'single_assessment'))) {
+    if (!fs.existsSync(path.join('assessment_data', 'single_assessment', hashKey))) {
       console.log('Making HashKey directory')
-      fs.mkdirSync(path.join('assessment_data', 'single_assessment'), {
+      fs.mkdirSync(path.join('assessment_data', 'single_assessment', hashKey), {
         recursive: true
       })
     }
@@ -292,8 +292,10 @@ function getAllDataOnUserId(userId, res) {
   }
 }
 
-function getAudioDataForHashKey(hashKey) {
-
+function getAllDataForHashKey(hashKey) {
+  deleteZippedForHashKeyIfExists(hashKey)
+  const folderPath = path.join('assessment_data', 'single_assessment', hashKey)
+  // KRM: TO DO finish this function analagous to the ID ones
 }
 
 function deleteZippedForIdIfExists(userId) {
@@ -302,6 +304,10 @@ function deleteZippedForIdIfExists(userId) {
     console.log('delete')
     fs.unlinkSync(deleteFile)
   }
+}
+
+function deleteZippedForHashKeyIfExists(hashKey) {
+
 }
 
 module.exports = {
