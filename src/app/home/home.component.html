@@ -25,6 +25,8 @@
   </div>
 </div>
 
-<p>
-  We do not support Chrome on the iOS platform. Please use Safari on your iOS device to use our site.
-</p>
+<div *ngIf="stateManager.chromeiOs">
+  <p>
+    We do not support Chrome on the iOS platform. Please use Safari on your iOS device to use our site.
+  </p>
+</div>
