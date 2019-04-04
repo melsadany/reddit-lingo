@@ -26,12 +26,19 @@ export class StateManagerService {
   private _inMobileBrowser = false;
   private _hashKey: string;
   private _startedByHandFromHome = false;
+  private _chromeiOs = false;
 
   constructor(private routerService: Router) {
     this.totalAssessments = Object.keys(this.assessments).length;
     this.inMobileBrowser = this.mobileCheck();
   }
 
+  public set chromeiOs(value: boolean) {
+    this._chromeiOs = value;
+  }
+  public get chromeiOs(): boolean {
+    return this._chromeiOs;
+  }
   public set startedByHandFromHome(value: boolean) {
     this._startedByHandFromHome = value;
   }

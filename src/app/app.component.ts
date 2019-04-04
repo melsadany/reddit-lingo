@@ -1,7 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-// import { StateManagerService } from './services/state-manager.service';
-// import { ActivatedRoute } from '@angular/router';
-// import { Router } from '@angular/router';
+import { StateManagerService } from './services/state-manager.service';
 
 @Component({
   selector: 'app-root',
@@ -9,11 +7,11 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, OnDestroy {
-  constructor() {}
+  constructor(private stateManager: StateManagerService) {}
 
   public ngOnInit(): void {
     if (navigator.userAgent.match('CriOS')) {
-      alert('On chrome on IOS');
+      this.stateManager.chromeiOs = true;
     }
   }
 
