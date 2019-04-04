@@ -310,6 +310,10 @@ function deleteZippedForIdIfExists(userId) {
 
 // }
 
+function getAllData() {
+
+}
+
 module.exports = {
   insertFreshAssessmentData,
   pushOnePieceAssessmentData,
@@ -318,6 +322,7 @@ module.exports = {
   getNextUserID,
   sendHashKey,
   getAssets,
-  getAllDataOnUserId
+  getAllDataOnUserId,
+  getAllData
   // getAllDataForHashKey
 }

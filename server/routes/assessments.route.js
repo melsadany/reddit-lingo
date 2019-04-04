@@ -111,10 +111,10 @@ router.get('/GetAllDataOnUserId/:id', passport.authenticate('jwt', {
 
 // router.get('/GetAllDataOnHashKey')
 
-router.get('/TestCheckTone', passport.authenticate('jwt', {
+router.get('/GetAllData', passport.authenticate('jwt', {
   session: false
 }), (req, res) => {
-  res.send('Success')
+  assessCtrl.getAllData(res)
 })
 
 module.exports = router
