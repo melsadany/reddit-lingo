@@ -44,6 +44,7 @@ export class AudioRecordingService {
       .catch(error => {
         alert(error);
         this.handleMicError(error);
+        alert(this.gettingMicErrorText);
         this._recordingFailed.next();
       });
   }
