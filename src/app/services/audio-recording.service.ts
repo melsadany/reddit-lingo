@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import * as RecordRTC from 'recordrtc';
-import * as moment from 'moment';
+import RecordRTC from 'recordrtc';
+import moment from 'moment';
 import { Observable, Subject } from 'rxjs';
 
 export interface RecordedAudioOutput {

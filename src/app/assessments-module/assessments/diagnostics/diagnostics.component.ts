@@ -9,7 +9,7 @@ import {
 import { StateManagerService } from '../../../services/state-manager.service';
 import { AudioRecordingService } from '../../../services/audio-recording.service';
 
-import * as WaveSurfer from 'wavesurfer.js';
+import WaveSurfer from 'wavesurfer.js';
 import { DomSanitizer } from '@angular/platform-browser';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 
@@ -87,7 +87,9 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
       }
 
       if (!this.testedAudio) {
-        this.wavesurfer.load('/assets/in_use/audio/diagnostics/setup_audio.mp3');
+        this.wavesurfer.load(
+          '/assets/in_use/audio/diagnostics/setup_audio.mp3'
+        );
       } else {
         this.wavesurfer.loadBlob(dataBlob);
       }
