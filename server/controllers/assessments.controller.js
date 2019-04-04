@@ -292,11 +292,11 @@ function getAllDataOnUserId(userId, res) {
   }
 }
 
-function getAllDataForHashKey(hashKey) {
-  deleteZippedForHashKeyIfExists(hashKey)
-  const folderPath = path.join('assessment_data', 'single_assessment', hashKey)
-  // KRM: TO DO finish this function analagous to the ID ones
-}
+// function getAllDataForHashKey(hashKey) {
+//   deleteZippedForHashKeyIfExists(hashKey)
+//   const folderPath = path.join('assessment_data', 'single_assessment', hashKey)
+//   // KRM: TO DO finish this function analagous to the ID ones
+// }
 
 function deleteZippedForIdIfExists(userId) {
   const deleteFile = path.join('assessment_data', userId, userId + '.zip')
@@ -306,9 +306,9 @@ function deleteZippedForIdIfExists(userId) {
   }
 }
 
-function deleteZippedForHashKeyIfExists(hashKey) {
+// function deleteZippedForHashKeyIfExists(hashKey) {
 
-}
+// }
 
 module.exports = {
   insertFreshAssessmentData,
@@ -318,6 +318,6 @@ module.exports = {
   getNextUserID,
   sendHashKey,
   getAssets,
-  getAllDataOnUserId,
-  getAudioDataForHashKey
+  getAllDataOnUserId
+  // getAllDataForHashKey
 }
