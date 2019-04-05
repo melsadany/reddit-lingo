@@ -41,13 +41,13 @@
     <p class="py-4 text-center">
       We'll test your microphone next. Press the start button to begin a test recording.
     </p>
-    <div *ngIf="!cantHearMic && !blobUrl && !audioRecordingService.inMicrophoneError">
+    <div *ngIf="!cantHearMic && !doneRecording && !audioRecordingService.inMicrophoneError">
       <div *ngIf="!audioRecordingService.isCurrentlyRecording()">
         <button class="btn btn-outline-info" style="margin-bottom:4px;white-space: normal;">
           After pressing the blue button below, your browser should request access to your microphone.
           You need to allow the website access to your microphone to continue.
         </button>
-        <button type="button" class="start-button btn btn-info" (click)="startRecording()">
+        <button *ngIf="!doneRecording" type="button" class="start-button btn btn-info" (click)="startRecording()">
           Start Recording Test
         </button>
       </div>

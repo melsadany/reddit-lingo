@@ -12,10 +12,11 @@ export interface RecordedAudioOutput {
 export class AudioRecordingService {
   private stream: MediaStream;
   public inMicrophoneError = false;
-  private recorder: {
-    record: () => void;
-    stop: (arg0: (blob: any) => void, arg1: () => void) => void;
-  };
+  // private recorder: {
+  //   record: () => void;
+  //   stop: (arg0: (blob: any) => void, arg1: () => void) => void;
+  // };
+  private recorder;
   private interval: NodeJS.Timeout;
   private startTime: moment.MomentInput;
   private _recorded = new Subject<RecordedAudioOutput>();
@@ -43,8 +44,6 @@ export class AudioRecordingService {
       })
       .catch(error => {
         alert(error);
-        this.handleMicError(error);
-        alert(this.gettingMicErrorText);
         this._recordingFailed.next();
       });
   }
@@ -90,12 +89,12 @@ export class AudioRecordingService {
 
   private record(): void {
     this.setCurrentlyRecording(true);
-    this.recorder = new RecordRTC.StereoAudioRecorder(this.stream, {
+    this.recorder = new RecordRTC(this.stream, {
       type: 'audio',
       mimeType: 'audio/webm'
     });
 
-    this.recorder.record();
+    this.recorder.startRecording();
     this.startTime = moment();
     this.interval = setInterval(() => {
       const currentTime = moment();
@@ -122,14 +121,19 @@ export class AudioRecordingService {
   stopRecording(): void {
     if (this.recorder) {
       this.setCurrentlyRecording(false);
-      this.recorder.stop(
-        (blob: Blob) => {
+      this.recorder.stopRecording(
+        // (blob: Blob) => {
+        () => {
+          const currentBlob = this.recorder.getBlob();
           if (this.startTime) {
             const wavName = encodeURIComponent(
               'audio_' + new Date().getTime() + '.wav'
             );
             this.stopMedia();
-            this._recorded.next({ blob: blob, user_id: wavName });
+            this._recorded.next({
+              blob: currentBlob,
+              user_id: wavName
+            });
           }
         },
         () => {

@@ -78,6 +78,7 @@ export class AudioAssessment extends BaseAssessment
 
   handleRecordedOutput(data: RecordedAudioOutput): void {
     const currentBlob = data.blob;
+    console.log(currentBlob);
     const reader: FileReader = new FileReader();
     reader.readAsDataURL(currentBlob);
     reader.onloadend = (): any => {
