@@ -133,6 +133,9 @@ export class AudioRecordingService {
 
   stopRecording(): void {
     if (this.recorder) {
+      if (RecordRTC.Storage.AudioContextConstructor) {
+        alert('AudioContextConstructor');
+      }
       this.setCurrentlyRecording(false);
       if (this.stateManager.inMobileBrowser) {
         this.recorder.stop(
