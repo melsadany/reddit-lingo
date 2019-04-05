@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import RecordRTC from 'recordrtc';
 import moment from 'moment';
 import { Observable, Subject } from 'rxjs';
+import { StateManagerService } from './state-manager.service';
 
 export interface RecordedAudioOutput {
   blob: Blob;
@@ -24,6 +25,8 @@ export class AudioRecordingService {
   private _recordingFailed = new Subject<string>();
   private _currentlyRecording = false;
   private _gettingMicErrorText: string;
+
+  constructor(private stateManager: StateManagerService) {}
 
   public get gettingMicErrorText(): string {
     return this._gettingMicErrorText;
@@ -88,13 +91,23 @@ export class AudioRecordingService {
   }
 
   private record(): void {
-    this.setCurrentlyRecording(true);
-    this.recorder = new RecordRTC(this.stream, {
+    const options = {
       type: 'audio',
       mimeType: 'audio/webm'
-    });
+    };
+    this.setCurrentlyRecording(true);
 
-    this.recorder.startRecording();
+    if (this.stateManager.inMobileBrowser) {
+      this.recorder = new RecordRTC.StereoAudioRecorder(this.stream, options);
+    } else {
+      this.recorder = new RecordRTC(this.stream, options);
+    }
+
+    if (this.stateManager.inMobileBrowser) {
+      this.recorder.record();
+    } else {
+      this.recorder.startRecording();
+    }
     this.startTime = moment();
     this.interval = setInterval(() => {
       const currentTime = moment();
@@ -121,26 +134,49 @@ export class AudioRecordingService {
   stopRecording(): void {
     if (this.recorder) {
       this.setCurrentlyRecording(false);
-      this.recorder.stopRecording(
-        // (blob: Blob) => {
-        () => {
-          const currentBlob = this.recorder.getBlob();
-          if (this.startTime) {
-            const wavName = encodeURIComponent(
-              'audio_' + new Date().getTime() + '.wav'
-            );
+      if (this.stateManager.inMobileBrowser) {
+        this.recorder.stop(
+          // (blob: Blob) => {
+          (blob: Blob) => {
+            const currentBlob = blob;
+            if (this.startTime) {
+              const wavName = encodeURIComponent(
+                'audio_' + new Date().getTime() + '.wav'
+              );
+              this.stopMedia();
+              this._recorded.next({
+                blob: currentBlob,
+                user_id: wavName
+              });
+            }
+          },
+          () => {
             this.stopMedia();
-            this._recorded.next({
-              blob: currentBlob,
-              user_id: wavName
-            });
+            this._recordingFailed.next();
           }
-        },
-        () => {
-          this.stopMedia();
-          this._recordingFailed.next();
-        }
-      );
+        );
+      } else {
+        this.recorder.stopRecording(
+          // (blob: Blob) => {
+          () => {
+            const currentBlob = this.recorder.getBlob();
+            if (this.startTime) {
+              const wavName = encodeURIComponent(
+                'audio_' + new Date().getTime() + '.wav'
+              );
+              this.stopMedia();
+              this._recorded.next({
+                blob: currentBlob,
+                user_id: wavName
+              });
+            }
+          },
+          () => {
+            this.stopMedia();
+            this._recordingFailed.next();
+          }
+        );
+      }
     }
   }
 
