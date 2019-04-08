@@ -1,11 +1,8 @@
-/// <reference types="@types/dom-mediacapture-record" />
-
 import { Injectable } from '@angular/core';
 import RecordRTC from 'recordrtc';
 import moment from 'moment';
 import { Observable, Subject } from 'rxjs';
 import { StateManagerService } from './state-manager.service';
-import { Stream } from 'stream';
 
 export interface RecordedAudioOutput {
   blob: Blob;
@@ -33,8 +30,9 @@ export class AudioRecordingService {
 
   constructor(private stateManager: StateManagerService) {
     this._kalebRecorder = new KalebRecorder(1024);
-    this._kalebRecorder.stopRecording();
-    // this._kalebRecorder.start();
+    this._kalebRecorder.start();
+    setInterval(() => this._kalebRecorder.stopRecording(), 3000);
+    // this._kalebRecorder.stopRecording();
   }
 
   public get gettingMicErrorText(): string {
@@ -263,35 +261,36 @@ export class KalebRecorder {
     this.recordedData = [];
     navigator.mediaDevices
       .getUserMedia({ audio: true })
-      .then(this.onMicrophoneGet)
-      .catch(this.onMicrophoneError);
+      .then((stream) => {
+        this.stream = stream;
+        this.audioInput = this.audioCtx.createMediaStreamSource(stream);
+        this.audioInput.connect(this.audioNode);
+        this.audioNode.onaudioprocess = (data: any) => this.onAudioProcess(data);
+        this.recording = true;
+      })
+      .catch((error) => {
+        console.log(error);
+        alert('Unable to access microphone');
+      });
   }
-  onMicrophoneGet(stream: any): void {
-    this.stream = stream;
-    this.audioInput = this.audioCtx.createMediaStreamSource(stream);
-    this.audioInput.connect(this.audioNode);
-    this.audioNode.onaudioprocess = this.onAudioProcess;
-    this.recording = true;
-  }
-  onMicrophoneError(error: any): void {
-    console.log(error);
-    alert('Unable to access microphone');
-  }
+
   onAudioProcess(event: any): void {
+    console.log(event);
     if (!this.recording) {
       return;
     } else {
       this.recordedData.push(
-        new Float32Array(event.inputBuffer.getChannelData[0])
+        new Float32Array(event.inputBuffer.getChannelData(0))
       );
     }
   }
   stopRecording(): void {
     this.recording = false;
-    this.stream.getTracks.forEach(track => {
+    this.stream.getTracks().forEach((track: { stop: () => void; }) => {
       track.stop();
     });
     this.audioNode.disconnect();
     this.audioInput.disconnect();
+    console.log(this.recordedData);
   }
 }
