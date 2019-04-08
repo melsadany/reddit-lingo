@@ -1,8 +1,11 @@
+/// <reference types="@types/dom-mediacapture-record" />
+
 import { Injectable } from '@angular/core';
 import RecordRTC from 'recordrtc';
 import moment from 'moment';
 import { Observable, Subject } from 'rxjs';
 import { StateManagerService } from './state-manager.service';
+import { Stream } from 'stream';
 
 export interface RecordedAudioOutput {
   blob: Blob;
@@ -26,7 +29,13 @@ export class AudioRecordingService {
   private _currentlyRecording = false;
   private _gettingMicErrorText: string;
 
-  constructor(private stateManager: StateManagerService) {}
+  private _kalebRecorder: KalebRecorder;
+
+  constructor(private stateManager: StateManagerService) {
+    this._kalebRecorder = new KalebRecorder(1024);
+    this._kalebRecorder.stopRecording();
+    // this._kalebRecorder.start();
+  }
 
   public get gettingMicErrorText(): string {
     return this._gettingMicErrorText;
@@ -226,5 +235,63 @@ export class AudioRecordingService {
         this.gettingMicErrorText = 'Unknown error';
         break;
     }
+  }
+}
+
+declare var webkitAudioContext: any;
+
+export class KalebRecorder {
+  audioCtx: any;
+  audioNode: any;
+  recordedData = [];
+  audioInput: any;
+  stream: any;
+  recording = false;
+  constructor(bufferSize: number) {
+    this.audioCtx = new (AudioContext || webkitAudioContext)();
+    if (this.audioCtx.createJavaScriptNode) {
+      this.audioNode = this.audioCtx.createJavaScriptNode(bufferSize, 1, 1);
+    } else if (this.audioCtx.createScriptProcessor) {
+      this.audioNode = this.audioCtx.createScriptProcessor(bufferSize, 1, 1);
+    } else {
+      throw 'WebAudio not supported!';
+    }
+    this.audioNode.connect(this.audioCtx.destination);
+  }
+
+  start(): void {
+    this.recordedData = [];
+    navigator.mediaDevices
+      .getUserMedia({ audio: true })
+      .then(this.onMicrophoneGet)
+      .catch(this.onMicrophoneError);
+  }
+  onMicrophoneGet(stream: any): void {
+    this.stream = stream;
+    this.audioInput = this.audioCtx.createMediaStreamSource(stream);
+    this.audioInput.connect(this.audioNode);
+    this.audioNode.onaudioprocess = this.onAudioProcess;
+    this.recording = true;
+  }
+  onMicrophoneError(error: any): void {
+    console.log(error);
+    alert('Unable to access microphone');
+  }
+  onAudioProcess(event: any): void {
+    if (!this.recording) {
+      return;
+    } else {
+      this.recordedData.push(
+        new Float32Array(event.inputBuffer.getChannelData[0])
+      );
+    }
+  }
+  stopRecording(): void {
+    this.recording = false;
+    this.stream.getTracks.forEach(track => {
+      track.stop();
+    });
+    this.audioNode.disconnect();
+    this.audioInput.disconnect();
   }
 }
