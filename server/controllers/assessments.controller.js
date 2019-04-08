@@ -124,11 +124,11 @@ function getUserAssessmentData(searchUserId) {
 }
 
 function insertNewIDJson() {
-  const fileName = path.join('assessment_data', 'userID', 'next_user_ID' + '.json')
+  const fileName = path.join(__dirname, 'assessment_data', 'userID', 'next_user_ID' + '.json')
   return new Promise((resolve, reject) => {
     if (!fs.existsSync(path.join('assessment_data', 'userID'))) {
       console.log('Making UserIDJson directory')
-      fs.mkdirSync(path.join('assessment_data', 'userID'), {
+      fs.mkdirSync(path.join(__dirname, 'assessment_data', 'userID'), {
         recursive: true
       })
       fs.writeFile(fileName, JSON.stringify({
@@ -178,7 +178,7 @@ function saveWavFile(reqData, userID, hashKey, selector) {
 }
 
 function getNextUserID() {
-  const fileName = path.join('assessment_data', 'userID', 'next_user_ID' + '.json')
+  const fileName = path.join(__dirname, 'assessment_data', 'userID', 'next_user_ID' + '.json')
   return new Promise((resolve, reject) => {
     fs.readFile(fileName, 'utf-8', (err, data) => {
       if (err) {
