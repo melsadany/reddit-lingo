@@ -26,7 +26,7 @@ export class AudioRecordingService {
   private _currentlyRecording = false;
   private _gettingMicErrorText: string;
 
-  private _kalebRecorder: KalebRecorder;
+  // private _kalebRecorder: KalebRecorder;
 
   constructor(private stateManager: StateManagerService) {
     // this._kalebRecorder = new KalebRecorder(1024);
@@ -203,8 +203,6 @@ export class AudioRecordingService {
         this.stream = null;
       }
     }
-    // RecordRTC.destroy();
-    // this.stream.getAudioTracks().forEach(track => console.log(track));
   }
 
   private handleMicError(error: Error): void {
@@ -238,62 +236,62 @@ export class AudioRecordingService {
   }
 }
 
-declare var webkitAudioContext: any;
+// declare var webkitAudioContext: any;
 
-export class KalebRecorder {
-  audioCtx: any;
-  audioNode: any;
-  recordedData = [];
-  audioInput: any;
-  stream: any;
-  recording = false;
-  constructor(bufferSize: number) {
-    this.audioCtx = new (AudioContext || webkitAudioContext)();
-    if (this.audioCtx.createJavaScriptNode) {
-      this.audioNode = this.audioCtx.createJavaScriptNode(bufferSize, 1, 1);
-    } else if (this.audioCtx.createScriptProcessor) {
-      this.audioNode = this.audioCtx.createScriptProcessor(bufferSize, 1, 1);
-    } else {
-      throw 'WebAudio not supported!';
-    }
-    this.audioNode.connect(this.audioCtx.destination);
-  }
+// export class KalebRecorder {
+//   audioCtx: any;
+//   audioNode: any;
+//   recordedData = [];
+//   audioInput: any;
+//   stream: any;
+//   recording = false;
+//   constructor(bufferSize: number) {
+//     this.audioCtx = new (AudioContext || webkitAudioContext)();
+//     if (this.audioCtx.createJavaScriptNode) {
+//       this.audioNode = this.audioCtx.createJavaScriptNode(bufferSize, 1, 1);
+//     } else if (this.audioCtx.createScriptProcessor) {
+//       this.audioNode = this.audioCtx.createScriptProcessor(bufferSize, 1, 1);
+//     } else {
+//       throw 'WebAudio not supported!';
+//     }
+//     this.audioNode.connect(this.audioCtx.destination);
+//   }
 
-  start(): void {
-    this.recordedData = [];
-    navigator.mediaDevices
-      .getUserMedia({ audio: true })
-      .then(stream => {
-        this.stream = stream;
-        this.audioInput = this.audioCtx.createMediaStreamSource(stream);
-        this.audioInput.connect(this.audioNode);
-        this.audioNode.onaudioprocess = (data: any) =>
-          this.onAudioProcess(data);
-        this.recording = true;
-      })
-      .catch(error => {
-        console.log(error);
-        alert('Unable to access microphone');
-      });
-  }
+//   start(): void {
+//     this.recordedData = [];
+//     navigator.mediaDevices
+//       .getUserMedia({ audio: true })
+//       .then(stream => {
+//         this.stream = stream;
+//         this.audioInput = this.audioCtx.createMediaStreamSource(stream);
+//         this.audioInput.connect(this.audioNode);
+//         this.audioNode.onaudioprocess = (data: any) =>
+//           this.onAudioProcess(data);
+//         this.recording = true;
+//       })
+//       .catch(error => {
+//         console.log(error);
+//         alert('Unable to access microphone');
+//       });
+//   }
 
-  onAudioProcess(event: any): void {
-    console.log(event);
-    if (!this.recording) {
-      return;
-    } else {
-      this.recordedData.push(
-        new Float32Array(event.inputBuffer.getChannelData(0))
-      );
-    }
-  }
-  stopRecording(): void {
-    this.recording = false;
-    this.stream.getTracks().forEach((track: { stop: () => void }) => {
-      track.stop();
-    });
-    this.audioNode.disconnect();
-    this.audioInput.disconnect();
-    console.log(this.recordedData);
-  }
-}
+//   onAudioProcess(event: any): void {
+//     console.log(event);
+//     if (!this.recording) {
+//       return;
+//     } else {
+//       this.recordedData.push(
+//         new Float32Array(event.inputBuffer.getChannelData(0))
+//       );
+//     }
+//   }
+//   stopRecording(): void {
+//     this.recording = false;
+//     this.stream.getTracks().forEach((track: { stop: () => void }) => {
+//       track.stop();
+//     });
+//     this.audioNode.disconnect();
+//     this.audioInput.disconnect();
+//     console.log(this.recordedData);
+//   }
+// }
