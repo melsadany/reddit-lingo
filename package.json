@@ -28,6 +28,7 @@
     "@angular/platform-browser": "7.1.4",
     "@angular/platform-browser-dynamic": "7.1.4",
     "@angular/router": "7.1.4",
+    "@types/dom-mediacapture-record": "^1.0.1",
     "@types/react": "^16.7.18",
     "@types/webrtc": "^0.0.24",
     "angular-pipes": "^9.0.2",
