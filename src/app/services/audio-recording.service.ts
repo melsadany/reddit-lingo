@@ -29,9 +29,9 @@ export class AudioRecordingService {
   private _kalebRecorder: KalebRecorder;
 
   constructor(private stateManager: StateManagerService) {
-    this._kalebRecorder = new KalebRecorder(1024);
-    this._kalebRecorder.start();
-    setInterval(() => this._kalebRecorder.stopRecording(), 3000);
+    // this._kalebRecorder = new KalebRecorder(1024);
+    // this._kalebRecorder.start();
+    // setInterval(() => this._kalebRecorder.stopRecording(), 3000);
     // this._kalebRecorder.stopRecording();
   }
 
@@ -192,6 +192,7 @@ export class AudioRecordingService {
 
   private stopMedia(): void {
     if (this.recorder) {
+      this.recorder.destroy();
       this.recorder = null;
       clearInterval(this.interval);
       this.startTime = null;
@@ -202,6 +203,7 @@ export class AudioRecordingService {
         this.stream = null;
       }
     }
+    // RecordRTC.destroy();
     // this.stream.getAudioTracks().forEach(track => console.log(track));
   }
 
@@ -261,14 +263,15 @@ export class KalebRecorder {
     this.recordedData = [];
     navigator.mediaDevices
       .getUserMedia({ audio: true })
-      .then((stream) => {
+      .then(stream => {
         this.stream = stream;
         this.audioInput = this.audioCtx.createMediaStreamSource(stream);
         this.audioInput.connect(this.audioNode);
-        this.audioNode.onaudioprocess = (data: any) => this.onAudioProcess(data);
+        this.audioNode.onaudioprocess = (data: any) =>
+          this.onAudioProcess(data);
         this.recording = true;
       })
-      .catch((error) => {
+      .catch(error => {
         console.log(error);
         alert('Unable to access microphone');
       });
@@ -286,7 +289,7 @@ export class KalebRecorder {
   }
   stopRecording(): void {
     this.recording = false;
-    this.stream.getTracks().forEach((track: { stop: () => void; }) => {
+    this.stream.getTracks().forEach((track: { stop: () => void }) => {
       track.stop();
     });
     this.audioNode.disconnect();
