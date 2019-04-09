@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import RecordRTC from 'recordrtc';
 import moment from 'moment';
 import { Observable, Subject } from 'rxjs';
+import { StateManagerService } from './state-manager.service';
 
 export interface RecordedAudioOutput {
   blob: Blob;
@@ -12,11 +13,12 @@ export interface RecordedAudioOutput {
 export class AudioRecordingService {
   private stream: MediaStream;
   public inMicrophoneError = false;
-  private recorder: {
-    record: () => void;
-    stop: (arg0: (blob: any) => void, arg1: () => void) => void;
-    destroy: () => void;
-  };
+  // private recorder: {
+  //   record: () => void;
+  //   stop: (arg0: (blob: any) => void, arg1: () => void) => void;
+  //   destroy: () => void;
+  // };
+  private recorder;
   private interval: NodeJS.Timeout;
   private startTime: moment.MomentInput;
   private _recorded = new Subject<RecordedAudioOutput>();
@@ -25,6 +27,7 @@ export class AudioRecordingService {
   private _currentlyRecording = false;
   private _gettingMicErrorText: string;
 
+  constructor(private stateManager: StateManagerService) {}
   public get gettingMicErrorText(): string {
     return this._gettingMicErrorText;
   }
@@ -89,23 +92,46 @@ export class AudioRecordingService {
   }
 
   private record(): void {
-    this.setCurrentlyRecording(true);
-    this.recorder = new RecordRTC.StereoAudioRecorder(this.stream, {
+    const config = {
       type: 'audio',
       mimeType: 'audio/webm'
-    });
+    };
+    this.setCurrentlyRecording(true);
+    if (this.stateManager.inMobileBrowser) {
+      // this.recorder = new RecordRTC.StereoAudioRecorder(this.stream, config);
 
-    this.recorder.record();
-    this.startTime = moment();
-    this.interval = setInterval(() => {
-      const currentTime = moment();
-      const diffTime = moment.duration(currentTime.diff(this.startTime));
-      const time =
-        this.toString(diffTime.minutes()) +
-        ':' +
-        this.toString(diffTime.seconds());
-      this._recordingTime.next(time);
-    }, 1000);
+      this.recorder = new RecordRTC.MediaStreamRecorder(this.stream, config);
+
+      // alert(JSON.stringify(RecordRTC.Storage));
+      // console.log(JSON.stringify(RecordRTC.Storage));
+      // console.log(RecordRTC.Storage);
+      this.recorder.record();
+      console.log(this.recorder);
+      this.startTime = moment();
+      this.interval = setInterval(() => {
+        const currentTime = moment();
+        const diffTime = moment.duration(currentTime.diff(this.startTime));
+        const time =
+          this.toString(diffTime.minutes()) +
+          ':' +
+          this.toString(diffTime.seconds());
+        this._recordingTime.next(time);
+      }, 1000);
+    } else {
+      this.recorder = new RecordRTC(this.stream, config);
+      this.recorder.startRecording();
+      console.log(this.recorder);
+      this.startTime = moment();
+      this.interval = setInterval(() => {
+        const currentTime = moment();
+        const diffTime = moment.duration(currentTime.diff(this.startTime));
+        const time =
+          this.toString(diffTime.minutes()) +
+          ':' +
+          this.toString(diffTime.seconds());
+        this._recordingTime.next(time);
+      }, 1000);
+    }
   }
 
   private toString(value: string | number): string | number {
@@ -142,9 +168,9 @@ export class AudioRecordingService {
 
   private stopMedia(): void {
     if (this.recorder) {
-      alert(JSON.stringify(RecordRTC.Storage));
-      console.log(JSON.stringify(RecordRTC.Storage));
-      console.log(RecordRTC.storage);
+      // alert(JSON.stringify(RecordRTC.Storage, null, 4));
+      // console.log(JSON.stringify(RecordRTC.Storage, null, 4));
+      // console.log(RecordRTC.Storage);
       this.recorder = null;
       clearInterval(this.interval);
       this.startTime = null;
