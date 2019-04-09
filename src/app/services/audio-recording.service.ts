@@ -15,6 +15,7 @@ export class AudioRecordingService {
   private recorder: {
     record: () => void;
     stop: (arg0: (blob: any) => void, arg1: () => void) => void;
+    destroy: () => void;
   };
   private interval: NodeJS.Timeout;
   private startTime: moment.MomentInput;
@@ -141,6 +142,9 @@ export class AudioRecordingService {
 
   private stopMedia(): void {
     if (this.recorder) {
+      alert(JSON.stringify(RecordRTC.Storage));
+      console.log(JSON.stringify(RecordRTC.Storage));
+      console.log(RecordRTC.storage);
       this.recorder = null;
       clearInterval(this.interval);
       this.startTime = null;
