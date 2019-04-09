@@ -58,6 +58,7 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
   blobUrl;
   showWaveForm = false;
   cantHearMic = false;
+  hasRecordedTest = false;
 
   ngOnInit(dataBlob?: any): void {
     this.stateManager.sendToCurrentIfAlreadyCompleted('diagnostics');

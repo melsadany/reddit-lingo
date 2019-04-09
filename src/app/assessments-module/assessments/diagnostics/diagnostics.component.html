@@ -74,7 +74,7 @@
         {{audioRecordingService.gettingMicErrorText}}
       </button>
     </div>
-    <div *ngIf="playingAudio && blobUrl">
+    <div *ngIf="playingAudio && doneRecording">
       <button type="button" style="margin-bottom:4px;white-space: normal;"
         class="cancel-button btn btn-danger mr-2 mb-2" (click)="didNotRecordCorrectly()">
         Click here if your microphone did not record properly
