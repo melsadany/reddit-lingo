@@ -117,9 +117,9 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
   }
 
   handleRecordedOutput(data: any): void {
-    this.blobUrl = this.sanitizer.bypassSecurityTrustUrl(
-      URL.createObjectURL(data.blob)
-    );
+    // this.blobUrl = this.sanitizer.bypassSecurityTrustUrl(
+    //   URL.createObjectURL(data.blob)
+    // ); KRM Chrome removed URL.createObject
     this.ngOnInit(data.blob);
   }
 

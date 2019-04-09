@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import RecordRTC from 'recordrtc';
+import RecordRTC from '../dev/recordrtc';
 import moment from 'moment';
 import { Observable, Subject } from 'rxjs';
 import { StateManagerService } from './state-manager.service';
@@ -97,41 +97,23 @@ export class AudioRecordingService {
       mimeType: 'audio/webm'
     };
     this.setCurrentlyRecording(true);
-    if (this.stateManager.inMobileBrowser) {
-      // this.recorder = new RecordRTC.StereoAudioRecorder(this.stream, config);
-
-      this.recorder = new RecordRTC.MediaStreamRecorder(this.stream, config);
-
-      // alert(JSON.stringify(RecordRTC.Storage));
-      // console.log(JSON.stringify(RecordRTC.Storage));
-      // console.log(RecordRTC.Storage);
-      this.recorder.record();
-      console.log(this.recorder);
-      this.startTime = moment();
-      this.interval = setInterval(() => {
-        const currentTime = moment();
-        const diffTime = moment.duration(currentTime.diff(this.startTime));
-        const time =
-          this.toString(diffTime.minutes()) +
-          ':' +
-          this.toString(diffTime.seconds());
-        this._recordingTime.next(time);
-      }, 1000);
-    } else {
-      this.recorder = new RecordRTC(this.stream, config);
-      this.recorder.startRecording();
-      console.log(this.recorder);
-      this.startTime = moment();
-      this.interval = setInterval(() => {
-        const currentTime = moment();
-        const diffTime = moment.duration(currentTime.diff(this.startTime));
-        const time =
-          this.toString(diffTime.minutes()) +
-          ':' +
-          this.toString(diffTime.seconds());
-        this._recordingTime.next(time);
-      }, 1000);
-    }
+    // if (this.stateManager.inMobileBrowser) {
+    this.recorder = new RecordRTC.StereoAudioRecorder(this.stream, config);
+    // alert(JSON.stringify(RecordRTC.Storage));
+    // console.log(JSON.stringify(RecordRTC.Storage));
+    // console.log(RecordRTC.Storage);
+    this.recorder.record();
+    console.log(this.recorder);
+    this.startTime = moment();
+    this.interval = setInterval(() => {
+      const currentTime = moment();
+      const diffTime = moment.duration(currentTime.diff(this.startTime));
+      const time =
+        this.toString(diffTime.minutes()) +
+        ':' +
+        this.toString(diffTime.seconds());
+      this._recordingTime.next(time);
+    }, 1000);
   }
 
   private toString(value: string | number): string | number {
