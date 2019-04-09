@@ -82,8 +82,7 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
           cursorColor: this.cursorColor,
           height: 128,
           autoCenter: true,
-          hideScrollbar: true,
-          backend: 'MediaElement'
+          hideScrollbar: true
         });
       }
 
