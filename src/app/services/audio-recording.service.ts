@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import RecordRTC from '../dev/recordrtc';
 import moment from 'moment';
 import { Observable, Subject } from 'rxjs';
-import { StateManagerService } from './state-manager.service';
 
 export interface RecordedAudioOutput {
   blob: Blob;
@@ -13,12 +12,11 @@ export interface RecordedAudioOutput {
 export class AudioRecordingService {
   private stream: MediaStream;
   public inMicrophoneError = false;
-  // private recorder: {
-  //   record: () => void;
-  //   stop: (arg0: (blob: any) => void, arg1: () => void) => void;
-  //   destroy: () => void;
-  // };
-  private recorder;
+  private recorder: {
+    record: () => void;
+    stop: (arg0: (blob: any) => void, arg1: () => void) => void;
+    destroy: () => void;
+  };
   private interval: NodeJS.Timeout;
   private startTime: moment.MomentInput;
   private _recorded = new Subject<RecordedAudioOutput>();
@@ -27,7 +25,7 @@ export class AudioRecordingService {
   private _currentlyRecording = false;
   private _gettingMicErrorText: string;
 
-  constructor(private stateManager: StateManagerService) {}
+  constructor() {}
   public get gettingMicErrorText(): string {
     return this._gettingMicErrorText;
   }
