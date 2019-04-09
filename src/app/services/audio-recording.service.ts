@@ -156,12 +156,12 @@ export class AudioRecordingService {
       this.recorder = null;
       clearInterval(this.interval);
       this.startTime = null;
-      if (this.stream) {
-        this.stream
-          .getAudioTracks()
-          .forEach((track: { stop: () => void }) => track.stop());
-        this.stream = null;
-      }
+      // if (this.stream) {
+      //   this.stream
+      //     .getAudioTracks()
+      //     .forEach((track: { stop: () => void }) => track.stop());
+      //   this.stream = null;
+      // }
     }
     // this.stream.getAudioTracks().forEach(track => console.log(track));
   }
