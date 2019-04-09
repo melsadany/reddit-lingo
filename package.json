@@ -114,5 +114,8 @@
   "prettier": {
     "singleQuote": true
   },
-  "heroku-run-build-script": true
+  "heroku-run-build-script": true,
+  "engines": {
+    "node": ">=10.0.0"
+  }
 }
