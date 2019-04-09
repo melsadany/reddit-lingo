@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import RecordRTC from 'recordrtc';
 import moment from 'moment';
 import { Observable, Subject } from 'rxjs';
-import { StateManagerService } from './state-manager.service';
 
 export interface RecordedAudioOutput {
   blob: Blob;
@@ -13,11 +12,10 @@ export interface RecordedAudioOutput {
 export class AudioRecordingService {
   private stream: MediaStream;
   public inMicrophoneError = false;
-  // private recorder: {
-  //   record: () => void;
-  //   stop: (arg0: (blob: any) => void, arg1: () => void) => void;
-  // };
-  private recorder;
+  private recorder: {
+    record: () => void;
+    stop: (arg0: (blob: any) => void, arg1: () => void) => void;
+  };
   private interval: NodeJS.Timeout;
   private startTime: moment.MomentInput;
   private _recorded = new Subject<RecordedAudioOutput>();
@@ -25,15 +23,6 @@ export class AudioRecordingService {
   private _recordingFailed = new Subject<string>();
   private _currentlyRecording = false;
   private _gettingMicErrorText: string;
-
-  // private _kalebRecorder: KalebRecorder;
-
-  constructor(private stateManager: StateManagerService) {
-    // this._kalebRecorder = new KalebRecorder(1024);
-    // this._kalebRecorder.start();
-    // setInterval(() => this._kalebRecorder.stopRecording(), 3000);
-    // this._kalebRecorder.stopRecording();
-  }
 
   public get gettingMicErrorText(): string {
     return this._gettingMicErrorText;
@@ -54,6 +43,7 @@ export class AudioRecordingService {
       })
       .catch(error => {
         alert(error);
+        this.handleMicError(error);
         this._recordingFailed.next();
       });
   }
@@ -98,23 +88,13 @@ export class AudioRecordingService {
   }
 
   private record(): void {
-    const options = {
+    this.setCurrentlyRecording(true);
+    this.recorder = new RecordRTC.StereoAudioRecorder(this.stream, {
       type: 'audio',
       mimeType: 'audio/webm'
-    };
-    this.setCurrentlyRecording(true);
+    });
 
-    if (this.stateManager.inMobileBrowser) {
-      this.recorder = new RecordRTC.StereoAudioRecorder(this.stream, options);
-    } else {
-      this.recorder = new RecordRTC(this.stream, options);
-    }
-
-    if (this.stateManager.inMobileBrowser) {
-      this.recorder.record();
-    } else {
-      this.recorder.startRecording();
-    }
+    this.recorder.record();
     this.startTime = moment();
     this.interval = setInterval(() => {
       const currentTime = moment();
@@ -140,59 +120,27 @@ export class AudioRecordingService {
 
   stopRecording(): void {
     if (this.recorder) {
-      if (RecordRTC.Storage.AudioContextConstructor) {
-        alert('AudioContextConstructor');
-      }
       this.setCurrentlyRecording(false);
-      if (this.stateManager.inMobileBrowser) {
-        this.recorder.stop(
-          // (blob: Blob) => {
-          (blob: Blob) => {
-            const currentBlob = blob;
-            if (this.startTime) {
-              const wavName = encodeURIComponent(
-                'audio_' + new Date().getTime() + '.wav'
-              );
-              this.stopMedia();
-              this._recorded.next({
-                blob: currentBlob,
-                user_id: wavName
-              });
-            }
-          },
-          () => {
+      this.recorder.stop(
+        (blob: Blob) => {
+          if (this.startTime) {
+            const wavName = encodeURIComponent(
+              'audio_' + new Date().getTime() + '.wav'
+            );
             this.stopMedia();
-            this._recordingFailed.next();
+            this._recorded.next({ blob: blob, user_id: wavName });
           }
-        );
-      } else {
-        this.recorder.stopRecording(
-          // (blob: Blob) => {
-          () => {
-            const currentBlob = this.recorder.getBlob();
-            if (this.startTime) {
-              const wavName = encodeURIComponent(
-                'audio_' + new Date().getTime() + '.wav'
-              );
-              this.stopMedia();
-              this._recorded.next({
-                blob: currentBlob,
-                user_id: wavName
-              });
-            }
-          },
-          () => {
-            this.stopMedia();
-            this._recordingFailed.next();
-          }
-        );
-      }
+        },
+        () => {
+          this.stopMedia();
+          this._recordingFailed.next();
+        }
+      );
     }
   }
 
   private stopMedia(): void {
     if (this.recorder) {
-      this.recorder.destroy();
       this.recorder = null;
       clearInterval(this.interval);
       this.startTime = null;
@@ -203,6 +151,7 @@ export class AudioRecordingService {
         this.stream = null;
       }
     }
+    // this.stream.getAudioTracks().forEach(track => console.log(track));
   }
 
   private handleMicError(error: Error): void {
@@ -235,63 +184,3 @@ export class AudioRecordingService {
     }
   }
 }
-
-// declare var webkitAudioContext: any;
-
-// export class KalebRecorder {
-//   audioCtx: any;
-//   audioNode: any;
-//   recordedData = [];
-//   audioInput: any;
-//   stream: any;
-//   recording = false;
-//   constructor(bufferSize: number) {
-//     this.audioCtx = new (AudioContext || webkitAudioContext)();
-//     if (this.audioCtx.createJavaScriptNode) {
-//       this.audioNode = this.audioCtx.createJavaScriptNode(bufferSize, 1, 1);
-//     } else if (this.audioCtx.createScriptProcessor) {
-//       this.audioNode = this.audioCtx.createScriptProcessor(bufferSize, 1, 1);
-//     } else {
-//       throw 'WebAudio not supported!';
-//     }
-//     this.audioNode.connect(this.audioCtx.destination);
-//   }
-
-//   start(): void {
-//     this.recordedData = [];
-//     navigator.mediaDevices
-//       .getUserMedia({ audio: true })
-//       .then(stream => {
-//         this.stream = stream;
-//         this.audioInput = this.audioCtx.createMediaStreamSource(stream);
-//         this.audioInput.connect(this.audioNode);
-//         this.audioNode.onaudioprocess = (data: any) =>
-//           this.onAudioProcess(data);
-//         this.recording = true;
-//       })
-//       .catch(error => {
-//         console.log(error);
-//         alert('Unable to access microphone');
-//       });
-//   }
-
-//   onAudioProcess(event: any): void {
-//     console.log(event);
-//     if (!this.recording) {
-//       return;
-//     } else {
-//       this.recordedData.push(
-//         new Float32Array(event.inputBuffer.getChannelData(0))
-//       );
-//     }
-//   }
-//   stopRecording(): void {
-//     this.recording = false;
-//     this.stream.getTracks().forEach((track: { stop: () => void }) => {
-//       track.stop();
-//     });
-//     this.audioNode.disconnect();
-//     this.audioInput.disconnect();
-//     console.log(this.recordedData);
-//   }
-// }

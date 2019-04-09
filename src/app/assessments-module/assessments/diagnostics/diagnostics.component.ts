@@ -117,12 +117,9 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
   }
 
   handleRecordedOutput(data: any): void {
-    // console.log(data);
-    // this.blobUrl = this.sanitizer.bypassSecurityTrustUrl(
-    //   URL.createObjectURL(data.blob)
-    // );
-    this.blobUrl = data.blob;
-    // console.log(this.blobUrl);
+    this.blobUrl = this.sanitizer.bypassSecurityTrustUrl(
+      URL.createObjectURL(data.blob)
+    );
     this.ngOnInit(data.blob);
   }
 
