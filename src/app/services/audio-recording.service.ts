@@ -25,7 +25,6 @@ export class AudioRecordingService {
   private _currentlyRecording = false;
   private _gettingMicErrorText: string;
 
-  constructor() {}
   public get gettingMicErrorText(): string {
     return this._gettingMicErrorText;
   }

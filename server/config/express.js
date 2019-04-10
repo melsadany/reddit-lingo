@@ -21,6 +21,8 @@ if (config.env === 'development') {
 }
 // Front end directory
 const distDir = '../../dist/'
+const docsDir = '../../docs/'
+app.use('/api/static/', express.static(path.join(__dirname, docsDir)))
 
 app.use(express.static(path.join(__dirname, distDir)))
 

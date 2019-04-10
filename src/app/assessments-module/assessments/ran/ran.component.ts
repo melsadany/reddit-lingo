@@ -5,7 +5,7 @@ import { DialogService } from '../../../services/dialog.service';
 import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 import { StateManagerService } from '../../../services/state-manager.service';
 import { AudioAssessment } from '../../../structures/AudioAssessment';
-import { AssetsObject } from '../../../structures/assessmentdata';
+import { AssetsObject } from '../../../structures/AssessmentDataStructures';
 
 @Component({
   selector: 'app-ran',

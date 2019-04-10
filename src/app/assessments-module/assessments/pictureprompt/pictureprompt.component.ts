@@ -6,7 +6,7 @@ import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 import { StateManagerService } from '../../../services/state-manager.service';
 import { AudioAssessment } from '../../../structures/AudioAssessment';
 import { HttpClient } from '@angular/common/http';
-import { AssetsObject } from '../../../structures/assessmentdata';
+import { AssetsObject } from '../../../structures/AssessmentDataStructures';
 
 @Component({
   selector: 'app-pictureprompt',
@@ -16,15 +16,8 @@ import { AssetsObject } from '../../../structures/assessmentdata';
 export class PicturepromptComponent extends AudioAssessment
   implements OnInit, OnDestroy, CanComponentDeactivate {
   assessmentName = 'pictureprompt';
-  // imageNames = [
-  //   'assets/in_use/img/pictureprompt/0/despair.jpg',
-  //   'assets/in_use/img/pictureprompt/1/he_texted.jpg',
-  //   'assets/in_use/img/pictureprompt/2/joke.jpg',
-  //   'assets/in_use/img/pictureprompt/3/antagonism.jpg'
-  // ];
   showPromptImage = false;
   currentImagePrompt = '';
-  // promptsLength = this.imageNames.length - 1;
   audioPromptStructure: Object;
 
   constructor(

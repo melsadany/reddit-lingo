@@ -249,23 +249,17 @@ function getAssets(query) {
   return new Promise((resolve, reject) => {
     const files = fs.readdirSync(assetFolder)
     files.sort((a, b) => a - b)
-    // console.log(files)
     for (let i = 0; i < files.length; i++) {
       promptStructure[i] = []
       const individualFile = fs.readdirSync('dist/assets/in_use/' + assetType + '/' + assessmentName + '/' + files[i])
       for (let j = 0; j < individualFile.length; j++) {
         promptStructure[i].push(assetFolder.slice(5) + '/' + i + '/' + individualFile[j])
       }
-      // console.log(returnList)
     }
-    // console.log(promptStructure)
-    // KRM: For debugging the asset file retreival
     resolve({
       promptStructure: promptStructure,
       assetsLength: Object.keys(promptStructure).length
     })
-    // console.log(returnList)
-    // resolve(files.length)
   })
 }
 

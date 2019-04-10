@@ -91,15 +91,10 @@ router.get('/InitializeSingleUserAssessment/:hash_key', (req, res) => {
 
 router.get('/GetAssets', (req, res) => {
   assessCtrl.getAssets(req.query).then(obj => {
-    // console.log(obj)
     res.set({
       'Content-Type': 'application/json'
     })
     res.send(obj)
-    // res.send({
-    //   'assetsList': obj.assetsList,
-    //   'assetsLength': obj.assetsLength
-    // })
   }).catch(err => console.log(err))
 })
 
