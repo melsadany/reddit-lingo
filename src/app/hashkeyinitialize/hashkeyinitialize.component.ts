@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StateManagerService } from '../services/state-manager.service';
 import { AssessmentDataService } from '../services/assessment-data.service';
-import { SingleAssessmentData } from '../structures/assessmentdata';
+import { SingleAssessmentData } from '../structures/AssessmentDataStructures';
 
 @Component({
   selector: 'app-hashkeyinitialize',

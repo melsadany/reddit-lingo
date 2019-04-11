@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {
   AssessmentData,
   SingleAssessmentData
-} from '../structures/assessmentdata';
+} from '../structures/AssessmentDataStructures';
 import { Router } from '@angular/router';
 import { LinkedList } from '../structures/LinkedList';
 

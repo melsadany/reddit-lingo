@@ -5,7 +5,7 @@ import { DialogService } from '../../../services/dialog.service';
 // import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 import { StateManagerService } from '../../../services/state-manager.service';
 import { AudioAssessment } from '../../../structures/AudioAssessment';
-import { AssetsObject } from '../../../structures/assessmentdata';
+import { AssetsObject } from '../../../structures/AssessmentDataStructures';
 
 @Component({
   selector: 'app-syncvoice',
@@ -16,14 +16,6 @@ export class SyncvoiceComponent extends AudioAssessment {
   assessmentName = 'syncvoice';
   playingAudio = false;
   audioPromptStructure: any;
-  // lalaLocations = 'assets/in_use/audio/syncvoice/';
-  // audioNames = [
-  //   '1_0_half.mp3',
-  //   '1_1_fivequarters.mp3',
-  //   '1_2_one.mp3',
-  //   '1_3_threequarters.mp3'
-  // ];
-  // promptsLength = this.audioNames.length;
 
   constructor(
     public stateManager: StateManagerService,

@@ -3,7 +3,7 @@ import { AssessmentDataService } from '../../../services/assessment-data.service
 import { DialogService } from '../../../services/dialog.service';
 import { StateManagerService } from '../../../services/state-manager.service';
 import { SelectionAssessment } from '../../../structures/SelectionAssessment';
-import { AssetsObject } from '../../../structures/assessmentdata';
+import { AssetsObject } from '../../../structures/AssessmentDataStructures';
 
 @Component({
   selector: 'app-listeningcomprehension',

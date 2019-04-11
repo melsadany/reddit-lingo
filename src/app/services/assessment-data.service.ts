@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
 import { Observable } from 'rxjs';
-import { UserIdObject } from '../structures/useridobject';
+import { UserIdObject } from '../structures/UserIdObject';
 import {
   AssessmentData,
   AssessmentDataStructure,
   GoogleSpeechToTextDataStructure,
   AssetsObject
-} from '../structures/assessmentdata';
+} from '../structures/AssessmentDataStructures';
 import 'rxjs/add/operator/map';
 import { StateManagerService } from './state-manager.service';
 

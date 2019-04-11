@@ -17,7 +17,6 @@ export class WordfindingComponent extends AudioAssessment
   assessmentName = 'wordfinding';
   showLetter = false;
   currentLetter = '';
-  promptsLength = Object.keys(letterData).length;
   constructor(
     public stateManager: StateManagerService,
     public audioRecordingService: AudioRecordingService,
@@ -25,6 +24,7 @@ export class WordfindingComponent extends AudioAssessment
     public dialogService: DialogService
   ) {
     super(stateManager, audioRecordingService, dataService, dialogService);
+    this.promptsLength = Object.keys(letterData).length;
   }
 
   setStateAndStart(): void {

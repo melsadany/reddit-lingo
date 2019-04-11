@@ -13,9 +13,9 @@ export class DialogService {
 
   canRedirect(): boolean {
     if (this.stateManager.isInAssessment) {
-      alert(
-        'Please complete the current assessment before going to another page.'
-      );
+      // alert(
+      //   'Please complete the current assessment before going to another page.'
+      // );
       return false;
     } else {
       console.log('Can redirect');

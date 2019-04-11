@@ -9,19 +9,89 @@ import { DialogService } from '../services/dialog.service';
 import { Subscription } from 'rxjs';
 import { OnDestroy, OnInit } from '@angular/core';
 
+/**
+ * Class used for creating new assessments which will use audio recording
+ */
 export class AudioAssessment extends BaseAssessment
   implements OnInit, OnDestroy {
-  isRecording = false;
-  recordedData = [];
-  intervalCountup: NodeJS.Timeout;
-  doneRecording: boolean;
-  promptNumber: number;
-  failSubscription: Subscription;
-  recordingTimeSubscription: Subscription;
-  recordedTime: string;
-  recordedOutputSubscription: Subscription;
-  lastPrompt = false;
-  promptsLength: number;
+  private _promptsLength: number;
+  private _lastPrompt = false;
+  private _recordedOutputSubscription: Subscription;
+  private _recordedTime: string;
+  private _recordingTimeSubscription: Subscription;
+  private _failSubscription: Subscription;
+  private _promptNumber: number;
+  private _doneRecording: boolean;
+  private _recordedData: Object[] = [];
+  private _intervalCountup: NodeJS.Timeout;
+  private _isRecording = false;
+
+  public get isRecording(): boolean {
+    return this._isRecording;
+  }
+  public set isRecording(value: boolean) {
+    this._isRecording = value;
+  }
+  public get recordedData(): Array<Object> {
+    return this._recordedData;
+  }
+  public set recordedData(value: Array<Object>) {
+    this._recordedData = value;
+  }
+  public get intervalCountup(): NodeJS.Timeout {
+    return this._intervalCountup;
+  }
+  public set intervalCountup(value: NodeJS.Timeout) {
+    this._intervalCountup = value;
+  }
+  public get doneRecording(): boolean {
+    return this._doneRecording;
+  }
+  public set doneRecording(value: boolean) {
+    this._doneRecording = value;
+  }
+  public get promptNumber(): number {
+    return this._promptNumber;
+  }
+  public set promptNumber(value: number) {
+    this._promptNumber = value;
+  }
+  public get failSubscription(): Subscription {
+    return this._failSubscription;
+  }
+  public set failSubscription(value: Subscription) {
+    this._failSubscription = value;
+  }
+  public get recordingTimeSubscription(): Subscription {
+    return this._recordingTimeSubscription;
+  }
+  public set recordingTimeSubscription(value: Subscription) {
+    this._recordingTimeSubscription = value;
+  }
+  public get recordedTime(): string {
+    return this._recordedTime;
+  }
+  public set recordedTime(value: string) {
+    this._recordedTime = value;
+  }
+  public get recordedOutputSubscription(): Subscription {
+    return this._recordedOutputSubscription;
+  }
+  public set recordedOutputSubscription(value: Subscription) {
+    this._recordedOutputSubscription = value;
+  }
+  public get lastPrompt(): boolean {
+    return this._lastPrompt;
+  }
+  public set lastPrompt(value: boolean) {
+    this._lastPrompt = value;
+  }
+  public get promptsLength(): number {
+    return this._promptsLength;
+  }
+  public set promptsLength(value: number) {
+    this._promptsLength = value;
+  }
 
   constructor(
     public stateManager: StateManagerService,
@@ -30,19 +100,19 @@ export class AudioAssessment extends BaseAssessment
     public dialogService: DialogService
   ) {
     super(stateManager, dialogService);
-    this.failSubscription = this.audioRecordingService
+    this._failSubscription = this.audioRecordingService
       .recordingFailed()
       .subscribe(() => {
-        this.isRecording = false;
+        this._isRecording = false;
       });
 
-    this.recordingTimeSubscription = this.audioRecordingService
+    this._recordingTimeSubscription = this.audioRecordingService
       .getRecordedTime()
       .subscribe(time => {
-        this.recordedTime = time;
+        this._recordedTime = time;
       });
 
-    this.recordedOutputSubscription = this.audioRecordingService
+    this._recordedOutputSubscription = this.audioRecordingService
       .getRecordedBlob()
       .subscribe(data => {
         this.handleRecordedOutput(data);
@@ -50,46 +120,42 @@ export class AudioAssessment extends BaseAssessment
   }
 
   ngOnInit(): void {
-    window.addEventListener('beforeunload', e => {
-      const confirmationMessage = 'o/';
-      console.log('cond');
-      e.returnValue = confirmationMessage; // Gecko, Trident, Chrome 34+
-      return confirmationMessage; // Gecko, WebKit, Chrome <34
-    });
+    // window.addEventListener('beforeunload', e => {
+    //   const confirmationMessage = 'o/';
+    //   console.log('cond');
+    //   e.returnValue = confirmationMessage; // Gecko, Trident, Chrome 34+
+    //   return confirmationMessage; // Gecko, WebKit, Chrome <34
+    // });
     this.stateManager.sendToCurrentIfAlreadyCompleted(this.assessmentName);
-    this.promptNumber = this.stateManager.assessments[this.assessmentName][
+    this._promptNumber = this.stateManager.assessments[this.assessmentName][
       'prompt_number'
     ];
-    // if (this.promptNumber + 1 === this.promptsLength) {
-    //   this.lastPrompt = true;
-    //   this.stateManager.textOnInnerAssessmentButton =
-    //     'FINISH ASSESSMENT AND ADVANCE';
-    // }
   }
 
   ngOnDestroy(): void {
     this.abortRecording();
-    this.failSubscription.unsubscribe();
-    this.recordingTimeSubscription.unsubscribe();
-    this.recordedOutputSubscription.unsubscribe();
+    this._failSubscription.unsubscribe();
+    this._recordingTimeSubscription.unsubscribe();
+    this._recordedOutputSubscription.unsubscribe();
     clearInterval(this.intervalCountdown);
-    clearTimeout(this.intervalCountup);
+    clearTimeout(this._intervalCountup);
   }
 
   handleRecordedOutput(data: RecordedAudioOutput): void {
     const currentBlob = data.blob;
+    console.log(currentBlob);
     const reader: FileReader = new FileReader();
     reader.readAsDataURL(currentBlob);
     reader.onloadend = (): any => {
       const currentRecordedBlobAsBase64 = reader.result.slice(22);
-      this.recordedData.push({
-        prompt_number: this.promptNumber,
+      this._recordedData.push({
+        prompt_number: this._promptNumber,
         recorded_data: currentRecordedBlobAsBase64
       }); // KRM: Adding recording to the array is done in sync. Currently wait for the recording to load.
       // Might be better to do this async so we don't have the chance of blocking for a short
       // period before moving to the next prompt.
       this.pushAudioData();
-      this.promptNumber++;
+      this._promptNumber++;
       // this.advanceToNextPrompt();  KRM: For automatic advancement
     };
   }
@@ -97,14 +163,14 @@ export class AudioAssessment extends BaseAssessment
   pushAudioData(): void {
     const assessmentData = {
       assess_name: this.assessmentName,
-      data: { recorded_data: this.recordedData },
-      completed: this.lastPrompt
+      data: { recorded_data: this._recordedData },
+      completed: this._lastPrompt
     };
     const assessmentGoogleData = {
       assess_name: this.assessmentName,
       data: { text: 'None' }
     };
-    if (this.promptNumber === 0) {
+    if (this._promptNumber === 0) {
       this.dataService
         .postAssessmentDataToFileSystem(assessmentData, assessmentGoogleData)
         .subscribe();
@@ -113,38 +179,38 @@ export class AudioAssessment extends BaseAssessment
         .postSingleAudioDataToMongo(assessmentData, assessmentGoogleData)
         .subscribe();
     }
-    this.recordedData = [];
+    this._recordedData = [];
   }
 
   startRecording(
     recordingTimerInMiliSeconds: number,
     onDoneRecordingCallback: Function
   ): void {
-    if (!this.isRecording) {
-      this.isRecording = true;
+    if (!this._isRecording) {
+      this._isRecording = true;
       this.audioRecordingService.startRecording();
-      this.intervalCountup = setTimeout(() => {
+      this._intervalCountup = setTimeout(() => {
         this.stopRecording(() => onDoneRecordingCallback());
       }, recordingTimerInMiliSeconds);
     }
   }
 
   stopRecording(onDoneRecordingCallback: Function): void {
-    if (this.isRecording) {
+    if (this._isRecording) {
       this.audioRecordingService.stopRecording();
-      this.isRecording = false;
-      this.doneRecording = true;
+      this._isRecording = false;
+      this._doneRecording = true;
       onDoneRecordingCallback();
       this.stateManager.showInnerAssessmentButton = true;
-      clearTimeout(this.intervalCountup);
+      clearTimeout(this._intervalCountup);
     }
   }
 
   abortRecording(): void {
-    if (this.isRecording) {
-      this.isRecording = false;
+    if (this._isRecording) {
+      this._isRecording = false;
       this.audioRecordingService.abortRecording();
-      this.doneRecording = true;
+      this._doneRecording = true;
     }
   }
 
@@ -152,9 +218,9 @@ export class AudioAssessment extends BaseAssessment
     afterAdvanceCallBack: Function,
     beforeAdvanceCall?: Function
   ): void {
-    if (this.promptNumber < this.promptsLength) {
-      if (this.promptNumber + 1 === this.promptsLength) {
-        this.lastPrompt = true;
+    if (this._promptNumber < this._promptsLength) {
+      if (this._promptNumber + 1 === this._promptsLength) {
+        this._lastPrompt = true;
         this.stateManager.textOnInnerAssessmentButton =
           'FINISH ASSESSMENT AND ADVANCE';
       }

@@ -1,16 +1,16 @@
 <div class="mx-lg-5">
   <div *ngIf="stateManager.showAssessmentFrontPage">
     <form [formGroup]="dataForm" (ngSubmit)="postData()">
-      <div class="form-group text-center">
+      <div class="form-group text-center pt-4">
         <mat-form-field class="form-group">
-          <input matInput [matDatepicker]="picker" placeholder="Select your date of birth" formControlName="date">
+          <input matInput [matDatepicker]="picker" placeholder="Your date of birth" formControlName="date">
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker [startAt]="startDate" #picker></mat-datepicker>
         </mat-form-field>
       </div>
       <div class="form-group text-center">
         <mat-form-field>
-          <mat-select placeholder="Select your gender" formControlName="gender">
+          <mat-select placeholder="Your gender" formControlName="gender">
             <mat-option *ngFor="let gender of genderOptions" [value]="gender">
               {{ gender }}
             </mat-option>
@@ -19,7 +19,7 @@
       </div>
       <div class="form-group text-center">
         <mat-form-field>
-          <mat-select placeholder="Select your Ethnicity" formControlName="ethnicity">
+          <mat-select placeholder="Your Ethnicity" formControlName="ethnicity">
             <mat-option *ngFor="let ethnicity of ethnicityOptions" [value]="ethnicity">
               {{ ethnicity }}
             </mat-option>
@@ -28,7 +28,7 @@
       </div>
       <div class="form-group text-center">
         <mat-form-field>
-          <mat-select placeholder="Select your highest education" formControlName="education" required>
+          <mat-select placeholder="Your highest education" formControlName="education">
             <mat-option *ngFor="let education of educationOptions" [value]="education">
               {{ education }}
             </mat-option>
@@ -46,7 +46,7 @@
       </div>
       <div class="form-group text-center">
         <mat-form-field>
-          <mat-select placeholder="Select your level of musical ability" formControlName="musicAbility">
+          <mat-select placeholder="Your level of musical ability" formControlName="musicAbility">
             <mat-option *ngFor="let musicAbility of musicAbilityOptions" [value]="musicAbility">
               {{ musicAbility }}
             </mat-option>
@@ -54,7 +54,7 @@
         </mat-form-field>
       </div>
       <div class="text-center">
-        <button type='submit' [disabled]="!dataForm.valid" class='btn btn-primary btn-lg'>Next</button>
+        <button type='submit' [disabled]="!dataForm.valid" class='btn btn-primary btn-lg'>Continue</button>
       </div>
     </form>
   </div>

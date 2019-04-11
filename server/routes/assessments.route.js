@@ -91,15 +91,10 @@ router.get('/InitializeSingleUserAssessment/:hash_key', (req, res) => {
 
 router.get('/GetAssets', (req, res) => {
   assessCtrl.getAssets(req.query).then(obj => {
-    // console.log(obj)
     res.set({
       'Content-Type': 'application/json'
     })
     res.send(obj)
-    // res.send({
-    //   'assetsList': obj.assetsList,
-    //   'assetsLength': obj.assetsLength
-    // })
   }).catch(err => console.log(err))
 })
 
@@ -111,10 +106,10 @@ router.get('/GetAllDataOnUserId/:id', passport.authenticate('jwt', {
 
 // router.get('/GetAllDataOnHashKey')
 
-router.get('/TestCheckTone', passport.authenticate('jwt', {
+router.get('/GetAllData', passport.authenticate('jwt', {
   session: false
 }), (req, res) => {
-  res.send('Success')
+  assessCtrl.getAllData(res)
 })
 
 module.exports = router

@@ -58,6 +58,7 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
   blobUrl;
   showWaveForm = false;
   cantHearMic = false;
+  hasRecordedTest = false;
 
   ngOnInit(dataBlob?: any): void {
     this.stateManager.sendToCurrentIfAlreadyCompleted('diagnostics');
@@ -92,6 +93,7 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
         );
       } else {
         this.wavesurfer.loadBlob(dataBlob);
+        // this.wavesurfer.load(dataBlob);
       }
       this.wavesurfer.on('play', () => {
         this.playing = true;
@@ -116,9 +118,9 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
   }
 
   handleRecordedOutput(data: any): void {
-    this.blobUrl = this.sanitizer.bypassSecurityTrustUrl(
-      URL.createObjectURL(data.blob)
-    );
+    // this.blobUrl = this.sanitizer.bypassSecurityTrustUrl(
+    //   URL.createObjectURL(data.blob)
+    // ); KRM Chrome removed URL.createObject
     this.ngOnInit(data.blob);
   }
 
@@ -153,6 +155,7 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
 
   clearRecordedData(): void {
     this.blobUrl = null;
+    this.doneRecording = false;
   }
 
   ngOnDestroy(): void {

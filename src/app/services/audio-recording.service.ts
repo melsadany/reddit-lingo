@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import RecordRTC from 'recordrtc';
+import RecordRTC from '../dev/recordrtc';
 import moment from 'moment';
 import { Observable, Subject } from 'rxjs';
 
@@ -15,6 +15,7 @@ export class AudioRecordingService {
   private recorder: {
     record: () => void;
     stop: (arg0: (blob: any) => void, arg1: () => void) => void;
+    destroy: () => void;
   };
   private interval: NodeJS.Timeout;
   private startTime: moment.MomentInput;
@@ -88,13 +89,18 @@ export class AudioRecordingService {
   }
 
   private record(): void {
-    this.setCurrentlyRecording(true);
-    this.recorder = new RecordRTC.StereoAudioRecorder(this.stream, {
+    const config = {
       type: 'audio',
       mimeType: 'audio/webm'
-    });
-
+    };
+    this.setCurrentlyRecording(true);
+    // if (this.stateManager.inMobileBrowser) {
+    this.recorder = new RecordRTC.StereoAudioRecorder(this.stream, config);
+    // alert(JSON.stringify(RecordRTC.Storage));
+    // console.log(JSON.stringify(RecordRTC.Storage));
+    // console.log(RecordRTC.Storage);
     this.recorder.record();
+    console.log(this.recorder);
     this.startTime = moment();
     this.interval = setInterval(() => {
       const currentTime = moment();
@@ -141,6 +147,9 @@ export class AudioRecordingService {
 
   private stopMedia(): void {
     if (this.recorder) {
+      // alert(JSON.stringify(RecordRTC.Storage, null, 4));
+      // console.log(JSON.stringify(RecordRTC.Storage, null, 4));
+      // console.log(RecordRTC.Storage);
       this.recorder = null;
       clearInterval(this.interval);
       this.startTime = null;
@@ -148,7 +157,7 @@ export class AudioRecordingService {
       //   this.stream
       //     .getAudioTracks()
       //     .forEach((track: { stop: () => void }) => track.stop());
-      // this.stream = null;
+      //   this.stream = null;
       // }
     }
     // this.stream.getAudioTracks().forEach(track => console.log(track));
