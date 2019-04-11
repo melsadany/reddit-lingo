@@ -6,10 +6,35 @@ import { OnInit, OnDestroy } from '@angular/core';
 
 export class SelectionAssessment extends BaseAssessment
   implements OnInit, OnDestroy {
-  promptNumber = 0;
-  selectionData = [];
-  lastPrompt = false;
-  promptsLength: number;
+  private _selectionData = [];
+  private _lastPrompt = false;
+  private _promptsLength: number;
+  private _promptNumber = 0;
+
+  public get promptNumber(): number {
+    return this._promptNumber;
+  }
+  public set promptNumber(value: number) {
+    this._promptNumber = value;
+  }
+  public get selectionData(): Array<Object> {
+    return this._selectionData;
+  }
+  public set selectionData(value: Array<Object>) {
+    this._selectionData = value;
+  }
+  public get lastPrompt(): boolean {
+    return this._lastPrompt;
+  }
+  public set lastPrompt(value: boolean) {
+    this._lastPrompt = value;
+  }
+  public get promptsLength(): number {
+    return this._promptsLength;
+  }
+  public set promptsLength(value: number) {
+    this._promptsLength = value;
+  }
 
   constructor(
     public stateManager: StateManagerService,
@@ -20,21 +45,16 @@ export class SelectionAssessment extends BaseAssessment
   }
 
   ngOnInit(): void {
-    window.addEventListener('beforeunload', e => {
-      const confirmationMessage = 'o/';
-      console.log('cond');
-      e.returnValue = confirmationMessage; // Gecko, Trident, Chrome 34+
-      return confirmationMessage; // Gecko, WebKit, Chrome <34
-    });
+    // window.addEventListener('beforeunload', e => {
+    //   const confirmationMessage = 'o/';
+    //   console.log('cond');
+    //   e.returnValue = confirmationMessage; // Gecko, Trident, Chrome 34+
+    //   return confirmationMessage; // Gecko, WebKit, Chrome <34
+    // });
     this.stateManager.sendToCurrentIfAlreadyCompleted(this.assessmentName);
     this.promptNumber = this.stateManager.assessments[this.assessmentName][
       'prompt_number'
     ];
-    // if (this.promptNumber + 1 === this.promptsLength) {
-    //   this.lastPrompt = true;
-    //   this.stateManager.textOnInnerAssessmentButton =
-    //     'FINISH ASSESSMENT AND ADVANCE';
-    // }
   }
 
   ngOnDestroy(): void {

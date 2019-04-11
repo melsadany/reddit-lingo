@@ -9,79 +9,83 @@ import { DialogService } from '../services/dialog.service';
 import { Subscription } from 'rxjs';
 import { OnDestroy, OnInit } from '@angular/core';
 
+/**
+ * Class used for creating new assessments which will use audio recording
+ */
 export class AudioAssessment extends BaseAssessment
   implements OnInit, OnDestroy {
+  private _promptsLength: number;
+  private _lastPrompt = false;
+  private _recordedOutputSubscription: Subscription;
+  private _recordedTime: string;
+  private _recordingTimeSubscription: Subscription;
+  private _failSubscription: Subscription;
+  private _promptNumber: number;
+  private _doneRecording: boolean;
+  private _recordedData: Object[] = [];
+  private _intervalCountup: NodeJS.Timeout;
   private _isRecording = false;
+
   public get isRecording(): boolean {
     return this._isRecording;
   }
   public set isRecording(value: boolean) {
     this._isRecording = value;
   }
-  private _recordedData = [];
   public get recordedData(): Array<Object> {
     return this._recordedData;
   }
-  public set recordedData(value) {
+  public set recordedData(value: Array<Object>) {
     this._recordedData = value;
   }
-  private _intervalCountup: NodeJS.Timeout;
   public get intervalCountup(): NodeJS.Timeout {
     return this._intervalCountup;
   }
   public set intervalCountup(value: NodeJS.Timeout) {
     this._intervalCountup = value;
   }
-  private _doneRecording: boolean;
   public get doneRecording(): boolean {
     return this._doneRecording;
   }
   public set doneRecording(value: boolean) {
     this._doneRecording = value;
   }
-  private _promptNumber: number;
   public get promptNumber(): number {
     return this._promptNumber;
   }
   public set promptNumber(value: number) {
     this._promptNumber = value;
   }
-  private _failSubscription: Subscription;
   public get failSubscription(): Subscription {
     return this._failSubscription;
   }
   public set failSubscription(value: Subscription) {
     this._failSubscription = value;
   }
-  private _recordingTimeSubscription: Subscription;
   public get recordingTimeSubscription(): Subscription {
     return this._recordingTimeSubscription;
   }
   public set recordingTimeSubscription(value: Subscription) {
     this._recordingTimeSubscription = value;
   }
-  private _recordedTime: string;
   public get recordedTime(): string {
     return this._recordedTime;
   }
   public set recordedTime(value: string) {
     this._recordedTime = value;
   }
-  private _recordedOutputSubscription: Subscription;
   public get recordedOutputSubscription(): Subscription {
     return this._recordedOutputSubscription;
   }
   public set recordedOutputSubscription(value: Subscription) {
     this._recordedOutputSubscription = value;
   }
-  private _lastPrompt = false;
-  public get lastPrompt() {
+  public get lastPrompt(): boolean {
     return this._lastPrompt;
   }
-  public set lastPrompt(value) {
+  public set lastPrompt(value: boolean) {
     this._lastPrompt = value;
   }
-  private _promptsLength: number;
   public get promptsLength(): number {
     return this._promptsLength;
   }
@@ -116,21 +120,16 @@ export class AudioAssessment extends BaseAssessment
   }
 
   ngOnInit(): void {
-    window.addEventListener('beforeunload', e => {
-      const confirmationMessage = 'o/';
-      console.log('cond');
-      e.returnValue = confirmationMessage; // Gecko, Trident, Chrome 34+
-      return confirmationMessage; // Gecko, WebKit, Chrome <34
-    });
+    // window.addEventListener('beforeunload', e => {
+    //   const confirmationMessage = 'o/';
+    //   console.log('cond');
+    //   e.returnValue = confirmationMessage; // Gecko, Trident, Chrome 34+
+    //   return confirmationMessage; // Gecko, WebKit, Chrome <34
+    // });
     this.stateManager.sendToCurrentIfAlreadyCompleted(this.assessmentName);
     this._promptNumber = this.stateManager.assessments[this.assessmentName][
       'prompt_number'
     ];
-    // if (this.promptNumber + 1 === this.promptsLength) {
-    //   this.lastPrompt = true;
-    //   this.stateManager.textOnInnerAssessmentButton =
-    //     'FINISH ASSESSMENT AND ADVANCE';
-    // }
   }
 
   ngOnDestroy(): void {

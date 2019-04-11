@@ -4,6 +4,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { DialogService } from '../../../services/dialog.service';
 import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 import { StateManagerService } from '../../../services/state-manager.service';
+import { SelectionAssessment } from '../../../structures/SelectionAssessment';
 
 @Component({
   selector: 'app-prescreenerquestions',
@@ -40,19 +41,21 @@ export class PrescreenerquestionsComponent
   ];
   englishOptions = ['Yes', 'No'];
   musicAbilityOptions = [
-    'I have never had any formal training in any kind of music',
-    'I have some musical traning but do not routinely play or sing',
-    'I can play an instrument, or have formal training in singing',
-    'I play or sing professionally / I study music as a major / I teach music'
+    'No formal training in music',
+    'Do not regularly practice',
+    'Some training in singing/playing',
+    'I study music as a major',
+    'I teach music',
+    'I play or sing professionally'
   ];
   startDate = new Date(1995, 0, 1);
   englishNotFirstLanguage;
 
   constructor(
     public stateManager: StateManagerService,
-    private dataService: AssessmentDataService,
+    public dataService: AssessmentDataService,
     private fb: FormBuilder,
-    private dialogService: DialogService
+    public dialogService: DialogService
   ) {
     this.stateManager.showOutsideAssessmentButton = false;
   }
@@ -60,6 +63,10 @@ export class PrescreenerquestionsComponent
   ngOnInit(): void {
     this.stateManager.sendToCurrentIfAlreadyCompleted('prescreenerquestions');
     this.stateManager.isInAssessment = true;
+    if (!this.stateManager.startedByHandFromHome) {
+      this.stateManager.goHome();
+    }
+    console.log(this.stateManager.isInAssessment);
   }
 
   postData(): void {
