@@ -4,7 +4,6 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { DialogService } from '../../../services/dialog.service';
 import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 import { StateManagerService } from '../../../services/state-manager.service';
-import { SelectionAssessment } from '../../../structures/SelectionAssessment';
 
 @Component({
   selector: 'app-prescreenerquestions',
@@ -66,7 +65,6 @@ export class PrescreenerquestionsComponent
     if (!this.stateManager.startedByHandFromHome) {
       this.stateManager.goHome();
     }
-    console.log(this.stateManager.isInAssessment);
   }
 
   postData(): void {

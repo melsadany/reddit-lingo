@@ -1,9 +1,9 @@
 <div class="mx-lg-5">
   <div *ngIf="stateManager.showAssessmentFrontPage">
     <form [formGroup]="dataForm" (ngSubmit)="postData()">
-      <div class="form-group text-center">
+      <div class="form-group text-center pt-4">
         <mat-form-field class="form-group">
-          <input matInput [matDatepicker]="picker" placeholder="Select your date of birth" formControlName="date">
+          <input matInput [matDatepicker]="picker" placeholder="Your date of birth" formControlName="date">
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker [startAt]="startDate" #picker></mat-datepicker>
         </mat-form-field>
