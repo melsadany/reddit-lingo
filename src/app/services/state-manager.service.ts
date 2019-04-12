@@ -28,12 +28,21 @@ export class StateManagerService {
   private _hashKey: string;
   private _startedByHandFromHome = false;
   private _chromeiOs = false;
+  private _appConfig = appConfig;
+  private _assessments = {};
 
-  constructor(private routerService: Router) {
-    this.totalAssessments = Object.keys(this.assessments).length;
-    this.inMobileBrowser = this.mobileCheck();
+  public get assessments(): Object {
+    return this._assessments;
   }
-
+  public set assessments(value: Object) {
+    this._assessments = value;
+  }
+  public get appConfig(): any {
+    return this._appConfig;
+  }
+  public set appConfig(value: any) {
+    this._appConfig = value;
+  }
   public set chromeiOs(value: boolean) {
     this._chromeiOs = value;
   }
@@ -128,7 +137,11 @@ export class StateManagerService {
     this._textOnOutsideAssessmentButton = value;
   }
 
-  assessments = {};
+  constructor(private routerService: Router) {
+    this.configureEnabledAssessments();
+    this.totalAssessments = Object.keys(this.assessments).length;
+    this.inMobileBrowser = this.mobileCheck();
+  }
 
   private configureEnabledAssessments(): void {
     const assessmentsConfig = appConfig['appConfig']['assessmentsConfig'];
@@ -138,6 +151,10 @@ export class StateManagerService {
           prompt_number: 0,
           completed: false
         };
+        if (assessmentsConfig[assessmentName]['prompt_countdowns']) {
+          this.assessments[assessmentName]['prompt_countdowns'] =
+            assessmentsConfig[assessmentName]['prompt_countdowns'];
+        }
       }
     }
   }

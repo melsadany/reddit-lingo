@@ -21,5 +21,14 @@
     <img class="img-fluid mt-4" style="width: 120px; height: 120px;" src="assets/in_use/icons/recording_mic.png" />
     <p class="py-4">You are recording.</p>
   </div>
-  <p *ngIf="countingDown" class="text-center display-1">{{ timeLeft }}</p>
+  <div>
+    <p *ngIf="countingDown && useCountdownNumber" class="text-center display-1">{{timeLeft}}</p>
+  </div>
+  <div *ngIf="showProgressAnimation && useCountdownBar">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  </div>
+  <div *ngIf="showCircleAnimation && useCountdownCircle">
+    <mat-spinner style="margin:0 auto;">
+    </mat-spinner>
+  </div>
 </div>

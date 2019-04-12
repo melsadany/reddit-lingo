@@ -25,5 +25,14 @@
     <p class="text-center py-4">You are recording.</p>
     <p class="text-center py-4">Describe the picture.</p>
   </div>
-  <p *ngIf="countingDown" class="text-center display-1">{{ timeLeft }}</p>
+  <div>
+    <p *ngIf="countingDown && useCountdownNumber" class="text-center display-1">{{timeLeft}}</p>
+  </div>
+  <div *ngIf="showProgressAnimation && useCountdownBar">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  </div>
+  <div *ngIf="showCircleAnimation && useCountdownCircle">
+    <mat-spinner style="margin:0 auto;">
+    </mat-spinner>
+  </div>
 </div>

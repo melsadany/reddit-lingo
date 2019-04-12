@@ -9,10 +9,59 @@ export class BaseAssessment {
   private _assessmentName: string;
   private _countingDown = false;
   private _intervalCountdown: NodeJS.Timeout;
-  private _timeLeft = 3;
+  private _timeLeftConfig: number;
+  private _timeLeft: number;
   private _doneCountingDown = false;
   private _showExample = true;
+  private _showProgressAnimation = false;
+  private _countdownTimerType: string;
+  private _useCountdownBar: boolean;
+  private _useCountdownNumber: boolean;
+  private _useCountdownCircle: boolean;
+  private _showCircleAnimation: boolean;
 
+  public get showCircleAnimation(): boolean {
+    return this._showCircleAnimation;
+  }
+  public set showCircleAnimation(value: boolean) {
+    this._showCircleAnimation = value;
+  }
+  public get useCountdownBar(): boolean {
+    return this._useCountdownBar;
+  }
+  public set useCountdownBar(value: boolean) {
+    this._useCountdownBar = value;
+  }
+  public get useCountdownNumber(): boolean {
+    return this._useCountdownNumber;
+  }
+  public set useCountdownNumber(value: boolean) {
+    this._useCountdownNumber = value;
+  }
+  public get useCountdownCircle(): boolean {
+    return this._useCountdownCircle;
+  }
+  public set useCountdownCircle(value: boolean) {
+    this._useCountdownCircle = value;
+  }
+  public get countdownTimerType(): string {
+    return this._countdownTimerType;
+  }
+  public set countdownTimerType(value: string) {
+    this._countdownTimerType = value;
+  }
+  public get timeLeftConfig(): number {
+    return this._timeLeftConfig;
+  }
+  public set timeLeftConfig(value: number) {
+    this._timeLeftConfig = value;
+  }
+  public get showProgressAnimation(): boolean {
+    return this._showProgressAnimation;
+  }
+  public set showProgressAnimation(value: boolean) {
+    this._showProgressAnimation = value;
+  }
   public get assetType(): string {
     return this._assetType;
   }
@@ -58,6 +107,30 @@ export class BaseAssessment {
 
   constructor(public stateManager: StateManagerService) {
     this.stateManager.showOutsideAssessmentButton = false;
+    if (
+      !this.stateManager.appConfig['appConfig']['assessmentsConfig'][
+        this.assessmentName
+      ]['prompt_countdowns']
+    ) {
+      this.timeLeftConfig = this.stateManager.appConfig['appConfig'][
+        'settings'
+      ]['countdownTimerLength'];
+    } else {
+      this.timeLeftConfig = this.stateManager.appConfig['appConfig'][
+        'assessmentsConfig'
+      ][this.assessmentName]['prompt_countdowns'];
+    }
+    this.timeLeft = this.timeLeftConfig;
+    this.countdownTimerType = this.stateManager.appConfig['appConfig'][ // KRM: Get a random number to start with if we provide an array
+      'settings'
+    ]['countdownTimerType'];
+    if (this.countdownTimerType === 'bar') {
+      this.useCountdownBar = true;
+    } else if (this.countdownTimerType === 'number') {
+      this.useCountdownNumber = true;
+    } else if (this.countdownTimerType === 'circle') {
+      this.useCountdownCircle = true;
+    }
   }
 
   startDisplayedCountdownTimer(onCountdownEndCallback: Function): void {
@@ -70,6 +143,40 @@ export class BaseAssessment {
         this.countingDown = false;
         this.doneCountingDown = true;
         onCountdownEndCallback();
+        clearInterval(this.intervalCountdown);
+      }
+    }, 1000);
+  }
+
+  showProgressBar(onProgressEndCallback: Function): void {
+    this.countingDown = true;
+    this.showProgressAnimation = true;
+    this.intervalCountdown = setInterval(() => {
+      if (this.timeLeft > 0) {
+        this.timeLeft--;
+      } else {
+        this.timeLeft = this.timeLeftConfig;
+        this.countingDown = false;
+        this.doneCountingDown = true;
+        this.showProgressAnimation = false;
+        onProgressEndCallback();
+        clearInterval(this.intervalCountdown);
+      }
+    }, 1000);
+  }
+
+  showProgressCircle(onProgressEndCallback: Function): void {
+    this.countingDown = true;
+    this.showCircleAnimation = true;
+    this.intervalCountdown = setInterval(() => {
+      if (this.timeLeft > 0) {
+        this.timeLeft--;
+      } else {
+        this.timeLeft = this.timeLeftConfig;
+        this.countingDown = false;
+        this.doneCountingDown = true;
+        this.showCircleAnimation = false;
+        onProgressEndCallback();
         clearInterval(this.intervalCountdown);
       }
     }, 1000);
