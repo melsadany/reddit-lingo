@@ -1,8 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import { FormBuilder, Validators } from '@angular/forms';
-import { DialogService } from '../../../services/dialog.service';
-import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 import { StateManagerService } from '../../../services/state-manager.service';
 
 @Component({
@@ -10,8 +8,7 @@ import { StateManagerService } from '../../../services/state-manager.service';
   templateUrl: './postscreenerquestions.component.html',
   styleUrls: ['./postscreenerquestions.component.scss']
 })
-export class PostscreenerquestionsComponent
-  implements OnInit, CanComponentDeactivate {
+export class PostscreenerquestionsComponent implements OnInit {
   dataForm = this.fb.group({
     name: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
@@ -91,7 +88,6 @@ export class PostscreenerquestionsComponent
   constructor(
     private dataService: AssessmentDataService,
     private fb: FormBuilder,
-    private dialogService: DialogService,
     public stateManager: StateManagerService
   ) {
     this.stateManager.showOutsideAssessmentButton = false;
@@ -127,8 +123,5 @@ export class PostscreenerquestionsComponent
       )
       .subscribe(); // KRM: Do this for every assessment
     this.stateManager.finishThisAssessmentAndAdvance('postscreenerquestions');
-  }
-  canDeactivate(): boolean {
-    return this.dialogService.canRedirect();
   }
 }

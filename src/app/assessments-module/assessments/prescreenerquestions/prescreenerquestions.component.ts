@@ -1,8 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import { FormBuilder, Validators } from '@angular/forms';
-import { DialogService } from '../../../services/dialog.service';
-import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 import { StateManagerService } from '../../../services/state-manager.service';
 
 @Component({
@@ -10,8 +8,7 @@ import { StateManagerService } from '../../../services/state-manager.service';
   templateUrl: './prescreenerquestions.component.html',
   styleUrls: ['./prescreenerquestions.component.scss']
 })
-export class PrescreenerquestionsComponent
-  implements OnInit, CanComponentDeactivate {
+export class PrescreenerquestionsComponent implements OnInit {
   dataForm = this.fb.group({
     date: ['', Validators.required],
     gender: ['', Validators.required],
@@ -53,8 +50,7 @@ export class PrescreenerquestionsComponent
   constructor(
     public stateManager: StateManagerService,
     public dataService: AssessmentDataService,
-    private fb: FormBuilder,
-    public dialogService: DialogService
+    private fb: FormBuilder
   ) {
     this.stateManager.showOutsideAssessmentButton = false;
   }
@@ -101,9 +97,5 @@ export class PrescreenerquestionsComponent
   englishNotFirst(): void {
     this.stateManager.showAssessmentFrontPage = false;
     this.englishNotFirstLanguage = true;
-  }
-
-  canDeactivate(): boolean {
-    return this.dialogService.canRedirect();
   }
 }

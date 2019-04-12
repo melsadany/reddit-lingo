@@ -1,8 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import { AudioRecordingService } from '../../../services/audio-recording.service';
-import { DialogService } from '../../../services/dialog.service';
-import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 import { StateManagerService } from '../../../services/state-manager.service';
 import { AudioAssessment } from '../../../structures/AudioAssessment';
 import { AssetsObject } from '../../../structures/AssessmentDataStructures';
@@ -13,7 +11,7 @@ import { AssetsObject } from '../../../structures/AssessmentDataStructures';
   styleUrls: ['./sentencerepetition.component.scss']
 })
 export class SentencerepetitionComponent extends AudioAssessment
-  implements OnInit, OnDestroy, CanComponentDeactivate {
+  implements OnInit, OnDestroy {
   assessmentName = 'sentencerepetition';
   promptNumber = 0;
   playingAudio = false;
@@ -23,10 +21,9 @@ export class SentencerepetitionComponent extends AudioAssessment
   constructor(
     public stateManager: StateManagerService,
     public dataService: AssessmentDataService,
-    public audioRecordingService: AudioRecordingService,
-    public dialogService: DialogService
+    public audioRecordingService: AudioRecordingService
   ) {
-    super(stateManager, audioRecordingService, dataService, dialogService);
+    super(stateManager, audioRecordingService, dataService);
     this.dataService
       .getAssets('audio', this.assessmentName)
       .subscribe((value: AssetsObject) => {
@@ -40,15 +37,6 @@ export class SentencerepetitionComponent extends AudioAssessment
     this.stateManager.isInAssessment = true;
     this.advance();
   }
-
-  // calculateFilePaths(): void {
-  //     this.filePathsToPlay =
-  //       this.dataService.getFileNamesForCurrentAssessment(
-  //         this.assessmentName,
-  //         'audio'
-  //     );
-  //   }
-  // }
 
   advance(): void {
     this.advanceToNextPrompt(

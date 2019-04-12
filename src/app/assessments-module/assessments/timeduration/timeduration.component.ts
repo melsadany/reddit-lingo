@@ -1,7 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
-import { DialogService } from '../../../services/dialog.service';
-import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 import { StateManagerService } from '../../../services/state-manager.service';
 import { SelectionAssessment } from '../../../structures/SelectionAssessment';
 
@@ -11,7 +9,7 @@ import { SelectionAssessment } from '../../../structures/SelectionAssessment';
   styleUrls: ['./timeduration.component.scss']
 })
 export class TimedurationComponent extends SelectionAssessment
-  implements OnInit, OnDestroy, CanComponentDeactivate {
+  implements OnInit, OnDestroy {
   assessmentName = 'timeduration';
   showAnimation = false;
   timerInterval: NodeJS.Timer;
@@ -36,10 +34,9 @@ export class TimedurationComponent extends SelectionAssessment
   subtitleFontSize: string;
   constructor(
     public stateManager: StateManagerService,
-    public dataService: AssessmentDataService,
-    public dialogService: DialogService
+    public dataService: AssessmentDataService
   ) {
-    super(stateManager, dialogService, dataService);
+    super(stateManager, dataService);
     if (this.stateManager.inMobileBrowser) {
       this.radius = 150;
       this.subtitleFontSize = '15';

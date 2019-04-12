@@ -1,8 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AudioRecordingService } from '../../../services/audio-recording.service';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
-import { DialogService } from '../../../services/dialog.service';
-import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 import { StateManagerService } from '../../../services/state-manager.service';
 import { AudioAssessment } from '../../../structures/AudioAssessment';
 import letterData from '../../../../assets/in_use/data/wordfinding/lettermappings.json';
@@ -13,17 +11,16 @@ import letterData from '../../../../assets/in_use/data/wordfinding/lettermapping
   styleUrls: ['./wordfinding.component.scss']
 })
 export class WordfindingComponent extends AudioAssessment
-  implements OnInit, OnDestroy, CanComponentDeactivate {
+  implements OnInit, OnDestroy {
   assessmentName = 'wordfinding';
   showLetter = false;
   currentLetter = '';
   constructor(
     public stateManager: StateManagerService,
     public audioRecordingService: AudioRecordingService,
-    public dataService: AssessmentDataService,
-    public dialogService: DialogService
+    public dataService: AssessmentDataService
   ) {
-    super(stateManager, audioRecordingService, dataService, dialogService);
+    super(stateManager, audioRecordingService, dataService);
     this.promptsLength = Object.keys(letterData).length;
   }
 

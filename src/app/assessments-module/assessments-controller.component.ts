@@ -1,13 +1,5 @@
-import {
-  Component,
-  OnInit,
-  ViewChild,
-  ElementRef,
-  HostListener
-} from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { AssessmentDataService } from '../services/assessment-data.service';
-import { DialogService } from '../services/dialog.service';
-import { CanComponentDeactivate } from '../guards/can-deactivate.guard';
 import { StateManagerService } from '../services/state-manager.service';
 
 @Component({
@@ -15,12 +7,10 @@ import { StateManagerService } from '../services/state-manager.service';
   templateUrl: './assessments-controller.component.html',
   styleUrls: ['./assessments-controller.component.scss']
 })
-export class AssessmentsControllerComponent
-  implements OnInit, CanComponentDeactivate {
+export class AssessmentsControllerComponent implements OnInit {
   @ViewChild('canvas') canvas: ElementRef;
   constructor(
     private dataService: AssessmentDataService,
-    private dialogService: DialogService,
     public stateManager: StateManagerService
   ) {}
 
@@ -29,10 +19,5 @@ export class AssessmentsControllerComponent
   public getCanvasElement(): ElementRef {
     console.log('getting canvas');
     return this.canvas;
-  }
-
-  @HostListener('window:beforeunload', ['$event'])
-  canDeactivate(): boolean {
-    return this.dialogService.canRedirect();
   }
 }

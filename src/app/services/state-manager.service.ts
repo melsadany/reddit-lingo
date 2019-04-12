@@ -5,6 +5,7 @@ import {
 } from '../structures/AssessmentDataStructures';
 import { Router } from '@angular/router';
 import { LinkedList } from '../structures/LinkedList';
+import appConfig from './assessments_config.json';
 
 @Injectable({
   providedIn: 'root'
@@ -127,53 +128,19 @@ export class StateManagerService {
     this._textOnOutsideAssessmentButton = value;
   }
 
-  assessments = {
-    diagnostics: {
-      completed: false
-    },
-    prescreenerquestions: {
-      completed: false
-    },
-    wordassociation: {
-      prompt_number: 0,
-      completed: false
-    },
-    wordfinding: {
-      prompt_number: 0,
-      completed: false
-    },
-    sentencerepetition: {
-      prompt_number: 0,
-      completed: false
-    },
-    matrixreasoning: {
-      prompt_number: 0,
-      completed: false
-    },
-    syncvoice: {
-      prompt_number: 0,
-      completed: false
-    },
-    timeduration: {
-      prompt_number: 0,
-      completed: false
-    },
-    ran: {
-      prompt_number: 0,
-      completed: false
-    },
-    pictureprompt: {
-      prompt_number: 0,
-      completed: false
-    },
-    listeningcomprehension: {
-      prompt_number: 0,
-      completed: false
-    },
-    postscreenerquestions: {
-      completed: false
+  assessments = {};
+
+  private configureEnabledAssessments(): void {
+    const assessmentsConfig = appConfig['appConfig']['assessmentsConfig'];
+    for (const assessmentName of Object.keys(assessmentsConfig)) {
+      if (assessmentsConfig[assessmentName]['enabled']) {
+        this.assessments[assessmentName] = {
+          prompt_number: 0,
+          completed: false
+        };
+      }
     }
-  };
+  }
 
   public printCurrentAssessmentState(): void {
     for (const assessment of Object.keys(this.assessments)) {
@@ -229,6 +196,7 @@ export class StateManagerService {
   }
 
   public initializeState(existingAssessmentData: AssessmentData): void {
+    this.configureEnabledAssessments();
     for (const existingAssessment of existingAssessmentData.assessments) {
       const existingAssessmentName = existingAssessment['assess_name'];
       if (existingAssessment['completed']) {

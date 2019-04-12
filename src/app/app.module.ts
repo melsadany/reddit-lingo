@@ -21,7 +21,6 @@ import { AboutComponent } from './about/about.component';
 import { ContactComponent } from './contact/contact.component';
 import { AssessmentsModule } from './assessments-module/assessments-controller.module';
 import { AssessmentDataService } from './services/assessment-data.service';
-import { DialogService } from './services/dialog.service';
 import { StateManagerService } from './services/state-manager.service';
 import { AudioRecordingService } from './services/audio-recording.service';
 import { HashkeyinitializeComponent } from './hashkeyinitialize/hashkeyinitialize.component';
@@ -55,7 +54,6 @@ export class HammerJSConfig extends HammerGestureConfig {
   providers: [
     CookieService,
     AssessmentDataService,
-    DialogService,
     StateManagerService,
     AudioRecordingService,
     {

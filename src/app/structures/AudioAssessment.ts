@@ -5,7 +5,6 @@ import {
   AudioRecordingService
 } from '../services/audio-recording.service';
 import { AssessmentDataService } from '../services/assessment-data.service';
-import { DialogService } from '../services/dialog.service';
 import { Subscription } from 'rxjs';
 import { OnDestroy, OnInit } from '@angular/core';
 
@@ -96,10 +95,9 @@ export class AudioAssessment extends BaseAssessment
   constructor(
     public stateManager: StateManagerService,
     public audioRecordingService: AudioRecordingService,
-    public dataService: AssessmentDataService,
-    public dialogService: DialogService
+    public dataService: AssessmentDataService
   ) {
-    super(stateManager, dialogService);
+    super(stateManager);
     this._failSubscription = this.audioRecordingService
       .recordingFailed()
       .subscribe(() => {

@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
-import { DialogService } from '../../../services/dialog.service';
 import { StateManagerService } from '../../../services/state-manager.service';
 import { SelectionAssessment } from '../../../structures/SelectionAssessment';
 import { AssetsObject } from '../../../structures/AssessmentDataStructures';
@@ -14,8 +13,6 @@ export class ListeningcomprehensionComponent extends SelectionAssessment {
   assessmentName = 'listeningcomprehension';
   showImage = false;
   imagePaths: string[][];
-  // imagesLocation = 'assets/in_use/img/listeningcomprehension/';
-  // audioInstructionsLocation = 'assets/in_use/audio/listeningcomprehension/';
   playingAudio = false;
   promptsLength: number;
   audioPromptStructure: {};
@@ -23,22 +20,19 @@ export class ListeningcomprehensionComponent extends SelectionAssessment {
 
   constructor(
     public dataService: AssessmentDataService,
-    public stateManager: StateManagerService,
-    public dialogService: DialogService
+    public stateManager: StateManagerService
   ) {
-    super(stateManager, dialogService, dataService);
+    super(stateManager, dataService);
     this.dataService
       .getAssets('audio', this.assessmentName)
       .subscribe((value: AssetsObject) => {
         this.promptsLength = value.assetsLength;
         this.audioPromptStructure = value.promptStructure;
-        console.log(this.audioPromptStructure);
       });
     this.dataService
       .getAssets('img', this.assessmentName)
       .subscribe((value: AssetsObject) => {
         this.imgsPromptStructure = value.promptStructure;
-        console.log(this.imgsPromptStructure);
       });
   }
 

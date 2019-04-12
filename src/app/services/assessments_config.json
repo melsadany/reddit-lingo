@@ -1,0 +1,43 @@
+{
+  "appConfig": {
+    "assessmentsConfig": {
+      "diagnostics": {
+        "enabled": true
+      },
+      "prescreenerquestions": {
+        "enabled": true
+      },
+      "wordassociation": {
+        "enabled": true
+      },
+      "wordfinding": {
+        "enabled": true
+      },
+      "sentencerepetition": {
+        "enabled": true
+      },
+      "matrixreasoning": {
+        "enabled": true
+      },
+      "syncvoice": {
+        "enabled": true
+      },
+      "timeduration": {
+        "enabled": true
+      },
+      "ran": {
+        "enabled": true
+      },
+      "pictureprompt": {
+        "enabled": true
+      },
+      "listeningcomprehension": {
+        "enabled": true
+      },
+      "postscreenerquestions": {
+        "enabled": true
+      }
+    }
+  },
+  "otherSettings": {}
+}

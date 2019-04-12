@@ -10,7 +10,6 @@ import { StateManagerService } from '../../../services/state-manager.service';
 import { AudioRecordingService } from '../../../services/audio-recording.service';
 
 import WaveSurfer from 'wavesurfer.js';
-import { DomSanitizer } from '@angular/platform-browser';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 
 @Component({
@@ -23,8 +22,7 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
   constructor(
     public dataService: AssessmentDataService,
     public stateManager: StateManagerService,
-    public audioRecordingService: AudioRecordingService,
-    private sanitizer: DomSanitizer
+    public audioRecordingService: AudioRecordingService
   ) {
     this.audioRecordingService.recordingFailed().subscribe(() => {
       this.isRecording = false;
@@ -38,27 +36,123 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
       this.handleRecordedOutput(data);
     });
   }
-  isRecording;
-  recordedTime;
-  audio: HTMLAudioElement;
-  testedAudio = false;
-  testedMic = false;
-  playingAudio = false;
-  heardOnce = false;
-  wavesurfer;
-  textOnTestAudioButton = 'Listen to the audio track';
+  private _isRecording: boolean;
+  private _recordedTime: string;
+  private _audio: HTMLAudioElement;
+  private _testedAudio = false;
+  private _testedMic = false;
+  private _playingAudio = false;
+  private _heardOnce = false;
+  private _wavesurfer: any;
+  private _textOnTestAudioButton = 'Listen to the audio track';
+  private _progress = 0;
+  private _playing = false;
+  private _cantHear = false;
+  private _intervalCountup: NodeJS.Timeout;
+  private _showWaveForm = false;
+  private _cantHearMic = false;
+  private _hasRecordedTest = false;
   @ViewChild('wavesurfer') ws: ElementRef;
   @Input() waveColor = '#ff1e7f';
   @Input() progressColor = '#00F';
   @Input() cursorColor = '#CCC';
-  progress = 0;
-  playing = false;
-  cantHear = false;
-  intervalCountup;
-  blobUrl;
-  showWaveForm = false;
-  cantHearMic = false;
-  hasRecordedTest = false;
+
+  public get isRecording(): boolean {
+    return this._isRecording;
+  }
+  public set isRecording(value: boolean) {
+    this._isRecording = value;
+  }
+  public get recordedTime(): string {
+    return this._recordedTime;
+  }
+  public set recordedTime(value: string) {
+    this._recordedTime = value;
+  }
+  public get audio(): HTMLAudioElement {
+    return this._audio;
+  }
+  public set audio(value: HTMLAudioElement) {
+    this._audio = value;
+  }
+  public get testedAudio(): boolean {
+    return this._testedAudio;
+  }
+  public set testedAudio(value: boolean) {
+    this._testedAudio = value;
+  }
+  public get testedMic(): boolean {
+    return this._testedMic;
+  }
+  public set testedMic(value: boolean) {
+    this._testedMic = value;
+  }
+  public get playingAudio(): boolean {
+    return this._playingAudio;
+  }
+  public set playingAudio(value: boolean) {
+    this._playingAudio = value;
+  }
+  public get heardOnce(): boolean {
+    return this._heardOnce;
+  }
+  public set heardOnce(value: boolean) {
+    this._heardOnce = value;
+  }
+  public get wavesurfer(): any {
+    return this._wavesurfer;
+  }
+  public set wavesurfer(value: any) {
+    this._wavesurfer = value;
+  }
+  public get textOnTestAudioButton(): string {
+    return this._textOnTestAudioButton;
+  }
+  public set textOnTestAudioButton(value: string) {
+    this._textOnTestAudioButton = value;
+  }
+  public get progress(): number {
+    return this._progress;
+  }
+  public set progress(value: number) {
+    this._progress = value;
+  }
+  public get playing(): boolean {
+    return this._playing;
+  }
+  public set playing(value: boolean) {
+    this._playing = value;
+  }
+  public get cantHear(): boolean {
+    return this._cantHear;
+  }
+  public set cantHear(value: boolean) {
+    this._cantHear = value;
+  }
+  public get intervalCountup(): NodeJS.Timeout {
+    return this._intervalCountup;
+  }
+  public set intervalCountup(value: NodeJS.Timeout) {
+    this._intervalCountup = value;
+  }
+  public get showWaveForm(): boolean {
+    return this._showWaveForm;
+  }
+  public set showWaveForm(value: boolean) {
+    this._showWaveForm = value;
+  }
+  public get cantHearMic(): boolean {
+    return this._cantHearMic;
+  }
+  public set cantHearMic(value: boolean) {
+    this._cantHearMic = value;
+  }
+  public get hasRecordedTest(): boolean {
+    return this._hasRecordedTest;
+  }
+  public set hasRecordedTest(value: boolean) {
+    this._hasRecordedTest = value;
+  }
 
   ngOnInit(dataBlob?: any): void {
     this.stateManager.sendToCurrentIfAlreadyCompleted('diagnostics');
@@ -102,11 +196,9 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
         this.playing = false;
       });
       this.wavesurfer.on('finish', () => {
-        // this.playing = false;
         this.wavesurfer.seekTo(0);
         this.progress = 0;
         this.wavesurfer.playPause();
-        // this.playing = true;
       });
       this.wavesurfer.on('audioprocess', () => {
         this.progress =
@@ -118,9 +210,6 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
   }
 
   handleRecordedOutput(data: any): void {
-    // this.blobUrl = this.sanitizer.bypassSecurityTrustUrl(
-    //   URL.createObjectURL(data.blob)
-    // ); KRM Chrome removed URL.createObject
     this.ngOnInit(data.blob);
   }
 
@@ -154,7 +243,6 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
   }
 
   clearRecordedData(): void {
-    this.blobUrl = null;
     this.doneRecording = false;
   }
 

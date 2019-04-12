@@ -1,12 +1,10 @@
 import { StateManagerService } from '../services/state-manager.service';
-import { DialogService } from '../services/dialog.service';
-import { CanComponentDeactivate } from '../guards/can-deactivate.guard';
 
 /**
  * The most basic assessment type. For our purposes so far we have only extended [[AudioAssessment]] and [[SelectionAssessment]].
  * Unless you need to create a different type assessment than those two, you don't need to use this class directly.
  */
-export class BaseAssessment implements CanComponentDeactivate {
+export class BaseAssessment {
   private _assetType: string;
   private _assessmentName: string;
   private _countingDown = false;
@@ -58,10 +56,7 @@ export class BaseAssessment implements CanComponentDeactivate {
     this._showExample = value;
   }
 
-  constructor(
-    public stateManager: StateManagerService,
-    public dialogService: DialogService
-  ) {
+  constructor(public stateManager: StateManagerService) {
     this.stateManager.showOutsideAssessmentButton = false;
   }
 
@@ -82,9 +77,5 @@ export class BaseAssessment implements CanComponentDeactivate {
 
   finishAssessment(): void {
     this.stateManager.finishThisAssessmentAndAdvance(this.assessmentName);
-  }
-
-  canDeactivate(): boolean {
-    return this.dialogService.canRedirect();
   }
 }

@@ -145,14 +145,14 @@ export class AssessmentDataService {
   ): Observable<string> {
     let structure;
     if (this.stateManager.hashKey) {
-      console.log('Has hash key');
+      // console.log('Has hash key');
       structure = {
         hash_key: this.getHashKeyCookie(),
         assessments: [assessmentsData],
         google_speech_to_text_assess: [googleData]
       };
     } else {
-      console.log('Has user id');
+      // console.log('Has user id');
       structure = {
         user_id: this.getUserIdCookie(),
         assessments: [assessmentsData],

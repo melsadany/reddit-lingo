@@ -1,8 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import { AudioRecordingService } from '../../../services/audio-recording.service';
-import { DialogService } from '../../../services/dialog.service';
-import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 import { StateManagerService } from '../../../services/state-manager.service';
 import { AudioAssessment } from '../../../structures/AudioAssessment';
 import { HttpClient } from '@angular/common/http';
@@ -14,7 +12,7 @@ import { AssetsObject } from '../../../structures/AssessmentDataStructures';
   styleUrls: ['./pictureprompt.component.scss']
 })
 export class PicturepromptComponent extends AudioAssessment
-  implements OnInit, OnDestroy, CanComponentDeactivate {
+  implements OnInit, OnDestroy {
   assessmentName = 'pictureprompt';
   showPromptImage = false;
   currentImagePrompt = '';
@@ -24,16 +22,14 @@ export class PicturepromptComponent extends AudioAssessment
     public stateManager: StateManagerService,
     public dataService: AssessmentDataService,
     public audioRecordingService: AudioRecordingService,
-    public dialogService: DialogService,
     public http: HttpClient
   ) {
-    super(stateManager, audioRecordingService, dataService, dialogService);
+    super(stateManager, audioRecordingService, dataService);
     this.dataService
       .getAssets('img', this.assessmentName)
       .subscribe((value: AssetsObject) => {
         this.promptsLength = value.assetsLength;
         this.audioPromptStructure = value.promptStructure;
-        console.log(this.audioPromptStructure);
       });
   }
 

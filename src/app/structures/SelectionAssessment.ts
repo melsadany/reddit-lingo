@@ -1,6 +1,5 @@
 import { BaseAssessment } from './BaseAssessment';
 import { StateManagerService } from '../services/state-manager.service';
-import { DialogService } from '../services/dialog.service';
 import { AssessmentDataService } from '../services/assessment-data.service';
 import { OnInit, OnDestroy } from '@angular/core';
 
@@ -38,10 +37,9 @@ export class SelectionAssessment extends BaseAssessment
 
   constructor(
     public stateManager: StateManagerService,
-    public dialogService: DialogService,
     public dataService: AssessmentDataService
   ) {
-    super(stateManager, dialogService);
+    super(stateManager);
   }
 
   ngOnInit(): void {

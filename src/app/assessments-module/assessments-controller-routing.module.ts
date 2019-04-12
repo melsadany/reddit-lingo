@@ -4,7 +4,6 @@ import { AssessmentsControllerComponent } from './assessments-controller.compone
 import { RanComponent } from './assessments/ran/ran.component';
 import { ListeningcomprehensionComponent } from './assessments/listeningcomprehension/listeningcomprehension.component';
 import { AssessmentsDoneComponent } from './assessments-done/assessments-done.component';
-import { CanDeactivateGuard } from '../guards/can-deactivate.guard';
 import { PrescreenerquestionsComponent } from './assessments/prescreenerquestions/prescreenerquestions.component';
 import { PicturepromptComponent } from './assessments/pictureprompt/pictureprompt.component';
 import { TimedurationComponent } from './assessments/timeduration/timeduration.component';
@@ -20,7 +19,6 @@ const routes: Routes = [
   {
     path: 'assessments',
     component: AssessmentsControllerComponent,
-    canDeactivate: [CanDeactivateGuard],
     children: [
       {
         path: 'diagnostics',
@@ -80,7 +78,6 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
-  providers: [CanDeactivateGuard]
+  exports: [RouterModule]
 })
 export class AssessmentsControllerRoutingModule {}

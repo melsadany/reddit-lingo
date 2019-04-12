@@ -1,7 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
-import { DialogService } from '../../../services/dialog.service';
-import { CanComponentDeactivate } from '../../../guards/can-deactivate.guard';
 import { StateManagerService } from '../../../services/state-manager.service';
 import { SelectionAssessment } from '../../../structures/SelectionAssessment';
 
@@ -98,10 +96,9 @@ export class MatrixreasoningComponent extends SelectionAssessment {
 
   constructor(
     public stateManager: StateManagerService,
-    public dataService: AssessmentDataService,
-    public dialogService: DialogService
+    public dataService: AssessmentDataService
   ) {
-    super(stateManager, dialogService, dataService);
+    super(stateManager, dataService);
     this.calculateImageNames();
   }
 

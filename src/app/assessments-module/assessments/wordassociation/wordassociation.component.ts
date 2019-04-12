@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { SelectionAssessment } from '../../../structures/SelectionAssessment';
 import { StateManagerService } from '../../../services/state-manager.service';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
-import { DialogService } from '../../../services/dialog.service';
 import * as data from '../../../../assets/in_use/data/wordassociation/wordmappings.json';
 
 @Component({
@@ -22,11 +21,9 @@ export class WordassociationComponent extends SelectionAssessment {
   currentPromptMatrix: string[][];
   constructor(
     stateManager: StateManagerService,
-    dialogService: DialogService,
     dataService: AssessmentDataService
   ) {
-    super(stateManager, dialogService, dataService);
-    this.promptNumber = this.stateManager.assessments.wordassociation.prompt_number;
+    super(stateManager, dataService);
   }
 
   setStateAndStart(): void {
