@@ -7,24 +7,55 @@ export interface RecordedAudioOutput {
   blob: Blob;
   user_id: string;
 }
+export interface RecorderType {
+  record: () => void;
+  stop: (arg0: (blob: any) => void, arg1: () => void) => void;
+  destroy: () => void;
+}
 
 @Injectable()
 export class AudioRecordingService {
-  private stream: MediaStream;
-  public inMicrophoneError = false;
-  private recorder: {
-    record: () => void;
-    stop: (arg0: (blob: any) => void, arg1: () => void) => void;
-    destroy: () => void;
-  };
-  private interval: NodeJS.Timeout;
-  private startTime: moment.MomentInput;
+  private _stream: MediaStream;
+  private _inMicrophoneError = false;
+  private _recorder: RecorderType;
+  private _startTime: moment.MomentInput;
+  private _interval: NodeJS.Timeout;
   private _recorded = new Subject<RecordedAudioOutput>();
   private _recordingTime = new Subject<string>();
   private _recordingFailed = new Subject<string>();
   private _currentlyRecording = false;
   private _gettingMicErrorText: string;
 
+  public get inMicrophoneError(): boolean {
+    return this._inMicrophoneError;
+  }
+  public set recorder(value: RecorderType) {
+    this._recorder = value;
+  }
+  public get recorder(): RecorderType {
+    return this._recorder;
+  }
+  public set stream(value: MediaStream) {
+    this._stream = value;
+  }
+  public set inMicrophoneError(value: boolean) {
+    this._inMicrophoneError = value;
+  }
+  public get stream(): MediaStream {
+    return this._stream;
+  }
+  public get interval(): NodeJS.Timeout {
+    return this._interval;
+  }
+  public set interval(value: NodeJS.Timeout) {
+    this._interval = value;
+  }
+  public get startTime(): moment.MomentInput {
+    return this._startTime;
+  }
+  public set startTime(value: moment.MomentInput) {
+    this._startTime = value;
+  }
   public get gettingMicErrorText(): string {
     return this._gettingMicErrorText;
   }
@@ -32,6 +63,9 @@ export class AudioRecordingService {
     this._gettingMicErrorText = value;
   }
 
+  /**
+   * Uses navigator.mediaDevices to capture the microphone from the user in browser
+   */
   captureStream(): void {
     navigator.mediaDevices
       .getUserMedia({ audio: true })
@@ -88,6 +122,9 @@ export class AudioRecordingService {
     this.stopMedia();
   }
 
+  /**
+   * Starts the recording of the user's microphone
+   */
   private record(): void {
     const config = {
       type: 'audio',
@@ -100,7 +137,7 @@ export class AudioRecordingService {
     // console.log(JSON.stringify(RecordRTC.Storage));
     // console.log(RecordRTC.Storage);
     this.recorder.record();
-    console.log(this.recorder);
+    // console.log(this.recorder);
     this.startTime = moment();
     this.interval = setInterval(() => {
       const currentTime = moment();
@@ -124,6 +161,9 @@ export class AudioRecordingService {
     return val;
   }
 
+  /**
+   * Stop recording the user's microphone
+   */
   stopRecording(): void {
     if (this.recorder) {
       this.setCurrentlyRecording(false);
@@ -147,20 +187,10 @@ export class AudioRecordingService {
 
   private stopMedia(): void {
     if (this.recorder) {
-      // alert(JSON.stringify(RecordRTC.Storage, null, 4));
-      // console.log(JSON.stringify(RecordRTC.Storage, null, 4));
-      // console.log(RecordRTC.Storage);
       this.recorder = null;
       clearInterval(this.interval);
       this.startTime = null;
-      // if (this.stream) {
-      //   this.stream
-      //     .getAudioTracks()
-      //     .forEach((track: { stop: () => void }) => track.stop());
-      //   this.stream = null;
-      // }
     }
-    // this.stream.getAudioTracks().forEach(track => console.log(track));
   }
 
   private handleMicError(error: Error): void {
