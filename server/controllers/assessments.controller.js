@@ -245,21 +245,46 @@ function getAssets(query) {
   const promptStructure = {}
   const assetType = query.assetType
   const assessmentName = query.assessmentName
-  const assetFolder = assetsBaseDir + assetType + '/' + assessmentName
+  const assetFolder = path.join(assetsBaseDir, assetType, assessmentName)
   return new Promise((resolve, reject) => {
+    const collator = new Intl.Collator(undefined, {
+      numeric: true,
+      sensitivity: 'base'
+    })
     const files = fs.readdirSync(assetFolder)
-    files.sort((a, b) => a - b)
-    for (let i = 0; i < files.length; i++) {
+    files.sort(collator.compare)
+    let fileNumbers
+    if (assetType === 'audio') {
+      // KRM: Audio files include the instruction file which we will take
+      // care of later below in its own block.
+      fileNumbers = files.length - 1
+    } else {
+      fileNumbers = files.length
+    }
+    for (let i = 0; i < fileNumbers; i++) {
       promptStructure[i] = []
-      const individualFile = fs.readdirSync('dist/assets/in_use/' + assetType + '/' + assessmentName + '/' + files[i])
+      const individualFile = fs.readdirSync(path.join('dist/assets/in_use/', assetType, assessmentName, files[i]))
       for (let j = 0; j < individualFile.length; j++) {
-        promptStructure[i].push(assetFolder.slice(5) + '/' + i + '/' + individualFile[j])
+        promptStructure[i].push(path.join(assetFolder.slice(5), i + '', individualFile[j]))
       }
     }
-    resolve({
-      promptStructure: promptStructure,
-      assetsLength: Object.keys(promptStructure).length
-    })
+    let resolveObject
+    if (assetType === 'audio') {
+      const instructionDir = path.join('dist/assets/in_use', assetType, assessmentName, 'instructions')
+      const instructionFile = fs.readdirSync(instructionDir)[0]
+      const instructionFilePath = path.join(instructionDir.slice(5), instructionFile)
+      resolveObject = {
+        audioInstruction: instructionFilePath,
+        promptStructure: promptStructure,
+        assetsLength: Object.keys(promptStructure).length
+      }
+    } else {
+      resolveObject = {
+        promptStructure: promptStructure,
+        assetsLength: Object.keys(promptStructure).length
+      }
+    }
+    resolve(resolveObject)
   })
 }
 

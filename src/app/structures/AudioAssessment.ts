@@ -118,25 +118,23 @@ export class AudioAssessment extends BaseAssessment
   }
 
   ngOnInit(): void {
-    // window.addEventListener('beforeunload', e => {
-    //   const confirmationMessage = 'o/';
-    //   console.log('cond');
-    //   e.returnValue = confirmationMessage; // Gecko, Trident, Chrome 34+
-    //   return confirmationMessage; // Gecko, WebKit, Chrome <34
-    // });
-    this.stateManager.sendToCurrentIfAlreadyCompleted(this.assessmentName);
-    this._promptNumber = this.stateManager.assessments[this.assessmentName][
-      'prompt_number'
-    ];
+    if (
+      !this.stateManager.sendToCurrentIfAlreadyCompleted(this.assessmentName)
+    ) {
+      this.promptNumber = this.stateManager.assessments[this.assessmentName][
+        'prompt_number'
+      ];
+    }
   }
 
   ngOnDestroy(): void {
     this.abortRecording();
-    this._failSubscription.unsubscribe();
-    this._recordingTimeSubscription.unsubscribe();
-    this._recordedOutputSubscription.unsubscribe();
+    this.failSubscription.unsubscribe();
+    this.recordingTimeSubscription.unsubscribe();
+    this.recordedOutputSubscription.unsubscribe();
+    this.audioInstructionPlayer.pause();
     clearInterval(this.intervalCountdown);
-    clearTimeout(this._intervalCountup);
+    clearTimeout(this.intervalCountup);
   }
 
   handleRecordedOutput(data: RecordedAudioOutput): void {

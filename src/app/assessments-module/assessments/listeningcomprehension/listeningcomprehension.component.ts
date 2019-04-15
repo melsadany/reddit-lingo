@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import { StateManagerService } from '../../../services/state-manager.service';
 import { SelectionAssessment } from '../../../structures/SelectionAssessment';
@@ -14,7 +14,6 @@ export class ListeningcomprehensionComponent extends SelectionAssessment {
   showImage = false;
   imagePaths: string[][];
   playingAudio = false;
-  promptsLength: number;
   audioPromptStructure: {};
   imgsPromptStructure: {};
 
@@ -28,6 +27,8 @@ export class ListeningcomprehensionComponent extends SelectionAssessment {
       .subscribe((value: AssetsObject) => {
         this.promptsLength = value.assetsLength;
         this.audioPromptStructure = value.promptStructure;
+        this.audioInstruction = value.audioInstruction;
+        this.playInstructions();
       });
     this.dataService
       .getAssets('img', this.assessmentName)
@@ -53,6 +54,7 @@ export class ListeningcomprehensionComponent extends SelectionAssessment {
   }
 
   calculateImageNames(): void {
+    console.log(this.imgsPromptStructure);
     this.imagePaths = [];
     const firstRow: string[] = [];
     const secondRow: string[] = [];

@@ -12,7 +12,28 @@ export class BaseAssessment {
   private _timeLeft = 3;
   private _doneCountingDown = false;
   private _showExample = true;
+  private _audioInstruction: string;
+  private _playingInstruction = false;
+  private _audioInstructionPlayer: HTMLAudioElement;
 
+  public get audioInstructionPlayer(): HTMLAudioElement {
+    return this._audioInstructionPlayer;
+  }
+  public set audioInstructionPlayer(value: HTMLAudioElement) {
+    this._audioInstructionPlayer = value;
+  }
+  public get playingInstruction(): boolean {
+    return this._playingInstruction;
+  }
+  public set playingInstruction(value: boolean) {
+    this._playingInstruction = value;
+  }
+  public get audioInstruction(): string {
+    return this._audioInstruction;
+  }
+  public set audioInstruction(value: string) {
+    this._audioInstruction = value;
+  }
   public get assetType(): string {
     return this._assetType;
   }
@@ -73,6 +94,17 @@ export class BaseAssessment {
         clearInterval(this.intervalCountdown);
       }
     }, 1000);
+  }
+
+  playInstructions(): void {
+    this.audioInstructionPlayer = new Audio();
+    this.audioInstructionPlayer.src = this.audioInstruction;
+    this.audioInstructionPlayer.onplaying = (ev: Event): any =>
+      (this.playingInstruction = true);
+    this.audioInstructionPlayer.addEventListener('ended', () => {
+      this.playingInstruction = false;
+    });
+    this.audioInstructionPlayer.play();
   }
 
   finishAssessment(): void {
