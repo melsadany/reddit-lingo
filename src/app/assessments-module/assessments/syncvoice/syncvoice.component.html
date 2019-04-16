@@ -7,17 +7,16 @@
     </p>
   </div>
   <div *ngIf="stateManager.showInnerAssessmentButton" class="text-center button-down">
-    <button *ngIf="!stateManager.isInAssessment" type="button" class="start-button btn btn-success"
-      (click)="setStateAndStart()">
-      {{ stateManager.textOnInnerAssessmentButton }}
-    </button>
-    <button *ngIf="stateManager.isInAssessment" type="button" class="start-button btn btn-success" (click)="advance()">
-      {{ stateManager.textOnInnerAssessmentButton }}
-    </button>
+    <div *ngIf="!stateManager.isInAssessment">
+      <img *ngIf="playingInstruction" style="max-height:85px;" class="img-fluid"
+        src="assets/in_use/animations/random_waveform.gif">
+      <button *ngIf="!playingInstruction" type="button" class="start-button btn btn-success"
+        (click)="setStateAndStart()">{{stateManager.textOnInnerAssessmentButton}}</button>
+    </div>
   </div>
   <div class="text-center" *ngIf="playingAudio">
     <!-- <button type="button" *ngIf="playingAudio" class="start-button btn-lg btn-warning mr-2 mb-2">Listen</button> -->
-    <img class="img-fluid" src="assets/in_use/animations/random_waveform.gif" />
+    <img style="max-height:85px;" class="img-fluid" src="assets/in_use/animations/random_waveform.gif">
   </div>
   <div class="text-center" *ngIf="audioRecordingService.isCurrentlyRecording()">
     <img class="img-fluid mt-4" style="width: 120px; height: 120px;" src="assets/in_use/icons/recording_mic.png" />

@@ -18,7 +18,9 @@ export class TimedurationComponent extends SelectionAssessment
   selecting = false;
   currentTimeSelected;
   canSelect = false;
-  durations = [5, 1.5, 0.5, 11, 5, 1, 7, 0.75];
+  durations = this.stateManager.appConfig['appConfig']['assessmentsConfig'][
+    'timeduration'
+  ]['circle_durations'];
   promptsLength = this.durations.length;
   displayPercentage = 100;
   animationDuration;
@@ -94,6 +96,7 @@ export class TimedurationComponent extends SelectionAssessment
       this.promptNumber++;
       this.stateManager.showInnerAssessmentButton = true;
       this.currentTimeSelected = 0;
+      this.advance();
     }
   }
 

@@ -60,7 +60,8 @@
   </div>
   <div *ngIf="englishNotFirstLanguage" class="text-center">
     <p class="py-4 text-center">
-      English is not your first language.
+      Sorry, we ask that English is the first language of our participants.
     </p>
+    <button class='btn btn-primary btn-lg' (click)="stateManager.goHome()">Go Home</button>
   </div>
 </div>

@@ -7,7 +7,8 @@
     </p>
     <div *ngIf="stateManager.showInnerAssessmentButton" class="text-center button-down">
       <div *ngIf="!stateManager.isInAssessment">
-        <button *ngIf="playingInstruction" type="button" class="btn btn-outline-dark" disabled>Listen</button>
+        <img *ngIf="playingInstruction" style="max-height:85px;" class="img-fluid"
+          src="assets/in_use/animations/random_waveform.gif">
         <button *ngIf="!playingInstruction" type="button" class="start-button btn btn-success"
           (click)="setStateAndStart()">{{stateManager.textOnInnerAssessmentButton}}</button>
       </div>
@@ -15,7 +16,7 @@
   </div>
   <div class="text-center" *ngIf="playingAudio">
     <!-- <button type="button" class="start-button btn-lg btn-warning mr-2 mb-2">Listen</button> -->
-    <img class="img-fluid" src="assets/in_use/animations/random_waveform.gif">
+    <img style="max-height:85px;" class="img-fluid" src="assets/in_use/animations/random_waveform.gif">
   </div>
   <div *ngIf="showImage">
     <table style="margin: 0 auto;">

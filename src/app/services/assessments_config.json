@@ -18,13 +18,88 @@
         "prompt_countdowns": [7, 4, 5, 3, 8]
       },
       "matrixreasoning": {
-        "enabled": true
+        "enabled": true,
+        "frameSets": {
+          "0": {
+            "height": 2,
+            "width": 2,
+            "images": 4
+          },
+          "1": {
+            "height": 2,
+            "width": 2,
+            "images": 4
+          },
+          "2": {
+            "height": 2,
+            "width": 2,
+            "images": 4
+          },
+          "3": {
+            "height": 2,
+            "width": 2,
+            "images": 4
+          },
+          "4": {
+            "height": 2,
+            "width": 2,
+            "images": 4
+          },
+          "5": {
+            "height": 7,
+            "width": 1,
+            "images": 7
+          },
+          "6": {
+            "height": 1,
+            "width": 1,
+            "images": 1
+          }
+        },
+        "solutionSets": {
+          "0": {
+            "height": 4,
+            "width": 1,
+            "images": 4
+          },
+          "1": {
+            "height": 4,
+            "width": 1,
+            "images": 4
+          },
+          "2": {
+            "height": 4,
+            "width": 1,
+            "images": 4
+          },
+          "3": {
+            "height": 4,
+            "width": 1,
+            "images": 4
+          },
+          "4": {
+            "height": 4,
+            "width": 1,
+            "images": 4
+          },
+          "5": {
+            "height": 4,
+            "width": 1,
+            "images": 4
+          },
+          "6": {
+            "height": 4,
+            "width": 1,
+            "images": 4
+          }
+        }
       },
       "syncvoice": {
         "enabled": true
       },
       "timeduration": {
-        "enabled": true
+        "enabled": true,
+        "circle_durations": [5, 1.5, 0.5, 11, 5, 1, 7, 0.75]
       },
       "ran": {
         "enabled": true
@@ -44,7 +119,5 @@
       "countdownTimerType": "circle"
     }
   },
-  "otherSettings": {
-
-  }
+  "otherSettings": {}
 }

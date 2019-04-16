@@ -12,82 +12,15 @@ import { AssetsObject } from '../../../structures/AssessmentDataStructures';
 export class MatrixreasoningComponent extends SelectionAssessment {
   imagesLocation = 'assets/in_use/img/matrixreasoning/';
   dimensions = {
-    frameSets: {
-      0: {
-        height: 2,
-        width: 2,
-        images: 4
-      },
-      1: {
-        height: 2,
-        width: 2,
-        images: 4
-      },
-      2: {
-        height: 2,
-        width: 2,
-        images: 4
-      },
-      3: {
-        height: 2,
-        width: 2,
-        images: 4
-      },
-      4: {
-        height: 2,
-        width: 2,
-        images: 4
-      },
-      5: {
-        height: 7,
-        width: 1,
-        images: 7
-      },
-      6: {
-        height: 1,
-        width: 1,
-        images: 1
-      }
-    },
-    solutionSets: {
-      0: {
-        height: 4,
-        width: 1,
-        images: 4
-      },
-      1: {
-        height: 4,
-        width: 1,
-        images: 4
-      },
-      2: {
-        height: 4,
-        width: 1,
-        images: 4
-      },
-      3: {
-        height: 4,
-        width: 1,
-        images: 4
-      },
-      4: {
-        height: 4,
-        width: 1,
-        images: 4
-      },
-      5: {
-        height: 4,
-        width: 1,
-        images: 4
-      },
-      6: {
-        height: 4,
-        width: 1,
-        images: 4
-      }
-    }
+    frameSets: this.stateManager.appConfig['appConfig']['assessmentsConfig'][
+      'matrixreasoning'
+    ]['frameSets'],
+    solutionSets: this.stateManager.appConfig['appConfig']['assessmentsConfig'][
+      'matrixreasoning'
+    ]['solutionSets']
   };
   assessmentName = 'matrixreasoning';
+  imagePromptStructure;
   imageMatrices = {
     frameSets: {},
     solutionSets: {}
