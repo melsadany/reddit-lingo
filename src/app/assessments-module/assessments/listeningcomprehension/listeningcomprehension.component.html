@@ -6,7 +6,6 @@
       do a practice round so you get the idea.
     </p>
     <div *ngIf="stateManager.showInnerAssessmentButton" class="text-center button-down">
-
       <div *ngIf="!stateManager.isInAssessment">
         <button *ngIf="playingInstruction" type="button" class="btn btn-outline-dark" disabled>Listen</button>
         <button *ngIf="!playingInstruction" type="button" class="start-button btn btn-success"
@@ -31,5 +30,14 @@
       </tbody>
     </table>
   </div>
-  <p *ngIf="countingDown" class="text-center display-1">{{timeLeft}}</p>
+  <div>
+    <p *ngIf="countingDown && useCountdownNumber" class="text-center display-1">{{timeLeft}}</p>
+  </div>
+  <div *ngIf="showProgressAnimation && useCountdownBar">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  </div>
+  <div *ngIf="showCircleAnimation && useCountdownCircle">
+    <mat-spinner style="margin:0 auto;">
+    </mat-spinner>
+  </div>
 </div>

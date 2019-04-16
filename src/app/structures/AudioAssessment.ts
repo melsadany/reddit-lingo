@@ -214,19 +214,27 @@ export class AudioAssessment extends BaseAssessment
     afterAdvanceCallBack: Function,
     beforeAdvanceCall?: Function
   ): void {
-    if (this._promptNumber < this._promptsLength) {
-      if (this._promptNumber + 1 === this._promptsLength) {
-        this._lastPrompt = true;
+    let countdownFunction: Function;
+    if (this.useCountdownNumber) {
+      countdownFunction = (arg): void => this.startDisplayedCountdownTimer(arg);
+    } else if (this.useCountdownBar) {
+      countdownFunction = (arg): void => this.showProgressBar(arg);
+    } else if (this.useCountdownCircle) {
+      countdownFunction = (arg): void => this.showProgressCircle(arg);
+    }
+    if (this.promptNumber < this.promptsLength) {
+      if (this.promptNumber + 1 === this.promptsLength) {
+        this.lastPrompt = true;
         this.stateManager.textOnInnerAssessmentButton =
           'FINISH ASSESSMENT AND ADVANCE';
       }
       if (beforeAdvanceCall) {
         // KRM: This call must return a promise
         beforeAdvanceCall().then(() => {
-          this.startDisplayedCountdownTimer(() => afterAdvanceCallBack());
+          countdownFunction(() => afterAdvanceCallBack());
         });
       } else {
-        this.startDisplayedCountdownTimer(() => afterAdvanceCallBack());
+        countdownFunction(() => afterAdvanceCallBack());
       }
     } else {
       this.finishAssessment();

@@ -43,12 +43,6 @@ export class SelectionAssessment extends BaseAssessment
   }
 
   ngOnInit(): void {
-    // window.addEventListener('beforeunload', e => {
-    //   const confirmationMessage = 'o/';
-    //   console.log('cond');
-    //   e.returnValue = confirmationMessage; // Gecko, Trident, Chrome 34+
-    //   return confirmationMessage; // Gecko, WebKit, Chrome <34
-    // });
     this.stateManager.sendToCurrentIfAlreadyCompleted(this.assessmentName);
     this.promptNumber = this.stateManager.assessments[this.assessmentName][
       'prompt_number'
@@ -124,6 +118,14 @@ export class SelectionAssessment extends BaseAssessment
     afterAdvanceCallBack: Function,
     beforeAdvanceCall?: Function
   ): void {
+    let countdownFunction: Function;
+    if (this.useCountdownNumber) {
+      countdownFunction = (arg): void => this.startDisplayedCountdownTimer(arg);
+    } else if (this.useCountdownBar) {
+      countdownFunction = (arg): void => this.showProgressBar(arg);
+    } else if (this.useCountdownCircle) {
+      countdownFunction = (arg): void => this.showProgressCircle(arg);
+    }
     if (this.promptNumber < this.promptsLength) {
       if (this.promptNumber + 1 === this.promptsLength) {
         this.lastPrompt = true;
@@ -133,10 +135,10 @@ export class SelectionAssessment extends BaseAssessment
       if (beforeAdvanceCall) {
         // KRM: This call must return a promise
         beforeAdvanceCall().then(() => {
-          this.startDisplayedCountdownTimer(() => afterAdvanceCallBack());
+          countdownFunction(() => afterAdvanceCallBack());
         });
       } else {
-        this.startDisplayedCountdownTimer(() => afterAdvanceCallBack());
+        countdownFunction(() => afterAdvanceCallBack());
       }
     } else {
       this.finishAssessment();
