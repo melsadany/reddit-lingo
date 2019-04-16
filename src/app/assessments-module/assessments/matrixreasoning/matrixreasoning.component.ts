@@ -100,6 +100,7 @@ export class MatrixreasoningComponent extends SelectionAssessment {
     public dataService: AssessmentDataService
   ) {
     super(stateManager, dataService);
+    this.configureAssessmentSettings();
     this.dataService
       .getAssets('audio', this.assessmentName)
       .subscribe((value: AssetsObject) => {

@@ -25,6 +25,7 @@ export class WordassociationComponent extends SelectionAssessment {
     dataService: AssessmentDataService
   ) {
     super(stateManager, dataService);
+    this.configureAssessmentSettings();
     this.dataService
       .getAssets('audio', this.assessmentName)
       .subscribe((value: AssetsObject) => {

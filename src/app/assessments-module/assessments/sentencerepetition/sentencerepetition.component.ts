@@ -24,6 +24,7 @@ export class SentencerepetitionComponent extends AudioAssessment
     public audioRecordingService: AudioRecordingService
   ) {
     super(stateManager, audioRecordingService, dataService);
+    this.configureAssessmentSettings();
     this.dataService
       .getAssets('audio', this.assessmentName)
       .subscribe((value: AssetsObject) => {

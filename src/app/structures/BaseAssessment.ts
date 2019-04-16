@@ -65,7 +65,6 @@ export class BaseAssessment {
   public set showProgressAnimation(value: boolean) {
     this._showProgressAnimation = value;
   }
-
   public get audioInstructionPlayer(): HTMLAudioElement {
     return this._audioInstructionPlayer;
   }
@@ -129,30 +128,6 @@ export class BaseAssessment {
 
   constructor(public stateManager: StateManagerService) {
     this.stateManager.showOutsideAssessmentButton = false;
-    if (
-      !this.stateManager.appConfig['appConfig']['assessmentsConfig'][
-        this.assessmentName
-      ]['prompt_countdowns']
-    ) {
-      this.timeLeftConfig = this.stateManager.appConfig['appConfig'][
-        'settings'
-      ]['countdownTimerLength'];
-    } else {
-      this.timeLeftConfig = this.stateManager.appConfig['appConfig'][
-        'assessmentsConfig'
-      ][this.assessmentName]['prompt_countdowns'];
-    }
-    this.timeLeft = this.timeLeftConfig;
-    this.countdownTimerType = this.stateManager.appConfig['appConfig'][ // KRM: Get a random number to start with if we provide an array
-      'settings'
-    ]['countdownTimerType'];
-    if (this.countdownTimerType === 'bar') {
-      this.useCountdownBar = true;
-    } else if (this.countdownTimerType === 'number') {
-      this.useCountdownNumber = true;
-    } else if (this.countdownTimerType === 'circle') {
-      this.useCountdownCircle = true;
-    }
   }
 
   startDisplayedCountdownTimer(onCountdownEndCallback: Function): void {
@@ -202,6 +177,7 @@ export class BaseAssessment {
         clearInterval(this.intervalCountdown);
       }
     }, 1000);
+  }
 
   playInstructions(): void {
     this.audioInstructionPlayer = new Audio();
@@ -216,5 +192,38 @@ export class BaseAssessment {
 
   finishAssessment(): void {
     this.stateManager.finishThisAssessmentAndAdvance(this.assessmentName);
+  }
+
+  configureAssessmentSettings(): void {
+    console.log(this.assessmentName);
+    console.log(
+      this.stateManager.appConfig['appConfig']['assessmentsConfig'][
+        this.assessmentName
+      ]
+    );
+    if (
+      !this.stateManager.appConfig['appConfig']['assessmentsConfig'][
+        this.assessmentName
+      ]['prompt_countdowns']
+    ) {
+      this.timeLeftConfig = this.stateManager.appConfig['appConfig'][
+        'settings'
+      ]['countdownTimerLength'];
+    } else {
+      this.timeLeftConfig = this.stateManager.appConfig['appConfig'][
+        'assessmentsConfig'
+      ][this.assessmentName]['prompt_countdowns'];
+    }
+    this.timeLeft = this.timeLeftConfig;
+    this.countdownTimerType = this.stateManager.appConfig['appConfig'][ // KRM: Get a random number to start with if we provide an array
+      'settings'
+    ]['countdownTimerType'];
+    if (this.countdownTimerType === 'bar') {
+      this.useCountdownBar = true;
+    } else if (this.countdownTimerType === 'number') {
+      this.useCountdownNumber = true;
+    } else if (this.countdownTimerType === 'circle') {
+      this.useCountdownCircle = true;
+    }
   }
 }

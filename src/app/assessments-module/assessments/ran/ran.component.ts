@@ -21,6 +21,7 @@ export class RanComponent extends AudioAssessment implements OnInit, OnDestroy {
     public dataService: AssessmentDataService
   ) {
     super(stateManager, audioRecordingService, dataService);
+    this.configureAssessmentSettings();
     this.dataService
       .getAssets('img', this.assessmentName)
       .subscribe((value: AssetsObject) => {

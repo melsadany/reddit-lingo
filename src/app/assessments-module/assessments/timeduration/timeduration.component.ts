@@ -38,6 +38,7 @@ export class TimedurationComponent extends SelectionAssessment
     public dataService: AssessmentDataService
   ) {
     super(stateManager, dataService);
+    this.configureAssessmentSettings();
     if (this.stateManager.inMobileBrowser) {
       this.radius = 150;
       this.subtitleFontSize = '15';

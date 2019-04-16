@@ -9,6 +9,7 @@ import { StateManagerService } from '../../../services/state-manager.service';
   styleUrls: ['./prescreenerquestions.component.scss']
 })
 export class PrescreenerquestionsComponent implements OnInit {
+  assessmentName = 'prescreenerquestions';
   dataForm = this.fb.group({
     date: ['', Validators.required],
     gender: ['', Validators.required],
@@ -90,7 +91,7 @@ export class PrescreenerquestionsComponent implements OnInit {
           }
         )
         .subscribe();
-      this.stateManager.finishThisAssessmentAndAdvance('prescreenerquestions');
+      this.stateManager.finishThisAssessmentAndAdvance(this.assessmentName);
     }
   }
 

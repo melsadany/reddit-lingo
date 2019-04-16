@@ -22,6 +22,7 @@ export class WordfindingComponent extends AudioAssessment
     public dataService: AssessmentDataService
   ) {
     super(stateManager, audioRecordingService, dataService);
+    this.configureAssessmentSettings();
     this.promptsLength = Object.keys(letterData).length;
     this.dataService
       .getAssets('audio', this.assessmentName)

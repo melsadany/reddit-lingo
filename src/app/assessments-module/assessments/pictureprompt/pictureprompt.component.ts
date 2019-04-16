@@ -25,6 +25,7 @@ export class PicturepromptComponent extends AudioAssessment
     public http: HttpClient
   ) {
     super(stateManager, audioRecordingService, dataService);
+    this.configureAssessmentSettings();
     this.dataService
       .getAssets('img', this.assessmentName)
       .subscribe((value: AssetsObject) => {
