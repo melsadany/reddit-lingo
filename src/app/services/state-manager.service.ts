@@ -424,9 +424,12 @@ export class StateManagerService {
     return assessmentName;
   }
 
-  public sendToCurrentIfAlreadyCompleted(assessmentName: string): void {
+  public sendToCurrentIfAlreadyCompleted(assessmentName: string): boolean {
     if (this.assessments[assessmentName]['completed']) {
       this.navigateTo(this.currentAssessment);
+      return true;
+    } else {
+      return false;
     }
   }
 

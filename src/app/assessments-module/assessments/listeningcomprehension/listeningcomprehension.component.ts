@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import { StateManagerService } from '../../../services/state-manager.service';
 import { SelectionAssessment } from '../../../structures/SelectionAssessment';
@@ -14,7 +14,6 @@ export class ListeningcomprehensionComponent extends SelectionAssessment {
   showImage = false;
   imagePaths: string[][];
   playingAudio = false;
-  promptsLength: number;
   audioPromptStructure: {};
   imgsPromptStructure: {};
 
@@ -28,6 +27,8 @@ export class ListeningcomprehensionComponent extends SelectionAssessment {
       .subscribe((value: AssetsObject) => {
         this.promptsLength = value.assetsLength;
         this.audioPromptStructure = value.promptStructure;
+        this.audioInstruction = value.audioInstruction;
+        this.playInstructions();
       });
     this.dataService
       .getAssets('img', this.assessmentName)
@@ -53,19 +54,20 @@ export class ListeningcomprehensionComponent extends SelectionAssessment {
   }
 
   calculateImageNames(): void {
+    console.log(this.imgsPromptStructure);
     this.imagePaths = [];
     const firstRow: string[] = [];
     const secondRow: string[] = [];
     const thirdRow: string[] = [];
-    for (let i = 1; i <= 3; i++) {
+    for (let i = 0; i < 2; i++) {
       firstRow.push(this.imgsPromptStructure[this.promptNumber][i]);
       // firstRow.push(`${this.imagesLocation}${i}a_q${this.promptNumber}.png`);
     }
-    for (let i = 4; i <= 6; i++) {
+    for (let i = 3; i < 5; i++) {
       secondRow.push(this.imgsPromptStructure[this.promptNumber][i]);
       // secondRow.push(`${this.imagesLocation}${i}a_q${this.promptNumber}.png`);
     }
-    for (let i = 7; i <= 9; i++) {
+    for (let i = 6; i < 8; i++) {
       thirdRow.push(this.imgsPromptStructure[this.promptNumber][i]);
       // thirdRow.push(`${this.imagesLocation}${i}a_q${this.promptNumber}.png`);
     }

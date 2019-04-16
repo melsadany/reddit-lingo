@@ -6,8 +6,11 @@
       do a practice round so you get the idea.
     </p>
     <div *ngIf="stateManager.showInnerAssessmentButton" class="text-center button-down">
-      <button *ngIf="!stateManager.isInAssessment" type="button" class="start-button btn btn-success"
-        (click)="setStateAndStart()">{{stateManager.textOnInnerAssessmentButton}}</button>
+      <div *ngIf="!stateManager.isInAssessment">
+        <button *ngIf="playingInstruction" type="button" class="btn btn-outline-dark" disabled>Listen</button>
+        <button *ngIf="!playingInstruction" type="button" class="start-button btn btn-success"
+          (click)="setStateAndStart()">{{stateManager.textOnInnerAssessmentButton}}</button>
+      </div>
     </div>
   </div>
   <div class="text-center" *ngIf="playingAudio">

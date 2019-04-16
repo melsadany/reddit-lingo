@@ -3,6 +3,7 @@ import { SelectionAssessment } from '../../../structures/SelectionAssessment';
 import { StateManagerService } from '../../../services/state-manager.service';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import * as data from '../../../../assets/in_use/data/wordassociation/wordmappings.json';
+import { AssetsObject } from '../../../structures/AssessmentDataStructures';
 
 @Component({
   selector: 'app-wordassociation',
@@ -24,6 +25,12 @@ export class WordassociationComponent extends SelectionAssessment {
     dataService: AssessmentDataService
   ) {
     super(stateManager, dataService);
+    this.dataService
+      .getAssets('audio', this.assessmentName)
+      .subscribe((value: AssetsObject) => {
+        this.audioInstruction = value.audioInstruction;
+        this.playInstructions();
+      });
   }
 
   setStateAndStart(): void {

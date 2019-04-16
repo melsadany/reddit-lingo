@@ -50,6 +50,7 @@ export class SelectionAssessment extends BaseAssessment
   }
 
   ngOnDestroy(): void {
+    this.audioInstructionPlayer.pause();
     clearInterval(this.intervalCountdown);
   }
 

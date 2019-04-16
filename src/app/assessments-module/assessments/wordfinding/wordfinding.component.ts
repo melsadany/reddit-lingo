@@ -4,6 +4,7 @@ import { AssessmentDataService } from '../../../services/assessment-data.service
 import { StateManagerService } from '../../../services/state-manager.service';
 import { AudioAssessment } from '../../../structures/AudioAssessment';
 import letterData from '../../../../assets/in_use/data/wordfinding/lettermappings.json';
+import { AssetsObject } from '../../../structures/AssessmentDataStructures';
 
 @Component({
   selector: 'app-wordfinding',
@@ -22,6 +23,12 @@ export class WordfindingComponent extends AudioAssessment
   ) {
     super(stateManager, audioRecordingService, dataService);
     this.promptsLength = Object.keys(letterData).length;
+    this.dataService
+      .getAssets('audio', this.assessmentName)
+      .subscribe((value: AssetsObject) => {
+        this.audioInstruction = value.audioInstruction;
+        this.playInstructions();
+      });
   }
 
   setStateAndStart(): void {

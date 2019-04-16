@@ -111,6 +111,7 @@ export interface SingleAssessmentData {
  * an assessment to have.
  */
 export interface AssetsObject {
+  audioInstruction: string;
   /**
    * Object that contains keys that correpsond to prompt numbers and values which
    * correspond to a list of the file paths of the assets need for the prompt. This

@@ -27,8 +27,10 @@ export class SentencerepetitionComponent extends AudioAssessment
     this.dataService
       .getAssets('audio', this.assessmentName)
       .subscribe((value: AssetsObject) => {
+        this.audioInstruction = value.audioInstruction;
         this.promptsLength = value.assetsLength;
         this.promptStructure = value.promptStructure;
+        this.playInstructions();
       });
   }
 
