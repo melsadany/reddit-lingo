@@ -246,6 +246,9 @@ function getAssets(query) {
   const assetType = query.assetType
   const assessmentName = query.assessmentName
   const assetFolder = path.join(assetsBaseDir, assetType, assessmentName)
+  if (assetType === 'img' && assessmentName === 'matrixreasoning') {
+    return getMatrixReasoningImgAssets(assetFolder)
+  }
   return new Promise((resolve, reject) => {
     const collator = new Intl.Collator(undefined, {
       numeric: true,
@@ -283,6 +286,34 @@ function getAssets(query) {
         promptStructure: promptStructure,
         assetsLength: Object.keys(promptStructure).length
       }
+    }
+    resolve(resolveObject)
+  })
+}
+
+function getMatrixReasoningImgAssets(assetFolder) {
+  const promptStructure = {
+    frameSets: {},
+    solutionSets: {}
+  }
+  return new Promise((resolve, reject) => {
+    const promptFiles = fs.readdirSync(assetFolder)
+    promptStructure.assetsLength = promptFiles.length
+    for (const promptFile of promptFiles) {
+      let frameSetsThisPrompt = fs.readdirSync(path.join(assetFolder, promptFile, 'frameSets'))
+      for (let i = 0; i < frameSetsThisPrompt.length; i++) {
+        frameSetsThisPrompt[i] = path.join(assetFolder.slice(5), promptFile, 'frameSets', frameSetsThisPrompt[i])
+      }
+      let solutionSetsThisPrompt = fs.readdirSync(path.join(assetFolder, promptFile, 'solutionSets'))
+      for (let i = 0; i < solutionSetsThisPrompt.length; i++) {
+        solutionSetsThisPrompt[i] = path.join(assetFolder.slice(5), promptFile, 'solutionSets', solutionSetsThisPrompt[i])
+      }
+      promptStructure.frameSets[promptFile] = frameSetsThisPrompt
+      promptStructure.solutionSets[promptFile] = solutionSetsThisPrompt
+    }
+    const resolveObject = {
+      promptStructure: promptStructure,
+      assetsLength: promptFiles.length
     }
     resolve(resolveObject)
   })

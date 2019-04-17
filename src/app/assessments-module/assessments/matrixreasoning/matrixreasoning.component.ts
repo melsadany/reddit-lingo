@@ -3,6 +3,7 @@ import { AssessmentDataService } from '../../../services/assessment-data.service
 import { StateManagerService } from '../../../services/state-manager.service';
 import { SelectionAssessment } from '../../../structures/SelectionAssessment';
 import { AssetsObject } from '../../../structures/AssessmentDataStructures';
+import { array } from 'prop-types';
 
 @Component({
   selector: 'app-matrixreasoning',
@@ -11,22 +12,10 @@ import { AssetsObject } from '../../../structures/AssessmentDataStructures';
 })
 export class MatrixreasoningComponent extends SelectionAssessment {
   imagesLocation = 'assets/in_use/img/matrixreasoning/';
-  dimensions = {
-    frameSets: this.stateManager.appConfig['appConfig']['assessmentsConfig'][
-      'matrixreasoning'
-    ]['frameSets'],
-    solutionSets: this.stateManager.appConfig['appConfig']['assessmentsConfig'][
-      'matrixreasoning'
-    ]['solutionSets']
-  };
   assessmentName = 'matrixreasoning';
-  imagePromptStructure;
-  imageMatrices = {
-    frameSets: {},
-    solutionSets: {}
-  };
+  imagePromptStructure: Object;
   showMatrix = false;
-  promptsLength = Object.keys(this.dimensions.frameSets).length;
+  promptsLength: number;
 
   constructor(
     public stateManager: StateManagerService,
@@ -40,7 +29,14 @@ export class MatrixreasoningComponent extends SelectionAssessment {
         this.audioInstruction = value.audioInstruction;
         this.playInstructions();
       });
-    this.calculateImageNames();
+    this.dataService
+      .getAssets('img', this.assessmentName)
+      .subscribe((value: AssetsObject) => {
+        this.promptsLength = value.assetsLength;
+        this.imagePromptStructure = value.promptStructure;
+        console.log(this.imagePromptStructure);
+        this.calculateImageSets();
+      });
   }
 
   setStateAndStart(): void {
@@ -50,7 +46,7 @@ export class MatrixreasoningComponent extends SelectionAssessment {
     this.advance();
   }
 
-  calculateImageNames(): void {
+  calculateImageSets(): void {
     this.calculateFrameSets();
     this.calculateSolutionSets();
   }
@@ -60,53 +56,32 @@ export class MatrixreasoningComponent extends SelectionAssessment {
   }
 
   calculateFrameSets(): void {
-    for (let i = 0; i <= 6; i++) {
-      // KRM: Prompt number
-      let currentRow: string[] = [];
-      let currentMatrix: string[][] = [];
-      const questionWidth = this.dimensions['frameSets'][i]['width'];
-      for (let j = 0; j < this.dimensions['frameSets'][i]['images']; j++) {
-        // KRM: Image number
-        const currentImage = `${
-          this.imagesLocation
-        }${i}/frameSets/${j}q_q${i}.png`;
-        if (currentRow.length < questionWidth) {
-          currentRow.push(currentImage);
-        } else {
-          currentMatrix.push(currentRow);
-          currentRow = [currentImage];
-        }
-      }
-      currentMatrix.push(currentRow);
-      currentRow = [];
-      this.imageMatrices['frameSets'][i] = currentMatrix;
-      currentMatrix = [];
+    for (const prompt of Object.keys(this.imagePromptStructure['frameSets'])) {
+      const halfArrayLength = Math.ceil(
+        this.imagePromptStructure['frameSets'][prompt].length / 2
+      );
+      const newArray = [
+        this.imagePromptStructure['frameSets'][prompt].slice(
+          0,
+          halfArrayLength
+        ),
+        this.imagePromptStructure['frameSets'][prompt].slice(halfArrayLength)
+      ];
+      this.imagePromptStructure['frameSets'][prompt] = newArray;
     }
+    console.log(this.imagePromptStructure);
   }
 
   calculateSolutionSets(): void {
-    for (let i = 0; i <= 6; i++) {
-      // KRM: Prompt number
-      let currentRow: string[] = [];
-      let currentMatrix: string[][] = [];
-      const questionHeight = this.dimensions['solutionSets'][i]['height'];
-      for (let j = 0; j < this.dimensions['solutionSets'][i]['images']; j++) {
-        // KRM: Image number
-        const currentImage = `${
-          this.imagesLocation
-        }${i}/solutionSets/${j}a_q${i}.png`;
-        if (currentRow.length < questionHeight) {
-          currentRow.push(currentImage);
-        } else {
-          currentMatrix.push(currentRow);
-          currentRow = [currentImage];
-        }
-      }
-      currentMatrix.push(currentRow);
-      currentRow = [];
-      this.imageMatrices['solutionSets'][i] = currentMatrix;
-      currentMatrix = [];
-    }
+    // for (const prompt of Object.keys(
+    //   this.imagePromptStructure['solutionSets']
+    // )) {
+    //   const promptArray = this.imagePromptStructure['solutionSets'][prompt];
+    //   for (let i = 0; i < promptArray.length; i++) {
+    //     promptArray[i] = [promptArray[i]];
+    //   }
+    // }
+    console.log(this.imagePromptStructure);
   }
 
   clickImage(image: string): void {
