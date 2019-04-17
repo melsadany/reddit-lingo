@@ -13,6 +13,10 @@
       <button *ngIf="!playingInstruction" type="button" class="start-button btn btn-success"
         (click)="setStateAndStart()">{{stateManager.textOnInnerAssessmentButton}}</button>
     </div>
+    <div *ngIf="stateManager.isInAssessment">
+      <button type="button" class="start-button btn btn-success"
+        (click)="advance()">{{stateManager.textOnInnerAssessmentButton}}</button>
+    </div>
   </div>
   <div class="text-center" *ngIf="playingAudio">
     <!-- <button type="button" *ngIf="playingAudio" class="start-button btn-lg btn-warning mr-2 mb-2">Listen</button> -->

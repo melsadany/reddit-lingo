@@ -144,14 +144,19 @@ export class AudioAssessment extends BaseAssessment
     reader.readAsDataURL(currentBlob);
     reader.onloadend = (): any => {
       const currentRecordedBlobAsBase64 = reader.result.slice(22);
-      this._recordedData.push({
-        prompt_number: this._promptNumber,
-        recorded_data: currentRecordedBlobAsBase64
-      }); // KRM: Adding recording to the array is done in sync. Currently wait for the recording to load.
+      const pushObject = {
+        prompt_number: this.promptNumber,
+        recorded_data: currentRecordedBlobAsBase64,
+        wait_time: this.lastPromptWaitTime
+      };
+      if (this.assessmentName === 'ran') {
+        pushObject['recorded_time'] = this.recordedTime;
+      }
+      this.recordedData.push(pushObject); // KRM: Adding recording to the array is done in sync. Currently wait for the recording to load.
       // Might be better to do this async so we don't have the chance of blocking for a short
       // period before moving to the next prompt.
       this.pushAudioData();
-      this._promptNumber++;
+      this.promptNumber++;
       // this.advanceToNextPrompt();  KRM: For automatic advancement
     };
   }

@@ -9,7 +9,7 @@ export class BaseAssessment {
   private _assessmentName: string;
   private _countingDown = false;
   private _intervalCountdown: NodeJS.Timeout;
-  private _timeLeftConfig: number;
+  private _timeLeftConfig: number | Array<number>;
   private _timeLeft: number;
   private _doneCountingDown = false;
   private _showExample = true;
@@ -22,7 +22,14 @@ export class BaseAssessment {
   private _useCountdownNumber: boolean;
   private _useCountdownCircle: boolean;
   private _showCircleAnimation: boolean;
+  private _lastPromptWaitTime: number;
 
+  public get lastPromptWaitTime(): number {
+    return this._lastPromptWaitTime;
+  }
+  public set lastPromptWaitTime(value: number) {
+    this._lastPromptWaitTime = value;
+  }
   public get showCircleAnimation(): boolean {
     return this._showCircleAnimation;
   }
@@ -53,10 +60,10 @@ export class BaseAssessment {
   public set countdownTimerType(value: string) {
     this._countdownTimerType = value;
   }
-  public get timeLeftConfig(): number {
+  public get timeLeftConfig(): number | Array<number> {
     return this._timeLeftConfig;
   }
-  public set timeLeftConfig(value: number) {
+  public set timeLeftConfig(value: number | Array<number>) {
     this._timeLeftConfig = value;
   }
   public get showProgressAnimation(): boolean {
@@ -132,11 +139,12 @@ export class BaseAssessment {
 
   startDisplayedCountdownTimer(onCountdownEndCallback: Function): void {
     this.countingDown = true;
+    this.lastPromptWaitTime = this.timeLeft;
     this.intervalCountdown = setInterval(() => {
       if (this.timeLeft > 0) {
         this.timeLeft--;
       } else {
-        this.timeLeft = 3;
+        this.timeLeft = this.getProgressIntervalFromConfig();
         this.countingDown = false;
         this.doneCountingDown = true;
         onCountdownEndCallback();
@@ -148,11 +156,12 @@ export class BaseAssessment {
   showProgressBar(onProgressEndCallback: Function): void {
     this.countingDown = true;
     this.showProgressAnimation = true;
+    this.lastPromptWaitTime = this.timeLeft;
     this.intervalCountdown = setInterval(() => {
       if (this.timeLeft > 0) {
         this.timeLeft--;
       } else {
-        this.timeLeft = this.timeLeftConfig;
+        this.timeLeft = this.getProgressIntervalFromConfig();
         this.countingDown = false;
         this.doneCountingDown = true;
         this.showProgressAnimation = false;
@@ -163,13 +172,15 @@ export class BaseAssessment {
   }
 
   showProgressCircle(onProgressEndCallback: Function): void {
+    console.log(this.timeLeft);
     this.countingDown = true;
     this.showCircleAnimation = true;
+    this.lastPromptWaitTime = this.timeLeft;
     this.intervalCountdown = setInterval(() => {
       if (this.timeLeft > 0) {
         this.timeLeft--;
       } else {
-        this.timeLeft = this.timeLeftConfig;
+        this.timeLeft = this.getProgressIntervalFromConfig();
         this.countingDown = false;
         this.doneCountingDown = true;
         this.showCircleAnimation = false;
@@ -177,6 +188,18 @@ export class BaseAssessment {
         clearInterval(this.intervalCountdown);
       }
     }, 1000);
+  }
+
+  getProgressIntervalFromConfig(): number {
+    if (this.timeLeftConfig instanceof Array) {
+      console.log('array');
+      return this.timeLeftConfig[
+        Math.floor(Math.random() * this.timeLeftConfig.length)
+      ];
+    } else {
+      console.log('not array');
+      return this.timeLeftConfig;
+    }
   }
 
   playInstructions(): void {
@@ -214,7 +237,8 @@ export class BaseAssessment {
         'assessmentsConfig'
       ][this.assessmentName]['prompt_countdowns'];
     }
-    this.timeLeft = this.timeLeftConfig;
+    this.timeLeft = this.getProgressIntervalFromConfig();
+    this.lastPromptWaitTime = this.timeLeft;
     this.countdownTimerType = this.stateManager.appConfig['appConfig'][ // KRM: Get a random number to start with if we provide an array
       'settings'
     ]['countdownTimerType'];

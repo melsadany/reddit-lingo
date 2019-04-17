@@ -6,7 +6,7 @@
       picture. With each picture, your description will be recorded for 30
       seconds.
     </p>
-    <div *ngIf="stateManager.showInnerAssessmentButton" class="text-center button-down">
+    <!-- <div *ngIf="stateManager.showInnerAssessmentButton" class="text-center button-down">
       <button *ngIf="!stateManager.isInAssessment" type="button" class="start-button btn btn-success"
         (click)="setStateAndStart()">
         {{ stateManager.textOnInnerAssessmentButton }}
@@ -15,6 +15,18 @@
         (click)="advance()">
         {{ stateManager.textOnInnerAssessmentButton }}
       </button>
+    </div> -->
+    <div *ngIf="stateManager.showInnerAssessmentButton" class="text-center button-down">
+      <div *ngIf="!stateManager.isInAssessment">
+        <img *ngIf="playingInstruction" style="max-height:85px;" class="img-fluid"
+          src="assets/in_use/animations/random_waveform.gif">
+        <button *ngIf="!playingInstruction" type="button" class="start-button btn btn-success"
+          (click)="setStateAndStart()">{{stateManager.textOnInnerAssessmentButton}}</button>
+      </div>
+      <div *ngIf="stateManager.isInAssessment">
+        <button type="button" class="start-button btn btn-success"
+          (click)="advance()">{{stateManager.textOnInnerAssessmentButton}}</button>
+      </div>
     </div>
   </div>
   <div *ngIf="showPromptImage" class="text-center">

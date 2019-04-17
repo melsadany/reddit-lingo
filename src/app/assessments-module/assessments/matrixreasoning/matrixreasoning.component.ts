@@ -3,7 +3,6 @@ import { AssessmentDataService } from '../../../services/assessment-data.service
 import { StateManagerService } from '../../../services/state-manager.service';
 import { SelectionAssessment } from '../../../structures/SelectionAssessment';
 import { AssetsObject } from '../../../structures/AssessmentDataStructures';
-import { array } from 'prop-types';
 
 @Component({
   selector: 'app-matrixreasoning',
@@ -16,6 +15,7 @@ export class MatrixreasoningComponent extends SelectionAssessment {
   imagePromptStructure: Object;
   showMatrix = false;
   promptsLength: number;
+  countUpTimer: NodeJS.Timeout;
 
   constructor(
     public stateManager: StateManagerService,
@@ -48,11 +48,24 @@ export class MatrixreasoningComponent extends SelectionAssessment {
 
   calculateImageSets(): void {
     this.calculateFrameSets();
-    this.calculateSolutionSets();
+    // this.calculateSolutionSets();
+  }
+
+  startTimer(): void {
+    this.countUpTimer = setInterval(() => {
+      this.timeToSelect = this.timeToSelect + 10;
+    }, 10);
+  }
+
+  stopTimer(): void {
+    clearInterval(this.countUpTimer);
   }
 
   advance(): void {
-    this.advanceToNextPrompt(() => (this.showMatrix = true));
+    this.advanceToNextPrompt(() => {
+      this.showMatrix = true;
+      this.startTimer();
+    });
   }
 
   calculateFrameSets(): void {
@@ -72,23 +85,30 @@ export class MatrixreasoningComponent extends SelectionAssessment {
     console.log(this.imagePromptStructure);
   }
 
-  calculateSolutionSets(): void {
-    // for (const prompt of Object.keys(
-    //   this.imagePromptStructure['solutionSets']
-    // )) {
-    //   const promptArray = this.imagePromptStructure['solutionSets'][prompt];
-    //   for (let i = 0; i < promptArray.length; i++) {
-    //     promptArray[i] = [promptArray[i]];
-    //   }
-    // }
-    console.log(this.imagePromptStructure);
-  }
+  // calculateSolutionSets(): void {
+  //   for (const prompt of Object.keys(
+  //     this.imagePromptStructure['solutionSets']
+  //   )) {
+  //     const promptArray = this.imagePromptStructure['solutionSets'][prompt];
+  //     for (let i = 0; i < promptArray.length; i++) {
+  //       promptArray[i] = [promptArray[i]];
+  //     }
+  //   }
+  //   console.log(this.imagePromptStructure);
+  // }
 
   clickImage(image: string): void {
     this.sendImageSelectionAndAdvance(
       image,
-      () => (this.showMatrix = false),
-      () => this.advanceToNextPrompt(() => (this.showMatrix = true))
+      () => {
+        this.showMatrix = false;
+        this.stopTimer();
+      },
+      () =>
+        this.advanceToNextPrompt(() => {
+          this.showMatrix = true;
+          this.startTimer();
+        })
     );
   }
 }

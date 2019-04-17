@@ -9,7 +9,14 @@ export class SelectionAssessment extends BaseAssessment
   private _lastPrompt = false;
   private _promptsLength: number;
   private _promptNumber = 0;
+  private _timeToSelect = 0;
 
+  public get timeToSelect(): number {
+    return this._timeToSelect;
+  }
+  public set timeToSelect(value: number) {
+    this._timeToSelect = value;
+  }
   public get promptNumber(): number {
     return this._promptNumber;
   }
@@ -59,10 +66,17 @@ export class SelectionAssessment extends BaseAssessment
     intermediateFunction: Function,
     advanceCallBack: Function
   ): void {
-    this.selectionData.push({
+    const pushObject = {
       prompt_number: this.promptNumber,
-      image_selected: image.split('/').slice(-1)[0]
-    });
+      image_selected: image.split('/').slice(-1)[0],
+      wait_time: this.lastPromptWaitTime
+    };
+    if (this.assessmentName === 'matrixreasoning') {
+      pushObject['time_to_select'] = this.timeToSelect / 1000;
+      this.timeToSelect = 0;
+    }
+
+    this.selectionData.push(pushObject);
     this.pushSelectionData();
     this.promptNumber++;
     intermediateFunction();
@@ -80,7 +94,8 @@ export class SelectionAssessment extends BaseAssessment
   ): void {
     this.selectionData.push({
       prompt_number: this.promptNumber,
-      words_selected: words
+      words_selected: words,
+      wait_time: this.lastPromptWaitTime
     });
     this.pushSelectionData();
     this.promptNumber++;
