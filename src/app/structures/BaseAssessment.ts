@@ -172,7 +172,7 @@ export class BaseAssessment {
   }
 
   showProgressCircle(onProgressEndCallback: Function): void {
-    console.log(this.timeLeft);
+    // console.log(this.timeLeft);
     this.countingDown = true;
     this.showCircleAnimation = true;
     this.lastPromptWaitTime = this.timeLeft;
@@ -192,12 +192,10 @@ export class BaseAssessment {
 
   getProgressIntervalFromConfig(): number {
     if (this.timeLeftConfig instanceof Array) {
-      console.log('array');
       return this.timeLeftConfig[
         Math.floor(Math.random() * this.timeLeftConfig.length)
       ];
     } else {
-      console.log('not array');
       return this.timeLeftConfig;
     }
   }
@@ -218,12 +216,12 @@ export class BaseAssessment {
   }
 
   configureAssessmentSettings(): void {
-    console.log(this.assessmentName);
-    console.log(
-      this.stateManager.appConfig['appConfig']['assessmentsConfig'][
-        this.assessmentName
-      ]
-    );
+    // console.log(this.assessmentName);
+    // console.log(
+    //   this.stateManager.appConfig['appConfig']['assessmentsConfig'][
+    //     this.assessmentName
+    //   ]
+    // );
     if (
       !this.stateManager.appConfig['appConfig']['assessmentsConfig'][
         this.assessmentName

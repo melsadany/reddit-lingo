@@ -55,7 +55,7 @@ export class ListeningcomprehensionComponent extends SelectionAssessment {
   }
 
   calculateImageNames(): void {
-    console.log(this.imgsPromptStructure);
+    // console.log(this.imgsPromptStructure);
     this.imagePaths = [];
     const firstRow: string[] = [];
     const secondRow: string[] = [];

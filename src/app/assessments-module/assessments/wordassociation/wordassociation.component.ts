@@ -90,7 +90,7 @@ export class WordassociationComponent extends SelectionAssessment {
   clickWord(word: string): void {
     this.selectedWordsThisPrompt.push(word);
     this.spanNumber = Math.ceil(12 / this.selectedWordsThisPrompt.length);
-    console.log(this.spanNumber);
+    // console.log(this.spanNumber);
     if (this.selectedWordsThisPrompt.length === 6) {
       // KRM: You get 5 selections
       this.sendWordSelectionAndAdvance(

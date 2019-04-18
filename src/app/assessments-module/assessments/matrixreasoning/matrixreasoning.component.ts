@@ -34,7 +34,7 @@ export class MatrixreasoningComponent extends SelectionAssessment {
       .subscribe((value: AssetsObject) => {
         this.promptsLength = value.assetsLength;
         this.imagePromptStructure = value.promptStructure;
-        console.log(this.imagePromptStructure);
+        // console.log(this.imagePromptStructure);
         this.calculateImageSets();
       });
   }
@@ -82,7 +82,7 @@ export class MatrixreasoningComponent extends SelectionAssessment {
       ];
       this.imagePromptStructure['frameSets'][prompt] = newArray;
     }
-    console.log(this.imagePromptStructure);
+    // console.log(this.imagePromptStructure);
   }
 
   // calculateSolutionSets(): void {
