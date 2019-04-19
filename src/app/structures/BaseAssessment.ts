@@ -14,7 +14,6 @@ export class BaseAssessment {
   private _doneCountingDown = false;
   private _showExample = true;
   private _audioInstruction: string;
-  private _playingInstruction = false;
   private _audioInstructionPlayer: HTMLAudioElement;
   private _showProgressAnimation = false;
   private _countdownTimerType: string;
@@ -23,7 +22,14 @@ export class BaseAssessment {
   private _useCountdownCircle: boolean;
   private _showCircleAnimation: boolean;
   private _lastPromptWaitTime: number;
+  private _finishedInstruction: boolean;
 
+  public get finishedInstruction(): boolean {
+    return this._finishedInstruction;
+  }
+  public set finishedInstruction(value: boolean) {
+    this._finishedInstruction = value;
+  }
   public get lastPromptWaitTime(): number {
     return this._lastPromptWaitTime;
   }
@@ -77,12 +83,6 @@ export class BaseAssessment {
   }
   public set audioInstructionPlayer(value: HTMLAudioElement) {
     this._audioInstructionPlayer = value;
-  }
-  public get playingInstruction(): boolean {
-    return this._playingInstruction;
-  }
-  public set playingInstruction(value: boolean) {
-    this._playingInstruction = value;
   }
   public get audioInstruction(): string {
     return this._audioInstruction;
@@ -203,10 +203,13 @@ export class BaseAssessment {
   playInstructions(): void {
     this.audioInstructionPlayer = new Audio();
     this.audioInstructionPlayer.src = this.audioInstruction;
-    this.audioInstructionPlayer.onplaying = (ev: Event): any =>
-      (this.playingInstruction = true);
+    this.audioInstructionPlayer.addEventListener('touchstart', () => {
+      alert('start');
+    });
+    // this.audioInstructionPlayer.onplaying = (ev: Event): any =>
+    //   (this.!finishedInstruction = true);
     this.audioInstructionPlayer.addEventListener('ended', () => {
-      this.playingInstruction = false;
+      this.finishedInstruction = true;
     });
     this.audioInstructionPlayer.play();
   }
