@@ -62,15 +62,12 @@ export class ListeningcomprehensionComponent extends SelectionAssessment {
     const thirdRow: string[] = [];
     for (let i = 0; i < 3; i++) {
       firstRow.push(this.imgsPromptStructure[this.promptNumber][i]);
-      // firstRow.push(`${this.imagesLocation}${i}a_q${this.promptNumber}.png`);
     }
     for (let i = 3; i < 6; i++) {
       secondRow.push(this.imgsPromptStructure[this.promptNumber][i]);
-      // secondRow.push(`${this.imagesLocation}${i}a_q${this.promptNumber}.png`);
     }
     for (let i = 6; i < 9; i++) {
       thirdRow.push(this.imgsPromptStructure[this.promptNumber][i]);
-      // thirdRow.push(`${this.imagesLocation}${i}a_q${this.promptNumber}.png`);
     }
     this.imagePaths.push(firstRow, secondRow, thirdRow);
   }

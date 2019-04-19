@@ -1,14 +1,10 @@
 import { BaseAssessment } from './BaseAssessment';
 import { StateManagerService } from '../services/state-manager.service';
 import { AssessmentDataService } from '../services/assessment-data.service';
-import { OnInit, OnDestroy } from '@angular/core';
+import { OnDestroy } from '@angular/core';
 
-export class SelectionAssessment extends BaseAssessment
-  implements OnInit, OnDestroy {
+export class SelectionAssessment extends BaseAssessment implements OnDestroy {
   private _selectionData = [];
-  private _lastPrompt = false;
-  private _promptsLength: number;
-  private _promptNumber = 0;
   private _timeToSelect = 0;
 
   public get timeToSelect(): number {
@@ -17,47 +13,33 @@ export class SelectionAssessment extends BaseAssessment
   public set timeToSelect(value: number) {
     this._timeToSelect = value;
   }
-  public get promptNumber(): number {
-    return this._promptNumber;
-  }
-  public set promptNumber(value: number) {
-    this._promptNumber = value;
-  }
   public get selectionData(): Array<Object> {
     return this._selectionData;
   }
   public set selectionData(value: Array<Object>) {
     this._selectionData = value;
   }
-  public get lastPrompt(): boolean {
-    return this._lastPrompt;
-  }
-  public set lastPrompt(value: boolean) {
-    this._lastPrompt = value;
-  }
-  public get promptsLength(): number {
-    return this._promptsLength;
-  }
-  public set promptsLength(value: number) {
-    this._promptsLength = value;
-  }
 
   constructor(
     public stateManager: StateManagerService,
     public dataService: AssessmentDataService
   ) {
-    super(stateManager);
+    super(stateManager, dataService);
   }
 
-  ngOnInit(): void {
-    this.stateManager.sendToCurrentIfAlreadyCompleted(this.assessmentName);
-    this.promptNumber = this.stateManager.assessments[this.assessmentName][
-      'prompt_number'
-    ];
-  }
+  // ngOnInit(): void {
+  //   this.stateManager.sendToCurrentIfAlreadyCompleted(this.assessmentName);
+  //   this.promptNumber = this.stateManager.assessments[this.assessmentName][
+  //     'prompt_number'
+  //   ];
+  // }
 
   ngOnDestroy(): void {
-    this.audioInstructionPlayer.pause();
+    if (!this.finishedInstruction) {
+      console.log('Audio pausing');
+      this.audioInstructionPlayer.pause();
+      this.audioInstructionPlayer = null;
+    }
     clearInterval(this.intervalCountdown);
   }
 

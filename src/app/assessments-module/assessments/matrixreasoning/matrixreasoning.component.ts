@@ -23,18 +23,17 @@ export class MatrixreasoningComponent extends SelectionAssessment {
   ) {
     super(stateManager, dataService);
     this.configureAssessmentSettings();
-    this.dataService
-      .getAssets('audio', this.assessmentName)
-      .subscribe((value: AssetsObject) => {
-        this.audioInstruction = value.audioInstruction;
-        this.playInstructions();
-      });
+    // this.dataService
+    //   .getAssets('audio', this.assessmentName)
+    //   .subscribe((value: AssetsObject) => {
+    //     this.audioInstruction = value.audioInstruction;
+    //     this.playInstructions();
+    //   });
     this.dataService
       .getAssets('img', this.assessmentName)
       .subscribe((value: AssetsObject) => {
         this.promptsLength = value.assetsLength;
         this.imagePromptStructure = value.promptStructure;
-        // console.log(this.imagePromptStructure);
         this.calculateImageSets();
       });
   }
@@ -84,18 +83,6 @@ export class MatrixreasoningComponent extends SelectionAssessment {
     }
     // console.log(this.imagePromptStructure);
   }
-
-  // calculateSolutionSets(): void {
-  //   for (const prompt of Object.keys(
-  //     this.imagePromptStructure['solutionSets']
-  //   )) {
-  //     const promptArray = this.imagePromptStructure['solutionSets'][prompt];
-  //     for (let i = 0; i < promptArray.length; i++) {
-  //       promptArray[i] = [promptArray[i]];
-  //     }
-  //   }
-  //   console.log(this.imagePromptStructure);
-  // }
 
   clickImage(image: string): void {
     this.sendImageSelectionAndAdvance(

@@ -1,10 +1,12 @@
 import { StateManagerService } from '../services/state-manager.service';
-
+import { OnInit } from '@angular/core';
+import { AssessmentDataService } from '../services/assessment-data.service';
+import { AssetsObject } from './AssessmentDataStructures';
 /**
  * The most basic assessment type. For our purposes so far we have only extended [[AudioAssessment]] and [[SelectionAssessment]].
  * Unless you need to create a different type assessment than those two, you don't need to use this class directly.
  */
-export class BaseAssessment {
+export class BaseAssessment implements OnInit {
   private _assetType: string;
   private _assessmentName: string;
   private _countingDown = false;
@@ -22,8 +24,29 @@ export class BaseAssessment {
   private _useCountdownCircle: boolean;
   private _showCircleAnimation: boolean;
   private _lastPromptWaitTime: number;
-  private _finishedInstruction: boolean;
+  private _finishedInstruction = false;
+  private _promptNumber = 0;
+  private _promptsLength: number;
+  private _lastPrompt = false;
 
+  public get lastPrompt(): boolean {
+    return this._lastPrompt;
+  }
+  public set lastPrompt(value: boolean) {
+    this._lastPrompt = value;
+  }
+  public get promptsLength(): number {
+    return this._promptsLength;
+  }
+  public set promptsLength(value: number) {
+    this._promptsLength = value;
+  }
+  public get promptNumber(): number {
+    return this._promptNumber;
+  }
+  public set promptNumber(value: number) {
+    this._promptNumber = value;
+  }
   public get finishedInstruction(): boolean {
     return this._finishedInstruction;
   }
@@ -133,8 +156,26 @@ export class BaseAssessment {
     this._showExample = value;
   }
 
-  constructor(public stateManager: StateManagerService) {
+  constructor(
+    public stateManager: StateManagerService,
+    public dataService: AssessmentDataService
+  ) {
     this.stateManager.showOutsideAssessmentButton = false;
+    this.audioInstructionPlayer = new Audio();
+  }
+
+  ngOnInit(): void {
+    console.log('init');
+    this.stateManager.sendToCurrentIfAlreadyCompleted(this.assessmentName);
+    this.promptNumber = this.stateManager.assessments[this.assessmentName][
+      'prompt_number'
+    ];
+    this.dataService
+      .getAssets('audio', this.assessmentName)
+      .subscribe((value: AssetsObject) => {
+        this.audioInstruction = value.audioInstruction;
+        this.playInstructions();
+      });
   }
 
   startDisplayedCountdownTimer(onCountdownEndCallback: Function): void {
@@ -203,11 +244,12 @@ export class BaseAssessment {
   playInstructions(): void {
     this.audioInstructionPlayer = new Audio();
     this.audioInstructionPlayer.src = this.audioInstruction;
-    this.audioInstructionPlayer.addEventListener('touchstart', () => {
-      alert('start');
-    });
-    // this.audioInstructionPlayer.onplaying = (ev: Event): any =>
-    //   (this.!finishedInstruction = true);
+    // this.audioInstructionPlayer.load();
+    // this.audioInstructionPlayer.addEventListener('touchstart', () => {
+    //   alert('start');
+    // });
+    this.audioInstructionPlayer.onplaying = (ev: Event): any =>
+      (this.finishedInstruction = false);
     this.audioInstructionPlayer.addEventListener('ended', () => {
       this.finishedInstruction = true;
     });

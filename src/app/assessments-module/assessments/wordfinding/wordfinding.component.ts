@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { AudioRecordingService } from '../../../services/audio-recording.service';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import { StateManagerService } from '../../../services/state-manager.service';
@@ -11,8 +11,7 @@ import { AssetsObject } from '../../../structures/AssessmentDataStructures';
   templateUrl: './wordfinding.component.html',
   styleUrls: ['./wordfinding.component.scss']
 })
-export class WordfindingComponent extends AudioAssessment
-  implements OnInit, OnDestroy {
+export class WordfindingComponent extends AudioAssessment {
   assessmentName = 'wordfinding';
   showLetter = false;
   currentLetter = '';
@@ -24,12 +23,12 @@ export class WordfindingComponent extends AudioAssessment
     super(stateManager, audioRecordingService, dataService);
     this.configureAssessmentSettings();
     this.promptsLength = Object.keys(letterData).length;
-    this.dataService
-      .getAssets('audio', this.assessmentName)
-      .subscribe((value: AssetsObject) => {
-        this.audioInstruction = value.audioInstruction;
-        this.playInstructions();
-      });
+    // this.dataService
+    //   .getAssets('audio', this.assessmentName)
+    //   .subscribe((value: AssetsObject) => {
+    //     this.audioInstruction = value.audioInstruction;
+    //     this.playInstructions();
+    //   });
   }
 
   setStateAndStart(): void {

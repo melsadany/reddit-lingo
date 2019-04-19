@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import { StateManagerService } from '../../../services/state-manager.service';
 import { SelectionAssessment } from '../../../structures/SelectionAssessment';
@@ -9,8 +9,7 @@ import { AssetsObject } from '../../../structures/AssessmentDataStructures';
   templateUrl: './timeduration.component.html',
   styleUrls: ['./timeduration.component.scss']
 })
-export class TimedurationComponent extends SelectionAssessment
-  implements OnInit, OnDestroy {
+export class TimedurationComponent extends SelectionAssessment {
   assessmentName = 'timeduration';
   showAnimation = false;
   timerInterval: NodeJS.Timer;
