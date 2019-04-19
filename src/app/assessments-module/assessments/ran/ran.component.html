@@ -32,14 +32,6 @@
     <button type="button" class="stop-button btn btn-outline-secondary"
       *ngIf="audioRecordingService.isCurrentlyRecording()" (click)="stopEarly()">DONE</button>
   </div>
-  <!-- <button type="button" class="cancel-button btn btn-danger" *ngIf="!isRecording && blobUrl" (click)="clearRecordedData()">Clear Recording</button> KRM: For debugging usage only. -->
-  <!-- <div *ngIf="isRecording && !blobUrl"> {{recordedTime}} </div> -->
-  <!-- </div> -->
-  <!-- <div>
-    <audio *ngIf="!isRecording && blobUrl"  controls>
-      <source [src]="blobUrl" type="audio/webm">
-    </audio>
-</div> KRM: For debugging usage only. -->
   <div>
     <p *ngIf="countingDown && useCountdownNumber" class="text-center display-1">{{timeLeft}}</p>
   </div>

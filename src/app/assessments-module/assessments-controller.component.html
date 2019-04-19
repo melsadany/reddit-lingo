@@ -1,14 +1,6 @@
-<!-- <ng-container *ngIf=""></ng-container>
-<ng-template #welcome> -->
-<!-- <div class='py-4 text-center'>
-  {{stateManager.currentAssessment}}
-</div> -->
-<!-- </ng-template> -->
-<!-- <ng-template #inAssessment> -->
 <router-outlet></router-outlet>
-<button *ngIf="stateManager.showOutsideAssessmentButton" type='button' class='btn btn-primary btn-lg' (click)="stateManager.goToNextAssessment()">{{stateManager.textOnOutsideAssessmentButton}}</button>
-<!-- </div>
-</div> -->
+<button *ngIf="stateManager.showOutsideAssessmentButton" type='button' class='btn btn-primary btn-lg'
+  (click)="stateManager.goToNextAssessment()">{{stateManager.textOnOutsideAssessmentButton}}</button>
 <div *ngIf="stateManager.DEBUG_MODE" class="py-4 text-center">
   <button type='button' style="margin-bottom:4px;white-space: normal;" class='btn btn-outline-danger btn-lg button-down'
     (click)="stateManager.nextAssessmentDebugMode()">DEBUG
