@@ -11,16 +11,6 @@ const routes: Routes = [
     path: 'home',
     component: HomeComponent
   },
-  // {
-  //   path: 'home',
-  //   redirectTo: 'home/',
-  //   pathMatch: 'full'
-  // },
-  // {
-  //   path: '',
-  //   redirectTo: 'home/:hashkey',
-  //   pathMatch: 'full'
-  // },
   {
     path: 'about',
     component: AboutComponent

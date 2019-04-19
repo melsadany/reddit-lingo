@@ -1,21 +1,14 @@
 <div class="mx-lg-5">
   <div *ngIf="stateManager.showAssessmentFrontPage">
     <p class="py-4 text-center">
-      In this assessment, there will be a three second count-down,
-      then you will see a grid of shapes or a grid of numbers. Read off the numbers or shapes as quickly as you can,
-      from left to right and from top to bottom. When you are finished, press the "DONE" button at the bottom of the
-      page.
+      In this task, you will see a grid of numbers. Read the numbers off as quickly and clearly as you can, from
+      left-to-right
+      and top-to-bottom. For the example grid below, you would say:
+      “Two Two Five Six Nine Seven Three Two Five One Five Eight”.
     </p>
-    <!-- <div *ngIf="stateManager.showInnerAssessmentButton" class="text-center button-down">
-      <img *ngIf="playingInstruction" style="max-height:85px;" class="img-fluid"
-        src="assets/in_use/animations/random_waveform.gif">
-      <button *ngIf="!stateManager.isInAssessment" type="button" class="start-button btn btn-success"
-        (click)="setStateAndStart()">{{stateManager.textOnInnerAssessmentButton}}</button>
-      <button *ngIf="stateManager.isInAssessment" type="button" class="start-button btn btn-success"
-        (click)="advance()">{{stateManager.textOnInnerAssessmentButton}}</button>
-    </div> -->
     <div *ngIf="stateManager.showInnerAssessmentButton" class="text-center button-down">
       <div *ngIf="!stateManager.isInAssessment">
+        <img class="img-fluid" src="assets/in_use/examples/img/example_ran.png" style="max-height:350px;" />
         <img *ngIf="playingInstruction" style="max-height:85px;" class="img-fluid"
           src="assets/in_use/animations/random_waveform.gif">
         <button *ngIf="!playingInstruction" type="button" class="start-button btn btn-success"
@@ -33,6 +26,7 @@
   <div class="text-center" *ngIf="audioRecordingService.isCurrentlyRecording()">
     <img class="img-fluid mt-4" style="width: 120px; height: 120px;" src="assets/in_use/icons/recording_mic.png">
     <p class="text-center py-4">You are recording.</p>
+    <p class="text-center">Read off what you see.</p>
   </div>
   <div class="text-center">
     <button type="button" class="stop-button btn btn-outline-secondary"
