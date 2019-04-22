@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import { AudioRecordingService } from '../../../services/audio-recording.service';
 import { StateManagerService } from '../../../services/state-manager.service';
@@ -11,8 +11,7 @@ import { AssetsObject } from '../../../structures/AssessmentDataStructures';
   templateUrl: './pictureprompt.component.html',
   styleUrls: ['./pictureprompt.component.scss']
 })
-export class PicturepromptComponent extends AudioAssessment
-  implements OnInit, OnDestroy {
+export class PicturepromptComponent extends AudioAssessment {
   assessmentName = 'pictureprompt';
   showPromptImage = false;
   currentImagePrompt = '';

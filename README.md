@@ -1,4 +1,4 @@
-## Screener Project Version 2
+## Lingo
 
 Originally built from the MEAN Stack:
 

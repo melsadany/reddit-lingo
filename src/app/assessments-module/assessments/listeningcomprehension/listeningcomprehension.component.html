@@ -1,15 +1,15 @@
 <div class="mx-lg-5">
   <div *ngIf="stateManager.showAssessmentFrontPage">
     <p class="py-4 text-center">
-      In this task, you will listen to an audio clip. When the clip ends,
-      pick the image that matches what you heard. We'll
-      do a practice round so you get the idea.
+      In this task, you will see a grid of shapes and hear a description of one of the shapes. Click the shape that is
+      described. After you make your selection, the task will automatically advance to the next item. Click or tap the
+      button below when you are ready to begin.
     </p>
     <div *ngIf="stateManager.showInnerAssessmentButton" class="text-center button-down">
       <div *ngIf="!stateManager.isInAssessment">
-        <img *ngIf="playingInstruction" style="max-height:85px;" class="img-fluid"
+        <img *ngIf="!finishedInstruction" style="max-height:85px;" class="img-fluid"
           src="assets/in_use/animations/random_waveform.gif">
-        <button *ngIf="!playingInstruction" type="button" class="start-button btn btn-success"
+        <button *ngIf="finishedInstruction" type="button" class="start-button btn btn-success"
           (click)="setStateAndStart()">{{stateManager.textOnInnerAssessmentButton}}</button>
       </div>
       <div *ngIf="stateManager.isInAssessment">
@@ -19,7 +19,6 @@
     </div>
   </div>
   <div class="text-center" *ngIf="playingAudio">
-    <!-- <button type="button" class="start-button btn-lg btn-warning mr-2 mb-2">Listen</button> -->
     <img style="max-height:85px;" class="img-fluid" src="assets/in_use/animations/random_waveform.gif">
   </div>
   <div *ngIf="showImage">

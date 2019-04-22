@@ -1,6 +1,6 @@
 {
-  "name": "Screener_2",
-  "version": "2.0.0",
+  "name": "lingo",
+  "version": "1.0.0",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
@@ -118,6 +118,6 @@
   },
   "heroku-run-build-script": true,
   "engines": {
-    "node": "10.15.0"
+    "node": "10.15.3"
   }
 }

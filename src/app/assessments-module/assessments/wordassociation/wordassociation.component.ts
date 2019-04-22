@@ -26,12 +26,12 @@ export class WordassociationComponent extends SelectionAssessment {
   ) {
     super(stateManager, dataService);
     this.configureAssessmentSettings();
-    this.dataService
-      .getAssets('audio', this.assessmentName)
-      .subscribe((value: AssetsObject) => {
-        this.audioInstruction = value.audioInstruction;
-        this.playInstructions();
-      });
+    // this.dataService
+    //   .getAssets('audio', this.assessmentName)
+    //   .subscribe((value: AssetsObject) => {
+    //     this.audioInstruction = value.audioInstruction;
+    //     this.playInstructions();
+    //   });
   }
 
   setStateAndStart(): void {

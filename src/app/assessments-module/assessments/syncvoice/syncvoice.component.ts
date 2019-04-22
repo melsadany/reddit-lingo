@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import { AudioRecordingService } from '../../../services/audio-recording.service';
 import { StateManagerService } from '../../../services/state-manager.service';

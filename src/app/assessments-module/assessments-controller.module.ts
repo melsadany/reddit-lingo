@@ -15,13 +15,12 @@ import { ListeningcomprehensionComponent } from './assessments/listeningcomprehe
 import { PrescreenerquestionsComponent } from './assessments/prescreenerquestions/prescreenerquestions.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
-  MatDatepickerModule,
+  // MatDatepickerModule,
   MatFormFieldModule,
-  MatNativeDateModule,
+  // MatNativeDateModule,
   MatInputModule,
   MatSelectModule,
-  MatCheckboxModule,
-  MatIconModule,
+  // MatIconModule,
   MatProgressBarModule,
   MatToolbarModule,
   MatProgressSpinnerModule
@@ -43,17 +42,16 @@ import { WordassociationComponent } from './assessments/wordassociation/wordasso
     CommonModule,
     BrowserModule,
     AssessmentsControllerRoutingModule,
-    MatDatepickerModule,
+    // MatDatepickerModule,
     MatFormFieldModule,
-    MatNativeDateModule,
+    // MatNativeDateModule,
     MatInputModule,
-    MatIconModule,
+    // MatIconModule,
     MatProgressBarModule,
     MatToolbarModule,
     MatProgressSpinnerModule,
     BrowserAnimationsModule,
     MatSelectModule,
-    MatCheckboxModule,
     FormsModule,
     ReactiveFormsModule,
     NgCircleProgressModule.forRoot()

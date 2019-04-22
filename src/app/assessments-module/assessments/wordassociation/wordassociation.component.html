@@ -2,8 +2,9 @@
   <div *ngIf="stateManager.showAssessmentFrontPage">
     <p class="py-4 text-center">
       In this task, you will be presented with a word at the top of the screen. At the bottom of the screen will be
-      several
-      other words. Select one of these words based on the first word.
+      several other words. Select one of these words based on the first word. The word you choose will move to the top,
+      and the words at the bottom will change. Select a new word from the
+      bottom that you feel goes with the word you just chose. This will repeat several times
     </p>
     <div *ngIf="showExample" class="text-center">
       <img class="img-fluid" src="assets/in_use/examples/animations/wordassociation_example.gif"
@@ -11,9 +12,9 @@
     </div>
     <div *ngIf="stateManager.showInnerAssessmentButton" class="text-center button-down">
       <div *ngIf="!stateManager.isInAssessment">
-        <img *ngIf="playingInstruction" style="max-height:85px;" class="img-fluid"
+        <img *ngIf="!finishedInstruction" style="max-height:85px;" class="img-fluid"
           src="assets/in_use/animations/random_waveform.gif">
-        <button *ngIf="!playingInstruction" type="button" class="start-button btn btn-success"
+        <button *ngIf="finishedInstruction" type="button" class="start-button btn btn-success"
           (click)="setStateAndStart()">{{stateManager.textOnInnerAssessmentButton}}</button>
       </div>
       <div *ngIf="stateManager.isInAssessment">

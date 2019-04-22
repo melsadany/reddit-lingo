@@ -6,20 +6,16 @@ import {
 } from '../services/audio-recording.service';
 import { AssessmentDataService } from '../services/assessment-data.service';
 import { Subscription } from 'rxjs';
-import { OnDestroy, OnInit } from '@angular/core';
+import { OnDestroy } from '@angular/core';
 
 /**
  * Class used for creating new assessments which will use audio recording
  */
-export class AudioAssessment extends BaseAssessment
-  implements OnInit, OnDestroy {
-  private _promptsLength: number;
-  private _lastPrompt = false;
+export class AudioAssessment extends BaseAssessment implements OnDestroy {
   private _recordedOutputSubscription: Subscription;
   private _recordedTime: string;
   private _recordingTimeSubscription: Subscription;
   private _failSubscription: Subscription;
-  private _promptNumber: number;
   private _doneRecording: boolean;
   private _recordedData: Object[] = [];
   private _intervalCountup: NodeJS.Timeout;
@@ -49,12 +45,6 @@ export class AudioAssessment extends BaseAssessment
   public set doneRecording(value: boolean) {
     this._doneRecording = value;
   }
-  public get promptNumber(): number {
-    return this._promptNumber;
-  }
-  public set promptNumber(value: number) {
-    this._promptNumber = value;
-  }
   public get failSubscription(): Subscription {
     return this._failSubscription;
   }
@@ -79,60 +69,52 @@ export class AudioAssessment extends BaseAssessment
   public set recordedOutputSubscription(value: Subscription) {
     this._recordedOutputSubscription = value;
   }
-  public get lastPrompt(): boolean {
-    return this._lastPrompt;
-  }
-  public set lastPrompt(value: boolean) {
-    this._lastPrompt = value;
-  }
-  public get promptsLength(): number {
-    return this._promptsLength;
-  }
-  public set promptsLength(value: number) {
-    this._promptsLength = value;
-  }
 
   constructor(
     public stateManager: StateManagerService,
     public audioRecordingService: AudioRecordingService,
     public dataService: AssessmentDataService
   ) {
-    super(stateManager);
-    this._failSubscription = this.audioRecordingService
+    super(stateManager, dataService);
+    this.failSubscription = this.audioRecordingService
       .recordingFailed()
       .subscribe(() => {
-        this._isRecording = false;
+        this.isRecording = false;
       });
 
-    this._recordingTimeSubscription = this.audioRecordingService
+    this.recordingTimeSubscription = this.audioRecordingService
       .getRecordedTime()
       .subscribe(time => {
-        this._recordedTime = time;
+        this.recordedTime = time;
       });
 
-    this._recordedOutputSubscription = this.audioRecordingService
+    this.recordedOutputSubscription = this.audioRecordingService
       .getRecordedBlob()
       .subscribe(data => {
         this.handleRecordedOutput(data);
       });
   }
 
-  ngOnInit(): void {
-    if (
-      !this.stateManager.sendToCurrentIfAlreadyCompleted(this.assessmentName)
-    ) {
-      this.promptNumber = this.stateManager.assessments[this.assessmentName][
-        'prompt_number'
-      ];
-    }
-  }
+  // ngOnInit(): void {
+  //   if (
+  //     !this.stateManager.sendToCurrentIfAlreadyCompleted(this.assessmentName)
+  //   ) {
+  //     this.promptNumber = this.stateManager.assessments[this.assessmentName][
+  //       'prompt_number'
+  //     ];
+  //   }
+  // }
 
   ngOnDestroy(): void {
+    if (!this.finishedInstruction) {
+      console.log('Audio pausing');
+      this.audioInstructionPlayer.pause();
+      this.audioInstructionPlayer = null;
+    }
     this.abortRecording();
     this.failSubscription.unsubscribe();
     this.recordingTimeSubscription.unsubscribe();
     this.recordedOutputSubscription.unsubscribe();
-    this.audioInstructionPlayer.pause();
     clearInterval(this.intervalCountdown);
     clearTimeout(this.intervalCountup);
   }
@@ -164,14 +146,14 @@ export class AudioAssessment extends BaseAssessment
   pushAudioData(): void {
     const assessmentData = {
       assess_name: this.assessmentName,
-      data: { recorded_data: this._recordedData },
-      completed: this._lastPrompt
+      data: { recorded_data: this.recordedData },
+      completed: this.lastPrompt
     };
     const assessmentGoogleData = {
       assess_name: this.assessmentName,
       data: { text: 'None' }
     };
-    if (this._promptNumber === 0) {
+    if (this.promptNumber === 0) {
       this.dataService
         .postAssessmentDataToFileSystem(assessmentData, assessmentGoogleData)
         .subscribe();
@@ -180,38 +162,38 @@ export class AudioAssessment extends BaseAssessment
         .postSingleAudioDataToMongo(assessmentData, assessmentGoogleData)
         .subscribe();
     }
-    this._recordedData = [];
+    this.recordedData = [];
   }
 
   startRecording(
     recordingTimerInMiliSeconds: number,
     onDoneRecordingCallback: Function
   ): void {
-    if (!this._isRecording) {
-      this._isRecording = true;
+    if (!this.isRecording) {
+      this.isRecording = true;
       this.audioRecordingService.startRecording();
-      this._intervalCountup = setTimeout(() => {
+      this.intervalCountup = setTimeout(() => {
         this.stopRecording(() => onDoneRecordingCallback());
       }, recordingTimerInMiliSeconds);
     }
   }
 
   stopRecording(onDoneRecordingCallback: Function): void {
-    if (this._isRecording) {
+    if (this.isRecording) {
       this.audioRecordingService.stopRecording();
-      this._isRecording = false;
-      this._doneRecording = true;
+      this.isRecording = false;
+      this.doneRecording = true;
       onDoneRecordingCallback();
       this.stateManager.showInnerAssessmentButton = true;
-      clearTimeout(this._intervalCountup);
+      clearTimeout(this.intervalCountup);
     }
   }
 
   abortRecording(): void {
-    if (this._isRecording) {
-      this._isRecording = false;
+    if (this.isRecording) {
+      this.isRecording = false;
       this.audioRecordingService.abortRecording();
-      this._doneRecording = true;
+      this.doneRecording = true;
     }
   }
 

@@ -7,9 +7,9 @@
   </div>
   <div *ngIf="stateManager.showInnerAssessmentButton" class="text-center button-down">
     <div *ngIf="!stateManager.isInAssessment">
-      <img *ngIf="playingInstruction" style="max-height:85px;" class="img-fluid"
+      <img *ngIf="!finishedInstruction" style="max-height:85px;" class="img-fluid"
         src="assets/in_use/animations/random_waveform.gif">
-      <button *ngIf="!playingInstruction" type="button" class="start-button btn btn-success"
+      <button *ngIf="finishedInstruction" type="button" class="start-button btn btn-success"
         (click)="setStateAndStart()">{{stateManager.textOnInnerAssessmentButton}}</button>
     </div>
     <div *ngIf="stateManager.isInAssessment">
@@ -19,10 +19,9 @@
   </div>
   <div *ngIf="audioRecordingService.isCurrentlyRecording() && showLetter" class="text-center">
     <p class="text-center display-1">{{ currentLetter }}</p>
-    <!-- <mat-spinner style="margin:0 auto;" class="text-center mb-2"></mat-spinner> -->
-    <!-- <button type="button" class="cancel-button btn btn-danger button-down">Recording</button> -->
     <img class="img-fluid mt-4" style="width: 120px; height: 120px;" src="assets/in_use/icons/recording_mic.png" />
     <p class="py-4">You are recording.</p>
+    <p class="text-center">Say words that start with with the letter.</p>
   </div>
   <div>
     <p *ngIf="countingDown && useCountdownNumber" class="text-center display-1">{{timeLeft}}</p>

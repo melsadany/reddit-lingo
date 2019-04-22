@@ -213,19 +213,4 @@ export class AssessmentDataService {
       this.http.get('/api/assessmentsAPI/GetAssets', options)
     );
   }
-
-  //   public getFileNamesForCurrentAssessment(
-  //     assessmentName: string,
-  //     assetType: string
-  //   ): Observable<Object> {
-  //     const options = {
-  //       params: new HttpParams()
-  //         .set('assetType', assetType)
-  //         .set('assessmentName', assessmentName)
-  //     };
-  //     return this.http.get(
-  //       '/api/assessmentsAPI/GetFileNamesForCurrentAssessment',
-  //       options
-  //     );
-  //   }
 }
