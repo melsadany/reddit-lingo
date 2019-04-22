@@ -1,0 +1,74 @@
+---
+Description: CloudFormation template for creating an ec2 instance
+Parameters:
+  KeyName:
+    Description: Key Pair name
+    Type: AWS::EC2::KeyPair::KeyName
+    Default: xxx-xxx
+  VPC:
+    Type: AWS::EC2::VPC::Id
+    Default: givevpcid
+  Subnet:
+    Type: AWS::EC2::Subnet::Id
+    Default: givesubnetid
+  InstanceType:
+    Description: Select one of the possible instance types
+    Type: String
+    Default: t2.micro
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup::Id
+    Default: givesecuritygroupid
+  ImageID:
+    Type: AWS::EC2::Image::Id
+    Default: ami-0de53d8956e8dcf80
+  IAMRole:
+    Type: AWS::IAM::Role
+    Default: Select
+Resources:
+  InstanceProfileForServer:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: String
+      Roles:
+        - Ref:
+            IAMRole
+      InstanceProfileName: ServerInstanceProfile
+  Server:
+    Type: AWS::EC2::Instance
+    Properties:
+      IamInstanceProfile:
+        Ref:
+          IamInstanceProfileForServer
+      ImageId:
+        Ref: ImageID
+      InstanceType:
+        Ref: InstanceType
+      KeyName:
+        Ref: KeyName
+      SecurityGroupIds:
+      - Ref: SecurityGroup
+      SubnetId:
+        Ref: Subnet
+      UserData:
+        Fn::Base64:
+          Fn::Sub: |
+            #!/bin/bash -xe
+            sudo yum update -y
+            sudo yum install git -y
+            sudo curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash -y
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+            nvm install 10
+            node --version
+            curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | sudo tee /etc/yum.repos.d/yarn.repo -y
+            sudo yum install yarn
+            aws s3 cp s3://screener2builds/ . --recursive
+            nohup yarn start &
+Outputs:
+  PublicName:
+    Value:
+      Fn::GetAtt:
+      - Server
+      - PublicDnsName
+    Description: Public name (connect via SSH)
