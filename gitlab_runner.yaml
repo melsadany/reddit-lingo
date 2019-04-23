@@ -22,40 +22,18 @@ Parameters:
     Type: AWS::EC2::Image::Id
     Default: ami-0de53d8956e8dcf80
 Resources:
-
-# RecordSet:
-#   Type: AWS::Route53::RecordSet
-#   Properties:
-#     AliasTarget:
-#       AliasTarget
-#     Comment: String
-#     Failover: String
-#     GeoLocation:
-#       GeoLocation
-#     HealthCheckId: String
-#     HostedZoneId: String
-#     HostedZoneName: String
-#     MultiValueAnswer: Boolean
-#     Name: String
-#     Region: String
-#     ResourceRecords:
-#       - String
-#     SetIdentifier: String
-#     TTL: String
-#     Type: String
-#     Weight: Integer
-  IamInstanceProfileForServer:
+  IamInstanceProfileForRunner:
     Type: AWS::IAM::InstanceProfile
     Properties:
       Roles:
         - ec2tos3
-      InstanceProfileName: ServerInstanceProfile
+      InstanceProfileName: RunnerInstanceProfile
   Server:
     Type: AWS::EC2::Instance
     Properties:
       IamInstanceProfile:
         Ref:
-          IamInstanceProfileForServer
+          IamInstanceProfileForRunner
       ImageId:
         Ref: ImageID
       InstanceType:

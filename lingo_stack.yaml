@@ -8,7 +8,10 @@ Parameters:
   VPC:
     Type: AWS::EC2::VPC::Id
     Default: givevpcid
-  Subnet:
+  Subnet1ForLoadBalancer:
+    Type: AWS::EC2::Subnet::Id
+    Default: givesubnetid
+  Subnet2ForLoadBalancer:
     Type: AWS::EC2::Subnet::Id
     Default: givesubnetid
   InstanceType:
@@ -65,7 +68,7 @@ Resources:
       SecurityGroupIds:
       - Ref: SecurityGroup
       SubnetId:
-        Ref: Subnet
+        Ref: Subnet1ForLoadBalancer
       UserData:
         Fn::Base64:
           Fn::Sub: |
@@ -84,6 +87,32 @@ Resources:
             cd /home/ec2-user
             sudo aws s3 cp s3://screener2builds/ . --recursive
             sudo yarn && nohup yarn start &
+  LingoLoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      IpAddressType: ipv4
+      Name: LingoLoadBalancer
+      Scheme: internet-facing
+      SecurityGroups:
+        - Ref: SecurityGroup
+      Subnets:
+        - Ref: Subnet1ForLoadBalancer
+          Ref: Subnet2ForLoadBalancer
+      Tags:
+        - Resource Tag
+      Type: application
+  ListenerForBalancer:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      # Certificates:
+      #   - Certificate
+      DefaultActions:
+        - Action
+      LoadBalancerArn:
+        Ref: LingoLoadBalancer
+      Port: 80
+      Protocol: HTTP
+      # SslPolicy: String
 Outputs:
   PublicName:
     Value:
