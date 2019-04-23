@@ -22,6 +22,28 @@ Parameters:
     Type: AWS::EC2::Image::Id
     Default: ami-0de53d8956e8dcf80
 Resources:
+
+# RecordSet:
+#   Type: AWS::Route53::RecordSet
+#   Properties:
+#     AliasTarget:
+#       AliasTarget
+#     Comment: String
+#     Failover: String
+#     GeoLocation:
+#       GeoLocation
+#     HealthCheckId: String
+#     HostedZoneId: String
+#     HostedZoneName: String
+#     MultiValueAnswer: Boolean
+#     Name: String
+#     Region: String
+#     ResourceRecords:
+#       - String
+#     SetIdentifier: String
+#     TTL: String
+#     Type: String
+#     Weight: Integer
   IamInstanceProfileForServer:
     Type: AWS::IAM::InstanceProfile
     Properties:
@@ -57,11 +79,10 @@ Resources:
             nvm install 10
             node --version
             curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | sudo tee /etc/yum.repos.d/yarn.repo
-            curl --silent --location https://rpm.nodesource.com/setup_8.x | sudo bash -
+            curl --silent --location https://rpm.nodesource.com/setup_10.x | bash -
             sudo yum install yarn -y
-            aws s3 cp s3://screener2builds/ . --recursive
-            yarn
-            nohup yarn start &
+            sudo aws s3 cp s3://screener2builds/ /home/ec2-user/ --recursive
+            sudo yarn && nohup yarn start &
 Outputs:
   PublicName:
     Value:
