@@ -81,7 +81,8 @@ Resources:
             curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | sudo tee /etc/yum.repos.d/yarn.repo
             curl --silent --location https://rpm.nodesource.com/setup_10.x | bash -
             sudo yum install yarn -y
-            sudo aws s3 cp s3://screener2builds/ /home/ec2-user/ --recursive
+            cd /home/ec2-user
+            sudo aws s3 cp s3://screener2builds/ . --recursive
             sudo yarn && nohup yarn start &
 Outputs:
   PublicName:
