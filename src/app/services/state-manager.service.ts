@@ -138,6 +138,7 @@ export class StateManagerService {
   }
 
   constructor(private routerService: Router) {
+    console.log(this.routerService.url);
     this.configureEnabledAssessments();
     this.totalAssessments = Object.keys(this.assessments).length;
     this.inMobileBrowser = this.mobileCheck();

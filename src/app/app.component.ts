@@ -13,9 +13,10 @@ export class AppComponent implements OnInit, OnDestroy {
     if (navigator.userAgent.match('CriOS')) {
       // this.stateManager.chromeiOs = true;
     }
-    if (!this.stateManager.startedByHandFromHome) {
-      this.stateManager.goHome();
-    }
+    // if (!this.stateManager.startedByHandFromHome) {
+    //   console.log('Going home');
+    //   this.stateManager.goHome();
+    // }
     this.stateManager.isInAssessment = false;
     if (this.stateManager.finishedAllAssessments) {
       this.stateManager.navigateTo('done');

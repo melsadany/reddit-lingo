@@ -135,9 +135,9 @@ export class PrescreenerquestionsComponent implements OnInit {
   ngOnInit(): void {
     this.stateManager.sendToCurrentIfAlreadyCompleted('prescreenerquestions');
     this.stateManager.isInAssessment = true;
-    if (!this.stateManager.startedByHandFromHome) {
-      this.stateManager.goHome();
-    }
+    // if (!this.stateManager.startedByHandFromHome) {
+    //   this.stateManager.goHome();
+    // }
     this.dataForm = this.fb.group({
       currentAge: [
         '',

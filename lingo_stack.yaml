@@ -1,5 +1,5 @@
 ---
-Description: CloudFormation template for creating an ec2 instance
+Description: CloudFormation template for launching the Lingo app
 Parameters:
   KeyName:
     Description: Key Pair name
@@ -26,39 +26,33 @@ Parameters:
     Default: ami-0de53d8956e8dcf80
 Resources:
 
-# RecordSet:
-#   Type: AWS::Route53::RecordSet
-#   Properties:
-#     AliasTarget:
-#       AliasTarget
-#     Comment: String
-#     Failover: String
-#     GeoLocation:
-#       GeoLocation
-#     HealthCheckId: String
-#     HostedZoneId: String
-#     HostedZoneName: String
-#     MultiValueAnswer: Boolean
-#     Name: String
-#     Region: String
-#     ResourceRecords:
-#       - String
-#     SetIdentifier: String
-#     TTL: String
-#     Type: String
-#     Weight: Integer
-  IamInstanceProfileForServer:
+  RecordSet:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneName: lingo.aws.cloud.uiowa.edu.
+      RecordSets:
+      - Name: app.lingo.aws.cloud.uiowa.edu.
+        Type: A
+        AliasTarget:
+          HostedZoneId:
+            Fn::GetAtt:
+              LingoLoadBalancer.CanonicalHostedZoneID
+          DNSName:
+            Fn::GetAtt:
+              LingoLoadBalancer.DNSName
+
+  LingoIamInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
       Roles:
         - ec2tos3
       InstanceProfileName: ServerInstanceProfile
-  Server:
+  LingoServer:
     Type: AWS::EC2::Instance
     Properties:
       IamInstanceProfile:
         Ref:
-          IamInstanceProfileForServer
+          LingoIamInstanceProfile
       ImageId:
         Ref: ImageID
       InstanceType:
@@ -87,6 +81,7 @@ Resources:
             cd /home/ec2-user
             sudo aws s3 cp s3://screener2builds/ . --recursive
             sudo yarn && nohup yarn start &
+
   LingoLoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
@@ -97,26 +92,88 @@ Resources:
         - Ref: SecurityGroup
       Subnets:
         - Ref: Subnet1ForLoadBalancer
-          Ref: Subnet2ForLoadBalancer
-      Tags:
-        - Resource Tag
+        - Ref: Subnet2ForLoadBalancer
+      # Tags:
+      #   - Resource Tag
       Type: application
+
   ListenerForBalancer:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
       # Certificates:
       #   - Certificate
       DefaultActions:
-        - Action
+      - TargetGroupArn:
+          Ref: LingoTargetGroup
+        Type: forward
       LoadBalancerArn:
         Ref: LingoLoadBalancer
       Port: 80
       Protocol: HTTP
       # SslPolicy: String
+
+  LingoTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: LingoGroup1
+      Port: 80
+      Protocol: HTTP
+      # Tags:
+      # - Resource Tag
+      Targets:
+      -
+      # - AvailabilityZone: String
+        Id:
+          Ref: LingoServer
+        Port: 8080
+      TargetType: instance
+      # UnhealthyThresholdCount: Integer
+      VpcId:
+        Ref: VPC
+
+  LingoServerLaunchConfig:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Properties:
+      # AvailabilityZones:
+      #   Fn::GetAZs: ""
+      InstanceId:
+        Ref: LingoServer
+      # ImageId: ami-0de53d8956e8dcf80
+      # IamInstanceProfile:
+      #   Ref:
+      #     LingoIamInstanceProfile
+      # SecurityGroups:
+      # - Ref: SecurityGroup
+      # InstanceType:
+      #   Ref: InstanceType
+      # # BlockDeviceMappings:
+      # # - DeviceName: "/dev/sdk"
+      # #   Ebs:
+      # #     VolumeSize: '50'
+      # # - DeviceName: "/dev/sdc"
+      # #   VirtualName: ephemeral0
+      # KeyName:
+      #   Ref: KeyName
+
+  LingoAutoScaleGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      # AvailabilityZones:
+      #   Fn::GetAZs:
+      #     Ref: "AWS::Region"
+      VPCZoneIdentifier:
+        [Ref: Subnet1ForLoadBalancer, Ref: Subnet2ForLoadBalancer]
+      LaunchConfigurationName:
+        Ref: LingoServerLaunchConfig
+      MinSize: '1'
+      MaxSize: '1'
+      # LoadBalancerNames: [Ref: LingoLoadBalancer]
+      TargetGroupARNs: [Ref: LingoTargetGroup]
+
 Outputs:
   PublicName:
     Value:
       Fn::GetAtt:
-      - Server
+      - LingoServer
       - PublicDnsName
     Description: Public name (connect via SSH)
