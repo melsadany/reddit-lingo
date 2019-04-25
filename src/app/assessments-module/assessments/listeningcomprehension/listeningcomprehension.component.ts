@@ -28,8 +28,8 @@ export class ListeningcomprehensionComponent extends SelectionAssessment {
       .subscribe((value: AssetsObject) => {
         this.promptsLength = value.assetsLength;
         this.audioPromptStructure = value.promptStructure;
-        this.audioInstruction = value.audioInstruction;
-        this.playInstructions();
+        // this.audioInstruction = value.audioInstruction;
+        // this.playInstructions();
       });
     this.dataService
       .getAssets('img', this.assessmentName)

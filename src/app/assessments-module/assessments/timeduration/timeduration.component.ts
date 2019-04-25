@@ -47,12 +47,12 @@ export class TimedurationComponent extends SelectionAssessment {
       this.radius = 245;
       this.subtitleFontSize = '25';
     }
-    this.dataService
-      .getAssets('audio', this.assessmentName)
-      .subscribe((value: AssetsObject) => {
-        this.audioInstruction = value.audioInstruction;
-        this.playInstructions();
-      });
+    // this.dataService
+    //   .getAssets('audio', this.assessmentName)
+    //   .subscribe((value: AssetsObject) => {
+    //     this.audioInstruction = value.audioInstruction;
+    //     this.playInstructions();
+    //   });
   }
 
   setStateAndStart(): void {

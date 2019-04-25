@@ -28,12 +28,12 @@ export class RanComponent extends AudioAssessment {
         this.promptsLength = value.assetsLength;
         this.audioPromptStructure = value.promptStructure;
       });
-    this.dataService
-      .getAssets('audio', this.assessmentName)
-      .subscribe((value: AssetsObject) => {
-        this.audioInstruction = value.audioInstruction;
-        this.playInstructions();
-      });
+    // this.dataService
+    //   .getAssets('audio', this.assessmentName)
+    //   .subscribe((value: AssetsObject) => {
+    //     this.audioInstruction = value.audioInstruction;
+    //     this.playInstructions();
+    //   });
   }
 
   setStateAndStart(): void {

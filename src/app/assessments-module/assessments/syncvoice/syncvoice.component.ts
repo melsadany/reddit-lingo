@@ -25,10 +25,10 @@ export class SyncvoiceComponent extends AudioAssessment {
     this.dataService
       .getAssets('audio', this.assessmentName)
       .subscribe((value: AssetsObject) => {
-        this.audioInstruction = value.audioInstruction;
+        // this.audioInstruction = value.audioInstruction;
         this.promptsLength = value.assetsLength;
         this.audioPromptStructure = value.promptStructure;
-        this.playInstructions();
+        // this.playInstructions();
       });
   }
 
