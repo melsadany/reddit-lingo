@@ -28,7 +28,7 @@ Resources:
       Roles:
         - ec2tos3
       InstanceProfileName: RunnerInstanceProfile
-  Server:
+  RunnerServer:
     Type: AWS::EC2::Instance
     Properties:
       IamInstanceProfile:
@@ -49,20 +49,15 @@ Resources:
           Fn::Sub: |
             #!/bin/bash -xe
              sudo yum update -y
+             sudo amazon-linux-extras install docker -y
+             sudo service docker start
              curl -L https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.rpm.sh | sudo bash
              sudo yum install gitlab-runner -y
 
-
-            # sudo yum update -y
-            # sudo wget -O /usr/local/bin/gitlab-runner https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-amd64
-            # sudo chmod +x /usr/local/bin/gitlab-runner
-            # sudo useradd --comment 'GitLab Runner' --create-home gitlab-runner --shell /bin/bash
-            # sudo gitlab-runner install --user=gitlab-runner --working-directory=/home/gitlab-runner
-            # sudo gitlab-runner start
 Outputs:
   PublicName:
     Value:
       Fn::GetAtt:
-      - Server
+      - RunnerServer
       - PublicDnsName
     Description: Public name (connect via SSH)

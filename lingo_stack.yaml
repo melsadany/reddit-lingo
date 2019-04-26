@@ -31,7 +31,7 @@ Resources:
     Properties:
       HostedZoneName: lingo.aws.cloud.uiowa.edu.
       RecordSets:
-      - Name: app.lingo.aws.cloud.uiowa.edu.
+      - Name: lingo.aws.cloud.uiowa.edu.
         Type: A
         AliasTarget:
           HostedZoneId:
@@ -47,40 +47,6 @@ Resources:
       Roles:
         - ec2tos3
       InstanceProfileName: ServerInstanceProfile
-  LingoServer:
-    Type: AWS::EC2::Instance
-    Properties:
-      IamInstanceProfile:
-        Ref:
-          LingoIamInstanceProfile
-      ImageId:
-        Ref: ImageID
-      InstanceType:
-        Ref: InstanceType
-      KeyName:
-        Ref: KeyName
-      SecurityGroupIds:
-      - Ref: SecurityGroup
-      SubnetId:
-        Ref: Subnet1ForLoadBalancer
-      UserData:
-        Fn::Base64:
-          Fn::Sub: |
-            #!/bin/bash -xe
-            sudo yum update -y
-            sudo yum install git -y
-            sudo curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-            nvm install 10
-            node --version
-            curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | sudo tee /etc/yum.repos.d/yarn.repo
-            curl --silent --location https://rpm.nodesource.com/setup_10.x | bash -
-            sudo yum install yarn -y
-            cd /home/ec2-user
-            sudo aws s3 cp s3://screener2builds/ . --recursive
-            sudo yarn && nohup yarn start &
 
   LingoLoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
@@ -100,80 +66,125 @@ Resources:
   ListenerForBalancer:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
-      # Certificates:
-      #   - Certificate
+      Certificates:
+        - CertificateArn:
+            arn:aws:acm:us-east-1:000246156158:certificate/24a0937e-02df-4a93-a626-0858b9e2cab2
       DefaultActions:
       - TargetGroupArn:
           Ref: LingoTargetGroup
         Type: forward
       LoadBalancerArn:
         Ref: LingoLoadBalancer
-      Port: 80
-      Protocol: HTTP
+      Port: 443
+      Protocol: HTTPS
       # SslPolicy: String
 
   LingoTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
       Name: LingoGroup1
-      Port: 80
+      Port: 8080
       Protocol: HTTP
       # Tags:
       # - Resource Tag
-      Targets:
-      -
+      # Targets:
+      # -
       # - AvailabilityZone: String
-        Id:
-          Ref: LingoServer
-        Port: 8080
-      TargetType: instance
+      #   Id:
+      #     Ref: LingoServer
+      #   Port: 8080
+      # TargetType: instance
       # UnhealthyThresholdCount: Integer
       VpcId:
         Ref: VPC
 
+  # LingoServer:
+  #   Type: AWS::EC2::Instance
+  #   Properties:
+  #     IamInstanceProfile:
+  #       Ref:
+  #         LingoIamInstanceProfile
+  #     ImageId:
+  #       Ref: ImageID
+  #     InstanceType:
+  #       Ref: InstanceType
+  #     KeyName:
+  #       Ref: KeyName
+  #     SecurityGroupIds:
+  #     - Ref: SecurityGroup
+  #     SubnetId:
+  #       Ref: Subnet1ForLoadBalancer
+  #     UserData:
+  #       Fn::Base64:
+  #         Fn::Sub: |
+  #           #!/bin/bash -xe
+  #           sudo yum update -y
+  #           sudo yum install git -y
+  #           sudo curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
+  #           export NVM_DIR="$HOME/.nvm"
+  #           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+  #           [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+  #           nvm install 10
+  #           node --version
+  #           curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | sudo tee /etc/yum.repos.d/yarn.repo
+  #           curl --silent --location https://rpm.nodesource.com/setup_10.x | bash -
+  #           sudo yum install yarn -y
+  #           cd /home/ec2-user
+  #           sudo aws s3 cp s3://screener2builds/ . --recursive
+  #           sudo yarn && nohup yarn start &
+
   LingoServerLaunchConfig:
     Type: AWS::AutoScaling::LaunchConfiguration
     Properties:
-      # AvailabilityZones:
-      #   Fn::GetAZs: ""
-      InstanceId:
-        Ref: LingoServer
+      # InstanceId:
+      #   Ref: LingoServer
       # ImageId: ami-0de53d8956e8dcf80
-      # IamInstanceProfile:
-      #   Ref:
-      #     LingoIamInstanceProfile
-      # SecurityGroups:
-      # - Ref: SecurityGroup
-      # InstanceType:
-      #   Ref: InstanceType
+      Tags:
+        - Key: 'Name'
+          Value: LingoAppServer
+      ImageId:
+        Ref: ImageID
+      IamInstanceProfile:
+        Ref:
+          LingoIamInstanceProfile
+      SecurityGroups:
+      - Ref: SecurityGroup
+      InstanceType:
+        Ref: InstanceType
       # # BlockDeviceMappings:
       # # - DeviceName: "/dev/sdk"
       # #   Ebs:
       # #     VolumeSize: '50'
       # # - DeviceName: "/dev/sdc"
       # #   VirtualName: ephemeral0
-      # KeyName:
-      #   Ref: KeyName
+      KeyName:
+        Ref: KeyName
+      UserData:
+        Fn::Base64:
+          Fn::Sub: |
+            #!/bin/bash -xe
+            sudo yum update -y
+            sudo yum install git -y
+            sudo curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+            nvm install 10
+            node --version
+            curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | sudo tee /etc/yum.repos.d/yarn.repo
+            curl --silent --location https://rpm.nodesource.com/setup_10.x | bash -
+            sudo yum install yarn -y
+            cd /home/ec2-user
+            sudo aws s3 cp s3://screener2builds/ . --recursive
+            sudo yarn && nohup yarn start &
 
   LingoAutoScaleGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
-      # AvailabilityZones:
-      #   Fn::GetAZs:
-      #     Ref: "AWS::Region"
       VPCZoneIdentifier:
         [Ref: Subnet1ForLoadBalancer, Ref: Subnet2ForLoadBalancer]
       LaunchConfigurationName:
         Ref: LingoServerLaunchConfig
       MinSize: '1'
       MaxSize: '1'
-      # LoadBalancerNames: [Ref: LingoLoadBalancer]
       TargetGroupARNs: [Ref: LingoTargetGroup]
-
-Outputs:
-  PublicName:
-    Value:
-      Fn::GetAtt:
-      - LingoServer
-      - PublicDnsName
-    Description: Public name (connect via SSH)
