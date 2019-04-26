@@ -13,7 +13,8 @@ before_script:
 build:
   script:
     - yarn build
-    - aws s3 cp dist s3://screener2builds/  --recursive
-    - aws s3 cp server s3://screener2builds/ --recursive
+    - aws s3 cp dist s3://screener2builds/
+    - aws s3 cp server s3://screener2builds/
+    - aws s3 cp package.json s3://screener2builds/
 
 
