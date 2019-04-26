@@ -1,5 +1,5 @@
 before_script:
-  - sudo yum update -y
+  - yum update -y
   - sudo yup install curl -y
   - curl --silent --location https://rpm.nodesource.com/setup_10.x | bash -
   - sudo yum install yarn -y
