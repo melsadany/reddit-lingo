@@ -9,3 +9,4 @@ build:
   script:
     - yarn
     - yarn build
+
