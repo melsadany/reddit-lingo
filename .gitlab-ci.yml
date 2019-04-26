@@ -1,8 +1,8 @@
 before_script:
-  - yum update -y
-  - sudo yup install curl -y
-  - curl --silent --location https://rpm.nodesource.com/setup_10.x | bash -
-  - sudo yum install yarn -y
+  - apk add --update curl
+  # - sudo yup install curl -y
+  # - curl --silent --location https://rpm.nodesource.com/setup_10.x | bash -
+  # - sudo yum install yarn -y
 
 build:
   script:
