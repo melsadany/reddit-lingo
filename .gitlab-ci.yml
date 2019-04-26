@@ -2,7 +2,8 @@ before_script:
   - apk add --update curl
   - apk add --update bash
   - apk add --update yarn
-  - curl --silent --location https://rpm.nodesource.com/setup_10.x | bash -
+  - curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
+  - nvm install 10
   # - apk add --update nodejs=10.15.3-r0
   - node --version
   # - sudo yum install yarn -y
