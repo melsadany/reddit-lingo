@@ -5,7 +5,7 @@ image: node:10.15.3-alpine
 
 before_script:
   - apk --no-cache --virtual build-dependencies add \
-    python \
+    python3 \
     make \
     g++ \
     && yarn
