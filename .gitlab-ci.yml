@@ -8,9 +8,10 @@ before_script:
     python \
     make \
     g++ \
+    && yarn
+    && apk del build-dependencies
 
 build:
   script:
-    - yarn
     - yarn build
 
