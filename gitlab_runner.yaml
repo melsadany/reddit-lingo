@@ -21,6 +21,12 @@ Parameters:
   ImageID:
     Type: AWS::EC2::Image::Id
     Default: ami-0de53d8956e8dcf80
+  GitLabUrl:
+    Type: String
+    Default: https://research-git.uiowa.edu/
+  GitLabRegistrationToken:
+    Type: String
+    Default: GitLab Runner Registration Token
 Resources:
   IamInstanceProfileForRunner:
     Type: AWS::IAM::InstanceProfile
@@ -44,6 +50,9 @@ Resources:
       - Ref: SecurityGroup
       SubnetId:
         Ref: Subnet
+      Tags:
+      - Key: Name
+        Value: LingoGitlabRunner
       UserData:
         Fn::Base64:
           Fn::Sub: |
@@ -53,7 +62,15 @@ Resources:
              sudo service docker start
              curl -L https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.rpm.sh | sudo bash
              sudo yum install gitlab-runner -y
-
+             sudo gitlab-runner register \
+                --non-interactive \
+                --url ${GitLabUrl} \
+                --registration-token ${GitLabRegistrationToken} \
+                --executor "docker" \
+                --docker-image "node:10.15.3-alpine" \
+                --description "Lingo Runner" \
+                --tag-list "" \
+                --run-untagged="true" \
 Outputs:
   PublicName:
     Value:
