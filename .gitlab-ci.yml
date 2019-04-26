@@ -1,9 +1,10 @@
 before_script:
   - apk add --update curl
+  - apk add --update bash
   - apk add --update yarn
-  - apk add --update nodejs=10.15.3-r0
+  - curl --silent --location https://rpm.nodesource.com/setup_10.x | bash -
+  # - apk add --update nodejs=10.15.3-r0
   - node --version
-  # - curl --silent --location https://rpm.nodesource.com/setup_10.x | bash -
   # - sudo yum install yarn -y
 
 build:
