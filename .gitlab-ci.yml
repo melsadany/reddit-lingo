@@ -5,7 +5,10 @@ image: node:10.15.3-alpine
 
 before_script:
   - 'apk --no-cache --virtual build-dependencies add python make g++ && yarn && apk del build-dependencies'
-  - 'apk add aws-cli'
+  - 'apk -Uuv add groff less python py-pip'
+  - 'pip install awscli'
+  - 'apk --purge -v del py-pip'
+  - 'rm /var/cache/apk/*'
 
 build:
   script:
