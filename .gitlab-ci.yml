@@ -6,7 +6,7 @@ before_script:
   # - curl --silent --location https://rpm.nodesource.com/setup_10.x | bash -
   # - sudo yum install yarn -y
 
-# build:
-#   script:
-#     - yarn
-#     - yarn build
+build:
+  script:
+    - yarn
+    - yarn build
