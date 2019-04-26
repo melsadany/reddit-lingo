@@ -4,7 +4,10 @@ image: node:10.15.3-alpine
 #   - python:3.6
 
 before_script:
-  - apk add python3
+  - apk --no-cache --virtual build-dependencies add \
+    python \
+    make \
+    g++ \
 
 build:
   script:
