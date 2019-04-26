@@ -4,9 +4,13 @@ image: node:10.15.3-alpine
 #   - python:3.6
 
 before_script:
-  - 'apk --no-cache --virtual build-dependencies add python make && which python && yarn && apk del build-dependencies'
+  - 'apk --no-cache --virtual build-dependencies add python make g++ && yarn && apk del build-dependencies'
+  - 'apk add aws-cli'
 
 build:
   script:
     - yarn build
+    - sudo aws s3 cp dist s3://screener2builds/  --recursive
+    - sudo aws s3 cp server s3://screener2builds/ --recursive
+
 
