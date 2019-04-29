@@ -129,6 +129,10 @@ Resources:
   LingoAutoScaleGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
+      Tags:
+      - Key: Name
+        Value: LingoInstance
+        PropagateAtLaunch: true
       VPCZoneIdentifier:
         [Ref: Subnet1ForLoadBalancer, Ref: Subnet2ForLoadBalancer]
       LaunchConfigurationName:
