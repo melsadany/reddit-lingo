@@ -15,13 +15,16 @@ Originally built from the MEAN Stack:
 1. NVM (node version manager recomended)
 https://github.com/nvm-sh/nvm
 This helps manage different nodejs installations. After installing nvm, install nodejs 10.15.3 (also installs npm)
-```nvm install 10```
+```$ nvm install 10```
 
 2. Yarn (dependency management, built on top of npm)
 https://yarnpkg.com/en/docs/install#debian-stable
-Once yarn is installed ```yarn install``` should install all dependencies as listed in package.json
+Once yarn is installed ```$ yarn install``` should install all dependencies as listed in package.json
 
+## Test Build and Run
 
+Once dependencies are downloaded, try building with ```$ yarn build```.
+When the build is successful, launch nodejs with ```yarn start```.
 
 
 

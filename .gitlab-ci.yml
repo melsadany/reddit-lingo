@@ -12,8 +12,6 @@ before_script:
 
 build:
   script:
-    - pwd
-    - ls
     - yarn build
     - aws s3 sync ./dist s3://screener2builds/dist
     - aws s3 sync ./server s3://screener2builds/server
