@@ -107,6 +107,7 @@ async function pushOnePieceAssessmentData(reqData) {
       if (err) {
         console.log(err)
       }
+      uploadDir(path.join(LINGO_DATA_PATH, userID), 'lingo-data')
     })
   })
 }
@@ -147,6 +148,7 @@ function insertNewIDJson() {
           resolve(0)
         }
       })
+      uploadDir(path.join(LINGO_DATA_PATH, 'userID'), 'lingo-data')
     }
   })
 }
@@ -180,6 +182,7 @@ function saveWavFile(reqData, userID, hashKey, selector) {
     // console.log('saved file')
     // KRM: For debugging
   })
+  uploadDir(path.join(LINGO_DATA_PATH, userID), 'lingo-data')
   reqData.assessments[0].data[selector][0]['recorded_data'] = wavFileName
 }
 
@@ -201,6 +204,7 @@ function getNextUserID() {
             console.log('Successfully updated ID json')
           }
         })
+        uploadDir(path.join(LINGO_DATA_PATH, 'userID'), 'lingo-data')
         resolve(currentID)
       }
     })
@@ -243,6 +247,7 @@ function insertNewHashKeyJson(hashKey) {
         resolve(freshData)
       }
     })
+    uploadDir(path.join(LINGO_DATA_PATH, 'single_assessment'), 'lingo-data')
   })
 }
 

@@ -124,7 +124,8 @@ Resources:
             sudo yum install yarn -y
             cd /home/ec2-user
             sudo aws s3 cp s3://screener2builds/ . --recursive
-            sudo yarn && nohup yarn start &
+            sudo yarn
+            nohup sudo yarn start &
 
   LingoAutoScaleGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
