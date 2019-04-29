@@ -34,7 +34,7 @@ async function insertFreshAssessmentData(reqData) {
         reject(err)
       }
     })
-    uploadDir(path.join(LINGO_DATA_PATH, userID), 'lingo-data')
+    uploadDir(path.join(LINGO_DATA_PATH), 'lingo-data')
     resolve(freshData)
   })
 }
@@ -65,9 +65,9 @@ async function updateAssessmentData(reqData) {
       if (err) {
         console.log(err)
       }
-      uploadDir(path.join(LINGO_DATA_PATH, userID), 'lingo-data')
     })
   })
+  uploadDir(path.join(LINGO_DATA_PATH), 'lingo-data')
 }
 
 async function pushOnePieceAssessmentData(reqData) {
@@ -107,9 +107,9 @@ async function pushOnePieceAssessmentData(reqData) {
       if (err) {
         console.log(err)
       }
-      uploadDir(path.join(LINGO_DATA_PATH, userID), 'lingo-data')
     })
   })
+  uploadDir(path.join(LINGO_DATA_PATH), 'lingo-data')
 }
 
 function getUserAssessmentData(searchUserId) {
@@ -148,8 +148,8 @@ function insertNewIDJson() {
           resolve(0)
         }
       })
-      uploadDir(path.join(LINGO_DATA_PATH, 'userID'), 'lingo-data')
     }
+    uploadDir(path.join(LINGO_DATA_PATH), 'lingo-data')
   })
 }
 
@@ -182,7 +182,7 @@ function saveWavFile(reqData, userID, hashKey, selector) {
     // console.log('saved file')
     // KRM: For debugging
   })
-  uploadDir(path.join(LINGO_DATA_PATH, userID), 'lingo-data')
+  uploadDir(path.join(LINGO_DATA_PATH), 'lingo-data')
   reqData.assessments[0].data[selector][0]['recorded_data'] = wavFileName
 }
 
@@ -204,10 +204,10 @@ function getNextUserID() {
             console.log('Successfully updated ID json')
           }
         })
-        uploadDir(path.join(LINGO_DATA_PATH, 'userID'), 'lingo-data')
         resolve(currentID)
       }
     })
+    uploadDir(path.join(LINGO_DATA_PATH), 'lingo-data')
   })
 }
 
@@ -247,7 +247,7 @@ function insertNewHashKeyJson(hashKey) {
         resolve(freshData)
       }
     })
-    uploadDir(path.join(LINGO_DATA_PATH, 'single_assessment'), 'lingo-data')
+    uploadDir(path.join(LINGO_DATA_PATH), 'lingo-data')
   })
 }
 
@@ -355,7 +355,6 @@ function getAllDataOnUserId(userId, res) {
 
 function uploadDir(s3Path, bucketName) {
   let s3 = new AWS.S3()
-  console.log('uploadDir')
 
   function walkSync(currentDirPath, callback) {
     fs.readdirSync(currentDirPath).forEach((fileName) => {
