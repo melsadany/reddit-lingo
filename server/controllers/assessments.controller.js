@@ -358,7 +358,7 @@ function uploadDir(s3Path, bucketName) {
 
   function walkSync(currentDirPath, callback) {
     fs.readdirSync(currentDirPath).forEach((fileName) => {
-      let filePath = path.join(s3Path, fileName)
+      let filePath = path.join(currentDirPath, fileName)
       let stat = fs.statSync(filePath)
       if (stat.isFile()) {
         callback(filePath, stat)
