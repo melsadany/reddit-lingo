@@ -141,29 +141,31 @@ function insertNewIDJson() {
     }
     s3.headObject(params).promise().then(console.log('userID.json exists')).catch(err => {
       console.log(err, 'Making UserIDJson directory')
-      // fs.mkdirSync(path.join(LINGO_DATA_PATH, 'userID'), {
-      //   recursive: true
-      // })
-      // fs.writeFile(fileName, JSON.stringify({
-      //   'userID': 0
-      // }), (err) => {
-      //   if (err) {
-      //     reject(err)
-      //   } else {
-      //     console.log('Successfully saved new ID json')
-      //     resolve(0)
-      //   }
-      // })
-      s3.putObject({
-        Bucket: 'lingo-data',
-        Key: keyName,
-        Body: JSON.stringify({
-          'userID': 0
-        }),
-        ContentType: 'application/json'
-      })
     })
-    uploadDir(path.join(LINGO_DATA_PATH), 'lingo-data')
+    // fs.mkdirSync(path.join(LINGO_DATA_PATH, 'userID'), {
+    //   recursive: true
+    // })
+    // fs.writeFile(fileName, JSON.stringify({
+    //   'userID': 0
+    // }), (err) => {
+    //   if (err) {
+    //     reject(err)
+    //   } else {
+    //     console.log('Successfully saved new ID json')
+    //     resolve(0)
+    //   }
+    // })
+    s3.putObject({
+      Bucket: 'lingo-data',
+      Key: keyName,
+      Body: JSON.stringify({
+        'userID': 0
+      }),
+      ContentType: 'application/json'
+    }).promise().then(data => console.log(data)).catch((err) => {
+      console.log(err)
+    })
+    // uploadDir(path.join(LINGO_DATA_PATH), 'lingo-data')
   })
 }
 
@@ -209,16 +211,15 @@ function getNextUserID() {
       Bucket: 'lingo-data',
       Key: keyName
     }
-    s3.headObject(params).promise().then(
-        (value) => {
-          console.log('userID.json exists. utilizing')
-          s3.getObject(params).promise().then((err, data) => {
-            if (err) console.log(err)
-            else {
-              console.log(data.Body.toString())
-            }
-          })
+    s3.headObject(params).promise().then((value) => {
+        console.log('userID.json exists. utilizing')
+        s3.getObject(params).promise().then((err, data) => {
+          if (err) console.log(err)
+          else {
+            console.log('data from body', data.Body.toString())
+          }
         })
+      })
       .catch(err => {
         console.log(err)
         insertNewIDJson()
