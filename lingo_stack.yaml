@@ -77,7 +77,6 @@ Resources:
         Ref: LingoLoadBalancer
       Port: 443
       Protocol: HTTPS
-      # SslPolicy: String
 
   LingoTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
@@ -85,60 +84,12 @@ Resources:
       Name: LingoGroup1
       Port: 8080
       Protocol: HTTP
-      # Tags:
-      # - Resource Tag
-      # Targets:
-      # -
-      # - AvailabilityZone: String
-      #   Id:
-      #     Ref: LingoServer
-      #   Port: 8080
-      # TargetType: instance
-      # UnhealthyThresholdCount: Integer
       VpcId:
         Ref: VPC
-
-  # LingoServer:
-  #   Type: AWS::EC2::Instance
-  #   Properties:
-  #     IamInstanceProfile:
-  #       Ref:
-  #         LingoIamInstanceProfile
-  #     ImageId:
-  #       Ref: ImageID
-  #     InstanceType:
-  #       Ref: InstanceType
-  #     KeyName:
-  #       Ref: KeyName
-  #     SecurityGroupIds:
-  #     - Ref: SecurityGroup
-  #     SubnetId:
-  #       Ref: Subnet1ForLoadBalancer
-  #     UserData:
-  #       Fn::Base64:
-  #         Fn::Sub: |
-  #           #!/bin/bash -xe
-  #           sudo yum update -y
-  #           sudo yum install git -y
-  #           sudo curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
-  #           export NVM_DIR="$HOME/.nvm"
-  #           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-  #           [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-  #           nvm install 10
-  #           node --version
-  #           curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | sudo tee /etc/yum.repos.d/yarn.repo
-  #           curl --silent --location https://rpm.nodesource.com/setup_10.x | bash -
-  #           sudo yum install yarn -y
-  #           cd /home/ec2-user
-  #           sudo aws s3 cp s3://screener2builds/ . --recursive
-  #           sudo yarn && nohup yarn start &
 
   LingoServerLaunchConfig:
     Type: AWS::AutoScaling::LaunchConfiguration
     Properties:
-      # InstanceId:
-      #   Ref: LingoServer
-      # ImageId: ami-0de53d8956e8dcf80
       Tags:
         - Key: Name
           Value: LingoAppServer
