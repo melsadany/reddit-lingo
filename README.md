@@ -26,10 +26,7 @@ Once yarn is installed ```$ yarn install``` should install all dependencies as l
 Once dependencies are downloaded, try building with ```$ yarn build```.
 When the build is successful, launch nodejs with ```yarn start```.
 
-
-
-
-Create new Assessment (component)
+# Create new Assessment (component)
 
 cd into ScreenerVersion2/src/app/assessments-module (module that contains the assessment components)
 
