@@ -1,10 +1,9 @@
 const Joi = require('joi')
-// const AssessmentModel = require('../models/assessment.model')
-// const UserIDCounterModel = require('../models/useridcounter.model')
 const fs = require('fs')
 const path = require('path')
 const archiver = require('archiver')
 const AWS = require('aws-sdk')
+let s3 = new AWS.S3()
 const LINGO_DATA_PATH = path.join(__dirname, '../', '../', 'assessment_data')
 
 const AssessmentSchemaValidator = Joi.object({
@@ -130,25 +129,40 @@ function getUserAssessmentData(searchUserId) {
   })
 }
 
+// KRM: Rewrite this for AWS
 function insertNewIDJson() {
-  const fileName = path.join(LINGO_DATA_PATH, 'userID', 'next_user_ID' + '.json')
+  // const fileName = path.join(LINGO_DATA_PATH, 'userID', 'next_user_ID' + '.json')
+  const keyName = 'userID/next_user_ID.json'
   return new Promise((resolve, reject) => {
-    if (!fs.existsSync(path.join(LINGO_DATA_PATH, 'userID'))) {
-      console.log('Making UserIDJson directory')
-      fs.mkdirSync(path.join(LINGO_DATA_PATH, 'userID'), {
-        recursive: true
-      })
-      fs.writeFile(fileName, JSON.stringify({
-        'userID': 0
-      }), (err) => {
-        if (err) {
-          reject(err)
-        } else {
-          console.log('Successfully saved new ID json')
-          resolve(0)
-        }
-      })
+    // if (!fs.existsSync(path.join(LINGO_DATA_PATH, 'userID'))) {
+    const params = {
+      Bucket: 'lingo-data',
+      Key: keyName
     }
+    s3.headObject(params).promise().then(console.log('userID.json exists')).catch(err => {
+      console.log(err, 'Making UserIDJson directory')
+      // fs.mkdirSync(path.join(LINGO_DATA_PATH, 'userID'), {
+      //   recursive: true
+      // })
+      // fs.writeFile(fileName, JSON.stringify({
+      //   'userID': 0
+      // }), (err) => {
+      //   if (err) {
+      //     reject(err)
+      //   } else {
+      //     console.log('Successfully saved new ID json')
+      //     resolve(0)
+      //   }
+      // })
+      s3.putObject({
+        Bucket: 'lingo-data',
+        Key: keyName,
+        Body: JSON.stringify({
+          'userID': 0
+        }),
+        ContentType: 'application/json'
+      })
+    })
     uploadDir(path.join(LINGO_DATA_PATH), 'lingo-data')
   })
 }
@@ -186,27 +200,48 @@ function saveWavFile(reqData, userID, hashKey, selector) {
   reqData.assessments[0].data[selector][0]['recorded_data'] = wavFileName
 }
 
+// KRM: Rewrite this for AWS S3
 function getNextUserID() {
-  const fileName = path.join(LINGO_DATA_PATH, 'userID', 'next_user_ID' + '.json')
+  // const fileName = path.join(LINGO_DATA_PATH, 'userID', 'next_user_ID' + '.json')
+  const keyName = 'userID/next_user_ID.json'
   return new Promise((resolve, reject) => {
-    fs.readFile(fileName, 'utf-8', (err, data) => {
-      if (err) {
-        console.log(err)
-        resolve(insertNewIDJson())
-      } else {
-        let currentID = JSON.parse(data).userID
-        fs.writeFile(fileName, JSON.stringify({
-          'userID': (currentID + 1)
-        }), (err) => {
-          if (err) {
-            console.log(err)
-          } else {
-            console.log('Successfully updated ID json')
-          }
+    const params = {
+      Bucket: 'lingo-data',
+      Key: keyName
+    }
+    s3.headObject(params).promise().then(
+        (value) => {
+          console.log('userID.json exists. utilizing')
+          s3.getObject(params).promise().then((err, data) => {
+            if (err) console.log(err)
+            else {
+              console.log(data.Body.toString())
+            }
+          })
         })
-        resolve(currentID)
-      }
-    })
+      .catch(err => {
+        console.log(err)
+        insertNewIDJson()
+      })
+    // fs.readFile(fileName, 'utf-8', (err, data) => {
+    //   if (err) {
+    //     console.log(err)
+    //     resolve(insertNewIDJson())
+    //   } else {
+    //     let currentID = JSON.parse(data).userID
+    //     fs.writeFile(fileName, JSON.stringify({
+    //       'userID': (currentID + 1)
+    //     }), (err) => {
+    //       if (err) {
+    //         console.log(err)
+    //       } else {
+    //         console.log('Successfully updated ID json')
+    //       }
+    //     })
+    //     resolve(currentID)
+    //   }
+    // })
+
     uploadDir(path.join(LINGO_DATA_PATH), 'lingo-data')
   })
 }
@@ -354,8 +389,6 @@ function getAllDataOnUserId(userId, res) {
 }
 
 function uploadDir(s3Path, bucketName, selector) {
-  let s3 = new AWS.S3()
-
   function walkSync(currentDirPath, callback) {
     fs.readdirSync(currentDirPath).forEach((fileName) => {
       let filePath = path.join(currentDirPath, fileName)
