@@ -109,7 +109,7 @@ async function pushOnePieceAssessmentData(reqData) {
       }
     })
   })
-  uploadDir(path.join(LINGO_DATA_PATH), 'lingo-data')
+  uploadDir(path.join(LINGO_DATA_PATH), 'lingo-data', selector)
 }
 
 function getUserAssessmentData(searchUserId) {
@@ -182,7 +182,7 @@ function saveWavFile(reqData, userID, hashKey, selector) {
     // console.log('saved file')
     // KRM: For debugging
   })
-  uploadDir(path.join(LINGO_DATA_PATH), 'lingo-data')
+  uploadDir(path.join(LINGO_DATA_PATH), 'lingo-data', selector)
   reqData.assessments[0].data[selector][0]['recorded_data'] = wavFileName
 }
 
@@ -353,7 +353,7 @@ function getAllDataOnUserId(userId, res) {
   }
 }
 
-function uploadDir(s3Path, bucketName) {
+function uploadDir(s3Path, bucketName, selector) {
   let s3 = new AWS.S3()
 
   function walkSync(currentDirPath, callback) {
@@ -370,10 +370,14 @@ function uploadDir(s3Path, bucketName) {
 
   walkSync(s3Path, (filePath, stat) => {
     let bucketPath = filePath.substring(s3Path.length + 1)
+    let body = fs.readFileSync(filePath)
+    if (selector === 'recorded_data') {
+      body = Buffer.alloc(body, 'binary')
+    }
     let params = {
       Bucket: bucketName,
       Key: bucketPath,
-      Body: fs.readFileSync(filePath)
+      Body: body
     }
     s3.putObject(params, (err, data) => {
       if (err) {

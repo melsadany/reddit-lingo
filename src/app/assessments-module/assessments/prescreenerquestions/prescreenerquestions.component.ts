@@ -133,11 +133,8 @@ export class PrescreenerquestionsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.stateManager.sendToCurrentIfAlreadyCompleted('prescreenerquestions');
+    this.stateManager.sendToCurrentIfAlreadyCompleted(this.assessmentName);
     this.stateManager.isInAssessment = true;
-    // if (!this.stateManager.startedByHandFromHome) {
-    //   this.stateManager.goHome();
-    // }
     this.dataForm = this.fb.group({
       currentAge: [
         '',
@@ -152,8 +149,18 @@ export class PrescreenerquestionsComponent implements OnInit {
     });
     this.dataForm.addControl(
       'majorOfStudy',
-      new FormControl(null, this.ifStudent())
+      // new FormControl(null, this.ifStudent())
+      new FormControl()
     );
+    this.dataForm
+      .get('currentOccupation')
+      .valueChanges.subscribe(occupation => {
+        if (occupation === 'Student (specify major)') {
+          this.dataForm
+            .get('majorOfStudy')
+            .setValidators([Validators.required]);
+        }
+      });
   }
 
   postData(): void {
