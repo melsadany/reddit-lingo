@@ -6,12 +6,13 @@ import {
 import { Router } from '@angular/router';
 import { LinkedList } from '../structures/LinkedList';
 import appConfig from './assessments_config.json';
+import { LingoSettings } from '../structures/LingoSettings';
 
 @Injectable({
   providedIn: 'root'
 })
 export class StateManagerService {
-  private _DEBUG_MODE = true; // KRM: FOR DEBUGGING ONLY. GIVES DEBUG BUTTONS IN ASSESSMENTS
+  private _DEBUG_MODE: boolean; // KRM: FOR DEBUGGING ONLY. GIVES DEBUG BUTTONS IN ASSESSMENTS
   private _isInAssessment = false;
   private _showAssessmentFrontPage = true;
   private _showInnerAssessmentButton = true;
@@ -28,7 +29,7 @@ export class StateManagerService {
   private _hashKey: string;
   private _startedByHandFromHome = false;
   private _chromeiOs = false;
-  private _appConfig = appConfig;
+  private _appConfig: LingoSettings = appConfig;
   private _assessments = {};
 
   public get assessments(): Object {
@@ -140,12 +141,13 @@ export class StateManagerService {
   constructor(private routerService: Router) {
     console.log(this.routerService.url);
     this.configureEnabledAssessments();
+    this.configureDebugMode();
     this.totalAssessments = Object.keys(this.assessments).length;
     this.inMobileBrowser = this.mobileCheck();
   }
 
   private configureEnabledAssessments(): void {
-    const assessmentsConfig = appConfig['appConfig']['assessmentsConfig'];
+    const assessmentsConfig = this.appConfig['appConfig']['assessmentsConfig'];
     for (const assessmentName of Object.keys(assessmentsConfig)) {
       if (assessmentsConfig[assessmentName]['enabled']) {
         this.assessments[assessmentName] = {
@@ -158,6 +160,10 @@ export class StateManagerService {
         }
       }
     }
+  }
+
+  private configureDebugMode(): void {
+    this.DEBUG_MODE = this.appConfig['appConfig']['settings']['debugEnabled'];
   }
 
   public printCurrentAssessmentState(): void {

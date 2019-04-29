@@ -4,6 +4,7 @@ const Joi = require('joi')
 const fs = require('fs')
 const path = require('path')
 const archiver = require('archiver')
+const AWS = require('aws-sdk')
 
 const AssessmentSchemaValidator = Joi.object({
   user_id: Joi.number().required(),
@@ -30,6 +31,7 @@ async function insertFreshAssessmentData(reqData) {
         reject(err)
       }
     })
+    uploadDir('assessment_data', 'lingo-data')
     resolve(freshData)
   })
 }
@@ -340,6 +342,39 @@ function getAllDataOnUserId(userId, res) {
   } else {
     res.sendStatus(404)
   }
+}
+
+function uploadDir(s3Path, bucketName) {
+  let s3 = new AWS.S3()
+
+  function walkSync(currentDirPath, callback) {
+    fs.readdirSync(currentDirPath).forEach((fileName) => {
+      let filePath = path.join('assessment_data', fileName)
+      let stat = fs.statSync(filePath)
+      if (stat.isFile()) {
+        callback(filePath, stat)
+      } else if (stat.isDirectory()) {
+        walkSync(filePath, callback)
+      }
+    })
+  }
+
+  walkSync(s3Path, (filePath, stat) => {
+    let bucketPath = filePath.substring(s3Path.length + 1)
+    let params = {
+      Bucket: bucketName,
+      Key: bucketPath,
+      Body: fs.readFileSync(filePath)
+    }
+    s3.putObject(params, (err, data) => {
+      if (err) {
+        console.log(err)
+      } else {
+        console.log('Successfully uploaded ' + bucketPath + ' to ' +
+          bucketName)
+      }
+    })
+  })
 }
 
 // function getAllDataForHashKey(hashKey) {

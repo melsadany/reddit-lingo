@@ -90,9 +90,6 @@ Resources:
   LingoServerLaunchConfig:
     Type: AWS::AutoScaling::LaunchConfiguration
     Properties:
-      Tags:
-        - Key: Name
-          Value: LingoAppServer
       ImageId:
         Ref: ImageID
       IamInstanceProfile:
