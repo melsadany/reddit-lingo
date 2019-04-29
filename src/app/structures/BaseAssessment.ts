@@ -165,7 +165,6 @@ export class BaseAssessment implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('init');
     this.stateManager.sendToCurrentIfAlreadyCompleted(this.assessmentName);
     this.promptNumber = this.stateManager.assessments[this.assessmentName][
       'prompt_number'
@@ -213,7 +212,6 @@ export class BaseAssessment implements OnInit {
   }
 
   showProgressCircle(onProgressEndCallback: Function): void {
-    // console.log(this.timeLeft);
     this.countingDown = true;
     this.showCircleAnimation = true;
     this.lastPromptWaitTime = this.timeLeft;

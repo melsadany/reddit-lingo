@@ -5,6 +5,7 @@ const fs = require('fs')
 const path = require('path')
 const archiver = require('archiver')
 const AWS = require('aws-sdk')
+const LINGO_DATA_PATH = path.join(__dirname, '../', '../', 'assessment_data')
 
 const AssessmentSchemaValidator = Joi.object({
   user_id: Joi.number().required(),
@@ -13,25 +14,27 @@ const AssessmentSchemaValidator = Joi.object({
 })
 
 async function insertFreshAssessmentData(reqData) {
+  console.log('insert fresh assessment data')
   await Joi.validate(reqData, AssessmentSchemaValidator, {
     abortEarly: false
   })
   const userID = reqData.user_id
-  if (!fs.existsSync(path.join('assessment_data', userID))) {
-    fs.mkdirSync(path.join('assessment_data', userID), {
+  console.log(path.join(LINGO_DATA_PATH, userID))
+  if (!fs.existsSync(path.join(LINGO_DATA_PATH, userID))) {
+    fs.mkdirSync(path.join(LINGO_DATA_PATH, userID), {
       recursive: true
     })
-    fs.mkdirSync(path.join('assessment_data', userID, 'recording_data'))
+    fs.mkdirSync(path.join(LINGO_DATA_PATH, userID, 'recording_data'))
   }
   const freshData = JSON.stringify(reqData)
-  const fileName = path.join('assessment_data', userID, userID + '.json')
+  const fileName = path.join(LINGO_DATA_PATH, userID, userID + '.json')
   return new Promise((resolve, reject) => {
     fs.writeFile(fileName, freshData, (err) => {
       if (err) {
         reject(err)
       }
     })
-    uploadDir('assessment_data', 'lingo-data')
+    uploadDir(path.join(LINGO_DATA_PATH, userID), 'lingo-data')
     resolve(freshData)
   })
 }
@@ -44,10 +47,10 @@ async function updateAssessmentData(reqData) {
   let fileName
   if (reqData.hash_key) {
     hashKey = reqData.hash_key
-    fileName = path.join('assessment_data', 'single_assessment', hashKey, hashKey + '.json')
+    fileName = path.join(LINGO_DATA_PATH, 'single_assessment', hashKey, hashKey + '.json')
   } else {
     userID = reqData.user_id
-    fileName = path.join('assessment_data', userID, userID + '.json')
+    fileName = path.join(LINGO_DATA_PATH, userID, userID + '.json')
   }
   if (reqData.assessments[0].data.recorded_data) {
     saveWavFile(reqData, userID, hashKey, 'recorded_data')
@@ -62,6 +65,7 @@ async function updateAssessmentData(reqData) {
       if (err) {
         console.log(err)
       }
+      uploadDir(path.join(LINGO_DATA_PATH, userID), 'lingo-data')
     })
   })
 }
@@ -72,10 +76,10 @@ async function pushOnePieceAssessmentData(reqData) {
   let fileName
   if (reqData.hash_key) {
     hashKey = reqData.hash_key
-    fileName = path.join('assessment_data', 'single_assessment', hashKey, hashKey + '.json')
+    fileName = path.join(LINGO_DATA_PATH, 'single_assessment', hashKey, hashKey + '.json')
   } else {
     userID = reqData.user_id
-    fileName = path.join('assessment_data', userID, userID + '.json')
+    fileName = path.join(LINGO_DATA_PATH, userID, userID + '.json')
   }
   let selector = ''
   if (reqData.assessments[0].data.recorded_data) {
@@ -109,7 +113,7 @@ async function pushOnePieceAssessmentData(reqData) {
 
 function getUserAssessmentData(searchUserId) {
   const userID = searchUserId
-  const fileName = path.join('assessment_data', userID, userID + '.json')
+  const fileName = path.join(LINGO_DATA_PATH, userID, userID + '.json')
   return new Promise((resolve, reject) => {
     fs.readFile(fileName, 'utf-8', (err, data) => {
       if (err) {
@@ -126,11 +130,11 @@ function getUserAssessmentData(searchUserId) {
 }
 
 function insertNewIDJson() {
-  const fileName = path.join('assessment_data', 'userID', 'next_user_ID' + '.json')
+  const fileName = path.join(LINGO_DATA_PATH, 'userID', 'next_user_ID' + '.json')
   return new Promise((resolve, reject) => {
-    if (!fs.existsSync(path.join('assessment_data', 'userID'))) {
+    if (!fs.existsSync(path.join(LINGO_DATA_PATH, 'userID'))) {
       console.log('Making UserIDJson directory')
-      fs.mkdirSync(path.join('assessment_data', 'userID'), {
+      fs.mkdirSync(path.join(LINGO_DATA_PATH, 'userID'), {
         recursive: true
       })
       fs.writeFile(fileName, JSON.stringify({
@@ -153,7 +157,7 @@ function saveWavFile(reqData, userID, hashKey, selector) {
   let wavFilePath
   let wavFileName
   if (hashKey) {
-    wavFilePath = path.join('assessment_data', 'single_assessment', hashKey, 'recording_data', assessmentName)
+    wavFilePath = path.join(LINGO_DATA_PATH, 'single_assessment', hashKey, 'recording_data', assessmentName)
     wavFileName = path.join(wavFilePath, promptNumber + '.wav')
     if (!fs.existsSync(wavFilePath)) {
       fs.mkdirSync(path.join(wavFilePath), {
@@ -161,7 +165,7 @@ function saveWavFile(reqData, userID, hashKey, selector) {
       })
     }
   } else if (userID) {
-    wavFilePath = path.join('assessment_data', userID, 'recording_data', assessmentName)
+    wavFilePath = path.join(LINGO_DATA_PATH, userID, 'recording_data', assessmentName)
     wavFileName = path.join(wavFilePath, promptNumber + '.wav')
     // wavFileName = path.join('assessment_data', userID, 'recording_data', assessmentName, promptNumber + '.wav')
   }
@@ -180,7 +184,7 @@ function saveWavFile(reqData, userID, hashKey, selector) {
 }
 
 function getNextUserID() {
-  const fileName = path.join('assessment_data', 'userID', 'next_user_ID' + '.json')
+  const fileName = path.join(LINGO_DATA_PATH, 'userID', 'next_user_ID' + '.json')
   return new Promise((resolve, reject) => {
     fs.readFile(fileName, 'utf-8', (err, data) => {
       if (err) {
@@ -204,7 +208,7 @@ function getNextUserID() {
 }
 
 function sendHashKey(hashKey) {
-  const fileName = path.join('assessment_data', 'single_assessment', hashKey, hashKey + '.json')
+  const fileName = path.join(LINGO_DATA_PATH, 'single_assessment', hashKey, hashKey + '.json')
   return new Promise((resolve, reject) => {
     fs.readFile(fileName, 'utf-8', (err, data) => {
       if (err) {
@@ -223,11 +227,11 @@ function insertNewHashKeyJson(hashKey) {
     assessments: [],
     google_speech_to_text_assess: []
   })
-  const fileName = path.join('assessment_data', 'single_assessment', hashKey, hashKey + '.json')
+  const fileName = path.join(LINGO_DATA_PATH, 'single_assessment', hashKey, hashKey + '.json')
   return new Promise((resolve, reject) => {
-    if (!fs.existsSync(path.join('assessment_data', 'single_assessment', hashKey))) {
+    if (!fs.existsSync(path.join(LINGO_DATA_PATH, 'single_assessment', hashKey))) {
       console.log('Making HashKey directory')
-      fs.mkdirSync(path.join('assessment_data', 'single_assessment', hashKey), {
+      fs.mkdirSync(path.join(LINGO_DATA_PATH, 'single_assessment', hashKey), {
         recursive: true
       })
     }
@@ -323,7 +327,7 @@ function getMatrixReasoningImgAssets(assetFolder) {
 
 function getAllDataOnUserId(userId, res) {
   deleteZippedForIdIfExists(userId)
-  const folderPath = path.join('assessment_data', userId)
+  const folderPath = path.join(LINGO_DATA_PATH, userId)
   if (fs.existsSync(folderPath)) {
     res.attachment(userId + '.zip')
     const output = fs.createWriteStream(path.join(folderPath, userId + '.zip'))
@@ -334,7 +338,7 @@ function getAllDataOnUserId(userId, res) {
       return res.status(200).send('OK').end()
       // KRM: Return promise here!
     })
-    const directory = path.join('assessment_data', userId)
+    const directory = path.join(LINGO_DATA_PATH, userId)
     archive.directory(directory, false)
     archive.pipe(res)
     archive.finalize()
@@ -346,10 +350,11 @@ function getAllDataOnUserId(userId, res) {
 
 function uploadDir(s3Path, bucketName) {
   let s3 = new AWS.S3()
+  console.log('uploadDir')
 
   function walkSync(currentDirPath, callback) {
     fs.readdirSync(currentDirPath).forEach((fileName) => {
-      let filePath = path.join('assessment_data', fileName)
+      let filePath = path.join(s3Path, fileName)
       let stat = fs.statSync(filePath)
       if (stat.isFile()) {
         callback(filePath, stat)
@@ -384,7 +389,7 @@ function uploadDir(s3Path, bucketName) {
 // }
 
 function deleteZippedForIdIfExists(userId) {
-  const deleteFile = path.join('assessment_data', userId, userId + '.zip')
+  const deleteFile = path.join(LINGO_DATA_PATH, userId, userId + '.zip')
   if (fs.existsSync(deleteFile)) {
     console.log('delete')
     fs.unlinkSync(deleteFile)
