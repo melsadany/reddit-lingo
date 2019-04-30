@@ -26,7 +26,7 @@ run `$ ../../../node_modules/.bin/ng g component`
 
 This generates the files for a new angular component and updates the Angular app classes which need to know about its existence
 
-1. Understanding code structure
+1. Understanding code structure [https://angular.io/guide/architecture](AngularArchitecture)
    - Opinionated Angular Structure (modules, components, services, routing, etc)
    - Inheritence accross Angular components used for assessments
 2. Necessary code changes when changing assessments
