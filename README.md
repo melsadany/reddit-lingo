@@ -31,5 +31,8 @@ run ../../../node_modules/.bin/ng g component
 
 This generates the files for a new angular component and updates the Angular app classes which need to know about its existence
 
-1. Necessary code changes (url routing, translation function, hash key function, configurations, etc)
-2. Unecessary code changes
+1. Understanding code structure
+   a. Opinionated Angular Structure (modules, components, services, routing, etc)
+   b. Inheritence accross Angular components used for assessments
+2. Necessary code changes when changing assessments (url routing, translation function, hash key function, configurations, etc)
+3. Unecessary code changes
