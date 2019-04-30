@@ -11,7 +11,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     if (navigator.userAgent.match('CriOS')) {
-      // this.stateManager.chromeiOs = true;
+      this.stateManager.chromeiOs = true;
     }
     // if (!this.stateManager.startedByHandFromHome) {
     //   console.log('Going home');
