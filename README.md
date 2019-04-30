@@ -22,7 +22,7 @@ When the build is successful, launch nodejs with `$ yarn start`.
 
 cd into ScreenerVersion2/src/app/assessments-module (module that contains the assessment components)
 
-run ../../../node_modules/.bin/ng g component
+run `$ ../../../node_modules/.bin/ng g component`
 
 This generates the files for a new angular component and updates the Angular app classes which need to know about its existence
 
