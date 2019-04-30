@@ -24,7 +24,16 @@ Parameters:
   ImageID:
     Type: AWS::EC2::Image::Id
     Default: ami-0de53d8956e8dcf80
+  AssessmentDataBucketName:
+    Type: String
+    Default: Assessment Data Bucket Name
 Resources:
+
+  LingoDataBucket:
+    Type: AWS::S3::Bucket
+    BucketName:
+      Ref: AssessmentDataBucketName
+    DeletionPolicy: Retain
 
   RecordSet:
     Type: AWS::Route53::RecordSetGroup
@@ -112,6 +121,7 @@ Resources:
           Fn::Sub: |
             #!/bin/bash -xe
             sudo yum update -y
+            LINGO_BUCKET=${AssessmentDataBucketName}
             sudo yum install git -y
             sudo curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
             export NVM_DIR="$HOME/.nvm"

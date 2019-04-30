@@ -5,6 +5,7 @@ const archiver = require('archiver')
 const AWS = require('aws-sdk')
 let s3 = new AWS.S3()
 const LINGO_DATA_PATH = path.join(__dirname, '../', '../', 'assessment_data')
+const LINGO_BUCKET_NAME = process.env.LINGO_BUCKET
 
 const AssessmentSchemaValidator = Joi.object({
   user_id: Joi.number().required(),
@@ -33,7 +34,7 @@ async function insertFreshAssessmentData(reqData) {
         reject(err)
       }
     })
-    uploadDir(path.join(LINGO_DATA_PATH), 'lingo-data')
+    uploadDir(path.join(LINGO_DATA_PATH), LINGO_BUCKET_NAME)
     resolve(freshData)
   })
 }
@@ -66,7 +67,7 @@ async function updateAssessmentData(reqData) {
       }
     })
   })
-  uploadDir(path.join(LINGO_DATA_PATH), 'lingo-data')
+  uploadDir(path.join(LINGO_DATA_PATH), LINGO_BUCKET_NAME)
 }
 
 async function pushOnePieceAssessmentData(reqData) {
@@ -108,7 +109,7 @@ async function pushOnePieceAssessmentData(reqData) {
       }
     })
   })
-  uploadDir(path.join(LINGO_DATA_PATH), 'lingo-data', selector)
+  uploadDir(path.join(LINGO_DATA_PATH), LINGO_BUCKET_NAME, selector)
 }
 
 function getUserAssessmentData(searchUserId) {
@@ -136,7 +137,7 @@ function insertNewIDJson() {
   return new Promise((resolve, reject) => {
     // if (!fs.existsSync(path.join(LINGO_DATA_PATH, 'userID'))) {
     const params = {
-      Bucket: 'lingo-data',
+      Bucket: LINGO_BUCKET_NAME,
       Key: keyName
     }
     s3.headObject(params).promise().then(console.log('userID.json exists')).catch(err => {
@@ -156,7 +157,7 @@ function insertNewIDJson() {
     //   }
     // })
     s3.putObject({
-      Bucket: 'lingo-data',
+      Bucket: LINGO_BUCKET_NAME,
       Key: keyName,
       Body: JSON.stringify({
         'userID': 0
@@ -198,7 +199,7 @@ function saveWavFile(reqData, userID, hashKey, selector) {
     // console.log('saved file')
     // KRM: For debugging
   })
-  uploadDir(path.join(LINGO_DATA_PATH), 'lingo-data', selector)
+  uploadDir(path.join(LINGO_DATA_PATH), LINGO_BUCKET_NAME, selector)
   reqData.assessments[0].data[selector][0]['recorded_data'] = wavFileName
 }
 
@@ -206,16 +207,19 @@ function saveWavFile(reqData, userID, hashKey, selector) {
 function getNextUserID() {
   // const fileName = path.join(LINGO_DATA_PATH, 'userID', 'next_user_ID' + '.json')
   const keyName = 'userID/next_user_ID.json'
+  // KRM: RESOLVE THIS OBJECT
   return new Promise((resolve, reject) => {
     const params = {
-      Bucket: 'lingo-data',
+      Bucket: LINGO_BUCKET_NAME,
       Key: keyName
     }
-    s3.headObject(params).promise().then((value) => {
+    s3.headObject(params).promise()
+      .then((value) => {
         console.log('userID.json exists. utilizing')
         s3.getObject(params).promise().then((err, data) => {
-          if (err) console.log(err)
-          else {
+          if (err) {
+            console.log(err)
+          } else {
             console.log('data from body', data.Body.toString())
           }
         })
@@ -243,7 +247,7 @@ function getNextUserID() {
     //   }
     // })
 
-    uploadDir(path.join(LINGO_DATA_PATH), 'lingo-data')
+    uploadDir(path.join(LINGO_DATA_PATH), LINGO_BUCKET_NAME)
   })
 }
 
@@ -283,7 +287,7 @@ function insertNewHashKeyJson(hashKey) {
         resolve(freshData)
       }
     })
-    uploadDir(path.join(LINGO_DATA_PATH), 'lingo-data')
+    uploadDir(path.join(LINGO_DATA_PATH), LINGO_BUCKET_NAME)
   })
 }
 
