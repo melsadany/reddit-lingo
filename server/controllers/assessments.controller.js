@@ -32,10 +32,11 @@ async function insertFreshAssessmentData(reqData) {
     fs.writeFile(fileName, freshData, (err) => {
       if (err) {
         console.log(err)
+      } else {
+        uploadDir(path.join(LINGO_DATA_PATH), LINGO_BUCKET_NAME)
+        resolve(freshData)
       }
     })
-    uploadDir(path.join(LINGO_DATA_PATH), LINGO_BUCKET_NAME)
-    resolve(freshData)
   })
 }
 
@@ -67,11 +68,11 @@ async function updateAssessmentData(reqData) {
           console.log(err)
           reject(err)
         } else {
+          uploadDir(path.join(LINGO_DATA_PATH), LINGO_BUCKET_NAME)
           resolve(dataFile)
         }
       })
     })
-    uploadDir(path.join(LINGO_DATA_PATH), LINGO_BUCKET_NAME)
   })
 }
 
@@ -114,11 +115,11 @@ async function pushOnePieceAssessmentData(reqData) {
           console.log(err)
           reject(err)
         } else {
+          uploadDir(path.join(LINGO_DATA_PATH), LINGO_BUCKET_NAME, selector)
           resolve(dataFile)
         }
       })
     })
-    uploadDir(path.join(LINGO_DATA_PATH), LINGO_BUCKET_NAME, selector)
   })
 }
 
@@ -152,12 +153,13 @@ function insertNewIDJson() {
       }), (err) => {
         if (err) {
           console.log(err)
+          reject(err)
         } else {
           console.log('Successfully saved new ID json')
+          uploadDir(path.join(LINGO_DATA_PATH), LINGO_BUCKET_NAME)
           resolve(0)
         }
       })
-      uploadDir(path.join(LINGO_DATA_PATH), LINGO_BUCKET_NAME)
     }
   })
 }
@@ -191,7 +193,7 @@ function saveWavFile(reqData, userID, hashKey, selector) {
     // console.log('saved file')
     // KRM: For debugging
   })
-  uploadDir(path.join(LINGO_DATA_PATH), LINGO_BUCKET_NAME, selector)
+  // uploadDir(path.join(LINGO_DATA_PATH), LINGO_BUCKET_NAME, selector)
   reqData.assessments[0].data[selector][0]['recorded_data'] = wavFileName
 }
 
@@ -209,14 +211,15 @@ function getNextUserID() {
         }), (err) => {
           if (err) {
             console.log(err)
+            reject(err)
           } else {
             console.log('Successfully updated ID json')
+            uploadDir(path.join(LINGO_DATA_PATH), LINGO_BUCKET_NAME)
+            resolve(currentID)
           }
         })
-        resolve(currentID)
       }
     })
-    uploadDir(path.join(LINGO_DATA_PATH), LINGO_BUCKET_NAME)
   })
 }
 
@@ -251,12 +254,13 @@ function insertNewHashKeyJson(hashKey) {
     fs.writeFile(fileName, freshData, (err) => {
       if (err) {
         console.log(err)
+        reject(err)
       } else {
         console.log('Successfully saved new HashKey json')
+        uploadDir(path.join(LINGO_DATA_PATH), LINGO_BUCKET_NAME)
         resolve(freshData)
       }
     })
-    uploadDir(path.join(LINGO_DATA_PATH), LINGO_BUCKET_NAME)
   })
 }
 
@@ -363,6 +367,8 @@ function getAllDataOnUserId(userId, res) {
 }
 
 function uploadDir(s3Path, bucketName, selector) {
+  console.log('BUCKET_NAME: ' + bucketName)
+
   function walkSync(currentDirPath, callback) {
     fs.readdirSync(currentDirPath).forEach((fileName) => {
       let filePath = path.join(currentDirPath, fileName)
@@ -378,14 +384,22 @@ function uploadDir(s3Path, bucketName, selector) {
   walkSync(s3Path, (filePath, stat) => {
     let bucketPath = filePath.substring(s3Path.length + 1)
     let body = fs.readFileSync(filePath)
+    let params
     if (selector === 'recorded_data') {
-      body = Buffer.alloc(body, 'binary')
+      params = {
+        Bucket: bucketName,
+        Key: bucketPath,
+        Body: body,
+        ContentType: 'audio/wav'
+      }
+    } else {
+      params = {
+        Bucket: bucketName,
+        Key: bucketPath,
+        Body: body
+      }
     }
-    let params = {
-      Bucket: bucketName,
-      Key: bucketPath,
-      Body: body
-    }
+
     s3.putObject(params, (err, data) => {
       if (err) {
         console.log(err)

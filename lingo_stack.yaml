@@ -125,6 +125,10 @@ Resources:
             curl --silent --location https://rpm.nodesource.com/setup_10.x | bash -
             sudo yum install yarn -y
             cd /home/ec2-user
+            echo "export LINGO_BUCKET=${AssessmentDataBucketName}" > ~/lingostartup.sh
+            sudo chmod +x ~/lingostartup.sh
+            sudo cp ~/lingostartup.sh /etc/profile.d/lingostartup.sh
+            ~/lingostartup.sh
             sudo aws s3 cp s3://screener2builds/ . --recursive
             sudo yarn
             nohup sudo yarn start &

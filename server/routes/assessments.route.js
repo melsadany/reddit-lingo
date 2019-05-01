@@ -64,6 +64,9 @@ router.get('/NextUserId', (req, res) => {
     res.send({
       'nextID': userID
     })
+  }).catch((error) => {
+    console.log(error)
+    res.send(error)
   })
 })
 

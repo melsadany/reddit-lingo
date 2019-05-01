@@ -395,7 +395,8 @@ export class StateManagerService {
 
   // KRM: If the hash key has been provided, translate the first four chars to find which
   // assessment has been assigned with that hash key
-  hashKeyFirstFourMap(firstFour: string): string {
+  hashKeyFirstFourMap(hashKey: string): string {
+    const firstFour = hashKey.slice(0, 4);
     let assessmentName = '';
     switch (firstFour) {
       case 'licr':
