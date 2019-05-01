@@ -24,6 +24,7 @@ export class HashkeyinitializeComponent implements OnInit {
         .sendHashKeyToServer(userHashKey)
         .subscribe((data: SingleAssessmentData) => {
           console.log('Single assessment data', data);
+          // KRM: Implementing setting for single assessment turned on or off
           this.dataService.initializeHashKeyData(userHashKey);
           this.stateManager.initializeSingleAssessmentState(data);
         });
@@ -45,5 +46,5 @@ export class HashkeyinitializeComponent implements OnInit {
     return false;
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 }

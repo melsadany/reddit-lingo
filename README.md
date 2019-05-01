@@ -25,6 +25,8 @@ cd into ScreenerVersion2/src/app/assessments-module (module that contains the as
 run `$ ../../../node_modules/.bin/ng g component`
 
 This generates the files for a new angular component and updates the Angular app classes which need to know about its existence
+Make sure the new assessment is in the assessments folder with the rest
+Make sure the new component imported in the assesments module and put it in the declarations list
 
 1. Understanding code structure [Angular Architecture](https://angular.io/guide/architecture)
    - Opinionated Angular Structure (modules, components, services, routing, etc)

@@ -15,12 +15,9 @@ import { ListeningcomprehensionComponent } from './assessments/listeningcomprehe
 import { PrescreenerquestionsComponent } from './assessments/prescreenerquestions/prescreenerquestions.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
-  // MatDatepickerModule,
   MatFormFieldModule,
-  // MatNativeDateModule,
   MatInputModule,
   MatSelectModule,
-  // MatIconModule,
   MatProgressBarModule,
   MatToolbarModule,
   MatProgressSpinnerModule
@@ -42,11 +39,8 @@ import { WordassociationComponent } from './assessments/wordassociation/wordasso
     CommonModule,
     BrowserModule,
     AssessmentsControllerRoutingModule,
-    // MatDatepickerModule,
     MatFormFieldModule,
-    // MatNativeDateModule,
     MatInputModule,
-    // MatIconModule,
     MatProgressBarModule,
     MatToolbarModule,
     MatProgressSpinnerModule,
@@ -85,4 +79,4 @@ import { WordassociationComponent } from './assessments/wordassociation/wordasso
     }
   ]
 })
-export class AssessmentsModule {}
+export class AssessmentsModule { }

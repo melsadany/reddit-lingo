@@ -31,8 +31,9 @@ Resources:
 
   LingoDataBucket:
     Type: AWS::S3::Bucket
-    BucketName:
-      Ref: AssessmentDataBucketName
+    Properties:
+      BucketName:
+        Ref: AssessmentDataBucketName
     DeletionPolicy: Retain
 
   RecordSet:
@@ -55,7 +56,6 @@ Resources:
     Properties:
       Roles:
         - ec2tos3
-      InstanceProfileName: ServerInstanceProfile
 
   LingoLoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
@@ -68,8 +68,6 @@ Resources:
       Subnets:
         - Ref: Subnet1ForLoadBalancer
         - Ref: Subnet2ForLoadBalancer
-      # Tags:
-      #   - Resource Tag
       Type: application
 
   ListenerForBalancer:
@@ -108,12 +106,6 @@ Resources:
       - Ref: SecurityGroup
       InstanceType:
         Ref: InstanceType
-      # # BlockDeviceMappings:
-      # # - DeviceName: "/dev/sdk"
-      # #   Ebs:
-      # #     VolumeSize: '50'
-      # # - DeviceName: "/dev/sdc"
-      # #   VirtualName: ephemeral0
       KeyName:
         Ref: KeyName
       UserData:

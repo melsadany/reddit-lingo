@@ -65,21 +65,6 @@ router.get('/NextUserId', (req, res) => {
       'nextID': userID
     })
   })
-  // query.exec((err, data) => {
-  //   if (err) {
-  //     res.sendStatus(404, err)
-  //   } else {
-  //     const nextID = data.nextID
-  //     data.nextID = ++data.nextID
-  //     data.save()
-  //     res.set({
-  //       'Content-Type': 'application/json'
-  //     })
-  //     res.send({
-  //       'nextID': nextID
-  //     })
-  //   }
-  // })
 })
 
 router.get('/InitializeSingleUserAssessment/:hash_key', (req, res) => {
