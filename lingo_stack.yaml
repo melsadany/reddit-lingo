@@ -113,7 +113,7 @@ Resources:
           Fn::Sub: |
             #!/bin/bash -xe
             sudo yum update -y
-            LINGO_BUCKET=${AssessmentDataBucketName}
+            export LINGO_BUCKET=${AssessmentDataBucketName}
             sudo yum install git -y
             sudo curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
             export NVM_DIR="$HOME/.nvm"
