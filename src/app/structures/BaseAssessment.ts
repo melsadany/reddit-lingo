@@ -173,7 +173,9 @@ export class BaseAssessment implements OnInit {
       .getAssets('audio', this.assessmentName)
       .subscribe((value: AssetsObject) => {
         this.audioInstruction = value.audioInstruction;
-        this.playInstructions();
+        if (!this.stateManager.IOSSafari) {
+          this.playInstructions();
+        }
       });
   }
 
@@ -267,7 +269,7 @@ export class BaseAssessment implements OnInit {
     // );
     if (
       !this.stateManager.appConfig['appConfig']['assessmentsConfig'][
-        this.assessmentName
+      this.assessmentName
       ]['prompt_countdowns']
     ) {
       this.timeLeftConfig = this.stateManager.appConfig['appConfig'][

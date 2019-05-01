@@ -113,7 +113,6 @@ Resources:
           Fn::Sub: |
             #!/bin/bash -xe
             sudo yum update -y
-            export LINGO_BUCKET=${AssessmentDataBucketName}
             sudo yum install git -y
             sudo curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
             export NVM_DIR="$HOME/.nvm"
@@ -127,11 +126,13 @@ Resources:
             cd /home/ec2-user
             echo "export LINGO_BUCKET=${AssessmentDataBucketName}" > ~/lingostartup.sh
             sudo chmod +x ~/lingostartup.sh
+            echo "aws s3 cp s3://screener2builds/ . --recursive" >> ~/lingostartup.sh
+            echo "yarn" >> ~/lingostartup.sh
+            echo "yarn start" >> ~/lingostartup.sh
             sudo cp ~/lingostartup.sh /etc/profile.d/lingostartup.sh
             ~/lingostartup.sh
-            sudo aws s3 cp s3://screener2builds/ . --recursive
-            sudo yarn
-            nohup sudo yarn start &
+            # sudo yarn
+            # nohup sudo yarn start &
 
   LingoAutoScaleGroup:
     Type: AWS::AutoScaling::AutoScalingGroup

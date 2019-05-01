@@ -31,7 +31,14 @@ export class StateManagerService {
   private _chromeiOs = false;
   private _appConfig: LingoSettings = appConfig;
   private _assessments = {};
+  private _IOSSafari: boolean;
 
+  public get IOSSafari(): boolean {
+    return this._IOSSafari;
+  }
+  public set IOSSafari(value: boolean) {
+    this._IOSSafari = value;
+  }
   public get assessments(): Object {
     return this._assessments;
   }
@@ -442,6 +449,11 @@ export class StateManagerService {
   }
 
   mobileCheck(): boolean {
+    const ua = window.navigator.userAgent;
+    const iOS = !!ua.match(/iPad/i) || !!ua.match(/iPhone/i);
+    const webkit = !!ua.match(/WebKit/i);
+    const iOSSafari = iOS && webkit && !ua.match(/CriOS/i);
+    this.IOSSafari = iOSSafari;
     let check = false;
     // const currentNavigator = navigator.userAgent || navigator.vendor;
     if (/Mobi|Android/i.test(navigator.userAgent)) {
