@@ -3,7 +3,6 @@ import { SelectionAssessment } from '../../../structures/SelectionAssessment';
 import { StateManagerService } from '../../../services/state-manager.service';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import * as data from '../../../../assets/in_use/data/wordassociation/wordmappings.json';
-import { AssetsObject } from '../../../structures/AssessmentDataStructures';
 
 @Component({
   selector: 'app-wordassociation',
@@ -26,12 +25,6 @@ export class WordassociationComponent extends SelectionAssessment {
   ) {
     super(stateManager, dataService);
     this.configureAssessmentSettings();
-    // this.dataService
-    //   .getAssets('audio', this.assessmentName)
-    //   .subscribe((value: AssetsObject) => {
-    //     this.audioInstruction = value.audioInstruction;
-    //     this.playInstructions();
-    //   });
   }
 
   setStateAndStart(): void {
@@ -73,7 +66,6 @@ export class WordassociationComponent extends SelectionAssessment {
   }
 
   advance(): void {
-    // this.selectedWordsThisPrompt = [];
     this.advanceToNextPrompt(
       () => (this.showWords = true),
       () => {
@@ -90,7 +82,6 @@ export class WordassociationComponent extends SelectionAssessment {
   clickWord(word: string): void {
     this.selectedWordsThisPrompt.push(word);
     this.spanNumber = Math.ceil(12 / this.selectedWordsThisPrompt.length);
-    // console.log(this.spanNumber);
     if (this.selectedWordsThisPrompt.length === 6) {
       // KRM: You get 5 selections
       this.sendWordSelectionAndAdvance(

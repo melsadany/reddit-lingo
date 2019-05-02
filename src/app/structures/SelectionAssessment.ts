@@ -27,13 +27,6 @@ export class SelectionAssessment extends BaseAssessment implements OnDestroy {
     super(stateManager, dataService);
   }
 
-  // ngOnInit(): void {
-  //   this.stateManager.sendToCurrentIfAlreadyCompleted(this.assessmentName);
-  //   this.promptNumber = this.stateManager.assessments[this.assessmentName][
-  //     'prompt_number'
-  //   ];
-  // }
-
   ngOnDestroy(): void {
     if (!this.finishedInstruction && !this.audioInstructionPlayer.paused) {
       console.log('Audio pausing');

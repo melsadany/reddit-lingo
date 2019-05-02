@@ -106,13 +106,6 @@ export class PrescreenerquestionsComponent implements OnInit {
     };
   }
 
-  ifStudent(): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: any } | null => {
-      const forbidden = this.isStudentOccupationAndEnteredMajor();
-      return forbidden ? null : { forbiddenValue: { value: control.value } };
-    };
-  }
-
   isStudentOccupation(): boolean {
     return (
       this.dataForm.get('currentOccupation').value === 'Student (specify major)'
@@ -149,7 +142,6 @@ export class PrescreenerquestionsComponent implements OnInit {
     });
     this.dataForm.addControl(
       'majorOfStudy',
-      // new FormControl(null, this.ifStudent())
       new FormControl()
     );
     this.dataForm
@@ -173,9 +165,6 @@ export class PrescreenerquestionsComponent implements OnInit {
       race: this.dataForm.get('race').value,
       ethnicity: this.dataForm.get('ethnicity').value
     };
-    // if (selection_data.englishOption === 'No') {
-    //   this.englishNotFirst();
-    // } else {
     this.dataService
       .postAssessmentDataToFileSystem(
         {
@@ -192,11 +181,9 @@ export class PrescreenerquestionsComponent implements OnInit {
       )
       .subscribe();
     this.stateManager.finishThisAssessmentAndAdvance(this.assessmentName);
-    // }
   }
 
   englishNotFirst(): void {
     this.stateManager.showAssessmentFrontPage = false;
-    // this.englishNotFirstLanguage = true;
   }
 }

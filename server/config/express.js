@@ -12,7 +12,6 @@ const swaggerUi = require('swagger-ui-express')
 const swaggerDocument = require('./swagger.json')
 const routes = require('../routes/index.route')
 const config = require('./config')
-const passport = require('./passport')
 
 const app = express()
 
@@ -47,8 +46,6 @@ app.use(helmet())
 
 // enable CORS - Cross Origin Resource Sharing
 app.use(cors())
-
-app.use(passport.initialize())
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 

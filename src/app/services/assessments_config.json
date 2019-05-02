@@ -43,7 +43,8 @@
     "settings": {
       "countdownTimerLength": 3,
       "countdownTimerType": "circle",
-      "debugEnabled": false
+      "singleAssessmentForHashKey": false,
+      "debugEnabled": true
     }
   }
 }

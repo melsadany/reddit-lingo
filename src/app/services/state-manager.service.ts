@@ -146,7 +146,6 @@ export class StateManagerService {
   }
 
   constructor(private routerService: Router) {
-    console.log(this.routerService.url);
     this.configureEnabledAssessments();
     this.configureDebugMode();
     this.totalAssessments = Object.keys(this.assessments).length;
@@ -180,7 +179,7 @@ export class StateManagerService {
   }
 
   public initializeSingleAssessmentState(
-    singleAssessmentData: SingleAssessmentData
+    singleAssessmentData: SingleAssessmentData | AssessmentData
   ): void {
     const singleAssessmentName = this.hashKeyFirstFourMap(
       this.hashKey.slice(0, 4)
@@ -454,6 +453,9 @@ export class StateManagerService {
     const webkit = !!ua.match(/WebKit/i);
     const iOSSafari = iOS && webkit && !ua.match(/CriOS/i);
     this.IOSSafari = iOSSafari;
+    if (navigator.userAgent.match('CriOS')) {
+      this.chromeiOs = true;
+    }
     let check = false;
     // const currentNavigator = navigator.userAgent || navigator.vendor;
     if (/Mobi|Android/i.test(navigator.userAgent)) {

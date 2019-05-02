@@ -1,7 +1,6 @@
 const Joi = require('joi')
 const fs = require('fs')
 const path = require('path')
-const archiver = require('archiver')
 const AWS = require('aws-sdk')
 let s3 = new AWS.S3()
 const LINGO_DATA_PATH = path.join(__dirname, '../', '../', 'assessment_data')
@@ -180,7 +179,6 @@ function saveWavFile(reqData, userID, hashKey, selector) {
   } else if (userID) {
     wavFilePath = path.join(LINGO_DATA_PATH, userID, 'recording_data', assessmentName)
     wavFileName = path.join(wavFilePath, promptNumber + '.wav')
-    // wavFileName = path.join('assessment_data', userID, 'recording_data', assessmentName, promptNumber + '.wav')
   }
   if (!fs.existsSync(wavFilePath)) {
     fs.mkdirSync(path.join(wavFilePath), {
@@ -193,7 +191,6 @@ function saveWavFile(reqData, userID, hashKey, selector) {
     // console.log('saved file')
     // KRM: For debugging
   })
-  // uploadDir(path.join(LINGO_DATA_PATH), LINGO_BUCKET_NAME, selector)
   reqData.assessments[0].data[selector][0]['recorded_data'] = wavFileName
 }
 
@@ -343,29 +340,6 @@ function getMatrixReasoningImgAssets(assetFolder) {
   })
 }
 
-function getAllDataOnUserId(userId, res) {
-  deleteZippedForIdIfExists(userId)
-  const folderPath = path.join(LINGO_DATA_PATH, userId)
-  if (fs.existsSync(folderPath)) {
-    res.attachment(userId + '.zip')
-    const output = fs.createWriteStream(path.join(folderPath, userId + '.zip'))
-    const archive = archiver('zip', {})
-    output.on('close', function () {
-      console.log(archive.pointer() + ' total bytes')
-      console.log('archiver has been finalized and the output file descriptor has closed.')
-      return res.status(200).send('OK').end()
-      // KRM: Return promise here!
-    })
-    const directory = path.join(LINGO_DATA_PATH, userId)
-    archive.directory(directory, false)
-    archive.pipe(res)
-    archive.finalize()
-    deleteZippedForIdIfExists(userId)
-  } else {
-    res.sendStatus(404)
-  }
-}
-
 function uploadDir(s3Path, bucketName, selector) {
   console.log('BUCKET_NAME: ' + bucketName)
 
@@ -411,28 +385,6 @@ function uploadDir(s3Path, bucketName, selector) {
   })
 }
 
-// function getAllDataForHashKey(hashKey) {
-//   deleteZippedForHashKeyIfExists(hashKey)
-//   const folderPath = path.join('assessment_data', 'single_assessment', hashKey)
-//   // KRM: TO DO finish this function analagous to the ID ones
-// }
-
-function deleteZippedForIdIfExists(userId) {
-  const deleteFile = path.join(LINGO_DATA_PATH, userId, userId + '.zip')
-  if (fs.existsSync(deleteFile)) {
-    console.log('delete')
-    fs.unlinkSync(deleteFile)
-  }
-}
-
-// function deleteZippedForHashKeyIfExists(hashKey) {
-
-// }
-
-function getAllData() {
-
-}
-
 module.exports = {
   insertFreshAssessmentData,
   pushOnePieceAssessmentData,
@@ -440,8 +392,5 @@ module.exports = {
   updateAssessmentData,
   getNextUserID,
   sendHashKey,
-  getAssets,
-  getAllDataOnUserId,
-  getAllData
-  // getAllDataForHashKey
+  getAssets
 }

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import { StateManagerService } from '../../../services/state-manager.service';
 import { SelectionAssessment } from '../../../structures/SelectionAssessment';
-import { AssetsObject } from '../../../structures/AssessmentDataStructures';
+// import { AssetsObject } from '../../../structures/AssessmentDataStructures';
 
 @Component({
   selector: 'app-timeduration',
@@ -28,8 +28,6 @@ export class TimedurationComponent extends SelectionAssessment {
   outerStrokeColor = '#ff8080';
   innerStrokeColor = '#ffb3b3';
   startTime;
-  hammerStage: HTMLElement;
-  hammerManager;
   radius: number;
   currentSpace = 4;
   innerStrokeWidth = 4;
@@ -47,12 +45,6 @@ export class TimedurationComponent extends SelectionAssessment {
       this.radius = 245;
       this.subtitleFontSize = '25';
     }
-    // this.dataService
-    //   .getAssets('audio', this.assessmentName)
-    //   .subscribe((value: AssetsObject) => {
-    //     this.audioInstruction = value.audioInstruction;
-    //     this.playInstructions();
-    //   });
   }
 
   setStateAndStart(): void {

@@ -24,7 +24,7 @@ export class AssessmentDataService {
     private cookieService: CookieService,
     private http: HttpClient,
     public stateManager: StateManagerService
-  ) {}
+  ) { }
 
   public get audioAssetsLocation(): string {
     return this._audioAssetsLocation;
@@ -115,7 +115,6 @@ export class AssessmentDataService {
     this._partialAssessmentDataSubscription.subscribe(
       (data: AssessmentData) => {
         this.partialAssessmentData = data;
-        // console.log(JSON.stringify(this.partialAssessmentData));
         this.stateManager.initializeState(this.partialAssessmentData);
         // KRM: Initialize the current state of the assessments based
         // on the past assessments already completed
@@ -145,14 +144,12 @@ export class AssessmentDataService {
   ): Observable<string> {
     let structure;
     if (this.stateManager.hashKey) {
-      // console.log('Has hash key');
       structure = {
         hash_key: this.getHashKeyCookie(),
         assessments: [assessmentsData],
         google_speech_to_text_assess: [googleData]
       };
     } else {
-      // console.log('Has user id');
       structure = {
         user_id: this.getUserIdCookie(),
         assessments: [assessmentsData],

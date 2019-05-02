@@ -28,8 +28,6 @@ export class ListeningcomprehensionComponent extends SelectionAssessment {
       .subscribe((value: AssetsObject) => {
         this.promptsLength = value.assetsLength;
         this.audioPromptStructure = value.promptStructure;
-        // this.audioInstruction = value.audioInstruction;
-        // this.playInstructions();
       });
     this.dataService
       .getAssets('img', this.assessmentName)
@@ -48,14 +46,12 @@ export class ListeningcomprehensionComponent extends SelectionAssessment {
   setupPrompt(): HTMLAudioElement {
     this.calculateImageNames();
     const audio = new Audio();
-    // audio.src = `${this.audioInstructionsLocation}q${this.promptNumber}.mp3`;
     audio.src = this.audioPromptStructure[this.promptNumber][0];
     audio.onplaying = (ev: Event): any => (this.playingAudio = true);
     return audio;
   }
 
   calculateImageNames(): void {
-    // console.log(this.imgsPromptStructure);
     this.imagePaths = [];
     const firstRow: string[] = [];
     const secondRow: string[] = [];

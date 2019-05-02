@@ -187,7 +187,6 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
         );
       } else {
         this.wavesurfer.loadBlob(dataBlob);
-        // this.wavesurfer.load(dataBlob);
       }
       this.wavesurfer.on('play', () => {
         this.playing = true;

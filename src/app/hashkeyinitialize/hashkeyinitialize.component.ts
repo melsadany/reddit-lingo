@@ -1,15 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StateManagerService } from '../services/state-manager.service';
 import { AssessmentDataService } from '../services/assessment-data.service';
-import { SingleAssessmentData } from '../structures/AssessmentDataStructures';
+import { SingleAssessmentData, AssessmentData } from '../structures/AssessmentDataStructures';
 
 @Component({
   selector: 'app-hashkeyinitialize',
   templateUrl: './hashkeyinitialize.component.html',
   styleUrls: ['./hashkeyinitialize.component.scss']
 })
-export class HashkeyinitializeComponent implements OnInit {
+export class HashkeyinitializeComponent {
   constructor(
     private route: ActivatedRoute,
     private routerServie: Router,
@@ -23,14 +23,23 @@ export class HashkeyinitializeComponent implements OnInit {
       this.dataService
         .sendHashKeyToServer(userHashKey)
         .subscribe((data: SingleAssessmentData) => {
-          console.log('Single assessment data', data);
           // KRM: Implementing setting for single assessment turned on or off
           this.dataService.initializeHashKeyData(userHashKey);
-          this.stateManager.initializeSingleAssessmentState(data);
+          if (this.stateManager.appConfig['appConfig']['settings']['singleAssessmentForHashKey']) {
+            this.stateManager.initializeSingleAssessmentState(data);
+          } else {
+            const initializeData: unknown = data;
+            this.stateManager.initializeState(<AssessmentData>initializeData);
+          }
+          // KRM: The big difference between SingleAssessmentData and AssessmentData is the user_id vs the hask_key fields.
+          // The methods initializeState and initializeSingleAssessmentState don't actually utilize those fields with their
+          // respective types, so they could essentially be the same type if not for the differently named field, which is pretty
+          // important elsewhere. Therefore I just cast the data object accordingly to pass it in the regular intializeState method
+          // when we want hash_key users to take the full assessments.
         });
       this.routerServie.navigate(['home']);
     } else {
-      console.log('Invalid hash key');
+      console.log('bad hkey');
       this.routerServie.navigate(['home']);
     }
   }
@@ -45,6 +54,4 @@ export class HashkeyinitializeComponent implements OnInit {
     }
     return false;
   }
-
-  ngOnInit(): void { }
 }

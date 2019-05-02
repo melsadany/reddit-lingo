@@ -23,18 +23,12 @@ export class MatrixreasoningComponent extends SelectionAssessment {
   ) {
     super(stateManager, dataService);
     this.configureAssessmentSettings();
-    // this.dataService
-    //   .getAssets('audio', this.assessmentName)
-    //   .subscribe((value: AssetsObject) => {
-    //     this.audioInstruction = value.audioInstruction;
-    //     this.playInstructions();
-    //   });
     this.dataService
       .getAssets('img', this.assessmentName)
       .subscribe((value: AssetsObject) => {
         this.promptsLength = value.assetsLength;
         this.imagePromptStructure = value.promptStructure;
-        this.calculateImageSets();
+        this.calculateFrameSets();
       });
   }
 
@@ -43,11 +37,6 @@ export class MatrixreasoningComponent extends SelectionAssessment {
     this.stateManager.textOnInnerAssessmentButton = 'CONTINUE ASSESSMENT';
     this.stateManager.isInAssessment = true;
     this.advance();
-  }
-
-  calculateImageSets(): void {
-    this.calculateFrameSets();
-    // this.calculateSolutionSets();
   }
 
   startTimer(): void {
@@ -81,7 +70,6 @@ export class MatrixreasoningComponent extends SelectionAssessment {
       ];
       this.imagePromptStructure['frameSets'][prompt] = newArray;
     }
-    // console.log(this.imagePromptStructure);
   }
 
   clickImage(image: string): void {

@@ -131,13 +131,8 @@ export class AudioRecordingService {
       mimeType: 'audio/webm'
     };
     this.setCurrentlyRecording(true);
-    // if (this.stateManager.inMobileBrowser) {
     this.recorder = new RecordRTC.StereoAudioRecorder(this.stream, config);
-    // alert(JSON.stringify(RecordRTC.Storage));
-    // console.log(JSON.stringify(RecordRTC.Storage));
-    // console.log(RecordRTC.Storage);
     this.recorder.record();
-    // console.log(this.recorder);
     this.startTime = moment();
     this.interval = setInterval(() => {
       const currentTime = moment();

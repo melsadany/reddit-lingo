@@ -28,7 +28,14 @@ export class BaseAssessment implements OnInit {
   private _promptNumber = 0;
   private _promptsLength: number;
   private _lastPrompt = false;
+  private _playingInstruction = false;
 
+  public get playingInstruction(): boolean {
+    return this._playingInstruction;
+  }
+  public set playingInstruction(value: boolean) {
+    this._playingInstruction = value;
+  }
   public get lastPrompt(): boolean {
     return this._lastPrompt;
   }
@@ -244,14 +251,13 @@ export class BaseAssessment implements OnInit {
   playInstructions(): void {
     this.audioInstructionPlayer = new Audio();
     this.audioInstructionPlayer.src = this.audioInstruction;
-    // this.audioInstructionPlayer.load();
-    // this.audioInstructionPlayer.addEventListener('touchstart', () => {
-    //   alert('start');
-    // });
-    this.audioInstructionPlayer.onplaying = (ev: Event): any =>
-      (this.finishedInstruction = false);
+    this.audioInstructionPlayer.onplaying = (ev: Event): any => {
+      this.finishedInstruction = false;
+      this.playingInstruction = true;
+    };
     this.audioInstructionPlayer.addEventListener('ended', () => {
       this.finishedInstruction = true;
+      this.playingInstruction = false;
     });
     this.audioInstructionPlayer.play();
   }
@@ -261,12 +267,6 @@ export class BaseAssessment implements OnInit {
   }
 
   configureAssessmentSettings(): void {
-    // console.log(this.assessmentName);
-    // console.log(
-    //   this.stateManager.appConfig['appConfig']['assessmentsConfig'][
-    //     this.assessmentName
-    //   ]
-    // );
     if (
       !this.stateManager.appConfig['appConfig']['assessmentsConfig'][
       this.assessmentName

@@ -9,10 +9,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
 
 import { SharedModule } from './shared/shared.module';
-import { AuthModule } from './auth/auth.module';
 
 import { AppComponent } from './app.component';
-import { AdminModule } from './admin/admin.module';
 
 import { AppRoutingModule } from './app-routing/app-routing.module';
 import { HeaderComponent } from './header/header.component';
@@ -46,8 +44,6 @@ export class HammerJSConfig extends HammerGestureConfig {
     HttpClientModule,
     RouterModule,
     SharedModule,
-    AuthModule,
-    AdminModule,
     AssessmentsModule,
     AppRoutingModule
   ],
@@ -64,4 +60,4 @@ export class HammerJSConfig extends HammerGestureConfig {
   entryComponents: [],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

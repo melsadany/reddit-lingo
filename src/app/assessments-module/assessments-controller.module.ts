@@ -7,7 +7,6 @@ import { AssessmentsControllerComponent } from './assessments-controller.compone
 
 import { AssessmentsControllerRoutingModule } from './assessments-controller-routing.module';
 import { RanComponent } from './assessments/ran/ran.component';
-import { AuthHeaderInterceptor } from '../interceptors/header.interceptor';
 import { CatchErrorInterceptor } from '../interceptors/http-error.interceptor';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AssessmentsDoneComponent } from './assessments-done/assessments-done.component';
@@ -67,11 +66,6 @@ import { WordassociationComponent } from './assessments/wordassociation/wordasso
     WordassociationComponent
   ],
   providers: [
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthHeaderInterceptor,
-      multi: true
-    },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: CatchErrorInterceptor,

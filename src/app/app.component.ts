@@ -1,27 +1,36 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { StateManagerService } from './services/state-manager.service';
+import { AssessmentDataService } from './services/assessment-data.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit, OnDestroy {
-  constructor(private stateManager: StateManagerService) {}
+export class AppComponent implements OnInit {
+  constructor(private stateManager: StateManagerService, private dataService: AssessmentDataService) { }
 
   public ngOnInit(): void {
-    if (navigator.userAgent.match('CriOS')) {
-      this.stateManager.chromeiOs = true;
+    if (this.stateManager.hashKey && this.dataService.checkHashKeyCooke()) {
+      console.log('hk set');
+    } else if (
+      !this.stateManager.hashKey &&
+      !this.dataService.checkHashKeyCooke()
+    ) {
+      console.log('no hk');
+      this.dataService.initializeData();
+    } else if (
+      !this.stateManager.hashKey &&
+      this.dataService.checkHashKeyCooke()
+    ) {
+      console.log('hk cached');
+      this.stateManager.goToHashKeyInitializer(
+        this.dataService.getHashKeyCookie()
+      );
     }
-    // if (!this.stateManager.startedByHandFromHome) {
-    //   console.log('Going home');
-    //   this.stateManager.goHome();
-    // }
     this.stateManager.isInAssessment = false;
     if (this.stateManager.finishedAllAssessments) {
       this.stateManager.navigateTo('done');
     }
   }
-
-  ngOnDestroy(): void {}
 }
