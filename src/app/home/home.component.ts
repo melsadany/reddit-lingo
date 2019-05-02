@@ -7,6 +7,6 @@ import { StateManagerService } from '../services/state-manager.service';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent {
-  constructor(private stateManager: StateManagerService) { }
+  constructor(public stateManager: StateManagerService) { }
   // KRM: Need this injection for the template
 }
