@@ -13,7 +13,7 @@ before_script:
 build:
   script:
     - echo $CI_COMMIT_REF_NAME
-    - yarn build
+    - yarn ng build --prod
     - aws s3 sync ./dist s3://screener2builds/dist
     - aws s3 sync ./server s3://screener2builds/server
     - aws s3 cp ./package.json s3://screener2builds/package.json
