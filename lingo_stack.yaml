@@ -7,12 +7,14 @@ Parameters:
     - lingo-app1-build
     - lingo-app2-build
     - lingo-test-build
+    Type: String
   SubDomainName:
     AllowedValues:
-    - lingo
-    - app1
-    - app2
-    - test
+    - lingo.aws.cloud.uiowa.edu.
+    - app1.lingo.aws.cloud.uiowa.edu.
+    - app2.lingo.aws.cloud.uiowa.edu.
+    - test.lingo.aws.cloud.uiowa.edu.
+    Type: String
   SSLCertARNForSubdomain:
     Default: Match SSL ARN from ACM with subdomain
     Type: String
@@ -43,9 +45,6 @@ Parameters:
     Type: String
     Default: Assessment Data Bucket Name
 
-Conditions:
-  UseSubdomain:
-    Not: [Equals: [Ref: SubDomainName, lingo]]
 Resources:
   LingoDataBucket:
     Type: AWS::S3::Bucket
@@ -60,11 +59,7 @@ Resources:
       HostedZoneName: lingo.aws.cloud.uiowa.edu.
       RecordSets:
       - Name:
-        If:
-          [UseSubdomain,
-            Join:
-              [SubDomainName, '.', lingo.aws.cloud.uiowa.edu.],
-          lingo.aws.cloud.uiowa.edu.]
+          Ref: SubDomainName
         Type: A
         AliasTarget:
           HostedZoneId:
