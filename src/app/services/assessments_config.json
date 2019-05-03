@@ -5,23 +5,23 @@
         "enabled": true
       },
       "prescreenerquestions": {
-        "enabled": true
+        "enabled": false
       },
       "wordassociation": {
         "enabled": true
       },
       "wordfinding": {
-        "enabled": true
+        "enabled": false
       },
       "sentencerepetition": {
-        "enabled": true,
+        "enabled": false,
         "prompt_countdowns": [7, 4, 5, 3, 8]
       },
       "matrixreasoning": {
-        "enabled": true
+        "enabled": false
       },
       "syncvoice": {
-        "enabled": true
+        "enabled": false
       },
       "timeduration": {
         "enabled": true,
@@ -31,13 +31,13 @@
         "enabled": true
       },
       "pictureprompt": {
-        "enabled": true
+        "enabled": false
       },
       "listeningcomprehension": {
-        "enabled": true
+        "enabled": false
       },
       "postscreenerquestions": {
-        "enabled": true
+        "enabled": false
       }
     },
     "settings": {
