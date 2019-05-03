@@ -25,7 +25,7 @@ export class HashkeyinitializeComponent {
         .subscribe((data: SingleAssessmentData) => {
           // KRM: Implementing setting for single assessment turned on or off
           this.dataService.initializeHashKeyData(userHashKey);
-          if (this.stateManager.appConfig['appConfig']['settings']['singleAssessmentForHashKey']) {
+          if (this.stateManager.singleAssessmentEnabled) {
             this.stateManager.initializeSingleAssessmentState(data);
           } else {
             const initializeData: unknown = data;

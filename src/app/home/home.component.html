@@ -18,22 +18,21 @@
         (click)="stateManager.goToNextAssessmentFromHome()">START</button>
     </div>
   </div>
-  <div *ngIf="stateManager.inMobileBrowser">
-    <p class="py-4 text-center">
-      Debug: This is a mobile browser.
-    </p>
+  <div *ngIf="stateManager.DEBUG_MODE">
+    <div *ngIf="stateManager.inMobileBrowser">
+      <p class="py-4 text-center">
+        Debug: This is a mobile browser.
+      </p>
+      <div *ngIf="stateManager.IOSSafari">
+        <p>
+          Debug: This is a mobile Safari browser
+        </p>
+      </div>
+    </div>
   </div>
-
-  <div *ngIf="stateManager.chromeiOs">
-    <p>
-      We do not support Chrome on the iOS platform. Please use Safari on your iOS device to use our site.
-    </p>
-  </div>
-
-  <div *ngIf="stateManager.IOSSafari">
-    <p>
-      Safari browser
-    </p>
-  </div>
-
+</div>
+<div *ngIf="stateManager.chromeiOs">
+  <p>
+    We do not support Chrome on the iOS platform. Please use Safari on your iOS device to use our site.
+  </p>
 </div>

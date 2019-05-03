@@ -4,49 +4,53 @@
       In this task, you will be shown a set of related pictures.
       Select the image that you feel best fits in with the others.
     </p>
-    <div *ngIf="stateManager.showInnerAssessmentButton" class="text-center button-down">
-      <div *ngIf="!stateManager.isInAssessment">
-        <img *ngIf="!finishedInstruction" style="max-height:85px;" class="img-fluid"
-          src="assets/in_use/animations/random_waveform.gif">
-        <button *ngIf="finishedInstruction" type="button" class="start-button btn btn-success"
-          (click)="setStateAndStart()">{{stateManager.textOnInnerAssessmentButton}}</button>
-      </div>
-      <div *ngIf="stateManager.isInAssessment">
-        <button type="button" class="start-button btn btn-success"
-          (click)="advance()">{{stateManager.textOnInnerAssessmentButton}}</button>
-      </div>
+  </div>
+  <div *ngIf="stateManager.showInnerAssessmentButton" class="text-center button-down">
+    <div *ngIf="!stateManager.isInAssessment">
+      <img *ngIf="!finishedInstruction && playingInstruction" style="max-height:85px;" class="img-fluid"
+        src="assets/in_use/animations/random_waveform.gif">
+      <button *ngIf="finishedInstruction && !playingInstruction" type="button" class="start-button btn btn-success"
+        (click)="setStateAndStart()">{{stateManager.textOnInnerAssessmentButton}}</button>
+      <button *ngIf="!finishedInstruction && !playingInstruction" type="button" class="start-button btn btn-success"
+        (click)="playInstructions()">
+        Start Instruction
+      </button>
+    </div>
+    <div *ngIf="stateManager.isInAssessment">
+      <button type="button" class="start-button btn btn-success"
+        (click)="advance()">{{stateManager.textOnInnerAssessmentButton}}</button>
     </div>
   </div>
-  <div *ngIf="showMatrix">
-    <table class="table-bordered table-active custom-table">
-      <tbody>
-        <tr *ngFor="let row of imagePromptStructure['frameSets'][promptNumber]">
-          <td *ngFor="let image of row">
+</div>
+<div *ngIf="showMatrix">
+  <table class="table-bordered table-active custom-table">
+    <tbody>
+      <tr *ngFor="let row of imagePromptStructure['frameSets'][promptNumber]">
+        <td *ngFor="let image of row">
+          <img class="img-fluid" [src]="image">
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <table class="table-bordered" style="margin: 0px auto;">
+    <tbody>
+      <tr class="table-primary">
+        <td *ngFor="let image of imagePromptStructure['solutionSets'][promptNumber]">
+          <button type="button" class="btn btn-outline-primary" (click)="clickImage(image)">
             <img class="img-fluid" [src]="image">
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <table class="table-bordered" style="margin: 0px auto;">
-      <tbody>
-        <tr class="table-primary">
-          <td *ngFor="let image of imagePromptStructure['solutionSets'][promptNumber]">
-            <button type="button" class="btn btn-outline-primary" (click)="clickImage(image)">
-              <img class="img-fluid" [src]="image">
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <div>
-    <p *ngIf="countingDown && useCountdownNumber" class="text-center display-1">{{timeLeft}}</p>
-  </div>
-  <div *ngIf="showProgressAnimation && useCountdownBar">
-    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-  </div>
-  <div *ngIf="showCircleAnimation && useCountdownCircle">
-    <mat-spinner style="margin:0 auto;">
-    </mat-spinner>
-  </div>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div>
+  <p *ngIf="countingDown && useCountdownNumber" class="text-center display-1">{{timeLeft}}</p>
+</div>
+<div *ngIf="showProgressAnimation && useCountdownBar">
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+</div>
+<div *ngIf="showCircleAnimation && useCountdownCircle">
+  <mat-spinner style="margin:0 auto;">
+  </mat-spinner>
 </div>

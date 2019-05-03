@@ -32,7 +32,14 @@ export class StateManagerService {
   private _appConfig: LingoSettings = appConfig;
   private _assessments = {};
   private _IOSSafari: boolean;
+  private _singleAssessmentEnabled: boolean;
 
+  public get singleAssessmentEnabled(): boolean {
+    return this._singleAssessmentEnabled;
+  }
+  public set singleAssessmentEnabled(value: boolean) {
+    this._singleAssessmentEnabled = value;
+  }
   public get IOSSafari(): boolean {
     return this._IOSSafari;
   }
@@ -148,8 +155,13 @@ export class StateManagerService {
   constructor(private routerService: Router) {
     this.configureEnabledAssessments();
     this.configureDebugMode();
+    this.configureSingleAssessmentEnabled();
     this.totalAssessments = Object.keys(this.assessments).length;
     this.inMobileBrowser = this.mobileCheck();
+  }
+
+  private configureSingleAssessmentEnabled(): void {
+    this.singleAssessmentEnabled = this.appConfig['appConfig']['settings']['singleAssessmentEnabled'];
   }
 
   private configureEnabledAssessments(): void {
