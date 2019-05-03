@@ -25,11 +25,12 @@ build and deploy lingo:
       else
         BUILD_BUCKET=unkown;
       fi;
-    - aws s3 rm s3://$BUILD_BUCKET/dist --recursive
-    - aws s3 rm s3://$BUILD_BUCKET/server --recursive
-    - aws s3 sync ./dist s3://$BUILD_BUCKET/dist
-    - aws s3 sync ./server s3://$BUILD_BUCKET/server
-    - aws s3 cp ./package.json s3://$BUILD_BUCKET/package.json
+    - echo ${BUILD_BUCKET}
+    - aws s3 rm s3://${BUILD_BUCKET}/dist --recursive
+    - aws s3 rm s3://${BUILD_BUCKET}/server --recursive
+    - aws s3 sync ./dist s3://${BUILD_BUCKET}/dist
+    - aws s3 sync ./server s3://${BUILD_BUCKET}/server
+    - aws s3 cp ./package.json s3://${BUILD_BUCKET}/package.json
 
 
 
