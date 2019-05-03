@@ -27,9 +27,9 @@ build and deploy lingo:
         BUILD_BUCKET=unkown;
       fi;
     - echo $BUILD_BUCKET
-    - aws s3 rm s3://$(echo $BUILD_BUCKET)/dist --recursive
+    - aws s3 rm s3://$BUILD_BUCKET/dist --recursive
     - aws s3 rm s3://$BUILD_BUCKET/server --recursive
-    - aws s3 sync ./dist s3://$BUILD_BUCKET/dist'
+    - aws s3 sync ./dist s3://$BUILD_BUCKET/dist
     - aws s3 sync ./server s3://$BUILD_BUCKET/server
     - aws s3 cp ./package.json s3://$BUILD_BUCKET/package.json
 
