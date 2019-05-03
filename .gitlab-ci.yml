@@ -20,6 +20,7 @@ build and deploy lingo:
         BUILD_BUCKET=lingo-app2-build
       elif [[ $CI_COMMIT_REF_NAME == 'lingo' ]]; then
         BUILD_BUCKET=lingo-root-build
+      fi
     - aws s3 rm s3://$BUILD_BUCKET/dist --recursive
     - aws s3 rm s3://$BUILD_BUCKET/server --recursive
     - aws s3 sync ./dist s3://$BUILD_BUCKET/dist

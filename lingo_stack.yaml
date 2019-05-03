@@ -42,6 +42,10 @@ Parameters:
   AssessmentDataBucketName:
     Type: String
     Default: Assessment Data Bucket Name
+
+Conditions:
+  UseSubdomain:
+    Not: [Equals: [Ref: SubDomainName, lingo]]
 Resources:
   LingoDataBucket:
     Type: AWS::S3::Bucket
