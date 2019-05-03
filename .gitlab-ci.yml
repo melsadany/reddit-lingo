@@ -26,6 +26,7 @@ build and deploy lingo:
       else
         BUILD_BUCKET=unkown;
       fi;
+
     - echo $BUILD_BUCKET
     - aws s3 rm s3://$BUILD_BUCKET/dist --recursive
     - aws s3 rm s3://$BUILD_BUCKET/server --recursive
