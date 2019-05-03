@@ -12,6 +12,7 @@ build and deploy lingo:
     - 'apk --purge -v del py-pip'
     - 'rm /var/cache/apk/*'
     - yarn ng build --prod
+    - echo $CI_COMMIT_REF_NAME
     - if [[ $CI_COMMIT_REF_NAME == 'test' ]]; then
         BUILD_BUCKET=lingo-test-build;
       elif [[ $CI_COMMIT_REF_NAME == 'app1' ]]; then
@@ -20,17 +21,17 @@ build and deploy lingo:
         BUILD_BUCKET=lingo-app2-build;
       elif [[ $CI_COMMIT_REF_NAME == 'lingo' ]]; then
         BUILD_BUCKET=lingo-root-build;
-      elif [[ $CI_COMMIT_REF_NAME == 'master']]; then
+      elif [[ $CI_COMMIT_REF_NAME == 'master' ]]; then
         BUILD_BUCKET=lingo-master-builds;
       else
         BUILD_BUCKET=unkown;
       fi;
     - echo ${BUILD_BUCKET}
-    - aws s3 rm s3://${BUILD_BUCKET}/dist --recursive
-    - aws s3 rm s3://${BUILD_BUCKET}/server --recursive
-    - aws s3 sync ./dist s3://${BUILD_BUCKET}/dist
-    - aws s3 sync ./server s3://${BUILD_BUCKET}/server
-    - aws s3 cp ./package.json s3://${BUILD_BUCKET}/package.json
+    - aws s3 rm 's3://${BUILD_BUCKET}/dist' --recursive
+    - aws s3 rm 's3://${BUILD_BUCKET}/server' --recursive
+    - aws s3 sync ./dist 's3://${BUILD_BUCKET}/dist'
+    - aws s3 sync ./server 's3://${BUILD_BUCKET}/server'
+    - aws s3 cp ./package.json 's3://${BUILD_BUCKET}/package.json'
 
 
 
