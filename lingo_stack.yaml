@@ -59,8 +59,12 @@ Resources:
     Properties:
       HostedZoneName: lingo.aws.cloud.uiowa.edu.
       RecordSets:
-      # Put join function here
-      - Name: lingo.aws.cloud.uiowa.edu.
+      - Name:
+        If:
+          [UseSubdomain,
+            Join:
+              [SubDomainName, '.', lingo.aws.cloud.uiowa.edu.],
+          lingo.aws.cloud.uiowa.edu.]
         Type: A
         AliasTarget:
           HostedZoneId:

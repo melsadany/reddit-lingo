@@ -13,14 +13,14 @@ build and deploy lingo:
     - 'rm /var/cache/apk/*'
     - yarn ng build --prod
     - if [[ $CI_COMMIT_REF_NAME == 'test' ]]; then
-        BUILD_BUCKET=lingo-test-build
+        BUILD_BUCKET=lingo-test-build;
       elif [[ $CI_COMMIT_REF_NAME == 'app1' ]]; then
-        BUILD_BUCKET=lingo-app1-build
+        BUILD_BUCKET=lingo-app1-build;
       elif [[ $CI_COMMIT_REF_NAME == 'app2' ]]; then
-        BUILD_BUCKET=lingo-app2-build
+        BUILD_BUCKET=lingo-app2-build;
       elif [[ $CI_COMMIT_REF_NAME == 'lingo' ]]; then
-        BUILD_BUCKET=lingo-root-build
-      fi
+        BUILD_BUCKET=lingo-root-build;
+      fi;
     - aws s3 rm s3://$BUILD_BUCKET/dist --recursive
     - aws s3 rm s3://$BUILD_BUCKET/server --recursive
     - aws s3 sync ./dist s3://$BUILD_BUCKET/dist
