@@ -1,6 +1,21 @@
 ---
 Description: CloudFormation template for launching the Lingo app
 Parameters:
+  BuildBucketName:
+    AllowedValues:
+    - lingo-root-build
+    - lingo-app1-build
+    - lingo-app2-build
+    - lingo-test-build
+  SubDomainName:
+    AllowedValues:
+    - lingo
+    - app1
+    - app2
+    - test
+  SSLCertARNForSubdomain:
+    Default: Match SSL ARN from ACM with subdomain
+    Type: String
   KeyName:
     Description: Key Pair name
     Type: AWS::EC2::KeyPair::KeyName
@@ -28,7 +43,6 @@ Parameters:
     Type: String
     Default: Assessment Data Bucket Name
 Resources:
-
   LingoDataBucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -41,6 +55,7 @@ Resources:
     Properties:
       HostedZoneName: lingo.aws.cloud.uiowa.edu.
       RecordSets:
+      # Put join function here
       - Name: lingo.aws.cloud.uiowa.edu.
         Type: A
         AliasTarget:
@@ -75,7 +90,7 @@ Resources:
     Properties:
       Certificates:
         - CertificateArn:
-            arn:aws:acm:us-east-1:000246156158:certificate/24a0937e-02df-4a93-a626-0858b9e2cab2
+            Ref: SSLCertARNForSubdomain
       DefaultActions:
       - TargetGroupArn:
           Ref: LingoTargetGroup
