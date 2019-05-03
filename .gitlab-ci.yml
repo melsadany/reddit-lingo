@@ -3,9 +3,6 @@ image: node:10.15.3-alpine
 stages:
   - build
 
-variables:
-  BUILD_BUCKET:
-
 build and deploy lingo:
   stage: build
   script:
