@@ -140,7 +140,7 @@ Resources:
     Properties:
       Tags:
       - Key: Name
-        Value: LingoInstance
+        Value: TestLingoInstance
         PropagateAtLaunch: true
       VPCZoneIdentifier:
         [Ref: Subnet1ForLoadBalancer, Ref: Subnet2ForLoadBalancer]

@@ -29,40 +29,40 @@ Parameters:
     Type: String
 
 Resources:
-  RootLingoDataBucket:
+  App2LingoDataBucket:
     Type: AWS::S3::Bucket
     Properties:
       BucketName:
         Ref: AssessmentDataBucketName
     DeletionPolicy: Retain
 
-  RootRecordSet:
+  App2RecordSet:
     Type: AWS::Route53::RecordSetGroup
     Properties:
       HostedZoneName: lingo.aws.cloud.uiowa.edu.
       RecordSets:
       - Name:
-          lingo.aws.cloud.uiowa.edu.
+          app2.lingo.aws.cloud.uiowa.edu.
         Type: A
         AliasTarget:
           HostedZoneId:
             Fn::GetAtt:
-              RootLingoLoadBalancer.CanonicalHostedZoneID
+              App2LingoLoadBalancer.CanonicalHostedZoneID
           DNSName:
             Fn::GetAtt:
-              RootLingoLoadBalancer.DNSName
+              App2LingoLoadBalancer.DNSName
 
-  RootLingoIamInstanceProfile:
+  App2LingoIamInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
       Roles:
         - ec2tos3
 
-  RootLingoLoadBalancer:
+  App2LingoLoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
       IpAddressType: ipv4
-      Name: RootLingoLoadBalancer
+      Name: App2LingoLoadBalancer
       Scheme: internet-facing
       SecurityGroups:
         - Ref: SecurityGroup
@@ -71,38 +71,38 @@ Resources:
         - Ref: Subnet2ForLoadBalancer
       Type: application
 
-  RootListenerForBalancer:
+  App2ListenerForBalancer:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
       Certificates:
         - CertificateArn:
-            arn:aws:acm:us-east-1:000246156158:certificate/24a0937e-02df-4a93-a626-0858b9e2cab2
+            arn:aws:acm:us-east-1:000246156158:certificate/8476903f-d893-405b-bf36-0c02ec3949d2
       DefaultActions:
       - TargetGroupArn:
-          Ref: RootLingoTargetGroup
+          Ref: App2LingoTargetGroup
         Type: forward
       LoadBalancerArn:
-        Ref: RootLingoLoadBalancer
+        Ref: App2LingoLoadBalancer
       Port: 443
       Protocol: HTTPS
 
-  RootLingoTargetGroup:
+  App2LingoTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      Name: RootLingoGroup1
+      Name: LingoGroup1
       Port: 8080
       Protocol: HTTP
       VpcId:
         Ref: VPC
 
-  RootLingoServerLaunchConfig:
+  App2LingoServerLaunchConfig:
     Type: AWS::AutoScaling::LaunchConfiguration
     Properties:
       ImageId:
         Ref: ImageID
       IamInstanceProfile:
         Ref:
-          RootLingoIamInstanceProfile
+          App2LingoIamInstanceProfile
       SecurityGroups:
       - Ref: SecurityGroup
       InstanceType:
@@ -127,7 +127,7 @@ Resources:
             cd /home/ec2-user
             echo "export LINGO_BUCKET=${AssessmentDataBucketName}" > ~/lingostartup.sh
             sudo chmod +x ~/lingostartup.sh
-            echo "aws s3 cp s3://lingo-root-build/ . --recursive" >> ~/lingostartup.sh
+            echo "aws s3 cp s3://lingo-app2-build/ . --recursive" >> ~/lingostartup.sh
             echo "yarn" >> ~/lingostartup.sh
             echo "yarn start" >> ~/lingostartup.sh
             sudo cp ~/lingostartup.sh /etc/profile.d/lingostartup.sh
@@ -135,17 +135,17 @@ Resources:
             # sudo yarn
             # nohup sudo yarn start &
 
-  RootLingoAutoScaleGroup:
+  App2LingoAutoScaleGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
       Tags:
       - Key: Name
-        Value: LingoInstance
+        Value: App2LingoInstance
         PropagateAtLaunch: true
       VPCZoneIdentifier:
         [Ref: Subnet1ForLoadBalancer, Ref: Subnet2ForLoadBalancer]
       LaunchConfigurationName:
-        Ref: RootLingoServerLaunchConfig
+        Ref: App2LingoServerLaunchConfig
       MinSize: '1'
       MaxSize: '1'
-      TargetGroupARNs: [Ref: RootLingoTargetGroup]
+      TargetGroupARNs: [Ref: App2LingoTargetGroup]
