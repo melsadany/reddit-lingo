@@ -24,17 +24,17 @@ Parameters:
   ImageID:
     Type: AWS::EC2::Image::Id
     Default: ami-0de53d8956e8dcf80
-  AssessmentDataBucketName:
-    Description: Output bucket for assessment data. Must be legal S3 bucket name
+  AssessmentDataFolderName:
+    Description: Output folder for assessment data in lingo-assessment-data bucket. Must be legal S3 folder name
     Type: String
 
-Resources:
-  TestLingoDataBucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName:
-        Ref: AssessmentDataBucketName
-    DeletionPolicy: Retain
+# Resources:
+#   TestLingoDataBucket:
+#     Type: AWS::S3::Bucket
+#     Properties:
+#       BucketName:
+#         Ref: AssessmentDataBucketName
+#     DeletionPolicy: Retain
 
   TestRecordSet:
     Type: AWS::Route53::RecordSetGroup
