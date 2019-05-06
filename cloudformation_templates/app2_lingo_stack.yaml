@@ -28,7 +28,7 @@ Parameters:
     Description: Output folder for assessment data in lingo-assessment-data bucket. Must be legal S3 folder name
     Type: String
 
-# Resources:
+Resources:
 #   App2LingoDataBucket:
 #     Type: AWS::S3::Bucket
 #     Properties:
@@ -125,7 +125,7 @@ Parameters:
             curl --silent --location https://rpm.nodesource.com/setup_10.x | bash -
             sudo yum install yarn -y
             cd /home/ec2-user
-            echo "export LINGO_BUCKET=${AssessmentDataBucketName}" > ~/lingostartup.sh
+            echo "export LINGO_FOLDER=${AssessmentDataFolderName}" > ~/lingostartup.sh
             sudo chmod +x ~/lingostartup.sh
             echo "aws s3 cp s3://lingo-app2-build/ . --recursive" >> ~/lingostartup.sh
             echo "yarn" >> ~/lingostartup.sh
