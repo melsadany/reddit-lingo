@@ -109,7 +109,7 @@ Resources:
             sudo chmod +x ~/lingostartup.sh
             echo "aws s3 cp s3://lingo-builds/lingo-test-build/ . --recursive" >> ~/lingostartup.sh
             echo "yarn" >> ~/lingostartup.sh
-            echo "yarn start" >> ~/lingostartup.sh
+            echo "sudo yarn start" >> ~/lingostartup.sh
             sudo cp ~/lingostartup.sh /etc/profile.d/lingostartup.sh
             ~/lingostartup.sh
 
