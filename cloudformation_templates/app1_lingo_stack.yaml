@@ -1,109 +1,92 @@
 ---
-Description: CloudFormation template for launching the Lingo app
+Description: Template for the App1 deployment of the Lingo app
 Parameters:
   KeyName:
     Description: Key Pair name
     Type: AWS::EC2::KeyPair::KeyName
     Default: xxx-xxx
-  VPC:
-    Type: AWS::EC2::VPC::Id
-    Default: givevpcid
-  Subnet1ForLoadBalancer:
-    Type: AWS::EC2::Subnet::Id
-    Default: givesubnetid
-  Subnet2ForLoadBalancer:
-    Type: AWS::EC2::Subnet::Id
-    Default: givesubnetid
   InstanceType:
     Description: Select one of the possible instance types
     Type: String
     Default: t2.micro
-  SecurityGroup:
-    Type: AWS::EC2::SecurityGroup::Id
-    Default: givesecuritygroupid
   ImageID:
     Type: AWS::EC2::Image::Id
     Default: ami-0de53d8956e8dcf80
-  AssessmentDataBucketName:
+  DataFolderName:
+    Description: Output folder for assessment data in lingo-assessment-data bucket. Must be legal S3 folder name
     Type: String
-    Default: Assessment Data Bucket Name
+
 Resources:
 
-  LingoDataBucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName:
-        Ref: AssessmentDataBucketName
-    DeletionPolicy: Retain
-
-  RecordSet:
+  App1RecordSet:
     Type: AWS::Route53::RecordSetGroup
     Properties:
       HostedZoneName: lingo.aws.cloud.uiowa.edu.
       RecordSets:
-      - Name: lingo.aws.cloud.uiowa.edu.
+      - Name:
+          app1.lingo.aws.cloud.uiowa.edu.
         Type: A
         AliasTarget:
           HostedZoneId:
             Fn::GetAtt:
-              LingoLoadBalancer.CanonicalHostedZoneID
+              App1LingoLoadBalancer.CanonicalHostedZoneID
           DNSName:
             Fn::GetAtt:
-              LingoLoadBalancer.DNSName
+              App1LingoLoadBalancer.DNSName
 
-  LingoIamInstanceProfile:
+  App1LingoIamInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
       Roles:
         - ec2tos3
 
-  LingoLoadBalancer:
+  App1LingoLoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
       IpAddressType: ipv4
-      Name: LingoLoadBalancer
+      Name: App1LingoLoadBalancer
       Scheme: internet-facing
       SecurityGroups:
-        - Ref: SecurityGroup
+        - sg-03632539cbcd91af5
       Subnets:
-        - Ref: Subnet1ForLoadBalancer
-        - Ref: Subnet2ForLoadBalancer
+        - subnet-0737a237be02ece05
+        - subnet-09b5561f301ffbad7
       Type: application
 
-  ListenerForBalancer:
+  App1ListenerForBalancer:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
       Certificates:
         - CertificateArn:
-            arn:aws:acm:us-east-1:000246156158:certificate/24a0937e-02df-4a93-a626-0858b9e2cab2
+            arn:aws:acm:us-east-1:000246156158:certificate/baa91330-1dbc-49e3-bf68-24ddbc4bdf6a
       DefaultActions:
       - TargetGroupArn:
-          Ref: LingoTargetGroup
+          Ref: App1LingoTargetGroup
         Type: forward
       LoadBalancerArn:
-        Ref: LingoLoadBalancer
+        Ref: App1LingoLoadBalancer
       Port: 443
       Protocol: HTTPS
 
-  LingoTargetGroup:
+  App1LingoTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      Name: LingoGroup1
+      Name: App1LingoGroup1
       Port: 8080
       Protocol: HTTP
       VpcId:
-        Ref: VPC
+        vpc-078340b56827d0b02
 
-  LingoServerLaunchConfig:
+  App1LingoServerLaunchConfig:
     Type: AWS::AutoScaling::LaunchConfiguration
     Properties:
       ImageId:
         Ref: ImageID
       IamInstanceProfile:
         Ref:
-          LingoIamInstanceProfile
+          App1LingoIamInstanceProfile
       SecurityGroups:
-      - Ref: SecurityGroup
+      - sg-03632539cbcd91af5
       InstanceType:
         Ref: InstanceType
       KeyName:
@@ -124,27 +107,26 @@ Resources:
             curl --silent --location https://rpm.nodesource.com/setup_10.x | bash -
             sudo yum install yarn -y
             cd /home/ec2-user
-            echo "export LINGO_BUCKET=${AssessmentDataBucketName}" > ~/lingostartup.sh
+            echo "export LINGO_FOLDER=app1/${DataFolderName}" > ~/lingostartup.sh
             sudo chmod +x ~/lingostartup.sh
-            echo "aws s3 cp s3://screener2builds/ . --recursive" >> ~/lingostartup.sh
+            echo "aws s3 cp s3://lingo-builds/lingo-app1-build/ . --recursive" >> ~/lingostartup.sh
             echo "yarn" >> ~/lingostartup.sh
             echo "yarn start" >> ~/lingostartup.sh
             sudo cp ~/lingostartup.sh /etc/profile.d/lingostartup.sh
             ~/lingostartup.sh
-            # sudo yarn
-            # nohup sudo yarn start &
 
-  LingoAutoScaleGroup:
+  App1LingoAutoScaleGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
       Tags:
       - Key: Name
-        Value: LingoInstance
+        Value: App1LingoInstance
         PropagateAtLaunch: true
       VPCZoneIdentifier:
-        [Ref: Subnet1ForLoadBalancer, Ref: Subnet2ForLoadBalancer]
+        - subnet-0737a237be02ece05
+        - subnet-09b5561f301ffbad7
       LaunchConfigurationName:
-        Ref: LingoServerLaunchConfig
+        Ref: App1LingoServerLaunchConfig
       MinSize: '1'
       MaxSize: '1'
-      TargetGroupARNs: [Ref: LingoTargetGroup]
+      TargetGroupARNs: [Ref: App1LingoTargetGroup]

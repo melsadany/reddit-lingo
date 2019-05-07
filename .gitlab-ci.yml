@@ -13,11 +13,26 @@ build and deploy lingo:
     - 'rm /var/cache/apk/*'
     - yarn ng build --prod
     - echo $CI_COMMIT_REF_NAME
-    - aws s3 rm s3://screener2builds/dist --recursive
-    - aws s3 rm s3://screener2builds/server --recursive
-    - aws s3 sync ./dist s3://screener2builds/dist
-    - aws s3 sync ./server s3://screener2builds/server
-    - aws s3 cp ./package.json s3://screener2builds/package.json
+    - if [[ $CI_COMMIT_REF_NAME == 'test' ]]; then
+        BUILD_FOLDER=lingo-test-build;
+      elif [[ $CI_COMMIT_REF_NAME == 'app1' ]]; then
+        BUILD_FOLDER=lingo-app1-build;
+      elif [[ $CI_COMMIT_REF_NAME == 'app2' ]]; then
+        BUILD_FOLDER=lingo-app2-build;
+      elif [[ $CI_COMMIT_REF_NAME == 'lingo' ]]; then
+        BUILD_FOLDER=lingo-root-build;
+      elif [[ $CI_COMMIT_REF_NAME == 'master' ]]; then
+        BUILD_FOLDER=lingo-master-builds;
+      else
+        BUILD_FOLDER=unkown;
+      fi;
+
+    - echo $BUILD_FOLDER
+    - aws s3 rm s3://lingo-builds/$BUILD_FOLDER/dist --recursive
+    - aws s3 rm s3://lingo-builds/$BUILD_FOLDER/server --recursive
+    - aws s3 sync ./dist s3://lingo-builds/$BUILD_FOLDER/dist
+    - aws s3 sync ./server s3://lingo-builds/$BUILD_FOLDER/server
+    - aws s3 cp ./package.json s3://lingo-builds/$BUILD_FOLDER/package.json
 
 
 
