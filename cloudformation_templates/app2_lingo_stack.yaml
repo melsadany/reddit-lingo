@@ -1,0 +1,132 @@
+---
+Description: Template for the App2 deployment of the Lingo app
+Parameters:
+  KeyName:
+    Description: Key Pair name
+    Type: AWS::EC2::KeyPair::KeyName
+    Default: xxx-xxx
+  InstanceType:
+    Description: Select one of the possible instance types
+    Type: String
+    Default: t2.micro
+  ImageID:
+    Type: AWS::EC2::Image::Id
+    Default: ami-0de53d8956e8dcf80
+  DataFolderName:
+    Description: Output folder for assessment data in lingo-assessment-data bucket. Must be legal S3 folder name
+    Type: String
+
+Resources:
+
+  App2RecordSet:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneName: lingo.aws.cloud.uiowa.edu.
+      RecordSets:
+      - Name:
+          app2.lingo.aws.cloud.uiowa.edu.
+        Type: A
+        AliasTarget:
+          HostedZoneId:
+            Fn::GetAtt:
+              App2LingoLoadBalancer.CanonicalHostedZoneID
+          DNSName:
+            Fn::GetAtt:
+              App2LingoLoadBalancer.DNSName
+
+  App2LingoIamInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - ec2tos3
+
+  App2LingoLoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      IpAddressType: ipv4
+      Name: App2LingoLoadBalancer
+      Scheme: internet-facing
+      SecurityGroups:
+        - sg-03632539cbcd91af5
+      Subnets:
+        - subnet-0737a237be02ece05
+        - subnet-09b5561f301ffbad7
+      Type: application
+
+  App2ListenerForBalancer:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      Certificates:
+        - CertificateArn:
+            arn:aws:acm:us-east-1:000246156158:certificate/8476903f-d893-405b-bf36-0c02ec3949d2
+      DefaultActions:
+      - TargetGroupArn:
+          Ref: App2LingoTargetGroup
+        Type: forward
+      LoadBalancerArn:
+        Ref: App2LingoLoadBalancer
+      Port: 443
+      Protocol: HTTPS
+
+  App2LingoTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: LingoGroup1
+      Port: 8080
+      Protocol: HTTP
+      VpcId:
+        vpc-078340b56827d0b02
+
+  App2LingoServerLaunchConfig:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Properties:
+      ImageId:
+        Ref: ImageID
+      IamInstanceProfile:
+        Ref:
+          App2LingoIamInstanceProfile
+      SecurityGroups:
+      - sg-03632539cbcd91af5
+      InstanceType:
+        Ref: InstanceType
+      KeyName:
+        Ref: KeyName
+      UserData:
+        Fn::Base64:
+          Fn::Sub: |
+            #!/bin/bash -xe
+            sudo yum update -y
+            sudo yum install git -y
+            sudo curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+            nvm install 10
+            node --version
+            curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | sudo tee /etc/yum.repos.d/yarn.repo
+            curl --silent --location https://rpm.nodesource.com/setup_10.x | bash -
+            sudo yum install yarn -y
+            cd /home/ec2-user
+            echo "export LINGO_FOLDER=app2/${DataFolderName}" > ~/lingostartup.sh
+            sudo chmod +x ~/lingostartup.sh
+            echo "aws s3 cp s3://lingo-builds/lingo-app2-build/ . --recursive" >> ~/lingostartup.sh
+            echo "yarn" >> ~/lingostartup.sh
+            echo "yarn start" >> ~/lingostartup.sh
+            sudo cp ~/lingostartup.sh /etc/profile.d/lingostartup.sh
+            ~/lingostartup.sh
+
+  App2LingoAutoScaleGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      Tags:
+      - Key: Name
+        Value: App2LingoInstance
+        PropagateAtLaunch: true
+      VPCZoneIdentifier:
+        - subnet-0737a237be02ece05
+        - subnet-09b5561f301ffbad7
+      LaunchConfigurationName:
+        Ref: App2LingoServerLaunchConfig
+      MinSize: '1'
+      MaxSize: '1'
+      TargetGroupARNs: [Ref: App2LingoTargetGroup]
