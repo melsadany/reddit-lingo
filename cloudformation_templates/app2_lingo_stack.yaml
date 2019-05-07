@@ -113,7 +113,7 @@ Resources:
             echo "yarn" >> ~/lingostartup.sh
             echo "yarn start" >> ~/lingostartup.sh
             sudo cp ~/lingostartup.sh /etc/profile.d/lingostartup.sh
-            ~/lingostartup.sh
+            sudo ~/lingostartup.sh
 
   App2LingoAutoScaleGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
