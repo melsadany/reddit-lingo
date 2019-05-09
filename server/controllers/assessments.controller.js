@@ -341,7 +341,7 @@ function getMatrixReasoningImgAssets(assetFolder) {
 }
 
 function uploadDir(s3Path, bucketName, selector) {
-  console.log('BUCKET_NAME: ' + bucketName)
+  console.log('FOLDER_NAME: ' + bucketName)
 
   function walkSync(currentDirPath, callback) {
     fs.readdirSync(currentDirPath).forEach((fileName) => {
