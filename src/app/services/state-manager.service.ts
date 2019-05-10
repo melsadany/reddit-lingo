@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import {
   AssessmentData,
-  SingleAssessmentData
+  SingleAssessmentData,
+  AssetsObject
 } from '../structures/AssessmentDataStructures';
 import { Router } from '@angular/router';
 import { LinkedList } from '../structures/LinkedList';
 import appConfig from './assessments_config.json';
 import { LingoSettings } from '../structures/LingoSettings';
+import { AssessmentDataService } from './assessment-data.service';
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +35,35 @@ export class StateManagerService {
   private _assessments = {};
   private _IOSSafari: boolean;
   private _singleAssessmentEnabled: boolean;
+  private _audioInstruction: string;
+  private _audioInstructionPlayer: HTMLAudioElement;
+  private _finishedInstruction = false;
+  private _playingInstruction = false;
 
+  public get playingInstruction(): boolean {
+    return this._playingInstruction;
+  }
+  public set playingInstruction(value: boolean) {
+    this._playingInstruction = value;
+  }
+  public get finishedInstruction(): boolean {
+    return this._finishedInstruction;
+  }
+  public set finishedInstruction(value: boolean) {
+    this._finishedInstruction = value;
+  }
+  public get audioInstructionPlayer(): HTMLAudioElement {
+    return this._audioInstructionPlayer;
+  }
+  public set audioInstructionPlayer(value: HTMLAudioElement) {
+    this._audioInstructionPlayer = value;
+  }
+  public get audioInstruction(): string {
+    return this._audioInstruction;
+  }
+  public set audioInstruction(value: string) {
+    this._audioInstruction = value;
+  }
   public get singleAssessmentEnabled(): boolean {
     return this._singleAssessmentEnabled;
   }
@@ -158,6 +188,7 @@ export class StateManagerService {
     this.configureSingleAssessmentEnabled();
     this.totalAssessments = Object.keys(this.assessments).length;
     this.inMobileBrowser = this.mobileCheck();
+    this.audioInstructionPlayer = new Audio();
   }
 
   private configureSingleAssessmentEnabled(): void {
@@ -297,6 +328,7 @@ export class StateManagerService {
   }
 
   public goToNextAssessment(): void {
+    // this.finishedInstruction = false;
     this.currentAssessment = this.determineNextAssessment();
     this.navigateTo(this.currentAssessment);
   }
@@ -304,6 +336,20 @@ export class StateManagerService {
   public goToNextAssessmentFromHome(): void {
     this.startedByHandFromHome = true;
     this.goToNextAssessment();
+  }
+
+  playInstructions(): void {
+    this.audioInstructionPlayer.src = this.audioInstruction;
+    this.audioInstructionPlayer.currentTime = 0;
+    this.audioInstructionPlayer.onplaying = (ev: Event): any => {
+      this.finishedInstruction = false;
+      this.playingInstruction = true;
+    };
+    this.audioInstructionPlayer.addEventListener('ended', () => {
+      this.finishedInstruction = true;
+      this.playingInstruction = false;
+    });
+    this.audioInstructionPlayer.play();
   }
 
   public goToHashKeyInitializer(hashKey: string): void {
