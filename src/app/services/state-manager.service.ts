@@ -335,7 +335,7 @@ export class StateManagerService {
   }
 
   public goToNextAssessment(): void {
-    // this.stateManager.finishedInstruction = false;
+    this.finishedInstruction = false;
     this.currentAssessment = this.determineNextAssessment();
     this.showStartParagraph = true;
     this.navigateTo(this.currentAssessment);
@@ -350,7 +350,7 @@ export class StateManagerService {
     this.audioInstructionPlayer.src = this.audioInstruction;
     this.audioInstructionPlayer.currentTime = 0;
     this.audioInstructionPlayer.onplaying = (ev: Event): any => {
-      this.finishedInstruction = false;
+      // this.finishedInstruction = false;
       this.playingInstruction = true;
     };
     this.audioInstructionPlayer.addEventListener('ended', () => {
