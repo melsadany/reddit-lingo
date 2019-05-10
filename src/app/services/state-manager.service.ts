@@ -350,7 +350,6 @@ export class StateManagerService {
     this.audioInstructionPlayer.src = this.audioInstruction;
     this.audioInstructionPlayer.currentTime = 0;
     this.audioInstructionPlayer.onplaying = (ev: Event): any => {
-      // this.finishedInstruction = false;
       this.playingInstruction = true;
     };
     this.audioInstructionPlayer.addEventListener('ended', () => {
