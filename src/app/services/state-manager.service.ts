@@ -39,7 +39,14 @@ export class StateManagerService {
   private _audioInstructionPlayer: HTMLAudioElement;
   private _finishedInstruction = false;
   private _playingInstruction = false;
+  private _showStartParagraph = true;
 
+  public get showStartParagraph(): boolean {
+    return this._showStartParagraph;
+  }
+  public set showStartParagraph(value: boolean) {
+    this._showStartParagraph = value;
+  }
   public get playingInstruction(): boolean {
     return this._playingInstruction;
   }
