@@ -31,7 +31,6 @@ export class SelectionAssessment extends BaseAssessment implements OnDestroy {
     if (!this.stateManager.finishedInstruction && !this.stateManager.audioInstructionPlayer.paused) {
       console.log('Audio pausing');
       this.stateManager.audioInstructionPlayer.pause();
-      // this.stateManager.audioInstructionPlayer = null;
     }
     clearInterval(this.intervalCountdown);
   }
