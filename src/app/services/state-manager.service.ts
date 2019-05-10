@@ -335,7 +335,7 @@ export class StateManagerService {
   }
 
   public goToNextAssessment(): void {
-    // this.finishedInstruction = false;
+    // this.stateManager.finishedInstruction = false;
     this.currentAssessment = this.determineNextAssessment();
     this.showStartParagraph = true;
     this.navigateTo(this.currentAssessment);
