@@ -28,10 +28,10 @@ export class SelectionAssessment extends BaseAssessment implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (!this.finishedInstruction && !this.audioInstructionPlayer.paused) {
+    if (!this.stateManager.finishedInstruction && !this.stateManager.audioInstructionPlayer.paused) {
       console.log('Audio pausing');
-      this.audioInstructionPlayer.pause();
-      this.audioInstructionPlayer = null;
+      this.stateManager.audioInstructionPlayer.pause();
+      // this.stateManager.audioInstructionPlayer = null;
     }
     clearInterval(this.intervalCountdown);
   }

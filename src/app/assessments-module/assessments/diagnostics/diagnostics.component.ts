@@ -38,7 +38,7 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
   }
   private _isRecording: boolean;
   private _recordedTime: string;
-  private _audio: HTMLAudioElement;
+  // private _audio: HTMLAudioElement;
   private _testedAudio = false;
   private _testedMic = false;
   private _playingAudio = false;
@@ -69,12 +69,12 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
   public set recordedTime(value: string) {
     this._recordedTime = value;
   }
-  public get audio(): HTMLAudioElement {
-    return this._audio;
-  }
-  public set audio(value: HTMLAudioElement) {
-    this._audio = value;
-  }
+  // public get audio(): HTMLAudioElement {
+  //   return this._audio;
+  // }
+  // public set audio(value: HTMLAudioElement) {
+  //   this._audio = value;
+  // }
   public get testedAudio(): boolean {
     return this._testedAudio;
   }
