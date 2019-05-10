@@ -5,19 +5,10 @@ Parameters:
     Description: Key Pair name
     Type: AWS::EC2::KeyPair::KeyName
     Default: xxx-xxx
-  # VPC:
-  #   Type: AWS::EC2::VPC::Id
-  #   Default: givevpcid
-  # Subnet:
-  #   Type: AWS::EC2::Subnet::Id
-  #   Default: givesubnetid
   InstanceType:
     Description: Select one of the possible instance types
     Type: String
     Default: t2.medium
-  # SecurityGroup:
-  #   Type: AWS::EC2::SecurityGroup::Id
-  #   Default: givesecuritygroupid
   ImageID:
     Type: AWS::EC2::Image::Id
     Default: ami-0de53d8956e8dcf80
