@@ -33,7 +33,14 @@ export class StateManagerService {
   private _assessments = {};
   private _IOSSafari: boolean;
   private _singleAssessmentEnabled: boolean;
+  private _showStartParagraph = true;
 
+  public get showStartParagraph(): boolean {
+    return this._showStartParagraph;
+  }
+  public set showStartParagraph(value: boolean) {
+    this._showStartParagraph = value;
+  }
   public get singleAssessmentEnabled(): boolean {
     return this._singleAssessmentEnabled;
   }
@@ -298,6 +305,7 @@ export class StateManagerService {
 
   public goToNextAssessment(): void {
     this.currentAssessment = this.determineNextAssessment();
+    this.showStartParagraph = true;
     this.navigateTo(this.currentAssessment);
   }
 
