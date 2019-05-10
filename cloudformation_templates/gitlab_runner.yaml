@@ -5,19 +5,19 @@ Parameters:
     Description: Key Pair name
     Type: AWS::EC2::KeyPair::KeyName
     Default: xxx-xxx
-  VPC:
-    Type: AWS::EC2::VPC::Id
-    Default: givevpcid
-  Subnet:
-    Type: AWS::EC2::Subnet::Id
-    Default: givesubnetid
+  # VPC:
+  #   Type: AWS::EC2::VPC::Id
+  #   Default: givevpcid
+  # Subnet:
+  #   Type: AWS::EC2::Subnet::Id
+  #   Default: givesubnetid
   InstanceType:
     Description: Select one of the possible instance types
     Type: String
     Default: t2.medium
-  SecurityGroup:
-    Type: AWS::EC2::SecurityGroup::Id
-    Default: givesecuritygroupid
+  # SecurityGroup:
+  #   Type: AWS::EC2::SecurityGroup::Id
+  #   Default: givesecuritygroupid
   ImageID:
     Type: AWS::EC2::Image::Id
     Default: ami-0de53d8956e8dcf80
@@ -27,6 +27,7 @@ Parameters:
   GitLabRegistrationToken:
     Type: String
     Default: GitLab Runner Registration Token
+    Description: Get from https://research-git.uiowa.edu/michaelson-lab/language-screener/ScreenerVersion2/settings/ci_cd#js-runners-settings
 Resources:
   IamInstanceProfileForRunner:
     Type: AWS::IAM::InstanceProfile
@@ -47,9 +48,9 @@ Resources:
       KeyName:
         Ref: KeyName
       SecurityGroupIds:
-      - Ref: SecurityGroup
+        - sg-03632539cbcd91af5
       SubnetId:
-        Ref: Subnet
+        subnet-0737a237be02ece05
       Tags:
       - Key: Name
         Value: LingoGitlabRunner
