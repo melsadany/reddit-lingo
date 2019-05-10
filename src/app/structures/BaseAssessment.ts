@@ -24,7 +24,7 @@ export class BaseAssessment implements OnInit {
   private _useCountdownCircle: boolean;
   private _showCircleAnimation: boolean;
   private _lastPromptWaitTime: number;
-  // private _finishedInstruction = false;
+  // private _stateManager.finishedInstruction = false;
   private _promptNumber = 0;
   private _promptsLength: number;
   private _lastPrompt = false;
@@ -54,11 +54,11 @@ export class BaseAssessment implements OnInit {
   public set promptNumber(value: number) {
     this._promptNumber = value;
   }
-  // public get finishedInstruction(): boolean {
-  //   return this._finishedInstruction;
+  // public get stateManager.finishedInstruction(): boolean {
+  //   return this._stateManager.finishedInstruction;
   // }
-  // public set finishedInstruction(value: boolean) {
-  //   this._finishedInstruction = value;
+  // public set stateManager.finishedInstruction(value: boolean) {
+  //   this._stateManager.finishedInstruction = value;
   // }
   public get lastPromptWaitTime(): number {
     return this._lastPromptWaitTime;
@@ -252,11 +252,11 @@ export class BaseAssessment implements OnInit {
   //   this.audioInstructionPlayer = new Audio();
   //   this.audioInstructionPlayer.src = this.audioInstruction;
   //   this.audioInstructionPlayer.onplaying = (ev: Event): any => {
-  //     this.finishedInstruction = false;
+  //     this.stateManager.finishedInstruction = false;
   //     this.playingInstruction = true;
   //   };
   //   this.audioInstructionPlayer.addEventListener('ended', () => {
-  //     this.finishedInstruction = true;
+  //     this.stateManager.finishedInstruction = true;
   //     this.playingInstruction = false;
   //   });
   //   this.audioInstructionPlayer.play();

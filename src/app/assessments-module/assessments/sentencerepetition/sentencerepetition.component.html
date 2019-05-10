@@ -8,12 +8,13 @@
   </div>
   <div *ngIf="stateManager.showInnerAssessmentButton" class="text-center button-down">
     <div *ngIf="!stateManager.isInAssessment">
-      <img *ngIf="!finishedInstruction && playingInstruction" style="max-height:85px;" class="img-fluid"
-        src="assets/in_use/animations/random_waveform.gif">
-      <button *ngIf="finishedInstruction && !playingInstruction" type="button" class="start-button btn btn-success"
+      <img *ngIf="!stateManager.finishedInstruction && stateManager.playingInstruction" style="max-height:85px;"
+        class="img-fluid" src="assets/in_use/animations/random_waveform.gif">
+      <button *ngIf="stateManager.finishedInstruction && !stateManager.playingInstruction" type="button"
+        class="start-button btn btn-success"
         (click)="setStateAndStart()">{{stateManager.textOnInnerAssessmentButton}}</button>
-      <button *ngIf="!finishedInstruction && !playingInstruction" type="button" class="start-button btn btn-success"
-        (click)="playInstructions()">
+      <button *ngIf="!stateManager.finishedInstruction && !stateManager.playingInstruction" type="button"
+        class="start-button btn btn-success" (click)="playInstructions()">
         Start Instruction
       </button>
     </div>
