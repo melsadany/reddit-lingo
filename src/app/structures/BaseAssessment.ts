@@ -15,8 +15,6 @@ export class BaseAssessment implements OnInit {
   private _timeLeft: number;
   private _doneCountingDown = false;
   private _showExample = true;
-  private _audioInstruction: string;
-  private _audioInstructionPlayer: HTMLAudioElement;
   private _showProgressAnimation = false;
   private _countdownTimerType: string;
   private _useCountdownBar: boolean;
@@ -24,18 +22,10 @@ export class BaseAssessment implements OnInit {
   private _useCountdownCircle: boolean;
   private _showCircleAnimation: boolean;
   private _lastPromptWaitTime: number;
-  private _finishedInstruction = false;
   private _promptNumber = 0;
   private _promptsLength: number;
   private _lastPrompt = false;
-  private _playingInstruction = false;
 
-  public get playingInstruction(): boolean {
-    return this._playingInstruction;
-  }
-  public set playingInstruction(value: boolean) {
-    this._playingInstruction = value;
-  }
   public get lastPrompt(): boolean {
     return this._lastPrompt;
   }
@@ -53,12 +43,6 @@ export class BaseAssessment implements OnInit {
   }
   public set promptNumber(value: number) {
     this._promptNumber = value;
-  }
-  public get finishedInstruction(): boolean {
-    return this._finishedInstruction;
-  }
-  public set finishedInstruction(value: boolean) {
-    this._finishedInstruction = value;
   }
   public get lastPromptWaitTime(): number {
     return this._lastPromptWaitTime;
@@ -108,18 +92,6 @@ export class BaseAssessment implements OnInit {
   public set showProgressAnimation(value: boolean) {
     this._showProgressAnimation = value;
   }
-  public get audioInstructionPlayer(): HTMLAudioElement {
-    return this._audioInstructionPlayer;
-  }
-  public set audioInstructionPlayer(value: HTMLAudioElement) {
-    this._audioInstructionPlayer = value;
-  }
-  public get audioInstruction(): string {
-    return this._audioInstruction;
-  }
-  public set audioInstruction(value: string) {
-    this._audioInstruction = value;
-  }
   public get assetType(): string {
     return this._assetType;
   }
@@ -168,7 +140,6 @@ export class BaseAssessment implements OnInit {
     public dataService: AssessmentDataService
   ) {
     this.stateManager.showOutsideAssessmentButton = false;
-    this.audioInstructionPlayer = new Audio();
   }
 
   ngOnInit(): void {
@@ -179,9 +150,9 @@ export class BaseAssessment implements OnInit {
     this.dataService
       .getAssets('audio', this.assessmentName)
       .subscribe((value: AssetsObject) => {
-        this.audioInstruction = value.audioInstruction;
+        this.stateManager.audioInstruction = value.audioInstruction;
         if (!this.stateManager.IOSSafari) {
-          this.playInstructions();
+          this.stateManager.playInstructions();
         }
       });
   }
@@ -246,20 +217,6 @@ export class BaseAssessment implements OnInit {
     } else {
       return this.timeLeftConfig;
     }
-  }
-
-  playInstructions(): void {
-    this.audioInstructionPlayer = new Audio();
-    this.audioInstructionPlayer.src = this.audioInstruction;
-    this.audioInstructionPlayer.onplaying = (ev: Event): any => {
-      this.finishedInstruction = false;
-      this.playingInstruction = true;
-    };
-    this.audioInstructionPlayer.addEventListener('ended', () => {
-      this.finishedInstruction = true;
-      this.playingInstruction = false;
-    });
-    this.audioInstructionPlayer.play();
   }
 
   finishAssessment(): void {

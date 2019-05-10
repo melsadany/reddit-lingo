@@ -95,21 +95,10 @@ export class AudioAssessment extends BaseAssessment implements OnDestroy {
       });
   }
 
-  // ngOnInit(): void {
-  //   if (
-  //     !this.stateManager.sendToCurrentIfAlreadyCompleted(this.assessmentName)
-  //   ) {
-  //     this.promptNumber = this.stateManager.assessments[this.assessmentName][
-  //       'prompt_number'
-  //     ];
-  //   }
-  // }
-
   ngOnDestroy(): void {
-    if (!this.finishedInstruction) {
+    if (!this.stateManager.finishedInstruction && !this.stateManager.audioInstructionPlayer.paused) {
       console.log('Audio pausing');
-      this.audioInstructionPlayer.pause();
-      this.audioInstructionPlayer = null;
+      this.stateManager.audioInstructionPlayer.pause();
     }
     this.abortRecording();
     this.failSubscription.unsubscribe();
