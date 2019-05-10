@@ -12,7 +12,7 @@
       <button *ngIf="stateManager.finishedInstruction && !stateManager.playingInstruction" type="button" class="start-button btn btn-success"
         (click)="setStateAndStart()">{{stateManager.textOnInnerAssessmentButton}}</button>
       <button *ngIf="!stateManager.finishedInstruction && !stateManager.playingInstruction" type="button" class="start-button btn btn-success"
-        (click)="playInstructions()">
+        (click)="stateManager.playInstructions()">
         Start Instruction
       </button>
     </div>
