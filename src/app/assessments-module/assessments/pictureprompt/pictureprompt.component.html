@@ -2,7 +2,7 @@
   <div *ngIf="stateManager.showAssessmentFrontPage">
     <p class="py-4 text-center">
       In this task, you will be shown a picture. Describe what you see in the
-      picture, as if you were describing it to someone who could not see it. 
+      picture, as if you were describing it to someone who could not see it.
       With each picture, your description will be recorded for 30 seconds.
     </p>
   </div>
@@ -37,8 +37,14 @@
 </div>
 <div *ngIf="showProgressAnimation && useCountdownBar">
   <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  <div class="text-center">
+    Wait
+  </div>
 </div>
 <div *ngIf="showCircleAnimation && useCountdownCircle">
   <mat-spinner style="margin:0 auto;">
   </mat-spinner>
+  <div class="text-center">
+    Wait
+  </div>
 </div>

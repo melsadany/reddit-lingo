@@ -44,9 +44,15 @@
   </div>
   <div *ngIf="showProgressAnimation && useCountdownBar">
     <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    <div class="text-center">
+      Wait
+    </div>
   </div>
   <div *ngIf="showCircleAnimation && useCountdownCircle">
     <mat-spinner style="margin:0 auto;">
     </mat-spinner>
+    <div class="text-center">
+      Wait
+    </div>
   </div>
 </div>

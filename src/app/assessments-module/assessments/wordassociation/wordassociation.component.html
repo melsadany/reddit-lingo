@@ -18,32 +18,31 @@
           Start Instruction
         </button>
       </div>
-      <div *ngIf="showExample" class="text-center">
+      <div *ngIf="showExample" class="mb-2 text-center">
         <img class="img-fluid" src="assets/in_use/examples/animations/wordassociation_example.gif"
           style="margin-bottom: 20px;" />
       </div>
-      <div *ngIf="stateManager.isInAssessment">
+      <div *ngIf="stateManager.isInAssessment" class="pt-3">
         <button type="button" class="start-button btn btn-success"
           (click)="advance()">{{stateManager.textOnInnerAssessmentButton}}</button>
       </div>
     </div>
   </div>
   <div *ngIf="showWords">
-    <div *ngFor="let word of selectedWordsThisPrompt; let i = index" class="row justify-content-center"
-      style="margin: 5px;">
-      <ng-container *ngIf="i === selectedWordsThisPrompt.length - 1; then thenTemplate; else elseTemplate">
-      </ng-container>
-      <ng-template #thenTemplate>
-        <div class="border border-danger rounded"
-          style="color:crimson; padding: 3px; font-size: 120%; font-weight: bold;">
-          {{ word }}
+    <div class="row justify-content-center" style="margin: 5px;">
+      <div class="border border-danger rounded"
+        style="color:crimson; padding: 3px; font-size: 120%; font-weight: bold;">
+        {{ selectedWordsThisPrompt[selectedWordsThisPrompt.length - 1] }}
+      </div>
+    </div>
+    <div *ngIf="showRunningChoices">
+      <div *ngFor="let word of selectedWordsThisPrompt; let i = index">
+        <div *ngIf="i > selectedWordsThisPrompt.length - 1">
+          <div class="border border-white" style="color: gray">
+            {{ word }}
+          </div>
         </div>
-      </ng-template>
-      <ng-template #elseTemplate>
-        <div class="border border-white" style="color: gray">
-          {{ word }}
-        </div>
-      </ng-template>
+      </div>
     </div>
     <div *ngFor="let row of currentPromptMatrix" class="row">
       <div *ngFor="let word of row" class="col-sm-4">
@@ -57,11 +56,19 @@
   <div>
     <p *ngIf="countingDown && useCountdownNumber" class="text-center display-1">{{timeLeft}}</p>
   </div>
-  <div *ngIf="showProgressAnimation && useCountdownBar">
-    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-  </div>
-  <div *ngIf="showCircleAnimation && useCountdownCircle">
-    <mat-spinner style="margin:0 auto;">
-    </mat-spinner>
+  <div class="pt-3">
+    <div *ngIf="showProgressAnimation && useCountdownBar">
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+      <div class="text-center">
+        Wait
+      </div>
+    </div>
+    <div *ngIf="showCircleAnimation && useCountdownCircle">
+      <mat-spinner style="margin:0 auto;">
+      </mat-spinner>
+      <div class="text-center">
+        Wait
+      </div>
+    </div>
   </div>
 </div>

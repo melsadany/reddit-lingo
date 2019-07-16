@@ -8,7 +8,10 @@
         "enabled": false
       },
       "wordassociation": {
-        "enabled": true
+        "enabled": true,
+        "useSpecificStartWord": false,
+        "startWord": "close",
+        "showRunningChoices": false
       },
       "wordfinding": {
         "enabled": true
@@ -44,7 +47,8 @@
       "countdownTimerLength": 3,
       "countdownTimerType": "circle",
       "singleAssessmentEnabled": false,
-      "debugEnabled": true
+      "debugEnabled": true,
+      "hideInstructionsOnAssessmentStart": false
     }
   }
 }

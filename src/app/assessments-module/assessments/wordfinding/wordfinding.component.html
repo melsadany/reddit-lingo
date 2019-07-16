@@ -7,12 +7,13 @@
   </div>
   <div *ngIf="stateManager.showInnerAssessmentButton" class="text-center button-down">
     <div *ngIf="!stateManager.isInAssessment">
-      <img *ngIf="!stateManager.finishedInstruction && stateManager.playingInstruction" style="max-height:85px;" class="img-fluid"
-        src="assets/in_use/animations/random_waveform.gif">
-      <button *ngIf="stateManager.finishedInstruction && !stateManager.playingInstruction" type="button" class="start-button btn btn-success"
+      <img *ngIf="!stateManager.finishedInstruction && stateManager.playingInstruction" style="max-height:85px;"
+        class="img-fluid" src="assets/in_use/animations/random_waveform.gif">
+      <button *ngIf="stateManager.finishedInstruction && !stateManager.playingInstruction" type="button"
+        class="start-button btn btn-success"
         (click)="setStateAndStart()">{{stateManager.textOnInnerAssessmentButton}}</button>
-      <button *ngIf="!stateManager.finishedInstruction && !stateManager.playingInstruction" type="button" class="start-button btn btn-success"
-        (click)="stateManager.playInstructions()">
+      <button *ngIf="!stateManager.finishedInstruction && !stateManager.playingInstruction" type="button"
+        class="start-button btn btn-success" (click)="stateManager.playInstructions()">
         Start Instruction
       </button>
     </div>
@@ -32,9 +33,15 @@
   </div>
   <div *ngIf="showProgressAnimation && useCountdownBar">
     <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    <div class="text-center">
+      Wait
+    </div>
   </div>
   <div *ngIf="showCircleAnimation && useCountdownCircle">
     <mat-spinner style="margin:0 auto;">
     </mat-spinner>
+    <div class="text-center">
+      Wait
+    </div>
   </div>
 </div>

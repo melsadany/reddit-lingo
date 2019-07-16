@@ -23,30 +23,36 @@
         (click)="advance()">{{stateManager.textOnInnerAssessmentButton}}</button>
     </div>
   </div>
-</div>
-<div class="text-center" *ngIf="playingAudio">
-  <img style="max-height:85px;" class="img-fluid" src="assets/in_use/animations/random_waveform.gif">
-</div>
-<div *ngIf="showImage">
-  <table style="margin: 0 auto;">
-    <tbody>
-      <tr *ngFor="let row of imagePaths">
-        <td *ngFor="let image of row">
-          <button type="button" class="btn btn-outline-primary" (click)="clickImage(image)">
-            <img class="img-fluid" [src]="image">
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-<div>
-  <p *ngIf="countingDown && useCountdownNumber" class="text-center display-1">{{timeLeft}}</p>
-</div>
-<div *ngIf="showProgressAnimation && useCountdownBar">
-  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-</div>
-<div *ngIf="showCircleAnimation && useCountdownCircle">
-  <mat-spinner style="margin:0 auto;">
-  </mat-spinner>
+  <div class="text-center" *ngIf="playingAudio">
+    <img style="max-height:85px;" class="img-fluid" src="assets/in_use/animations/random_waveform.gif">
+  </div>
+  <div *ngIf="showImage">
+    <table style="margin: 0 auto;">
+      <tbody>
+        <tr *ngFor="let row of imagePaths">
+          <td *ngFor="let image of row">
+            <button type="button" class="btn btn-outline-primary" (click)="clickImage(image)">
+              <img class="img-fluid" [src]="image">
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div>
+    <p *ngIf="countingDown && useCountdownNumber" class="text-center display-1">{{timeLeft}}</p>
+  </div>
+  <div *ngIf="showProgressAnimation && useCountdownBar">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    <div class="text-center">
+      Wait
+    </div>
+  </div>
+  <div *ngIf="showCircleAnimation && useCountdownCircle">
+    <mat-spinner style="margin:0 auto;">
+    </mat-spinner>
+    <div class="text-center">
+      Wait
+    </div>
+  </div>
 </div>
