@@ -1,6 +1,6 @@
 <div class="mx-lg-5">
   <div *ngIf="stateManager.showAssessmentFrontPage">
-    <p class="py-4 text-center">
+    <p *ngIf="stateManager.showStartParagraph" class="py-4 text-center">
       You will be shown a letter. Say as many words as you can that begin with this letter. You will have 30 seconds for
       each letter shown to you.
     </p>

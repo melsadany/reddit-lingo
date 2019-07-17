@@ -1,6 +1,6 @@
 <div class="mx-lg-5">
   <div *ngIf="stateManager.showAssessmentFrontPage">
-    <p class="py-4 text-center">
+    <p *ngIf="stateManager.showStartParagraph" class="py-4 text-center">
       In this task, you will be shown a picture. Describe what you see in the
       picture, as if you were describing it to someone who could not see it.
       With each picture, your description will be recorded for 30 seconds.

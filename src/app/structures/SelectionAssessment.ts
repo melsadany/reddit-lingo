@@ -121,6 +121,9 @@ export class SelectionAssessment extends BaseAssessment implements OnDestroy {
         this.stateManager.textOnInnerAssessmentButton =
           'FINISH ASSESSMENT AND ADVANCE';
       }
+      if (this.stateManager.appConfig['appConfig']['assessmentsConfig'][this.assessmentName]['hideInstructionsOnAssessmentStart']) {
+        this.stateManager.showStartParagraph = false;
+      }
       if (beforeAdvanceCall) {
         // KRM: This call must return a promise
         beforeAdvanceCall().then(() => {

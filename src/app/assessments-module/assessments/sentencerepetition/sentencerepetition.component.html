@@ -1,6 +1,6 @@
 <div class="mx-lg-5">
   <div *ngIf="stateManager.showAssessmentFrontPage">
-    <p class="py-4 text-center">
+    <p *ngIf="stateManager.showStartParagraph" class="py-4 text-center">
       In this task, you will listen to a sentence. Once the sentence is finished, the screen will advance after three
       seconds,
       and you will be asked to repeat the sentence back.
