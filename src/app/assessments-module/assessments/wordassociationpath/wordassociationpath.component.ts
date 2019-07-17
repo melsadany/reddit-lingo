@@ -2,15 +2,15 @@ import { Component } from '@angular/core';
 import { SelectionAssessment } from '../../../structures/SelectionAssessment';
 import { StateManagerService } from '../../../services/state-manager.service';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
-import * as data from '../../../../assets/in_use/data/wordassociation/wordmappings.json';
+import * as data from '../../../../assets/in_use/data/wordassociationpath/wordmappings.json';
 
 @Component({
-  selector: 'app-wordassociation',
-  templateUrl: './wordassociation.component.html',
-  styleUrls: ['./wordassociation.component.scss']
+  selector: 'app-wordassociationpath',
+  templateUrl: './wordassociationpath.component.html',
+  styleUrls: ['./wordassociationpath.component.scss']
 })
-export class WordassociationComponent extends SelectionAssessment {
-  assessmentName = 'wordassociation';
+export class WordassociationPathComponent extends SelectionAssessment {
+  assessmentName = 'wordassociationpath';
   wordAssociationsObject: Object = data['words'];
   wordAssociationPromptKeysList = Object.keys(data['words']);
   wordSackThisPrompt = this.wordAssociationsObject[this.promptNumber];
@@ -21,7 +21,7 @@ export class WordassociationComponent extends SelectionAssessment {
   selectedWordsThisPrompt: string[];
   currentPromptMatrix: string[][];
   useSpecificStartWord: boolean = this.stateManager.appConfig['appConfig']['assessmentsConfig'][
-    'wordassociation'
+    'wordassociationpath'
   ]['useSpecificStartWord'];
   startWord: string;
   showRunningChoices = false;
@@ -33,7 +33,7 @@ export class WordassociationComponent extends SelectionAssessment {
     this.configureAssessmentSettings();
     if (this.useSpecificStartWord) {
       this.startWord = this.stateManager.appConfig['appConfig']['assessmentsConfig'][
-        'wordassociation'
+        'wordassociationpath'
       ]['startWord'];
     } else {
       this.startWord = Object.keys(this.wordSackThisPrompt)[0];
@@ -41,7 +41,7 @@ export class WordassociationComponent extends SelectionAssessment {
       // if a specific one is not given in the assessment config json
     }
     if (this.stateManager.appConfig['appConfig']['assessmentsConfig'][
-      'wordassociation'
+      'wordassociationpath'
     ]['showRunningChoices']) {
       this.showRunningChoices = true;
     }

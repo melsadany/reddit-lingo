@@ -7,7 +7,14 @@
       "prescreenerquestions": {
         "enabled": false
       },
-      "wordassociation": {
+      "wordassociationpath": {
+        "enabled": true,
+        "useSpecificStartWord": true,
+        "startWord": "cat",
+        "showRunningChoices": true,
+        "hideInstructionsOnAssessmentStart": true
+      },
+      "wordassociationpair": {
         "enabled": true,
         "useSpecificStartWord": true,
         "startWord": "cat",
