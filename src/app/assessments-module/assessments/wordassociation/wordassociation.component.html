@@ -29,23 +29,25 @@
     </div>
   </div>
   <div *ngIf="showWords">
+    <div *ngIf="showRunningChoices">
+      <div *ngFor="let word of selectedWordsThisPrompt; let i = index">
+        <div class="row justify-content-center" style="margin: 5px;">
+          <div *ngIf="i < selectedWordsThisPrompt.length - 1">
+            <div class="border border-white" style="color: gray">
+              {{ word }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="row justify-content-center" style="margin: 5px;">
       <div class="border border-danger rounded"
         style="color:crimson; padding: 3px; font-size: 120%; font-weight: bold;">
         {{ selectedWordsThisPrompt[selectedWordsThisPrompt.length - 1] }}
       </div>
     </div>
-    <div *ngIf="showRunningChoices">
-      <div *ngFor="let word of selectedWordsThisPrompt; let i = index">
-        <div *ngIf="i > selectedWordsThisPrompt.length - 1">
-          <div class="border border-white" style="color: gray">
-            {{ word }}
-          </div>
-        </div>
-      </div>
-    </div>
     <div *ngFor="let row of currentPromptMatrix" class="row">
-      <div *ngFor="let word of row" class="col-sm-4">
+      <div *ngFor="let word of row" class="col-sm-4" style="margin: 0 auto;">
         <button type="button" class="btn btn-light" style="width:100%; color:black; margin: 5px;"
           (click)="clickWord(word)">
           {{ word }}

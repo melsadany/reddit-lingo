@@ -9,9 +9,9 @@
       },
       "wordassociation": {
         "enabled": true,
-        "useSpecificStartWord": false,
-        "startWord": "close",
-        "showRunningChoices": false,
+        "useSpecificStartWord": true,
+        "startWord": "cat",
+        "showRunningChoices": true,
         "hideInstructionsOnAssessmentStart": true
       },
       "wordfinding": {
