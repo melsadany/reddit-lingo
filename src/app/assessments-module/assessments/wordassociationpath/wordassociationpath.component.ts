@@ -45,7 +45,6 @@ export class WordassociationPathComponent extends SelectionAssessment {
     ]['showRunningChoices']) {
       this.showRunningChoices = true;
     }
-    console.log(this.showRunningChoices);
   }
 
   setStateAndStart(): void {
