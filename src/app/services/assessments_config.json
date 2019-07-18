@@ -11,17 +11,17 @@
         "enabled": true
       },
       "wordfinding": {
-        "enabled": false
+        "enabled": true
       },
       "sentencerepetition": {
-        "enabled": false,
-        "prompt_countdowns": [7, 4, 5, 3, 8]
+        "enabled": true,
+        "prompt_countdowns": [3]
       },
       "matrixreasoning": {
-        "enabled": false
+        "enabled": true
       },
       "syncvoice": {
-        "enabled": false
+        "enabled": true
       },
       "timeduration": {
         "enabled": true,
@@ -31,10 +31,10 @@
         "enabled": true
       },
       "pictureprompt": {
-        "enabled": false
+        "enabled": true
       },
       "listeningcomprehension": {
-        "enabled": false
+        "enabled": true
       },
       "postscreenerquestions": {
         "enabled": false
