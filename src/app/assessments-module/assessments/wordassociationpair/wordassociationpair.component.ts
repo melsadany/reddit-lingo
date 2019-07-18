@@ -4,6 +4,10 @@ import { StateManagerService } from '../../../services/state-manager.service';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
 import * as data from '../../../../assets/in_use/data/wordassociationpair/wordmappings.json';
 
+export interface PairSelection {
+  start_word: string;
+  paired_word: string;
+}
 @Component({
   selector: 'app-wordassociationpair',
   templateUrl: './wordassociationpair.component.html',
@@ -13,13 +17,11 @@ export class WordassociationPairComponent extends SelectionAssessment {
   assessmentName = 'wordassociationpair';
   wordAssociationsPrompts: Object = data['words'];
   promptsLength = Object.keys(data['words']).length;
+  pairingsLengthThisPrompt: number;
   showWords = false;
-  spanNumber = 12;
-  selectedPairingsThisPrompt: [{}];
+  selectedPairingsThisPrompt: PairSelection[];
   currentPromptMatrix: string[][];
-  showRunningChoices = false;
-  beginningStartWord: string;
-  startWordsThisPrompt: {};
+  startWordsThisPrompt: string[];
   startWord: string;
   useSpecificStartWord: boolean = this.stateManager.appConfig['appConfig']['assessmentsConfig'][
     'wordassociationpair'
@@ -30,20 +32,6 @@ export class WordassociationPairComponent extends SelectionAssessment {
   ) {
     super(stateManager, dataService);
     this.configureAssessmentSettings();
-    if (this.stateManager.appConfig['appConfig']['assessmentsConfig'][
-      'wordassociationpair'
-    ]['showRunningChoices']) {
-      this.showRunningChoices = true;
-    }
-    if (this.useSpecificStartWord) {
-      this.startWord = this.stateManager.appConfig['appConfig']['assessmentsConfig'][
-        'wordassociationpair'
-      ]['startWord'];
-    } else {
-      this.beginningStartWord = Object.keys(this.startWordsThisPrompt)[0];
-      // KRM: Always pick the first word out of the object for this prompt
-      // if a specific one is not given in the assessment config json
-    }
   }
 
   setStateAndStart(): void {
@@ -55,26 +43,11 @@ export class WordassociationPairComponent extends SelectionAssessment {
     this.advance();
   }
 
-  getRandomIndex(): number {
-    return Math.floor(Math.random() * Object.keys(this.startWordsThisPrompt).length);
-  }
-
-  // getStartWords(): string[] {
-  //   const returnList = [];
-  //   for (let i = 0; i < this.promptNumbers.length; i++) {
-  //     // KRM: Determines number of prompts
-  //     const index = this.getRandomIndex();
-  //     returnList.push(this.wordSack[index]);
-  //   }
-  //   return returnList;
-  // }
-
   makeMatrix(): void {
     this.currentPromptMatrix = [];
-    const nextAssociationWord = this.selectedPairingsThisPrompt.slice(-1)[0];
     const currentWordsForPrompt: string[] = Object.assign(
       [],
-      this.wordAssociationsPrompts[this.promptNumber][nextAssociationWord]
+      this.wordAssociationsPrompts[this.promptNumber][this.startWord]
     );
     for (let i = 0; i < 3; i++) {
       const row = [];
@@ -101,14 +74,12 @@ export class WordassociationPairComponent extends SelectionAssessment {
 
   clickWord(word: string): void {
     this.selectedPairingsThisPrompt.push({
-      start_word: this.beginningStartWord,
+      start_word: this.startWord,
       paired_word: word
     });
-    this.spanNumber = Math.ceil(12 / this.selectedWordsThisPrompt.length);
-    if (this.selectedWordsThisPrompt.length === 6) {
-      // KRM: You get 5 selections
+    if (this.selectedPairingsThisPrompt.length === this.pairingsLengthThisPrompt) {
       this.sendWordSelectionAndAdvance(
-        this.selectedWordsThisPrompt,
+        this.selectedPairingsThisPrompt,
         () => (this.showWords = false),
         () =>
           this.advanceToNextPrompt(
@@ -124,15 +95,32 @@ export class WordassociationPairComponent extends SelectionAssessment {
           )
       );
     } else {
+      this.setNextStartWord();
       this.makeMatrix();
     }
   }
 
   handleNewPrompt(): void {
-    this.startWordsThisPrompt = this.wordAssociationsPrompts[this.promptNumber];
-    this.selectedPairingsThisPrompt = [0];
-    this.selectedPairingsThisPrompt.push();
-    this.spanNumber = Math.ceil(12 / this.selectedWordsThisPrompt.length);
+    this.startWordsThisPrompt = Object.keys(this.wordAssociationsPrompts[this.promptNumber]);
+    this.pairingsLengthThisPrompt = this.startWordsThisPrompt.length;
+    this.selectedPairingsThisPrompt = [];
+    if (this.useSpecificStartWord) {
+      this.startWord = this.stateManager.appConfig['appConfig']['assessmentsConfig'][
+        'wordassociationpair'
+      ]['startWord'];
+      const deleteIndex = this.startWordsThisPrompt.indexOf(this.startWord);
+      this.startWordsThisPrompt.splice(deleteIndex, 1);
+    } else {
+      this.startWord = this.startWordsThisPrompt[0];
+      this.startWordsThisPrompt.splice(0, 1);
+      // KRM: Always pick the first word out of the object for this prompt
+      // if a specific one is not given in the assessment config json
+    } // this.selectedPairingsThisPrompt.push();
     this.makeMatrix();
+  }
+
+  setNextStartWord(): void {
+    this.startWord = this.startWordsThisPrompt[0];
+    this.startWordsThisPrompt.splice(0, 1);
   }
 }

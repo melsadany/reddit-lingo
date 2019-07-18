@@ -18,7 +18,6 @@
         "enabled": true,
         "useSpecificStartWord": true,
         "startWord": "cat",
-        "showRunningChoices": true,
         "hideInstructionsOnAssessmentStart": true
       },
       "wordfinding": {

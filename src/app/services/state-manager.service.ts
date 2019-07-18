@@ -204,7 +204,6 @@ export class StateManagerService {
 
   private configureEnabledAssessments(): void {
     const assessmentsConfig = this.appConfig['appConfig']['assessmentsConfig'];
-    console.log(assessmentsConfig);
     for (const assessmentName of Object.keys(assessmentsConfig)) {
       if (assessmentsConfig[assessmentName]['enabled']) {
         this.assessments[assessmentName] = {
