@@ -38,7 +38,7 @@ Resources:
     Type: AWS::IAM::InstanceProfile
     Properties:
       Roles:
-        - ec2tos3
+        - LingoRole
 
   TestLingoLoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
@@ -47,8 +47,10 @@ Resources:
       Name: TestLingoLoadBalancer
       Scheme: internet-facing
       SecurityGroups:
-        - sg-03632539cbcd91af5
-      Subnets: [subnet-0737a237be02ece05, subnet-09b5561f301ffbad7]
+        - sg-0986f85eac88109da
+      Subnets:
+        - subnet-0737a237be02ece05
+        - subnet-09b5561f301ffbad7
       Type: application
 
   TestListenerForBalancer:
@@ -84,7 +86,7 @@ Resources:
         Ref:
           TestLingoIamInstanceProfile
       SecurityGroups:
-      - sg-03632539cbcd91af5
+      - sg-sg-0dd0bb71c81628e0d
       InstanceType:
         Ref: InstanceType
       KeyName:
