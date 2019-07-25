@@ -47,7 +47,7 @@ Resources:
       Name: App2LingoLoadBalancer
       Scheme: internet-facing
       SecurityGroups:
-        - sg-0986f85eac88109da
+        - sg-06271c018f58b7e66
       Subnets:
         - subnet-0737a237be02ece05
         - subnet-09b5561f301ffbad7
@@ -86,7 +86,7 @@ Resources:
         Ref:
           App2LingoIamInstanceProfile
       SecurityGroups:
-      - sg-0dd0bb71c81628e0d
+      - sg-0fd3c16a524d55c4f
       InstanceType:
         Ref: InstanceType
       KeyName:

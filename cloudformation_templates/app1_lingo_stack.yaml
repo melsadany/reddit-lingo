@@ -47,7 +47,7 @@ Resources:
       Name: App1LingoLoadBalancer
       Scheme: internet-facing
       SecurityGroups:
-        - sg-0986f85eac88109da
+        - sg-0c79be9d128bdf3c4
       Subnets:
         - subnet-0737a237be02ece05
         - subnet-09b5561f301ffbad7
@@ -86,7 +86,7 @@ Resources:
         Ref:
           App1LingoIamInstanceProfile
       SecurityGroups:
-      - sg-0dd0bb71c81628e0d
+      - sg-04b4d3661685a98fd
       InstanceType:
         Ref: InstanceType
       KeyName:
