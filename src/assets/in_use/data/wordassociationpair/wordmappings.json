@@ -1,0 +1,74 @@
+{
+  "words": {
+    "0": {
+      "dog": [
+        "cat",
+        "mouse",
+        "horse",
+        "koala",
+        "monkey",
+        "bird",
+        "lion",
+        "lizard",
+        "salamander"
+      ],
+      "cat": [
+        "mouse",
+        "horse",
+        "koala",
+        "monkey",
+        "bird",
+        "lion",
+        "lizard",
+        "salamander",
+        "dog"
+      ],
+      "mouse": [
+        "horse",
+        "koala",
+        "monkey",
+        "bird",
+        "lion",
+        "lizard",
+        "salamander",
+        "dog",
+        "cat"
+      ]
+    },
+    "1": {
+      "dog": [
+        "cat",
+        "mouse",
+        "horse",
+        "koala",
+        "monkey",
+        "bird",
+        "lion",
+        "lizard",
+        "salamander"
+      ],
+      "cat": [
+        "mouse",
+        "horse",
+        "koala",
+        "monkey",
+        "bird",
+        "lion",
+        "lizard",
+        "salamander",
+        "dog"
+      ],
+      "mouse": [
+        "horse",
+        "koala",
+        "monkey",
+        "bird",
+        "lion",
+        "lizard",
+        "salamander",
+        "dog",
+        "cat"
+      ]
+    }
+  }
+}

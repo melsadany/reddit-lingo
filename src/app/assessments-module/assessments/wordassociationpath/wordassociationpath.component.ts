@@ -2,29 +2,49 @@ import { Component } from '@angular/core';
 import { SelectionAssessment } from '../../../structures/SelectionAssessment';
 import { StateManagerService } from '../../../services/state-manager.service';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
-import * as data from '../../../../assets/in_use/data/wordassociation/wordmappings.json';
+import * as data from '../../../../assets/in_use/data/wordassociationpath/wordmappings.json';
 
 @Component({
-  selector: 'app-wordassociation',
-  templateUrl: './wordassociation.component.html',
-  styleUrls: ['./wordassociation.component.scss']
+  selector: 'app-wordassociationpath',
+  templateUrl: './wordassociationpath.component.html',
+  styleUrls: ['./wordassociationpath.component.scss']
 })
-export class WordassociationComponent extends SelectionAssessment {
-  assessmentName = 'wordassociation';
-  wordAssociations: Object = data['words'];
-  wordSack = Object.keys(data['words']);
-  startWords = this.getStartWords();
-  promptsLength = this.startWords.length;
+export class WordassociationPathComponent extends SelectionAssessment {
+  assessmentName = 'wordassociationpath';
+  wordAssociationsObject: Object = data['words'];
+  wordAssociationPromptKeysList = Object.keys(data['words']);
+  wordSackThisPrompt = this.wordAssociationsObject[this.promptNumber];
+  promptsLength = this.wordAssociationPromptKeysList.length;
   showWords = false;
   spanNumber = 12;
+  wordGraphList: [];
   selectedWordsThisPrompt: string[];
   currentPromptMatrix: string[][];
+  useSpecificStartWord: boolean = this.stateManager.appConfig['appConfig']['assessmentsConfig'][
+    'wordassociationpath'
+  ]['useSpecificStartWord'];
+  startWord: string;
+  showRunningChoices = false;
   constructor(
     stateManager: StateManagerService,
     dataService: AssessmentDataService
   ) {
     super(stateManager, dataService);
     this.configureAssessmentSettings();
+    if (this.useSpecificStartWord) {
+      this.startWord = this.stateManager.appConfig['appConfig']['assessmentsConfig'][
+        'wordassociationpath'
+      ]['startWord'];
+    } else {
+      this.startWord = Object.keys(this.wordSackThisPrompt)[0];
+      // KRM: Always pick the first word out of the object for this prompt
+      // if a specific one is not given in the assessment config json
+    }
+    if (this.stateManager.appConfig['appConfig']['assessmentsConfig'][
+      'wordassociationpath'
+    ]['showRunningChoices']) {
+      this.showRunningChoices = true;
+    }
   }
 
   setStateAndStart(): void {
@@ -37,30 +57,22 @@ export class WordassociationComponent extends SelectionAssessment {
   }
 
   getRandomIndex(): number {
-    return Math.floor(Math.random() * this.wordSack.length);
-  }
-
-  getStartWords(): string[] {
-    const returnList = [];
-    for (let i = 0; i < 5; i++) {
-      // KRM: Determines prompt length
-      const index = this.getRandomIndex();
-      returnList.push(this.wordSack[index]);
-    }
-    return returnList;
+    return Math.floor(Math.random() * Object.keys(this.wordSackThisPrompt).length);
   }
 
   makeMatrix(): void {
     this.currentPromptMatrix = [];
-    const nextAssociationWord = this.selectedWordsThisPrompt.slice(-1)[0];
     const currentWordsForPrompt: string[] = Object.assign(
       [],
-      this.wordAssociations[nextAssociationWord]
+      this.wordGraphList
     );
     for (let i = 0; i < 3; i++) {
       const row = [];
       for (let j = 0; j < 3; j++) {
-        row.push(currentWordsForPrompt.pop());
+        const nextElement = currentWordsForPrompt.pop();
+        if (nextElement !== undefined) {
+          row.push(nextElement);
+        }
       }
       this.currentPromptMatrix.push(row);
     }
@@ -82,9 +94,11 @@ export class WordassociationComponent extends SelectionAssessment {
 
   clickWord(word: string): void {
     this.selectedWordsThisPrompt.push(word);
+    console.log(this.selectedWordsThisPrompt);
     this.spanNumber = Math.ceil(12 / this.selectedWordsThisPrompt.length);
-    if (this.selectedWordsThisPrompt.length === 6) {
-      // KRM: You get 5 selections
+    if (this.selectedWordsThisPrompt.length === 10) {
+      // KRM: You get 9 selections per question.
+      // The first element of the array is always the start word.
       this.sendWordSelectionAndAdvance(
         this.selectedWordsThisPrompt,
         () => (this.showWords = false),
@@ -102,13 +116,17 @@ export class WordassociationComponent extends SelectionAssessment {
           )
       );
     } else {
+      const deleteIndex = this.wordGraphList.indexOf(<never>word, 0);
+      this.wordGraphList.splice(deleteIndex, 1);
       this.makeMatrix();
     }
   }
 
   handleNewPrompt(): void {
+    this.wordSackThisPrompt = this.wordAssociationPromptKeysList[this.promptNumber];
     this.selectedWordsThisPrompt = [];
-    this.selectedWordsThisPrompt.push(this.startWords[this.promptNumber]);
+    this.selectedWordsThisPrompt.push(this.startWord);
+    this.wordGraphList = this.wordAssociationsObject[this.promptNumber][this.startWord];
     this.spanNumber = Math.ceil(12 / this.selectedWordsThisPrompt.length);
     this.makeMatrix();
   }

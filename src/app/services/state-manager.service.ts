@@ -426,8 +426,11 @@ export class StateManagerService {
       case 'prescreenerquestions':
         translatedName = 'Pre-screener Questions';
         break;
-      case 'wordassociation':
-        translatedName = 'Word Association';
+      case 'wordassociationpath':
+        translatedName = 'Word Association Path';
+        break;
+      case 'wordassociationpair':
+        translatedName = 'Word Association Pair';
         break;
       case 'wordfinding':
         translatedName = 'Word Finding';
@@ -492,7 +495,10 @@ export class StateManagerService {
         assessmentName = 'timeduration';
         break;
       case 'wdas':
-        assessmentName = 'wordassociation';
+        assessmentName = 'wordassociationpath';
+        break;
+      case 'wdap':
+        assessmentName = 'wordassociationpair';
         break;
       case 'rdfn':
         assessmentName = 'wordfinding';

@@ -2,7 +2,8 @@ const Joi = require('joi')
 const fs = require('fs')
 const path = require('path')
 const AWS = require('aws-sdk')
-let s3 = new AWS.S3()
+const S3 = new AWS.S3()
+
 const LINGO_DATA_LOCAL_PATH = path.join(__dirname, '../', '../', 'assessment_data')
 const LINGO_DATA_OUTPUT_S3_PATH = 'lingo-assessment-data/' + process.env.LINGO_FOLDER
 
@@ -374,7 +375,7 @@ function uploadDir(s3Path, bucketName, selector) {
       }
     }
 
-    s3.putObject(params, (err, data) => {
+    S3.putObject(params, (err, data) => {
       if (err) {
         console.log(err)
       } else {

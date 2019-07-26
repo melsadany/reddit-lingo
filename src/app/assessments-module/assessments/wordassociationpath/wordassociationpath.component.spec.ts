@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { WordassociationComponent } from './wordassociation.component';
+import { WordassociationPathComponent } from './wordassociationpath.component';
 
 describe('WordassociationComponent', () => {
-  let component: WordassociationComponent;
-  let fixture: ComponentFixture<WordassociationComponent>;
+  let component: WordassociationPathComponent;
+  let fixture: ComponentFixture<WordassociationPathComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ WordassociationComponent ]
+      declarations: [WordassociationPathComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(WordassociationComponent);
+    fixture = TestBed.createComponent(WordassociationPathComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

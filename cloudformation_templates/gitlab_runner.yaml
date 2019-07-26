@@ -24,7 +24,7 @@ Resources:
     Type: AWS::IAM::InstanceProfile
     Properties:
       Roles:
-        - ec2tos3
+        - LingoRunnerRole
       InstanceProfileName: RunnerInstanceProfile
   RunnerServer:
     Type: AWS::EC2::Instance
@@ -39,7 +39,7 @@ Resources:
       KeyName:
         Ref: KeyName
       SecurityGroupIds:
-        - sg-03632539cbcd91af5
+        - sg-090ccfe5b89251d72
       SubnetId:
         subnet-0737a237be02ece05
       Tags:

@@ -13,7 +13,8 @@ import { SentencerepetitionComponent } from './assessments/sentencerepetition/se
 import { WordfindingComponent } from './assessments/wordfinding/wordfinding.component';
 import { PostscreenerquestionsComponent } from './assessments/postscreenerquestions/postscreenerquestions.component';
 import { DiagnosticsComponent } from './assessments/diagnostics/diagnostics.component';
-import { WordassociationComponent } from './assessments/wordassociation/wordassociation.component';
+import { WordassociationPathComponent } from './assessments/wordassociationpath/wordassociationpath.component';
+import { WordassociationPairComponent } from './assessments/wordassociationpair/wordassociationpair.component';
 
 const routes: Routes = [
   {
@@ -25,8 +26,12 @@ const routes: Routes = [
         component: DiagnosticsComponent
       },
       {
-        path: 'wordassociation',
-        component: WordassociationComponent
+        path: 'wordassociationpath',
+        component: WordassociationPathComponent
+      },
+      {
+        path: 'wordassociationpair',
+        component: WordassociationPairComponent
       },
       {
         path: 'timeduration',
@@ -80,4 +85,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class AssessmentsControllerRoutingModule {}
+export class AssessmentsControllerRoutingModule { }
