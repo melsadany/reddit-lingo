@@ -31,6 +31,7 @@ export class WordassociationComponent extends SelectionAssessment {
     this.stateManager.showInnerAssessmentButton = false;
     this.stateManager.textOnInnerAssessmentButton = 'CONTINUE ASSESSMENT';
     this.stateManager.isInAssessment = true;
+    this.stateManager.showStartParagraph = false;
     this.showExample = false;
     this.advance();
   }
