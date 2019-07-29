@@ -6,15 +6,20 @@
       and top-to-bottom. For the example grid below, you would say:
       “Two Two Five Six Nine Seven Three Two Five One Five Eight”.
     </p>
+    <div *ngIf="showExample" class="text-center">
+      <img class="img-fluid" src="assets/in_use/examples/img/example_ran.png"
+        style="margin-bottom: 20px; max-height: 350px;" />
+    </div>
   </div>
   <div *ngIf="stateManager.showInnerAssessmentButton" class="text-center button-down">
     <div *ngIf="!stateManager.isInAssessment">
-      <img *ngIf="!finishedInstruction && playingInstruction" style="max-height:85px;" class="img-fluid"
-        src="assets/in_use/animations/random_waveform.gif">
-      <button *ngIf="finishedInstruction && !playingInstruction" type="button" class="start-button btn btn-success"
+      <img *ngIf="!stateManager.finishedInstruction && stateManager.playingInstruction" style="max-height:85px;"
+        class="img-fluid" src="assets/in_use/animations/random_waveform.gif">
+      <button *ngIf="stateManager.finishedInstruction && !stateManager.playingInstruction" type="button"
+        class="start-button btn btn-success"
         (click)="setStateAndStart()">{{stateManager.textOnInnerAssessmentButton}}</button>
-      <button *ngIf="!finishedInstruction && !playingInstruction" type="button" class="start-button btn btn-success"
-        (click)="playInstructions()">
+      <button *ngIf="!stateManager.finishedInstruction && !stateManager.playingInstruction" type="button"
+        class="start-button btn btn-success" (click)="stateManager.playInstructions()">
         Start Instruction
       </button>
     </div>

@@ -34,6 +34,7 @@ export class RanComponent extends AudioAssessment {
     this.stateManager.showInnerAssessmentButton = false;
     this.stateManager.textOnInnerAssessmentButton = 'CONTINUE ASSESSMENT';
     this.stateManager.isInAssessment = true;
+    this.showExample = false;
     this.advance();
   }
 
