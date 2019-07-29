@@ -95,25 +95,32 @@ Resources:
         Fn::Base64:
           Fn::Sub: |
             #!/bin/bash -xe
-            sudo yum update -y
-            sudo yum install git -y
-            sudo curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
+            yum update -y
+
+            # Install FireEyeHX endpoint
+            mkdir ~/FireEye && cd ~/FireEye
+            aws s3 cp s3://fire-eye-hx-endpoint/IMAGE_HX_AGENT_LINUX_30.19.0.tgz IMAGE_HX_AGENT_LINUX_30.19.0.tgz
+            tar zxvf IMAGE_HX_AGENT_LINUX_30.19.0.tgz
+            rpm -ihv xagt-30.19.0-1.el7.x86_64.rpm
+            /opt/fireeye/bin/xagt -i agent_config.json
+            service xagt start
+
+            # Install node and start lingo
+            mkdir ~/lingo && cd ~/lingo
+            yum install git -y
+            curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
             [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
             nvm install 10
             node --version
-            curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | sudo tee /etc/yum.repos.d/yarn.repo
+            curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo
             curl --silent --location https://rpm.nodesource.com/setup_10.x | bash -
-            sudo yum install yarn -y
-            cd /home/ec2-user
-            echo "export LINGO_FOLDER=app1/${DataFolderName}" > ~/lingostartup.sh
-            sudo chmod +x ~/lingostartup.sh
-            echo "aws s3 cp s3://lingo-builds/lingo-app1-build/ . --recursive" >> ~/lingostartup.sh
-            echo "yarn" >> ~/lingostartup.sh
-            echo "yarn start" >> ~/lingostartup.sh
-            sudo cp ~/lingostartup.sh /etc/profile.d/lingostartup.sh
-            sudo ~/lingostartup.sh
+            yum install yarn -y
+            export LINGO_FOLDER=test/${DataFolderName}
+            aws s3 cp s3://lingo-builds/lingo-test-build/ . --recursive
+            yarn install && yarn start
+
 
   App1LingoAutoScaleGroup:
     Type: AWS::AutoScaling::AutoScalingGroup

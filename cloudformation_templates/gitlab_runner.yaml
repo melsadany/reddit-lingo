@@ -57,12 +57,21 @@ Resources:
         Fn::Base64:
           Fn::Sub: |
             #!/bin/bash -xe
-             sudo yum update -y
-             sudo amazon-linux-extras install docker -y
-             sudo service docker start
-             curl -L https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.rpm.sh | sudo bash
-             sudo yum install gitlab-runner -y
-             sudo gitlab-runner register \
+             yum update -y
+
+            # Install FireEyeHX endpoint
+            mkdir ~/FireEye && cd ~/FireEye
+            aws s3 cp s3://fire-eye-hx-endpoint/IMAGE_HX_AGENT_LINUX_30.19.0.tgz IMAGE_HX_AGENT_LINUX_30.19.0.tgz
+            tar zxvf IMAGE_HX_AGENT_LINUX_30.19.0.tgz
+            rpm -ihv xagt-30.19.0-1.el7.x86_64.rpm
+            /opt/fireeye/bin/xagt -i agent_config.json
+            service xagt start
+
+            amazon-linux-extras install docker -y
+            service docker start
+            curl -L https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.rpm.sh | bash
+            yum install gitlab-runner -y
+            gitlab-runner register \
                 --non-interactive \
                 --url ${GitLabUrl} \
                 --registration-token ${GitLabRegistrationToken} \
