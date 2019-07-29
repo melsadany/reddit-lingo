@@ -118,7 +118,7 @@ Resources:
             curl --silent --location https://rpm.nodesource.com/setup_10.x | bash -
             yum install yarn -y
             export LINGO_FOLDER=app1/${DataFolderName}
-            aws s3 cp s3://lingo-builds/lingo-test-build/ . --recursive
+            aws s3 cp s3://lingo-builds/lingo-app1-build/ . --recursive
             yarn install && yarn start
 
   App1LingoAutoScaleGroup:
