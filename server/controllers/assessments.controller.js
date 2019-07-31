@@ -4,7 +4,6 @@ const path = require('path')
 const AWS = require('aws-sdk')
 const S3 = new AWS.S3()
 const MTURK = new AWS.MTurk()
-MTURK.createHIT()
 
 const LINGO_DATA_LOCAL_PATH = path.join(
   __dirname,
@@ -493,6 +492,20 @@ function uploadDir(s3Path, bucketName, selector) {
   })
 }
 
+function finishMTurk(assignmentId) {
+  const params = {
+    AssignmentId: assignmentId
+  }
+  MTURK.approveAssignment(params, (err, data) => {
+    if (err) {
+      console.log(err, err.stack)
+    } else {
+      console.log(data)
+      return data
+    }
+  })
+}
+
 module.exports = {
   insertFreshAssessmentData,
   pushOnePieceAssessmentData,
@@ -500,5 +513,6 @@ module.exports = {
   updateAssessmentData,
   getNextUserID,
   sendHashKey,
-  getAssets
+  getAssets,
+  finishMTurk
 }

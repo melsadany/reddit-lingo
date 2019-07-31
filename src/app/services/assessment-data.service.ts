@@ -217,6 +217,6 @@ export class AssessmentDataService {
       params: new HttpParams()
         .set('assignmentId', assignmentId)
     };
-    return this.http.post('https://workersandbox.mturk.com/mturk/externalSubmit', options);
+    return this.http.post('/api/assessmentsAPI/FinishMTurk', options);
   }
 }

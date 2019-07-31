@@ -76,4 +76,16 @@ router.get('/GetAssets', (req, res) => {
     .catch(err => console.log(err))
 })
 
+router.post('/FinishMTurk', (req, res) => {
+  assessCtrl
+    .finishMTurk(req.query.assignmentId)
+    .then(data => {
+      res.set({
+        'Content-Type': 'application/json'
+      })
+      res.send(data)
+    })
+    .catch(err => console.log(err))
+})
+
 module.exports = router
