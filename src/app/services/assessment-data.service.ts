@@ -210,4 +210,13 @@ export class AssessmentDataService {
       this.http.get('/api/assessmentsAPI/GetAssets', options)
     );
   }
+
+  public postToMTurk(assignmentId: string): Observable<Object> {
+    console.log('Finishing MTurk HIT');
+    const options = {
+      params: new HttpParams()
+        .set('assignmentId', assignmentId)
+    };
+    return this.http.post('https://workersandbox.mturk.com/mturk/externalSubmit', options);
+  }
 }
