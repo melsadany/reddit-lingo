@@ -5,6 +5,10 @@ const AWS = require('aws-sdk')
 const S3 = new AWS.S3()
 const MTURK = new AWS.MTurk()
 
+const region = 'us-east-1'
+const endpoint = 'https://mturk-requester-sandbox.us-east-1.amazonaws.com'
+AWS.config.update({ region: region, endpoint: endpoint })
+
 const LINGO_DATA_LOCAL_PATH = path.join(
   __dirname,
   '../',
