@@ -217,6 +217,6 @@ export class AssessmentDataService {
       params: new HttpParams()
         .set('assignmentId', assignmentId)
     };
-    return this.http.post('/api/assessmentsAPI/FinishMTurk', options);
+    return this.http.get('/api/assessmentsAPI/FinishMTurk', options);
   }
 }

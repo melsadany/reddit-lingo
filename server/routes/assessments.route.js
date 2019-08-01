@@ -76,7 +76,8 @@ router.get('/GetAssets', (req, res) => {
     .catch(err => console.log(err))
 })
 
-router.post('/FinishMTurk', (req, res) => {
+router.get('/FinishMTurk', (req, res) => {
+  console.log(req.query)
   assessCtrl
     .finishMTurk(req.query.assignmentId)
     .then(data => {
