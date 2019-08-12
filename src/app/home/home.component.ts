@@ -8,15 +8,18 @@ import { AssessmentDataService } from '../services/assessment-data.service';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  constructor(public stateManager: StateManagerService, public dataService: AssessmentDataService) { }
   // KRM: Need this injection for the template
-
-  ngOnInit(): void {
+  constructor(public stateManager: StateManagerService, public dataService: AssessmentDataService) {
     if (this.stateManager.MTurkEnabled) {
       this.dataService.getMTurkAssignment(this.stateManager.MTurkAssignmentId).subscribe(data => {
         console.log(data);
       });
     }
+  }
+
+
+  ngOnInit(): void {
+
   }
 }
 
