@@ -502,12 +502,15 @@ function finishMTurk(assignmentId) {
     AssignmentId: assignmentId
   }
   MTURK.approveAssignment(params, (err, data) => {
-    if (err) {
-      console.log(err, err.stack)
-    } else {
-      console.log(data)
-      return data
-    }
+    return new Promise((resolve, reject) => {
+      if (err) {
+        console.log(err, err.stack)
+        reject(err)
+      } else {
+        console.log(data)
+        resolve(data)
+      }
+    })
   })
 }
 
