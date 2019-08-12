@@ -22,12 +22,17 @@
         Loading. Please wait.
       </button>
     </div>
-    <div *ngIf="stateManager.MTurkAssignmentId">
+    <div *ngIf="stateManager.MTurkAssignmentId === ASSIGNMENT_ID_NOT_AVAILABLE">
       <button type="button" class="btn btn-info btn-lg" disabled>
         Please accept assignment to continue.
       </button>
     </div>
-    <div *ngIf="!stateManager.loadingState">
+    <div
+      *ngIf="
+        !stateManager.loadingState &&
+        stateManager.MTurkAssignmentId !== ASSIGNMENT_ID_NOT_AVAILABLE
+      "
+    >
       <button
         type="button"
         class="btn btn-primary btn-lg"

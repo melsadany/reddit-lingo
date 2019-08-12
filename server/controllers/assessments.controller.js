@@ -501,8 +501,8 @@ function finishMTurk(assignmentId) {
   const params = {
     AssignmentId: assignmentId
   }
-  MTURK.approveAssignment(params, (err, data) => {
-    return new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
+    MTURK.approveAssignment(params, (err, data) => {
       if (err) {
         console.log(err, err.stack)
         reject(err)
@@ -518,8 +518,8 @@ function getMTurkAssignment(assignmentId) {
   const params = {
     AssignmentId: assignmentId
   }
-  MTURK.getAssignment(params, (err, data) => {
-    return new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
+    MTURK.getAssignment(params, (err, data) => {
       if (err) {
         console.log(err, err.stack)
         reject(err)
