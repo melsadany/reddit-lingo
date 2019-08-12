@@ -7,25 +7,28 @@
       "prescreenerquestions": {
         "enabled": false
       },
+      "postscreenerquestions": {
+        "enabled": false
+      },
       "wordassociationpath": {
         "enabled": true,
-        "useSpecificStartWord": true,
+        "useSpecificStartWord": false,
         "startWord": "cat",
         "showRunningChoices": true,
         "hideInstructionsOnAssessmentStart": true
       },
       "wordassociationpair": {
         "enabled": true,
-        "useSpecificStartWord": true,
+        "useSpecificStartWord": false,
         "startWord": "cat",
         "hideInstructionsOnAssessmentStart": true
       },
       "wordfinding": {
-        "enabled": true,
+        "enabled": false,
         "hideInstructionsOnAssessmentStart": false
       },
       "sentencerepetition": {
-        "enabled": true,
+        "enabled": false,
         "prompt_countdowns": [3],
         "hideInstructionsOnAssessmentStart": false
       },
@@ -34,34 +37,31 @@
         "hideInstructionsOnAssessmentStart": false
       },
       "syncvoice": {
-        "enabled": true,
+        "enabled": false,
         "hideInstructionsOnAssessmentStart": false
       },
       "timeduration": {
-        "enabled": true,
+        "enabled": false,
         "circle_durations": [5, 1.5, 0.5, 9, 0.75],
         "hideInstructionsOnAssessmentStart": false
       },
       "ran": {
-        "enabled": true,
+        "enabled": false,
         "hideInstructionsOnAssessmentStart": false
       },
       "pictureprompt": {
-        "enabled": true,
+        "enabled": false,
         "hideInstructionsOnAssessmentStart": false
       },
       "listeningcomprehension": {
-        "enabled": true,
+        "enabled": false,
         "hideInstructionsOnAssessmentStart": false
-      },
-      "postscreenerquestions": {
-        "enabled": false
       }
     },
     "settings": {
       "countdownTimerLength": 3,
       "countdownTimerType": "circle",
-      "singleAssessmentEnabled": false,
+      "singleAssessmentEnabled": true,
       "debugEnabled": true
     }
   }
