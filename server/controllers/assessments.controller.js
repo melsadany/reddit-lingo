@@ -501,17 +501,17 @@ function finishMTurk(assignmentId) {
   const params = {
     AssignmentId: assignmentId
   }
-  return new Promise((resolve, reject) => {
-    MTURK.approveAssignment(params, (err, data) => {
-      if (err) {
-        console.log(err)
-        reject(err)
-      } else {
-        console.log(data)
-        resolve(data)
-      }
-    })
-  })
+  // return new Promise((resolve, reject) => {
+  return MTURK.approveAssignment(params, (err, data) => {
+    if (err) {
+      console.log(err)
+      // reject(err)
+    } else {
+      console.log(data)
+      // resolve(data)
+    }
+  }).promise()
+  // })
 }
 
 function getMTurkAssignment(assignmentId) {
