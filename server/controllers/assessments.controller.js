@@ -514,6 +514,23 @@ function finishMTurk(assignmentId) {
   })
 }
 
+function getMTurkAssignment(assignmentId) {
+  const params = {
+    AssignmentId: assignmentId
+  }
+  MTURK.getAssignment(params, (err, data) => {
+    return new Promise((resolve, reject) => {
+      if (err) {
+        console.log(err, err.stack)
+        reject(err)
+      } else {
+        console.log(data)
+        resolve(data)
+      }
+    })
+  })
+}
+
 module.exports = {
   insertFreshAssessmentData,
   pushOnePieceAssessmentData,
@@ -522,5 +539,6 @@ module.exports = {
   getNextUserID,
   sendHashKey,
   getAssets,
-  finishMTurk
+  finishMTurk,
+  getMTurkAssignment
 }

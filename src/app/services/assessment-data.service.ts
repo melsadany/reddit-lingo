@@ -219,4 +219,13 @@ export class AssessmentDataService {
     };
     return this.http.get('/api/assessmentsAPI/FinishMTurk', options);
   }
+
+  public getMTurkAssignment(assignmentId: string): Observable<Object> {
+    console.log('Getting MTurk Assignment Info');
+    const options = {
+      params: new HttpParams()
+        .set('assignmentId', assignmentId)
+    };
+    return this.http.get('/api/assessmentsAPI/GetMTurkAssignment', options);
+  }
 }

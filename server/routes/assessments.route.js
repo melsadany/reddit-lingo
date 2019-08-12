@@ -89,4 +89,17 @@ router.get('/FinishMTurk', (req, res) => {
     .catch(err => console.log(err))
 })
 
+router.get('/GetMTurkAssignment', (req, res) => {
+  console.log(req.query)
+  assessCtrl
+    .getMTurkAssignment(req.query.assignmentId)
+    .then(data => {
+      res.set({
+        'Content-Type': 'application/json'
+      })
+      res.send(data)
+    })
+    .catch(err => console.log(err))
+})
+
 module.exports = router
