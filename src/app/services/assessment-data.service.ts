@@ -212,20 +212,20 @@ export class AssessmentDataService {
   }
 
   public postToMTurk(assignmentId: string): Observable<Object> {
+    const URL = 'https://workersandbox.mturk.com/mturk/externalSubmit' + '/?assignmentId=' + assignmentId;
     console.log('Finishing MTurk HIT');
-    const options = {
-      params: new HttpParams()
-        .set('assignmentId', assignmentId)
-    };
-    return this.http.get('/api/assessmentsAPI/FinishMTurk', options);
+    // const params = {
+    //   AssignmentId: assignmentId
+    // };
+    return this.http.post(URL, {});
   }
 
-  public getMTurkAssignment(assignmentId: string): Observable<Object> {
-    console.log('Getting MTurk Assignment Info');
-    const options = {
-      params: new HttpParams()
-        .set('assignmentId', assignmentId)
-    };
-    return this.http.get('/api/assessmentsAPI/GetMTurkAssignment', options);
-  }
+  //   public getMTurkAssignment(assignmentId: string): Observable<Object> {
+  //     console.log('Getting MTurk Assignment Info');
+  //     const options = {
+  //       params: new HttpParams()
+  //         .set('assignmentId', assignmentId)
+  //     };
+  //     return this.http.get('/api/assessmentsAPI/GetMTurkAssignment', options);
+  //   }
 }
