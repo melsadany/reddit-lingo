@@ -217,7 +217,12 @@ export class AssessmentDataService {
     // const params = {
     //   AssignmentId: assignmentId
     // };
-    return this.http.post(URL, {});
+    const options = {
+      headers: {
+        'Access-Control-Allow-Origin': '*'
+      }
+    };
+    return this.http.post(URL, {}, options);
   }
 
   //   public getMTurkAssignment(assignmentId: string): Observable<Object> {
