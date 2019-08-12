@@ -1,74 +1,728 @@
 {
-  "words": {
-    "0": {
-      "dog": [
-        "cat",
-        "mouse",
-        "horse",
-        "koala",
-        "monkey",
-        "bird",
-        "lion",
-        "lizard",
-        "salamander"
-      ],
-      "cat": [
-        "mouse",
-        "horse",
-        "koala",
-        "monkey",
-        "bird",
-        "lion",
-        "lizard",
-        "salamander",
-        "dog"
-      ],
-      "mouse": [
-        "horse",
-        "koala",
-        "monkey",
-        "bird",
-        "lion",
-        "lizard",
-        "salamander",
-        "dog",
-        "cat"
-      ]
-    },
-    "1": {
-      "dog": [
-        "cat",
-        "mouse",
-        "horse",
-        "koala",
-        "monkey",
-        "bird",
-        "lion",
-        "lizard",
-        "salamander"
-      ],
-      "cat": [
-        "mouse",
-        "horse",
-        "koala",
-        "monkey",
-        "bird",
-        "lion",
-        "lizard",
-        "salamander",
-        "dog"
-      ],
-      "mouse": [
-        "horse",
-        "koala",
-        "monkey",
-        "bird",
-        "lion",
-        "lizard",
-        "salamander",
-        "dog",
-        "cat"
-      ]
+    "words": {
+        "0": {
+            "apple": [
+                "pear",
+                "plum",
+                "banana",
+                "tomato",
+                "grape",
+                "beet",
+                "orange",
+                "lemon",
+                "carrot"
+            ],
+            "plum": [
+                "apple",
+                "pear",
+                "banana",
+                "tomato",
+                "grape",
+                "beet",
+                "orange",
+                "lemon",
+                "carrot"
+            ],
+            "banana": [
+                "apple",
+                "pear",
+                "plum",
+                "tomato",
+                "grape",
+                "beet",
+                "orange",
+                "lemon",
+                "carrot"
+            ],
+            "carrot": [
+                "apple",
+                "pear",
+                "plum",
+                "banana",
+                "tomato",
+                "grape",
+                "beet",
+                "orange",
+                "lemon"
+            ],
+            "grape": [
+                "apple",
+                "pear",
+                "plum",
+                "banana",
+                "tomato",
+                "beet",
+                "orange",
+                "lemon",
+                "carrot"
+            ],
+            "lemon": [
+                "apple",
+                "pear",
+                "plum",
+                "banana",
+                "tomato",
+                "grape",
+                "beet",
+                "orange",
+                "carrot"
+            ],
+            "orange": [
+                "apple",
+                "pear",
+                "plum",
+                "banana",
+                "tomato",
+                "grape",
+                "beet",
+                "lemon",
+                "carrot"
+            ],
+            "tomato": [
+                "apple",
+                "pear",
+                "plum",
+                "banana",
+                "grape",
+                "beet",
+                "orange",
+                "lemon",
+                "carrot"
+            ],
+            "pear": [
+                "apple",
+                "plum",
+                "banana",
+                "tomato",
+                "grape",
+                "beet",
+                "orange",
+                "lemon",
+                "carrot"
+            ],
+            "beet": [
+                "apple",
+                "pear",
+                "plum",
+                "banana",
+                "tomato",
+                "grape",
+                "orange",
+                "lemon",
+                "carrot"
+            ]
+        },
+        "1": {
+            "fox": [
+                "dog",
+                "cat",
+                "mouse",
+                "horse",
+                "cow",
+                "chicken",
+                "pig",
+                "squirrel",
+                "rabbit"
+            ],
+            "squirrel": [
+                "dog",
+                "cat",
+                "mouse",
+                "fox",
+                "horse",
+                "cow",
+                "chicken",
+                "pig",
+                "rabbit"
+            ],
+            "chicken": [
+                "dog",
+                "cat",
+                "mouse",
+                "fox",
+                "horse",
+                "cow",
+                "pig",
+                "squirrel",
+                "rabbit"
+            ],
+            "mouse": [
+                "dog",
+                "cat",
+                "fox",
+                "horse",
+                "cow",
+                "chicken",
+                "pig",
+                "squirrel",
+                "rabbit"
+            ],
+            "dog": [
+                "cat",
+                "mouse",
+                "fox",
+                "horse",
+                "cow",
+                "chicken",
+                "pig",
+                "squirrel",
+                "rabbit"
+            ],
+            "cat": [
+                "dog",
+                "mouse",
+                "fox",
+                "horse",
+                "cow",
+                "chicken",
+                "pig",
+                "squirrel",
+                "rabbit"
+            ],
+            "horse": [
+                "dog",
+                "cat",
+                "mouse",
+                "fox",
+                "cow",
+                "chicken",
+                "pig",
+                "squirrel",
+                "rabbit"
+            ],
+            "cow": [
+                "dog",
+                "cat",
+                "mouse",
+                "fox",
+                "horse",
+                "chicken",
+                "pig",
+                "squirrel",
+                "rabbit"
+            ],
+            "rabbit": [
+                "dog",
+                "cat",
+                "mouse",
+                "fox",
+                "horse",
+                "cow",
+                "chicken",
+                "pig",
+                "squirrel"
+            ],
+            "pig": [
+                "dog",
+                "cat",
+                "mouse",
+                "fox",
+                "horse",
+                "cow",
+                "chicken",
+                "squirrel",
+                "rabbit"
+            ]
+        },
+        "2": {
+            "riot": [
+                "house",
+                "forest",
+                "quite",
+                "fire",
+                "night",
+                "morning",
+                "rain",
+                "library",
+                "sleep"
+            ],
+            "house": [
+                "forest",
+                "quite",
+                "fire",
+                "night",
+                "morning",
+                "rain",
+                "library",
+                "riot",
+                "sleep"
+            ],
+            "sleep": [
+                "house",
+                "forest",
+                "quite",
+                "fire",
+                "night",
+                "morning",
+                "rain",
+                "library",
+                "riot"
+            ],
+            "night": [
+                "house",
+                "forest",
+                "quite",
+                "fire",
+                "morning",
+                "rain",
+                "library",
+                "riot",
+                "sleep"
+            ],
+            "fire": [
+                "house",
+                "forest",
+                "quite",
+                "night",
+                "morning",
+                "rain",
+                "library",
+                "riot",
+                "sleep"
+            ],
+            "morning": [
+                "house",
+                "forest",
+                "quite",
+                "fire",
+                "night",
+                "rain",
+                "library",
+                "riot",
+                "sleep"
+            ],
+            "quite": [
+                "house",
+                "forest",
+                "fire",
+                "night",
+                "morning",
+                "rain",
+                "library",
+                "riot",
+                "sleep"
+            ],
+            "rain": [
+                "house",
+                "forest",
+                "quite",
+                "fire",
+                "night",
+                "morning",
+                "library",
+                "riot",
+                "sleep"
+            ],
+            "forest": [
+                "house",
+                "quite",
+                "fire",
+                "night",
+                "morning",
+                "rain",
+                "library",
+                "riot",
+                "sleep"
+            ],
+            "library": [
+                "house",
+                "forest",
+                "quite",
+                "fire",
+                "night",
+                "morning",
+                "rain",
+                "riot",
+                "sleep"
+            ]
+        },
+        "3": {
+            "bag": [
+                "book",
+                "hand",
+                "hold",
+                "man",
+                "fire",
+                "foot",
+                "back",
+                "wood",
+                "over"
+            ],
+            "foot": [
+                "book",
+                "hand",
+                "hold",
+                "man",
+                "bag",
+                "fire",
+                "back",
+                "wood",
+                "over"
+            ],
+            "book": [
+                "hand",
+                "hold",
+                "man",
+                "bag",
+                "fire",
+                "foot",
+                "back",
+                "wood",
+                "over"
+            ],
+            "man": [
+                "book",
+                "hand",
+                "hold",
+                "bag",
+                "fire",
+                "foot",
+                "back",
+                "wood",
+                "over"
+            ],
+            "back": [
+                "book",
+                "hand",
+                "hold",
+                "man",
+                "bag",
+                "fire",
+                "foot",
+                "wood",
+                "over"
+            ],
+            "over": [
+                "book",
+                "hand",
+                "hold",
+                "man",
+                "bag",
+                "fire",
+                "foot",
+                "back",
+                "wood"
+            ],
+            "fire": [
+                "book",
+                "hand",
+                "hold",
+                "man",
+                "bag",
+                "foot",
+                "back",
+                "wood",
+                "over"
+            ],
+            "hold": [
+                "book",
+                "hand",
+                "man",
+                "bag",
+                "fire",
+                "foot",
+                "back",
+                "wood",
+                "over"
+            ],
+            "wood": [
+                "book",
+                "hand",
+                "hold",
+                "man",
+                "bag",
+                "fire",
+                "foot",
+                "back",
+                "over"
+            ],
+            "hand": [
+                "book",
+                "hold",
+                "man",
+                "bag",
+                "fire",
+                "foot",
+                "back",
+                "wood",
+                "over"
+            ]
+        },
+        "4": {
+            "remark": [
+                "redefine",
+                "demean",
+                "stark",
+                "disembark",
+                "sunshine",
+                "submarine",
+                "dine",
+                "reen"
+            ],
+            "dine": [
+                "redefine",
+                "demean",
+                "stark",
+                "disembark",
+                "sunshine",
+                "submarine",
+                "remark",
+                "reen"
+            ],
+            "demean": [
+                "redefine",
+                "stark",
+                "disembark",
+                "sunshine",
+                "submarine",
+                "remark",
+                "dine",
+                "reen"
+            ],
+            "sunshine": [
+                "redefine",
+                "demean",
+                "stark",
+                "disembark",
+                "submarine",
+                "remark",
+                "dine",
+                "reen"
+            ],
+            "submarine": [
+                "redefine",
+                "demean",
+                "stark",
+                "disembark",
+                "sunshine",
+                "remark",
+                "dine",
+                "reen"
+            ],
+            "disembark": [
+                "redefine",
+                "demean",
+                "stark",
+                "sunshine",
+                "submarine",
+                "remark",
+                "dine",
+                "reen"
+            ],
+            "reen": [
+                "redefine",
+                "demean",
+                "stark",
+                "disembark",
+                "sunshine",
+                "submarine",
+                "remark",
+                "dine"
+            ],
+            "redefine": [
+                "demean",
+                "stark",
+                "disembark",
+                "sunshine",
+                "submarine",
+                "remark",
+                "dine",
+                "reen"
+            ],
+            "stark": [
+                "redefine",
+                "demean",
+                "disembark",
+                "sunshine",
+                "submarine",
+                "remark",
+                "dine",
+                "reen"
+            ]
+        },
+        "5": {
+            "hydrated": [
+                "dynamic",
+                "hypnosis",
+                "sated",
+                "ceramic",
+                "psychosis",
+                "dictated",
+                "hammock",
+                "doses"
+            ],
+            "hypnosis": [
+                "dynamic",
+                "sated",
+                "hydrated",
+                "ceramic",
+                "psychosis",
+                "dictated",
+                "hammock",
+                "doses"
+            ],
+            "dynamic": [
+                "hypnosis",
+                "sated",
+                "hydrated",
+                "ceramic",
+                "psychosis",
+                "dictated",
+                "hammock",
+                "doses"
+            ],
+            "dictated": [
+                "dynamic",
+                "hypnosis",
+                "sated",
+                "hydrated",
+                "ceramic",
+                "psychosis",
+                "hammock",
+                "doses"
+            ],
+            "psychosis": [
+                "dynamic",
+                "hypnosis",
+                "sated",
+                "hydrated",
+                "ceramic",
+                "dictated",
+                "hammock",
+                "doses"
+            ],
+            "sated": [
+                "dynamic",
+                "hypnosis",
+                "hydrated",
+                "ceramic",
+                "psychosis",
+                "dictated",
+                "hammock",
+                "doses"
+            ],
+            "doses": [
+                "dynamic",
+                "hypnosis",
+                "sated",
+                "hydrated",
+                "ceramic",
+                "psychosis",
+                "dictated",
+                "hammock"
+            ],
+            "hammock": [
+                "dynamic",
+                "hypnosis",
+                "sated",
+                "hydrated",
+                "ceramic",
+                "psychosis",
+                "dictated",
+                "doses"
+            ],
+            "ceramic": [
+                "dynamic",
+                "hypnosis",
+                "sated",
+                "hydrated",
+                "psychosis",
+                "dictated",
+                "hammock",
+                "doses"
+            ]
+        },
+        "6": {
+            "roulette": [
+                "pet",
+                "remake",
+                "apprise",
+                "asset",
+                "rise",
+                "ache",
+                "pint-sized",
+                "partake"
+            ],
+            "ache": [
+                "pet",
+                "remake",
+                "apprise",
+                "asset",
+                "rise",
+                "pint-sized",
+                "roulette",
+                "partake"
+            ],
+            "remake": [
+                "pet",
+                "apprise",
+                "asset",
+                "rise",
+                "ache",
+                "pint-sized",
+                "roulette",
+                "partake"
+            ],
+            "rise": [
+                "pet",
+                "remake",
+                "apprise",
+                "asset",
+                "ache",
+                "pint-sized",
+                "roulette",
+                "partake"
+            ],
+            "partake": [
+                "pet",
+                "remake",
+                "apprise",
+                "asset",
+                "rise",
+                "ache",
+                "pint-sized",
+                "roulette"
+            ],
+            "pet": [
+                "remake",
+                "apprise",
+                "asset",
+                "rise",
+                "ache",
+                "pint-sized",
+                "roulette",
+                "partake"
+            ],
+            "pint-sized": [
+                "pet",
+                "remake",
+                "apprise",
+                "asset",
+                "rise",
+                "ache",
+                "roulette",
+                "partake"
+            ],
+            "asset": [
+                "pet",
+                "remake",
+                "apprise",
+                "rise",
+                "ache",
+                "pint-sized",
+                "roulette",
+                "partake"
+            ],
+            "apprise": [
+                "pet",
+                "remake",
+                "asset",
+                "rise",
+                "ache",
+                "pint-sized",
+                "roulette",
+                "partake"
+            ]
+        }
     }
-  }
 }
