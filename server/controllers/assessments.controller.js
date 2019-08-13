@@ -499,8 +499,7 @@ function uploadDir(s3Path, bucketName, selector) {
 
 function finishMTurk(assignmentId) {
   const params = {
-    AssignmentId: assignmentId,
-    finished: 'true'
+    AssignmentId: assignmentId
   }
   // return new Promise((resolve, reject) => {
   return MTURK.approveAssignment(params, (err, data) => {
