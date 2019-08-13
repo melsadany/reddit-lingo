@@ -2,12 +2,11 @@ const Joi = require('joi')
 const fs = require('fs')
 const path = require('path')
 const AWS = require('aws-sdk')
-const MTURK = new AWS.MTurk()
+const MTURK = new AWS.MTurk({
+  endpoint: 'https://mturk-requester-sandbox.us-east-1.amazonaws.com',
+  region: 'us-east-1'
+})
 const S3 = new AWS.S3()
-
-AWS.config.mturk.endpoint =
-  'https://mturk-requester-sandbox.us-east-1.amazonaws.com'
-AWS.config.mturk.region = 'us-east-1'
 
 const LINGO_DATA_LOCAL_PATH = path.join(
   __dirname,
