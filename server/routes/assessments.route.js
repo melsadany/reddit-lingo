@@ -1,6 +1,7 @@
 const express = require('express')
 const assessCtrl = require('../controllers/assessments.controller')
 const router = express.Router()
+const CircularJSON = require('circular-json')
 
 router.post('/SaveAssessments', (req, res) => {
   assessCtrl
@@ -84,7 +85,8 @@ router.get('/FinishMTurk', (req, res) => {
       res.set({
         'Content-Type': 'application/json'
       })
-      res.send(data)
+      const json = CircularJSON.stringify(data)
+      res.send(json)
     })
     .catch(err => console.log(err))
 })
