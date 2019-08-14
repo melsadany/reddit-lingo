@@ -498,7 +498,7 @@ function uploadDir(s3Path, bucketName, selector) {
 
 function finishMTurk(assignmentId) {
   const MTURK_ENDPOINT =
-    "'https://mturk-requester-sandbox.us-east-1.amazonaws.com"
+    'https://mturk-requester-sandbox.us-east-1.amazonaws.com'
   const params = {
     AssignmentId: assignmentId
   }
