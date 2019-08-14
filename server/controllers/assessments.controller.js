@@ -498,7 +498,7 @@ function uploadDir(s3Path, bucketName, selector) {
 
 function finishMTurk(assignmentId) {
   const MTURK_ENDPOINT =
-    'https://workersandbox.mturk.com/mturk/externalSubmit/' +
+    'https://workersandbox.mturk.com/mturk/externalSubmit' +
     '?assignmentId=' +
     assignmentId
   // const params = {
