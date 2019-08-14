@@ -1,6 +1,18 @@
-<div class='pb-5 text-center'>
+<div class="pb-5 text-center">
   <p class="py-4 text-center">All assessments have been completed.</p>
   <div>
-    <button class="btn btn-primary btn-lg button-down" [routerLink]="['/home']">Go home</button>
+    <form
+      action="https://workersandbox.mturk.com/mturk/externalSubmit"
+      method="POST"
+    >
+      <input
+        type="text"
+        name="assignmentId"
+        [value]="stateManager.MTurkAssignmentId"
+      />
+    </form>
+    <button class="btn btn-primary btn-lg button-down" [routerLink]="['/home']">
+      Go home
+    </button>
   </div>
 </div>
