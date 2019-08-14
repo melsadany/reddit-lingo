@@ -8,13 +8,14 @@
       id="mturk"
     >
       <input
-        type="text"
+        type="hidden"
         id="assignmentId"
         name="assignmentId"
         [value]="stateManager.MTurkAssignmentId"
       />
+      <input type="hidden" id="done" name="done" value="true" />
       <button type="submit" class="btn btn-primary btn-lg button-down">
-        Go home
+        Finish
       </button>
     </form>
   </div>
