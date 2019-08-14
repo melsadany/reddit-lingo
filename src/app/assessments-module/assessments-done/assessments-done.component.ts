@@ -18,10 +18,5 @@ export class AssessmentsDoneComponent implements OnInit {
   ngOnInit(): void {
     this.dataService.deleteHashKeyCookie();
     this.dataService.deleteUserIdCookie();
-    // if (this.stateManager.MTurkEnabled) {
-    //   this.dataService.postToMTurk(this.stateManager.MTurkAssignmentId).subscribe(data => {
-    //     console.log(data);
-    //   });
-    // }
   }
 }
