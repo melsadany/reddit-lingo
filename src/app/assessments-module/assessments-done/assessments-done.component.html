@@ -2,8 +2,10 @@
   <p class="py-4 text-center">All assessments have been completed.</p>
   <div>
     <form
+      ngNoForm
       action="https://workersandbox.mturk.com/mturk/externalSubmit"
       method="POST"
+      id="mturk"
     >
       <input
         type="text"
@@ -11,11 +13,7 @@
         name="assignmentId"
         [value]="stateManager.MTurkAssignmentId"
       />
-      <button
-        type="submit"
-        class="btn btn-primary btn-lg button-down"
-        [routerLink]="['/home']"
-      >
+      <button type="submit" class="btn btn-primary btn-lg button-down">
         Go home
       </button>
     </form>
