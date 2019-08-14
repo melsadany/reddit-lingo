@@ -497,12 +497,15 @@ function uploadDir(s3Path, bucketName, selector) {
 }
 
 function finishMTurk(assignmentId) {
-  const MTURK_ENDPOINT = 'https://workersandbox.mturk.com/mturk/externalSubmit'
-  const params = {
-    AssignmentId: assignmentId
-  }
+  const MTURK_ENDPOINT =
+    'https://workersandbox.mturk.com/mturk/externalSubmit/' +
+    '?assignmentId=' +
+    assignmentId
+  // const params = {
+  //   AssignmentId: assignmentId
+  // }
 
-  return axios.post(MTURK_ENDPOINT, params)
+  return axios.post(MTURK_ENDPOINT)
 
   // return new Promise((resolve, reject) => {
   // return MTURK.approveAssignment(params, (err, data) => {
