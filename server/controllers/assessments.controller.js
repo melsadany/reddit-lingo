@@ -1,7 +1,7 @@
 const Joi = require('joi')
 const fs = require('fs')
 const path = require('path')
-// const axios = require('axios')
+const axios = require('axios')
 const AWS = require('aws-sdk')
 const MTURK = new AWS.MTurk({
   endpoint: 'https://workersandbox.mturk.com/mturk/externalSubmit',
@@ -497,24 +497,23 @@ function uploadDir(s3Path, bucketName, selector) {
 }
 
 function finishMTurk(assignmentId) {
-  // const MTURK_ENDPOINT =
-  //   'https://mturk-requester-sandbox.us-east-1.amazonaws.com'
+  const MTURK_ENDPOINT = 'https://workersandbox.mturk.com/mturk/externalSubmit'
   const params = {
     AssignmentId: assignmentId
   }
 
-  // return axios.post(MTURK_ENDPOINT, params)
+  return axios.post(MTURK_ENDPOINT, params)
 
   // return new Promise((resolve, reject) => {
-  return MTURK.approveAssignment(params, (err, data) => {
-    if (err) {
-      console.log(err)
-      // reject(err)
-    } else {
-      console.log(data)
-      // resolve(data)
-    }
-  }).promise()
+  // return MTURK.approveAssignment(params, (err, data) => {
+  //   if (err) {
+  //     console.log(err)
+  //     // reject(err)
+  //   } else {
+  //     console.log(data)
+  //     // resolve(data)
+  //   }
+  // }).promise()
   // })
 }
 
