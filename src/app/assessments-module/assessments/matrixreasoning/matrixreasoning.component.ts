@@ -29,6 +29,7 @@ export class MatrixreasoningComponent extends SelectionAssessment {
         this.promptsLength = value.assetsLength;
         this.imagePromptStructure = value.promptStructure;
         this.calculateFrameSets();
+        this.calculateSolutionSets();
       });
   }
 
@@ -69,6 +70,22 @@ export class MatrixreasoningComponent extends SelectionAssessment {
         this.imagePromptStructure['frameSets'][prompt].slice(halfArrayLength)
       ];
       this.imagePromptStructure['frameSets'][prompt] = newArray;
+    }
+  }
+
+  calculateSolutionSets(): void {
+    for (const prompt of Object.keys(this.imagePromptStructure['solutionSets'])) {
+      const halfArrayLength = Math.ceil(
+        this.imagePromptStructure['solutionSets'][prompt].length / 2
+      );
+      const newArray = [
+        this.imagePromptStructure['solutionSets'][prompt].slice(
+          0,
+          halfArrayLength
+        ),
+        this.imagePromptStructure['solutionSets'][prompt].slice(halfArrayLength)
+      ];
+      this.imagePromptStructure['solutionSets'][prompt] = newArray;
     }
   }
 
