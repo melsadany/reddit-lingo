@@ -88,7 +88,7 @@ export interface GoogleSpeechToTextDataStructure {
  * Used for single assessment sessions. The hash key is present in the structure as only when a hash key is provided in the
  * intial url will an assessment user be using this structure.
  */
-export interface SingleAssessmentData {
+export interface HashKeyAssessmentData {
   /**
    * The hash key value for this single assessment user.
    */

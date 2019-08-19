@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StateManagerService } from '../services/state-manager.service';
 import { AssessmentDataService } from '../services/assessment-data.service';
-import { SingleAssessmentData, AssessmentData } from '../structures/AssessmentDataStructures';
+import { HashKeyAssessmentData, AssessmentData } from '../structures/AssessmentDataStructures';
 
 @Component({
   selector: 'app-hashkeyinitialize',
@@ -22,8 +22,7 @@ export class HashkeyinitializeComponent {
       this.stateManager.hashKey = userHashKey;
       this.dataService
         .sendHashKeyToServer(userHashKey)
-        .subscribe((data: SingleAssessmentData) => {
-          // KRM: Implementing setting for single assessment turned on or off
+        .subscribe((data: HashKeyAssessmentData) => {
           this.dataService.initializeHashKeyData(userHashKey);
           if (this.stateManager.singleAssessmentEnabled) {
             this.stateManager.initializeSingleAssessmentState(data);
