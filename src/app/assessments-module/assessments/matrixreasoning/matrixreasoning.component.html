@@ -1,25 +1,52 @@
 <div class="mx-lg-5">
   <div *ngIf="stateManager.showAssessmentFrontPage">
     <p *ngIf="stateManager.showStartParagraph" class="py-4 text-center">
-      In this task, you will be shown a set of related pictures.
-      Select the image that you feel best fits in with the others.
+      In this task, you will be shown a set of related pictures. Select the
+      image that you feel best fits in with the others.
     </p>
   </div>
-  <div *ngIf="stateManager.showInnerAssessmentButton" class="text-center button-down">
+  <div
+    *ngIf="stateManager.showInnerAssessmentButton"
+    class="text-center button-down"
+  >
     <div *ngIf="!stateManager.isInAssessment">
-      <img *ngIf="!stateManager.finishedInstruction && stateManager.playingInstruction" style="max-height:85px;"
-        class="img-fluid" src="assets/in_use/animations/random_waveform.gif">
-      <button *ngIf="stateManager.finishedInstruction && !stateManager.playingInstruction" type="button"
+      <img
+        *ngIf="
+          !stateManager.finishedInstruction && stateManager.playingInstruction
+        "
+        style="max-height:85px;"
+        class="img-fluid"
+        src="assets/in_use/animations/random_waveform.gif"
+      />
+      <button
+        *ngIf="
+          stateManager.finishedInstruction && !stateManager.playingInstruction
+        "
+        type="button"
         class="start-button btn btn-success"
-        (click)="setStateAndStart()">{{stateManager.textOnInnerAssessmentButton}}</button>
-      <button *ngIf="!stateManager.finishedInstruction && !stateManager.playingInstruction" type="button"
-        class="start-button btn btn-success" (click)="stateManager.playInstructions()">
+        (click)="setStateAndStart()"
+      >
+        {{ stateManager.textOnInnerAssessmentButton }}
+      </button>
+      <button
+        *ngIf="
+          !stateManager.finishedInstruction && !stateManager.playingInstruction
+        "
+        type="button"
+        class="start-button btn btn-success"
+        (click)="stateManager.playInstructions()"
+      >
         Start Instruction
       </button>
     </div>
     <div *ngIf="stateManager.isInAssessment">
-      <button type="button" class="start-button btn btn-success"
-        (click)="advance()">{{stateManager.textOnInnerAssessmentButton}}</button>
+      <button
+        type="button"
+        class="start-button btn btn-success"
+        (click)="advance()"
+      >
+        {{ stateManager.textOnInnerAssessmentButton }}
+      </button>
     </div>
   </div>
 </div>
@@ -28,17 +55,24 @@
     <tbody>
       <tr *ngFor="let row of imagePromptStructure['frameSets'][promptNumber]">
         <td *ngFor="let image of row">
-          <img class="img-fluid" [src]="image">
+          <img class="img-fluid" [src]="image" />
         </td>
       </tr>
     </tbody>
   </table>
   <table class="table-bordered" style="margin: 0px auto;">
     <tbody>
-      <tr class="table-primary">
-        <td *ngFor="let image of imagePromptStructure['solutionSets'][promptNumber]">
-          <button type="button" class="btn btn-outline-primary" (click)="clickImage(image)">
-            <img class="img-fluid" [src]="image">
+      <tr
+        *ngFor="let row of imagePromptStructure['solutionSets'][promptNumber]"
+        class="table-primary"
+      >
+        <td *ngFor="let image of row">
+          <button
+            type="button"
+            class="btn btn-outline-primary"
+            (click)="clickImage(image)"
+          >
+            <img class="img-fluid" [src]="image" />
           </button>
         </td>
       </tr>
@@ -46,7 +80,9 @@
   </table>
 </div>
 <div>
-  <p *ngIf="countingDown && useCountdownNumber" class="text-center display-1">{{timeLeft}}</p>
+  <p *ngIf="countingDown && useCountdownNumber" class="text-center display-1">
+    {{ timeLeft }}
+  </p>
 </div>
 <div *ngIf="showProgressAnimation && useCountdownBar">
   <mat-progress-bar mode="indeterminate"></mat-progress-bar>
@@ -55,8 +91,7 @@
   </div>
 </div>
 <div *ngIf="showCircleAnimation && useCountdownCircle">
-  <mat-spinner style="margin:0 auto;">
-  </mat-spinner>
+  <mat-spinner style="margin:0 auto;"> </mat-spinner>
   <div class="text-center">
     Wait
   </div>
