@@ -123,7 +123,8 @@ export class WordassociationPathComponent extends SelectionAssessment {
   }
 
   handleNewPrompt(): void {
-    this.wordSackThisPrompt = this.wordAssociationPromptKeysList[this.promptNumber];
+    this.wordSackThisPrompt = this.wordAssociationsObject[this.promptNumber];
+    this.startWord = Object.keys(this.wordSackThisPrompt)[0];
     this.selectedWordsThisPrompt = [];
     this.selectedWordsThisPrompt.push(this.startWord);
     this.wordGraphList = this.wordAssociationsObject[this.promptNumber][this.startWord];

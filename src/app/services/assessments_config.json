@@ -11,14 +11,14 @@
         "enabled": false
       },
       "wordassociationpath": {
-        "enabled": false,
+        "enabled": true,
         "useSpecificStartWord": false,
         "startWord": "cat",
         "showRunningChoices": true,
         "hideInstructionsOnAssessmentStart": true
       },
       "wordassociationpair": {
-        "enabled": true,
+        "enabled": false,
         "useSpecificStartWord": false,
         "startWord": "cat",
         "hideInstructionsOnAssessmentStart": true
