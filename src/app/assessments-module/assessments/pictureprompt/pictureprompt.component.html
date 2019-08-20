@@ -1,10 +1,9 @@
 <div class="mx-lg-5">
   <div *ngIf="stateManager.showAssessmentFrontPage">
-    <p class="py-4 text-center">
+    <p *ngIf="stateManager.showStartParagraph" class="py-4 text-center">
       In this task, you will be shown a picture. Describe what you see in the
-      picture, as if you were describing it to someone who could not see the
-      it. With each picture, your description will be recorded for 30
-      seconds.
+      picture, as if you were describing it to someone who could not see it.
+      With each picture, your description will be recorded for 30 seconds.
     </p>
   </div>
   <div *ngIf="stateManager.showInnerAssessmentButton" class="text-center button-down">
@@ -26,7 +25,7 @@
   </div>
 </div>
 <div *ngIf="showPromptImage" class="text-center">
-  <img class="img-fluid" src="{{ currentImagePrompt }}" />
+  <img style="width: 540px; height: auto;" src=" {{ currentImagePrompt }}" />
 </div>
 <div class="text-center" *ngIf="audioRecordingService.isCurrentlyRecording()">
   <img class="img-fluid mt-4" style="width: 120px; height: 120px;" src="assets/in_use/icons/recording_mic.png" />
@@ -38,8 +37,14 @@
 </div>
 <div *ngIf="showProgressAnimation && useCountdownBar">
   <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  <div class="text-center">
+    Wait
+  </div>
 </div>
 <div *ngIf="showCircleAnimation && useCountdownCircle">
   <mat-spinner style="margin:0 auto;">
   </mat-spinner>
+  <div class="text-center">
+    Wait
+  </div>
 </div>

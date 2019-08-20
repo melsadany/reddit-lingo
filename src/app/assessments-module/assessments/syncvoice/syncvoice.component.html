@@ -1,6 +1,6 @@
 <div class="mx-lg-5">
   <div *ngIf="stateManager.showAssessmentFrontPage">
-    <p class="py-4 text-center">
+    <p *ngIf="stateManager.showStartParagraph" class="py-4 text-center">
       'You will hear a voice saying “la la la” at a certain speed. Once the clip
       ends, say “la la la..” for 10 seconds, trying to match the speed or tempo
       that you heard. There will be several trials, each with a different speed.
@@ -35,9 +35,15 @@
   </div>
   <div *ngIf="showProgressAnimation && useCountdownBar">
     <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    <div class="text-center">
+      Wait
+    </div>
   </div>
   <div *ngIf="showCircleAnimation && useCountdownCircle">
     <mat-spinner style="margin:0 auto;">
     </mat-spinner>
+    <div class="text-center">
+      Wait
+    </div>
   </div>
 </div>

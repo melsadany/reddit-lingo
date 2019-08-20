@@ -11,23 +11,23 @@ export class AppComponent implements OnInit {
   constructor(private stateManager: StateManagerService, private dataService: AssessmentDataService) { }
 
   public ngOnInit(): void {
-    if (this.stateManager.hashKey && this.dataService.checkHashKeyCooke()) {
-      console.log('hk set');
-    } else if (
-      !this.stateManager.hashKey &&
-      !this.dataService.checkHashKeyCooke()
-    ) {
-      console.log('no hk');
-      this.dataService.initializeData();
-    } else if (
-      !this.stateManager.hashKey &&
-      this.dataService.checkHashKeyCooke()
-    ) {
-      console.log('hk cached');
-      this.stateManager.goToHashKeyInitializer(
-        this.dataService.getHashKeyCookie()
-      );
-    }
+    // if (this.stateManager.hashKey && this.dataService.checkHashKeyCooke()) {
+    //   console.log('hk set');
+    // } else if (
+    //   !this.stateManager.hashKey &&
+    //   !this.dataService.checkHashKeyCooke()
+    // ) {
+    //   console.log('no hk');
+    //   this.dataService.initializeData();
+    // } else if (
+    //   !this.stateManager.hashKey &&
+    //   this.dataService.checkHashKeyCooke()
+    // ) {
+    //   console.log('hk cached');
+    //   this.stateManager.goToHashKeyInitializer(
+    //     this.dataService.getHashKeyCookie()
+    //   );
+    // }
     this.stateManager.isInAssessment = false;
     if (this.stateManager.finishedAllAssessments) {
       this.stateManager.navigateTo('done');
