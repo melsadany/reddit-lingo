@@ -35,8 +35,8 @@ export class HammerJSConfig extends HammerGestureConfig {
     AppComponent,
     HeaderComponent,
     HomeComponent,
-    AboutComponent,
-    ContactComponent,
+    // AboutComponent,
+    // ContactComponent,
     HashkeyinitializeComponent
   ],
   imports: [

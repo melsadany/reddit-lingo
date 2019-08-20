@@ -1,40 +1,70 @@
 <header>
   <nav class="navbar navbar-expand-sm navbar-dark bg-primary">
     <img src="assets/in_use/icons/logo.png" height="50" class="navbar-brand" />
-    <a class="navbar-brand" href="https://michaelson.lab.uiowa.edu/">Michaelson Lab</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
-      aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+    <a class="navbar-brand" href="https://michaelson.lab.uiowa.edu/"
+      >Michaelson Lab</a
+    >
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-toggle="collapse"
+      data-target="#navbarColor01"
+      aria-controls="navbarColor01"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarColor01">
       <ul class="navbar-nav mr-auto">
-        <ng-container *ngIf="stateManager.isInAssessment; then resumeAssessment; else Home">
+        <ng-container
+          *ngIf="stateManager.isInAssessment; then resumeAssessment; else Home"
+        >
         </ng-container>
         <ng-template #resumeAssessment>
           <li class="nav-item">
-            <a *ngIf="stateManager.singleAssessmentEnabled" class="nav-link"
-              [routerLink]="['assessments', stateManager.currentAssessment]">
-              Single Assessment: {{stateManager.translateAssessmentName(this.stateManager.currentAssessment)}}
+            <a
+              *ngIf="stateManager.singleAssessmentEnabled"
+              class="nav-link"
+              [routerLink]="['assessments', stateManager.currentAssessment]"
+            >
+              Single Assessment:
+              {{
+                stateManager.translateAssessmentName(
+                  this.stateManager.currentAssessment
+                )
+              }}
               <span class="sr-only">(current)</span>
             </a>
-            <a *ngIf="!stateManager.singleAssessmentEnabled" class="nav-link"
-              [routerLink]="['assessments', stateManager.currentAssessment]">
-              Current Assessment: {{stateManager.translateAssessmentName(this.stateManager.currentAssessment)}}
-              ({{stateManager.currentAssessmentNumber}} out of {{stateManager.totalAssessments}})
+            <a
+              *ngIf="!stateManager.singleAssessmentEnabled"
+              class="nav-link"
+              [routerLink]="['assessments', stateManager.currentAssessment]"
+            >
+              Current Assessment:
+              {{
+                stateManager.translateAssessmentName(
+                  this.stateManager.currentAssessment
+                )
+              }}
+              ({{ stateManager.currentAssessmentNumber }} out of
+              {{ stateManager.totalAssessments }})
               <span class="sr-only">(current)</span>
             </a>
           </li>
         </ng-template>
         <ng-template #Home>
           <li class="nav-item">
-            <a class="nav-link" [routerLink]="['home']">Home <span class="sr-only">(current)</span></a>
+            <a class="nav-link" [routerLink]="['home']"
+              >Home <span class="sr-only">(current)</span></a
+            >
           </li>
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <a class="nav-link" [routerLink]="['about']">About</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" [routerLink]="['contact']">Contact</a>
-          </li>
+          </li> -->
         </ng-template>
       </ul>
     </div>
