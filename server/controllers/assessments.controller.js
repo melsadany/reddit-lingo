@@ -39,7 +39,10 @@ async function insertFreshAssessmentData(reqData) {
       if (err) {
         console.log(err)
       } else {
-        uploadDir(path.join(LINGO_DATA_LOCAL_PATH), LINGO_DATA_OUTPUT_S3_PATH)
+        uploadDir(
+          path.join(LINGO_DATA_LOCAL_PATH, userID),
+          path.join(LINGO_DATA_OUTPUT_S3_PATH, userID)
+        )
         resolve(freshData)
       }
     })
@@ -57,7 +60,7 @@ async function updateAssessmentData(reqData) {
       hashKey = reqData.hash_key
       fileName = path.join(
         LINGO_DATA_LOCAL_PATH,
-        'single_assessment',
+        'hashkey_assessment',
         hashKey,
         hashKey + '.json'
       )
@@ -79,7 +82,24 @@ async function updateAssessmentData(reqData) {
           console.log(err)
           reject(err)
         } else {
-          uploadDir(path.join(LINGO_DATA_LOCAL_PATH), LINGO_DATA_OUTPUT_S3_PATH)
+          let uploadPath
+          let S3UploadPath
+          if (hashKey) {
+            uploadPath = path.join(
+              LINGO_DATA_LOCAL_PATH,
+              'hashkey_assessment',
+              hashKey
+            )
+            S3UploadPath = path.join(
+              LINGO_DATA_OUTPUT_S3_PATH,
+              'hashkey_assessment',
+              hashKey
+            )
+          } else {
+            uploadPath = path.join(LINGO_DATA_LOCAL_PATH, userID)
+            S3UploadPath = path.join(LINGO_DATA_OUTPUT_S3_PATH, userID)
+          }
+          uploadDir(uploadPath, S3UploadPath)
           resolve(dataFile)
         }
       })
@@ -96,7 +116,7 @@ async function pushOnePieceAssessmentData(reqData) {
       hashKey = reqData.hash_key
       fileName = path.join(
         LINGO_DATA_LOCAL_PATH,
-        'single_assessment',
+        'hashkey_assessment',
         hashKey,
         hashKey + '.json'
       )
@@ -134,11 +154,24 @@ async function pushOnePieceAssessmentData(reqData) {
           console.log(err)
           reject(err)
         } else {
-          uploadDir(
-            path.join(LINGO_DATA_LOCAL_PATH),
-            LINGO_DATA_OUTPUT_S3_PATH,
-            selector
-          )
+          let uploadPath
+          let S3UploadPath
+          if (hashKey) {
+            uploadPath = path.join(
+              LINGO_DATA_LOCAL_PATH,
+              'hashkey_assessment',
+              hashKey
+            )
+            S3UploadPath = path.join(
+              LINGO_DATA_OUTPUT_S3_PATH,
+              'hashkey_assessment',
+              hashKey
+            )
+          } else {
+            uploadPath = path.join(LINGO_DATA_LOCAL_PATH, userID)
+            S3UploadPath = path.join(LINGO_DATA_OUTPUT_S3_PATH, userID)
+          }
+          uploadDir(uploadPath, S3UploadPath, selector)
           resolve(dataFile)
         }
       })
@@ -189,8 +222,8 @@ function insertNewIDJson() {
           } else {
             console.log('Successfully saved new ID json')
             uploadDir(
-              path.join(LINGO_DATA_LOCAL_PATH),
-              LINGO_DATA_OUTPUT_S3_PATH
+              path.join(LINGO_DATA_LOCAL_PATH, 'userID'),
+              path.join(LINGO_DATA_OUTPUT_S3_PATH, 'userID')
             )
             resolve(0)
           }
@@ -208,7 +241,7 @@ function saveWavFile(reqData, userID, hashKey, selector) {
   if (hashKey) {
     wavFilePath = path.join(
       LINGO_DATA_LOCAL_PATH,
-      'single_assessment',
+      'hashkey_assessment',
       hashKey,
       'recording_data',
       assessmentName
@@ -272,8 +305,8 @@ function getNextUserID() {
             } else {
               console.log('Successfully updated ID json')
               uploadDir(
-                path.join(LINGO_DATA_LOCAL_PATH),
-                LINGO_DATA_OUTPUT_S3_PATH
+                path.join(LINGO_DATA_LOCAL_PATH, 'userID'),
+                path.join(LINGO_DATA_OUTPUT_S3_PATH, 'userID')
               )
               resolve(currentID)
             }
@@ -287,7 +320,7 @@ function getNextUserID() {
 function sendHashKey(hashKey) {
   const fileName = path.join(
     LINGO_DATA_LOCAL_PATH,
-    'single_assessment',
+    'hashkey_assessment',
     hashKey,
     hashKey + '.json'
   )
@@ -311,19 +344,19 @@ function insertNewHashKeyJson(hashKey) {
   })
   const fileName = path.join(
     LINGO_DATA_LOCAL_PATH,
-    'single_assessment',
+    'hashkey_assessment',
     hashKey,
     hashKey + '.json'
   )
   return new Promise((resolve, reject) => {
     if (
       !fs.existsSync(
-        path.join(LINGO_DATA_LOCAL_PATH, 'single_assessment', hashKey)
+        path.join(LINGO_DATA_LOCAL_PATH, 'hashkey_assessment', hashKey)
       )
     ) {
       console.log('Making HashKey directory')
       fs.mkdirSync(
-        path.join(LINGO_DATA_LOCAL_PATH, 'single_assessment', hashKey),
+        path.join(LINGO_DATA_LOCAL_PATH, 'hashkey_assessment', hashKey),
         {
           recursive: true
         }
@@ -335,7 +368,10 @@ function insertNewHashKeyJson(hashKey) {
         reject(err)
       } else {
         console.log('Successfully saved new HashKey json')
-        uploadDir(path.join(LINGO_DATA_LOCAL_PATH), LINGO_DATA_OUTPUT_S3_PATH)
+        uploadDir(
+          path.join(LINGO_DATA_LOCAL_PATH, 'hashkey_assessment', hashKey),
+          path.join(LINGO_DATA_OUTPUT_S3_PATH, 'hashkey_assessment', hashKey)
+        )
         resolve(freshData)
       }
     })
