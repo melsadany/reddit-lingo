@@ -7,8 +7,18 @@
       "prescreenerquestions": {
         "enabled": false
       },
-      "wordassociationpair": {
+      "postscreenerquestions": {
+        "enabled": false
+      },
+      "wordassociationpath": {
         "enabled": true,
+        "useSpecificStartWord": false,
+        "startWord": "cat",
+        "showRunningChoices": true,
+        "hideInstructionsOnAssessmentStart": true
+      },
+      "wordassociationpair": {
+        "enabled": false,
         "useSpecificStartWord": false,
         "startWord": "cat",
         "hideInstructionsOnAssessmentStart": true
@@ -37,33 +47,22 @@
       },
       "ran": {
         "enabled": true,
-        "hideInstructionsOnAssessmentStart": true
+        "hideInstructionsOnAssessmentStart": false
       },
       "listeningcomprehension": {
         "enabled": true,
-        "hideInstructionsOnAssessmentStart": true
+        "hideInstructionsOnAssessmentStart": false
       },
       "pictureprompt": {
         "enabled": true,
-        "hideInstructionsOnAssessmentStart": true
-      },
-     "wordassociationpath": {
-        "enabled": true,
-        "useSpecificStartWord": false,
-        "startWord": "cat",
-        "showRunningChoices": true,
-        "hideInstructionsOnAssessmentStart": true
-      },
-      "postscreenerquestions": {
-        "enabled": false
+        "hideInstructionsOnAssessmentStart": false
       }
     },
     "settings": {
       "countdownTimerLength": 3,
       "countdownTimerType": "circle",
       "singleAssessmentEnabled": false,
-      "debugEnabled": false,
-      "MTurkEnabled": true
+      "debugEnabled": true
     }
   }
 }

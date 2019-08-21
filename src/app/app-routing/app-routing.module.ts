@@ -10,14 +10,14 @@ const routes: Routes = [
     path: 'home',
     component: HomeComponent
   },
-  // {
-  //   path: 'about',
-  //   component: AboutComponent
-  // },
-  // {
-  //   path: 'contact',
-  //   component: ContactComponent
-  // },
+  {
+    path: 'about',
+    component: AboutComponent
+  },
+  {
+    path: 'contact',
+    component: ContactComponent
+  },
   {
     path: ':hashKey',
     component: HashkeyinitializeComponent

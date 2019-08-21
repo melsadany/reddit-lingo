@@ -16,8 +16,9 @@ import { StateManagerService } from './state-manager.service';
 export class AssessmentDataService {
   private _currentUserId: string;
   private _partialAssessmentData: AssessmentData;
-  private _partialAssessmentDataSubscription: Observable<AssessmentData> = this.getUserAssessmentDataFromFileSystem(this.getUserIdCookie());
-
+  private _partialAssessmentDataSubscription: Observable<
+    AssessmentData
+  > = this.getUserAssessmentDataFromFileSystem(this.getUserIdCookie());
   private _audioAssetsLocation = 'assets/in_use/audio/';
   constructor(
     private cookieService: CookieService,
@@ -39,12 +40,6 @@ export class AssessmentDataService {
   }
   public set partialAssessmentData(value: AssessmentData) {
     this._partialAssessmentData = value;
-  }
-  public get partialAssessmentDataSubscription(): Observable<AssessmentData> {
-    return this._partialAssessmentDataSubscription;
-  }
-  public set partialAssessmentDataSubscription(value: Observable<AssessmentData>) {
-    this._partialAssessmentDataSubscription = value;
   }
 
   public initializeData(): void {
@@ -114,10 +109,10 @@ export class AssessmentDataService {
   public setData(): void {
     // KRM: Get the data for the current user
     // that has already been put in the database from pervious assessments
-    this.partialAssessmentDataSubscription = this.getUserAssessmentDataFromFileSystem(
+    this._partialAssessmentDataSubscription = this.getUserAssessmentDataFromFileSystem(
       this.getUserIdCookie()
     );
-    this.partialAssessmentDataSubscription.subscribe(
+    this._partialAssessmentDataSubscription.subscribe(
       (data: AssessmentData) => {
         this.partialAssessmentData = data;
         this.stateManager.initializeState(this.partialAssessmentData);
