@@ -31,16 +31,12 @@ app.use(/^((?!(api)).)*/, (req, res) => {
 
 console.log('Distributing front end from ' + distDir)
 
-app.use(
-  bodyParser.json({
-    limit: '50mb'
-  })
-)
-app.use(
-  bodyParser.urlencoded({
-    extended: true
-  })
-)
+app.use(bodyParser.json({
+  limit: '50mb'
+}))
+app.use(bodyParser.urlencoded({
+  extended: true
+}))
 app.use(compress())
 app.use(methodOverride())
 app.use(cookieParser())

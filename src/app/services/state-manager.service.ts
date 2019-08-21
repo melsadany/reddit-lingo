@@ -4,7 +4,7 @@ import {
   HashKeyAssessmentData,
   AssetsObject
 } from '../structures/AssessmentDataStructures';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { LinkedList } from '../structures/LinkedList';
 import appConfig from './assessments_config.json';
 import { LingoSettings } from '../structures/LingoSettings';
@@ -40,28 +40,7 @@ export class StateManagerService {
   private _finishedInstruction = false;
   private _playingInstruction = false;
   private _showStartParagraph = true;
-  private _MTurkEnabled: any;
-  private _MTurkAssignmentId: string;
-  private _MTurkWorkerId: any;
 
-  public get MTurkWorkerId(): any {
-    return this._MTurkWorkerId;
-  }
-  public set MTurkWorkerId(value: any) {
-    this._MTurkWorkerId = value;
-  }
-  public get MTurkAssignmentId(): string {
-    return this._MTurkAssignmentId;
-  }
-  public set MTurkAssignmentId(value: string) {
-    this._MTurkAssignmentId = value;
-  }
-  public get MTurkEnabled(): any {
-    return this._MTurkEnabled;
-  }
-  public set MTurkEnabled(value: any) {
-    this._MTurkEnabled = value;
-  }
   public get showStartParagraph(): boolean {
     return this._showStartParagraph;
   }
@@ -210,7 +189,7 @@ export class StateManagerService {
     this._textOnOutsideAssessmentButton = value;
   }
 
-  constructor(private routerService: Router, private route: ActivatedRoute) {
+  constructor(private routerService: Router) {
     this.configureEnabledAssessments();
     this.configureDebugMode();
     this.configureSingleAssessmentEnabled();
@@ -221,13 +200,6 @@ export class StateManagerService {
 
   private configureSingleAssessmentEnabled(): void {
     this.singleAssessmentEnabled = this.appConfig['appConfig']['settings']['singleAssessmentEnabled'];
-  }
-
-  private configureMTurk(): void {
-    this.MTurkEnabled = this.appConfig['appConfig']['settings']['MTurkEnabled'];
-    this.MTurkAssignmentId = this.route.snapshot.queryParamMap.get('assignmentId');
-    this.MTurkWorkerId = this.route.snapshot.queryParamMap.get('workerId');
-    console.log('MTurkAssignmentId:', this.MTurkAssignmentId);
   }
 
   private configureEnabledAssessments(): void {
@@ -304,10 +276,6 @@ export class StateManagerService {
   }
 
   public initializeState(existingAssessmentData: AssessmentData): void {
-    if (this.appConfig['appConfig']['settings']['MTurkEnabled']) {
-      console.log('MTurk Enabled');
-      this.configureMTurk();
-    }
     this.configureEnabledAssessments();
     for (const existingAssessment of existingAssessmentData.assessments) {
       const existingAssessmentName = existingAssessment['assess_name'];
