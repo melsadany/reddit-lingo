@@ -1,21 +1,46 @@
 <div *ngIf="!stateManager.chromeiOs">
-  <p>Thank you for your interest in our research! The purpose of this study is to better understand the specific factors
-    that contribute to individual differences in language ability. Approximately 5,000 people will take part in this
-    study at the University of Iowa. All individuals must be over the age of eighteen.</p>
-  <p>This is a demonstration. You are not actually participating in a study. To avoid participating in this
-    demonstration, you may close out of this window at any point.</p>
-  <p> Thank you very much for your consideration! To indicate your willingness to participate in this demonstration
-    <b>please
-      click the START button below.</b></p>
-  <div class='pb-5 text-center'>
+  <p>
+    Thank you for your interest! The purpose of this HIT is to test an 
+    interactive online assessment for english language ability. To successfully
+    complete this HIT, <b>english must be your first langauge</b>, your 
+    computer must have <b>functing speakers and a microphone</b>, and you should
+    <b>use the Chrome browser</b> to minimize potential problems. 
+  </p>
+  <p>
+    This HIT is estimated to take between 20 and 30 minutes to complete. At the 
+    end, you will be presented with a free text box. Please let us know about
+    any tecnical difficulties or other feedback that you have, 
+  </p>
+  <p>
+    When you are ready to begin, 
+    <b>please click the START button below.</b>
+  </p>
+  <div class="pb-5 text-center">
     <div *ngIf="stateManager.loadingState">
-      <button type='button' class='btn btn-info btn-lg' disabled>
+      <button type="button" class="btn btn-info btn-lg" disabled>
         Loading. Please wait.
       </button>
     </div>
-    <div *ngIf="!stateManager.loadingState">
-      <button type='button' class='btn btn-primary btn-lg'
-        (click)="stateManager.goToNextAssessmentFromHome()">START</button>
+    <div
+      *ngIf="stateManager.MTurkAssignmentId === 'ASSIGNMENT_ID_NOT_AVAILABLE'"
+    >
+      <button type="button" class="btn btn-info btn-lg" disabled>
+        Please accept assignment to continue.
+      </button>
+    </div>
+    <div
+      *ngIf="
+        !stateManager.loadingState &&
+        stateManager.MTurkAssignmentId !== 'ASSIGNMENT_ID_NOT_AVAILABLE'
+      "
+    >
+      <button
+        type="button"
+        class="btn btn-primary btn-lg"
+        (click)="stateManager.goToNextAssessmentFromHome()"
+      >
+        START
+      </button>
     </div>
   </div>
   <div *ngIf="stateManager.DEBUG_MODE">
@@ -33,6 +58,7 @@
 </div>
 <div *ngIf="stateManager.chromeiOs">
   <p>
-    We do not support Chrome on the iOS platform. Please use Safari on your iOS device to use our site.
+    We do not support Chrome on the iOS platform. Please use Safari on your iOS
+    device to use our site.
   </p>
 </div>

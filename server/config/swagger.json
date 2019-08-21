@@ -9,16 +9,16 @@
       "url": "https://opensource.org/licenses/MIT"
     }
   },
-  "tags": [{
-    "name": "Assessments",
-    "description": "API for saving and loading assessment data in the system"
-  }],
+  "tags": [
+    {
+      "name": "Assessments",
+      "description": "API for saving and loading assessment data in the system"
+    }
+  ],
   "paths": {
     "/assessmentsAPI/SaveAssessments": {
       "post": {
-        "tags": [
-          "Assessments"
-        ],
+        "tags": ["Assessments"],
         "summary": "Save assessment data progress",
         "description": "Save current assessment progress",
         "requestBody": {
@@ -69,22 +69,22 @@
     },
     "/assessmentsAPI/GetUserAssessment/{user_id}": {
       "get": {
-        "tags": [
-          "Assessments"
-        ],
+        "tags": ["Assessments"],
         "summary": "Find user by ID",
         "description": "Get user's assessment data by ID",
         "operationId": "getUserById",
-        "parameters": [{
-          "name": "user_id",
-          "in": "path",
-          "description": "ID of user to return data for",
-          "required": true,
-          "schema": {
-            "type": "integer",
-            "format": "int64"
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "ID of user to return data for",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
-        }],
+        ],
         "responses": {
           "200": {
             "description": "Successfully found user"
@@ -97,25 +97,27 @@
     },
     "/assessmentsAPI/GetAllDataOnUserId/{user_id}": {
       "get": {
-        "security": [{
-          "bearerAuth": []
-        }],
-        "tags": [
-          "Assessments"
+        "security": [
+          {
+            "bearerAuth": []
+          }
         ],
+        "tags": ["Assessments"],
         "summary": "Get all data on a user. Requires JWT auth.",
         "description": "Get all of user's assessment data by ID",
         "operationId": "getAllDataOnUserId",
-        "parameters": [{
-          "name": "user_id",
-          "in": "path",
-          "description": "ID of user to return data for",
-          "required": true,
-          "schema": {
-            "type": "integer",
-            "format": "int64"
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "ID of user to return data for",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
-        }],
+        ],
         "responses": {
           "200": {
             "description": "Successfully found user",
@@ -136,9 +138,11 @@
       }
     }
   },
-  "servers": [{
-    "url": "http://localhost:8080/api/"
-  }],
+  "servers": [
+    {
+      "url": "http://localhost:8080/api/"
+    }
+  ],
   "components": {
     "securitySchemes": {
       "bearerAuth": {
@@ -149,11 +153,7 @@
     },
     "schemas": {
       "AssessmentData": {
-        "required": [
-          "user_id",
-          "assessments",
-          "google_speech_to_text_assess"
-        ],
+        "required": ["user_id", "assessments", "google_speech_to_text_assess"],
         "properties": {
           "user_id": {
             "type": "number",
