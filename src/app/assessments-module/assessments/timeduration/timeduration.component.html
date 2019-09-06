@@ -1,6 +1,6 @@
 <div class="mx-lg-5">
   <div *ngIf="stateManager.showAssessmentFrontPage">
-    <p class="py-4 text-center">
+    <p *ngIf="stateManager.showStartParagraph" class="py-4 text-center">
       In this task, you will see a line that moves around the outside of a circle. The speed of the line will change
       from trial to trial. When the line stops moving, click or tap the button, and it will turn blue. Click or tap it
       again after the amount of time you think it took the line to complete its course around the circle. We’ll have you
@@ -44,9 +44,15 @@
   </div>
   <div *ngIf="showProgressAnimation && useCountdownBar">
     <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    <div class="text-center">
+      Wait
+    </div>
   </div>
   <div *ngIf="showCircleAnimation && useCountdownCircle">
     <mat-spinner style="margin:0 auto;">
     </mat-spinner>
+    <div class="text-center">
+      Wait
+    </div>
   </div>
 </div>

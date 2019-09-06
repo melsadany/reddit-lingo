@@ -1,6 +1,6 @@
 <div class="mx-lg-5">
   <div *ngIf="stateManager.showAssessmentFrontPage">
-    <p class="py-4 text-center">
+    <p *ngIf="stateManager.showStartParagraph" class="py-4 text-center">
       In this task, you will see a grid of numbers. Read the numbers off as quickly and clearly as you can, from
       left-to-right
       and top-to-bottom. For the example grid below, you would say:
@@ -46,8 +46,14 @@
 </div>
 <div *ngIf="showProgressAnimation && useCountdownBar">
   <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  <div class="text-center">
+    Wait
+  </div>
 </div>
 <div *ngIf="showCircleAnimation && useCountdownCircle">
   <mat-spinner style="margin:0 auto;">
   </mat-spinner>
+  <div class="text-center">
+    Wait
+  </div>
 </div>

@@ -1,0 +1,76 @@
+<div class="mx-lg-5">
+  <div *ngIf="stateManager.showAssessmentFrontPage">
+    <p *ngIf="stateManager.showStartParagraph" class="py-4 text-center">
+      In this task, you will be presented with a word at the top of the screen. At the bottom of the screen will be
+      several other words. Select one of these words based on the first word. The word you choose will move to the top,
+      and the words at the bottom will change. Select a new word from the
+      bottom that you feel goes with the word you just chose. This will repeat several times
+    </p>
+    <div *ngIf="stateManager.showInnerAssessmentButton" class="text-center button-down">
+      <div *ngIf="!stateManager.isInAssessment">
+        <img *ngIf="!stateManager.finishedInstruction && stateManager.playingInstruction" style="max-height:85px;"
+          class="img-fluid" src="assets/in_use/animations/random_waveform.gif">
+        <button *ngIf="stateManager.finishedInstruction && !stateManager.playingInstruction" type="button"
+          class="start-button btn btn-success"
+          (click)="setStateAndStart()">{{stateManager.textOnInnerAssessmentButton}}</button>
+        <button *ngIf="!stateManager.finishedInstruction && !stateManager.playingInstruction" type="button"
+          class="start-button btn btn-success" (click)="stateManager.playInstructions()">
+          Start Instruction
+        </button>
+      </div>
+      <div *ngIf="showExample" class="mb-2 text-center">
+        <img class="img-fluid" src="assets/in_use/examples/animations/wordassociation_example.gif"
+          style="margin-bottom: 20px;" />
+      </div>
+      <div *ngIf="stateManager.isInAssessment" class="pt-3">
+        <button type="button" class="start-button btn btn-success"
+          (click)="advance()">{{stateManager.textOnInnerAssessmentButton}}</button>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="showWords">
+    <!-- <div *ngIf="showRunningChoices">
+      <div *ngFor="let word of selectedPairingsThisPrompt; let i = index">
+        <div class="row justify-content-center" style="margin: 5px;">
+          <div *ngIf="i < selectedPairingsThisPrompt.length - 1">
+            <div class="border border-white" style="color: gray">
+              {{ word | json }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> -->
+    <div class="row justify-content-center" style="margin: 5px;">
+      <div class="border border-danger rounded"
+        style="color:crimson; padding: 3px; font-size: 120%; font-weight: bold;">
+        {{ startWord }}
+      </div>
+    </div>
+    <div *ngFor="let row of currentPromptMatrix" class="row">
+      <div *ngFor="let word of row" class="col-sm-4" style="margin: 0 auto;">
+        <button type="button" class="btn btn-light" style="width:100%; color:black; margin: 5px;"
+          (click)="clickWord(word)">
+          {{ word }}
+        </button>
+      </div>
+    </div>
+  </div>
+  <div>
+    <p *ngIf="countingDown && useCountdownNumber" class="text-center display-1">{{timeLeft}}</p>
+  </div>
+  <div class="pt-3">
+    <div *ngIf="showProgressAnimation && useCountdownBar">
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+      <div class="text-center">
+        Wait
+      </div>
+    </div>
+    <div *ngIf="showCircleAnimation && useCountdownCircle">
+      <mat-spinner style="margin:0 auto;">
+      </mat-spinner>
+      <div class="text-center">
+        Wait
+      </div>
+    </div>
+  </div>
+</div>
