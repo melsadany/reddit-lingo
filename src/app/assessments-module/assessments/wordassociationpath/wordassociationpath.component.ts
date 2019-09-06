@@ -11,12 +11,14 @@ import * as data from '../../../../assets/in_use/data/wordassociationpath/wordma
 })
 export class WordassociationPathComponent extends SelectionAssessment {
   assessmentName = 'wordassociationpath';
+ 
   wordAssociationsObject: Object = data['words'];
   wordAssociationPromptKeysList = Object.keys(data['words']);
   wordSackThisPrompt = this.wordAssociationsObject[this.promptNumber];
   promptsLength = this.wordAssociationPromptKeysList.length;
   showWords = false;
   spanNumber = 12;
+  wordCount=0;
   wordGraphList: [];
   selectedWordsThisPrompt: string[];
   currentPromptMatrix: string[][];
@@ -96,7 +98,8 @@ export class WordassociationPathComponent extends SelectionAssessment {
     this.selectedWordsThisPrompt.push(word);
     console.log(this.selectedWordsThisPrompt);
     this.spanNumber = Math.ceil(12 / this.selectedWordsThisPrompt.length);
-    if (this.selectedWordsThisPrompt.length === 10) {
+    
+    if (this.selectedWordsThisPrompt.length === this.wordCount) {
       // KRM: You get 9 selections per question.
       // The first element of the array is always the start word.
       this.sendWordSelectionAndAdvance(
@@ -125,6 +128,7 @@ export class WordassociationPathComponent extends SelectionAssessment {
   handleNewPrompt(): void {
     this.wordSackThisPrompt = this.wordAssociationsObject[this.promptNumber];
     this.startWord = Object.keys(this.wordSackThisPrompt)[0];
+    this.wordCount= Object.keys(this.wordSackThisPrompt).length;
     this.selectedWordsThisPrompt = [];
     this.selectedWordsThisPrompt.push(this.startWord);
     this.wordGraphList = this.wordAssociationsObject[this.promptNumber][this.startWord];
