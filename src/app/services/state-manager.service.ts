@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {
   AssessmentData,
-  SingleAssessmentData,
+  HashKeyAssessmentData,
   AssetsObject
 } from '../structures/AssessmentDataStructures';
 import { Router } from '@angular/router';
@@ -229,12 +229,12 @@ export class StateManagerService {
   }
 
   public initializeSingleAssessmentState(
-    singleAssessmentData: SingleAssessmentData | AssessmentData
+    hashKeyAssessmentData: HashKeyAssessmentData | AssessmentData
   ): void {
     const singleAssessmentName = this.hashKeyFirstFourMap(
       this.hashKey.slice(0, 4)
     );
-    for (const existingAssessment of singleAssessmentData.assessments) {
+    for (const existingAssessment of hashKeyAssessmentData.assessments) {
       const existingAssessmentName = existingAssessment['assess_name'];
       if (existingAssessment['completed']) {
         this.assessments[existingAssessmentName]['completed'] = true;
@@ -260,10 +260,10 @@ export class StateManagerService {
         // ); KRM: For debugging
       }
     }
-    if (!this.assessments['diagnostics']['completed']) {
+    if (this.assessments['diagnostics'] && !this.assessments['diagnostics']['completed']) {
       this.assessmentsLeftLinkedList.append('diagnostics');
     }
-    if (!this.assessments['prescreenerquestions']['completed']) {
+    if (this.assessments['prescreenerquestions'] && !this.assessments['prescreenerquestions']['completed']) {
       this.assessmentsLeftLinkedList.append('prescreenerquestions');
     }
     if (this.assessments[singleAssessmentName]['completed']) {
@@ -426,8 +426,11 @@ export class StateManagerService {
       case 'prescreenerquestions':
         translatedName = 'Pre-screener Questions';
         break;
-      case 'wordassociation':
-        translatedName = 'Word Association';
+      case 'wordassociationpath':
+        translatedName = 'Word Association Path';
+        break;
+      case 'wordassociationpair':
+        translatedName = 'Word Association Pair';
         break;
       case 'wordfinding':
         translatedName = 'Word Finding';
@@ -492,7 +495,10 @@ export class StateManagerService {
         assessmentName = 'timeduration';
         break;
       case 'wdas':
-        assessmentName = 'wordassociation';
+        assessmentName = 'wordassociationpath';
+        break;
+      case 'wdap':
+        assessmentName = 'wordassociationpair';
         break;
       case 'rdfn':
         assessmentName = 'wordfinding';

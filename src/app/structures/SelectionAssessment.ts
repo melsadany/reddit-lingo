@@ -2,6 +2,7 @@ import { BaseAssessment } from './BaseAssessment';
 import { StateManagerService } from '../services/state-manager.service';
 import { AssessmentDataService } from '../services/assessment-data.service';
 import { OnDestroy } from '@angular/core';
+import { PairSelection } from '../assessments-module/assessments/wordassociationpair/wordassociationpair.component';
 
 export class SelectionAssessment extends BaseAssessment implements OnDestroy {
   private _selectionData = [];
@@ -62,7 +63,7 @@ export class SelectionAssessment extends BaseAssessment implements OnDestroy {
   }
 
   sendWordSelectionAndAdvance(
-    words: string | string[],
+    words: string | string[] | PairSelection[],
     intermediateFunction: Function,
     advanceCallBack: Function
   ): void {
@@ -120,6 +121,9 @@ export class SelectionAssessment extends BaseAssessment implements OnDestroy {
         this.lastPrompt = true;
         this.stateManager.textOnInnerAssessmentButton =
           'FINISH ASSESSMENT AND ADVANCE';
+      }
+      if (this.stateManager.appConfig['appConfig']['assessmentsConfig'][this.assessmentName]['hideInstructionsOnAssessmentStart']) {
+        this.stateManager.showStartParagraph = false;
       }
       if (beforeAdvanceCall) {
         // KRM: This call must return a promise
