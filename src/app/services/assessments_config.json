@@ -7,9 +7,6 @@
       "prescreenerquestions": {
         "enabled": false
       },
-      "postscreenerquestions": {
-        "enabled": false
-      },
       "wordassociationpath": {
         "enabled": true,
         "useSpecificStartWord": false,
