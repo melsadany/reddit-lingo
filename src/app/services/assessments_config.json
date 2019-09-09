@@ -7,11 +7,8 @@
       "prescreenerquestions": {
         "enabled": false
       },
-      "postscreenerquestions": {
-        "enabled": false
-      },
       "wordassociationpath": {
-        "enabled": true,
+        "enabled": false,
         "useSpecificStartWord": false,
         "startWord": "cat",
         "showRunningChoices": true,
@@ -36,11 +33,11 @@
         "hideInstructionsOnAssessmentStart": false
       },
       "syncvoice": {
-        "enabled": true,
+        "enabled": false,
         "hideInstructionsOnAssessmentStart": false
       },
       "timeduration": {
-        "enabled": true,
+        "enabled": false,
         "circle_durations": [5, 1.5, 0.5]
       },
       "ran": {
@@ -59,7 +56,7 @@
       "countdownTimerLength": 3,
       "countdownTimerType": "circle",
       "singleAssessmentEnabled": false,
-      "debugEnabled": true
+      "debugEnabled": false
     }
   }
 }
