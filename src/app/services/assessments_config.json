@@ -7,14 +7,11 @@
       "prescreenerquestions": {
         "enabled": false
       },
-      "postscreenerquestions": {
-        "enabled": false
-      },
       "wordassociationpath": {
         "enabled": true,
         "useSpecificStartWord": false,
         "startWord": "cat",
-        "showRunningChoices": true,
+        "showRunningChoices": false,
         "hideInstructionsOnAssessmentStart": true
       },
       "wordassociationpair": {
@@ -33,7 +30,7 @@
       },
       "matrixreasoning": {
         "enabled": true,
-        "hideInstructionsOnAssessmentStart": false
+        "hideInstructionsOnAssessmentStart": true
       },
       "syncvoice": {
         "enabled": true,
@@ -45,7 +42,7 @@
       },
       "ran": {
         "enabled": true,
-        "hideInstructionsOnAssessmentStart": false
+        "hideInstructionsOnAssessmentStart": true
       },
       "listeningcomprehension": {
         "enabled": true,
