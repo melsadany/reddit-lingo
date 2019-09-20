@@ -1,6 +1,6 @@
 <div class="mx-lg-5">
   <div *ngIf="stateManager.showAssessmentFrontPage">
-    <p *ngIf="stateManager.showStartParagraph" class="py-4 text-center">
+    <p *ngIf="stateManager.showStartParagraph && !stateManager.finishedInstruction" class="py-4 text-center">
       In this task, you will see a grid of numbers. Read the numbers off as quickly and clearly as you can, from
       left-to-right
       and top-to-bottom. For the example grid below, you would say:
@@ -29,13 +29,14 @@
     </div>
   </div>
 </div>
+<div class="text-center">
+  <button type="button" class="stop-button btn btn-outline-secondary"
+    *ngIf="audioRecordingService.isCurrentlyRecording()" (click)="stopEarly()">Click this when Done</button>
+</div>
 <div class="imageParent" *ngIf="showImage">
   <img class="rounded" src="{{currentImagePrompt}}">
 </div>
-<div class="text-center">
-  <button type="button" class="stop-button btn btn-outline-secondary"
-    *ngIf="audioRecordingService.isCurrentlyRecording()" (click)="stopEarly()">DONE</button>
-</div>
+
 <div>
   <p *ngIf="countingDown && useCountdownNumber" class="text-center display-1">{{timeLeft}}</p>
 </div>
