@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { StateManagerService } from '../services/state-manager.service';
-
+import { AudioRecordingService } from '../services/audio-recording.service';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -9,6 +9,7 @@ import { StateManagerService } from '../services/state-manager.service';
 export class HeaderComponent {
   constructor(
     public stateManager: StateManagerService,
+    public audioRecordingService: AudioRecordingService
   ) { }
 
   public updateHeader(): Boolean {

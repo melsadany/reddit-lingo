@@ -32,11 +32,6 @@
 <div class="imageParent" *ngIf="showImage">
   <img class="rounded" src="{{currentImagePrompt}}">
 </div>
-<div class="text-center" *ngIf="audioRecordingService.isCurrentlyRecording()">
-  <img class="img-fluid mt-4" style="width: 120px; height: 120px;" src="assets/in_use/icons/recording_mic.png">
-  <p class="text-center py-4">You are recording.</p>
-  <p class="text-center">Read off what you see.</p>
-</div>
 <div class="text-center">
   <button type="button" class="stop-button btn btn-outline-secondary"
     *ngIf="audioRecordingService.isCurrentlyRecording()" (click)="stopEarly()">DONE</button>

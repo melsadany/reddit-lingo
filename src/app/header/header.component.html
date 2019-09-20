@@ -40,3 +40,6 @@
     </div>
   </nav>
 </header>
+<div class="text-center recording" *ngIf="audioRecordingService.isCurrentlyRecording()">
+  <span class="blink">Recording</span>
+</div>
