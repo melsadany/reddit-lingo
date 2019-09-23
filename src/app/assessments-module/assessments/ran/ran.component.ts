@@ -40,6 +40,8 @@ export class RanComponent extends AudioAssessment {
   }
 
   advance(): void {
+    console.log("setting assessment front page to false")
+    this.stateManager.showAssessmentFrontPage=false;
     this.advanceToNextPrompt(
       () => {
         this.showImage = true;

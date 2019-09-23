@@ -1,5 +1,5 @@
 <div class="mx-lg-5">
-  <div *ngIf="stateManager.showAssessmentFrontPage">
+  <div *ngIf="stateManager.showAssessmentFrontPage && !stateManager.isInAssessment">
     <p *ngIf="stateManager.showStartParagraph" class="py-4 text-center">
       In this task, you will see a grid of numbers. Read the numbers off as quickly and clearly as you can, from
       left-to-right
@@ -23,8 +23,8 @@
         Start Instruction
       </button>
     </div>
-    <div *ngIf="stateManager.isInAssessment">
-      <button type="button" class="start-button btn btn-success"
+    <div *ngIf="stateManager.isInAssessment" style="padding-top:20px">
+      <button type="button"  class="start-button btn btn-success"
         (click)="advance()">{{stateManager.textOnInnerAssessmentButton}}</button>
     </div>
   </div>
@@ -40,15 +40,16 @@
 <div>
   <p *ngIf="countingDown && useCountdownNumber" class="text-center display-1">{{timeLeft}}</p>
 </div>
-<div *ngIf="showProgressAnimation && useCountdownBar">
-  <div style="padding-top:20px"></div>
-  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+<div *ngIf="showProgressAnimation && useCountdownBar"style="padding-top:30px">
+  <div style="padding-top:30px">
+    <mat-progress-bar style="padding-top:100px" mode="indeterminate"></mat-progress-bar>
+  </div>
   <div class="text-center">
     Wait
   </div>
 </div>
 <div *ngIf="showCircleAnimation && useCountdownCircle">
-  <mat-spinner style="margin:0 auto;">
+  <mat-spinner style="margin:0 auto;padding-top:20px">
   </mat-spinner>
   <div class="text-center">
     Wait
