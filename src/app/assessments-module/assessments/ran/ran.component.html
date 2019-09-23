@@ -1,13 +1,13 @@
 <div class="mx-lg-5">
   <div *ngIf="stateManager.showAssessmentFrontPage">
-    <p *ngIf="stateManager.showStartParagraph && !stateManager.finishedInstruction" class="py-4 text-center">
+    <p *ngIf="stateManager.showStartParagraph" class="py-4 text-center">
       In this task, you will see a grid of numbers. Read the numbers off as quickly and clearly as you can, from
       left-to-right
       and top-to-bottom. For the example grid below, you would say:
       “Two Two Five Six Nine Seven Three Two Five One Five Eight”.
     </p>
     <div *ngIf="showExample" class="text-center">
-      <img class="img-fluid" src="assets/in_use/examples/img/example_ran.png"
+      <img class="img-fluid mainImage" src="assets/in_use/examples/img/example_ran.png"
         style="margin-bottom: 20px; max-height: 350px;" />
     </div>
   </div>
@@ -34,13 +34,14 @@
     *ngIf="audioRecordingService.isCurrentlyRecording()" (click)="stopEarly()">Click this when Done</button>
 </div>
 <div class="imageParent" *ngIf="showImage">
-  <img class="rounded" src="{{currentImagePrompt}}">
+  <img class="rounded mainImage" src="{{currentImagePrompt}}">
 </div>
 
 <div>
   <p *ngIf="countingDown && useCountdownNumber" class="text-center display-1">{{timeLeft}}</p>
 </div>
 <div *ngIf="showProgressAnimation && useCountdownBar">
+  <div style="padding-top:20px"></div>
   <mat-progress-bar mode="indeterminate"></mat-progress-bar>
   <div class="text-center">
     Wait
