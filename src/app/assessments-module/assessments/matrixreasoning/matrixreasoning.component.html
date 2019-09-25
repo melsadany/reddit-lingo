@@ -55,7 +55,7 @@
     <tbody>
       <tr *ngFor="let row of imagePromptStructure['frameSets'][promptNumber]">
         <td *ngFor="let image of row">
-          <img class="img-fluid" [src]="image" />
+          <img class="img-fluid mainImage" [src]="image" />
         </td>
       </tr>
     </tbody>
@@ -69,10 +69,10 @@
         <td *ngFor="let image of row">
           <button
             type="button"
-            class="btn btn-outline-primary"
+            class="btn btn-outline-primary "
             (click)="clickImage(image)"
           >
-            <img class="img-fluid" [src]="image" />
+            <img class="img-fluid buttonImage" [src]="image" />
           </button>
         </td>
       </tr>

@@ -53,30 +53,30 @@ header {
   @-webkit-keyframes blink {
     0% { opacity: .75; }
     50% { opacity: .5; }
-    50.01% { opacity: .25; }
-    100% { opacity: 0; }
+    75% { opacity: .25; }
+    100% { opacity: .15; }
   }
   @-moz-keyframes blink {
     0% { opacity: .75; }
     50% { opacity: .5; }
-    50.01% { opacity: .25; }
-    100% { opacity: 0; }
+    75% { opacity: .25; }
+    100% { opacity: .15; }
   }
   @-ms-keyframes blink {
     0% { opacity: .75; }
     50% { opacity: .5; }
-    50.01% { opacity: .25; }
-    100% { opacity: 0; }
+    75% { opacity: .25; }
+    100% { opacity: .15; }
   }
   @-o-keyframes blink {
     0% { opacity: .75; }
     50% { opacity: .5; }
-    50.01% { opacity: .25; }
-    100% { opacity: 0; }
+    75% { opacity: .25; }
+    100% { opacity: .15; }
   }
   @keyframes blink {
     0% { opacity: .75; }
     50% { opacity: .5; }
     50.01% { opacity: .25; }
-    100% { opacity: 0; }
+    100% { opacity: .15; }
   }

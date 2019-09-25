@@ -31,7 +31,7 @@
 </div>
 <div class="text-center">
   <button type="button" class="stop-button btn btn-outline-secondary"
-    *ngIf="audioRecordingService.isCurrentlyRecording()" (click)="stopEarly()">Click this when Done</button>
+    *ngIf="audioRecordingService.isCurrentlyRecording()" (click)="stopEarly()">Click this when done</button>
 </div>
 <div class="imageParent" *ngIf="showImage">
   <img class="rounded mainImage" src="{{currentImagePrompt}}">
@@ -49,9 +49,10 @@
   </div>
 </div>
 <div *ngIf="showCircleAnimation && useCountdownCircle">
-  <mat-spinner style="margin:0 auto;">
-  </mat-spinner>
-  <div class="text-center">
+<div class="text-center padding-top: 20px">
     Wait
   </div>
+  <mat-spinner style="margin:0 auto;">
+  </mat-spinner>
+  
 </div>
