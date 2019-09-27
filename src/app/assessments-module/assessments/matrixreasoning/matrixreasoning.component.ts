@@ -29,7 +29,9 @@ export class MatrixreasoningComponent extends SelectionAssessment {
         this.promptsLength = value.assetsLength;
         this.imagePromptStructure = value.promptStructure;
         this.calculateFrameSets();
-        this.calculateSolutionSets();
+        //lets not apply the splitting of rows
+        //               vvvvvvv
+        //this.calculateSolutionSets();
       });
   }
 
@@ -51,6 +53,7 @@ export class MatrixreasoningComponent extends SelectionAssessment {
   }
 
   advance(): void {
+    this.stateManager.showStartParagraph=false;
     this.advanceToNextPrompt(() => {
       this.showMatrix = true;
       this.startTimer();

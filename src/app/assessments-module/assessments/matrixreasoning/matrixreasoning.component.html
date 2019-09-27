@@ -51,7 +51,7 @@
   </div>
 </div>
 <div *ngIf="showMatrix">
-  <table class="table-bordered table-active custom-table">
+  <table style="margin:auto">
     <tbody>
       <tr *ngFor="let row of imagePromptStructure['frameSets'][promptNumber]">
         <td *ngFor="let image of row">
@@ -60,13 +60,12 @@
       </tr>
     </tbody>
   </table>
-  <table class="table-bordered" style="margin: 0px auto;">
+  <table style="margin: 0px auto;">
     <tbody>
       <tr
-        *ngFor="let row of imagePromptStructure['solutionSets'][promptNumber]"
-        class="table-primary"
+        class="table-primary bottomTr"
       >
-        <td *ngFor="let image of row">
+        <td  class= "bottomTds" *ngFor="let image of imagePromptStructure['solutionSets'][promptNumber]">
           <button
             type="button"
             class="btn btn-outline-primary "
@@ -91,8 +90,9 @@
   </div>
 </div>
 <div *ngIf="showCircleAnimation && useCountdownCircle">
-  <mat-spinner style="margin:0 auto;"> </mat-spinner>
   <div class="text-center">
     Wait
   </div>
+  <mat-spinner style="margin:0 auto;"> </mat-spinner>
+  
 </div>
