@@ -51,7 +51,8 @@
   </div>
 </div>
 <div *ngIf="showMatrix">
-  <table style="margin:auto">
+  <div class="wrapTables">
+  <table class = "table" style="margin:auto">
     <tbody>
       <tr *ngFor="let row of imagePromptStructure['frameSets'][promptNumber]">
         <td *ngFor="let image of row">
@@ -60,23 +61,26 @@
       </tr>
     </tbody>
   </table>
-  <table style="margin: 0px auto;">
-    <tbody>
-      <tr
-        class="table-primary bottomTr"
-      >
-        <td  class= "bottomTds" *ngFor="let image of imagePromptStructure['solutionSets'][promptNumber]">
-          <button
-            type="button"
-            class="btn btn-outline-primary "
-            (click)="clickImage(image)"
-          >
-            <img class="img-fluid buttonImage" [src]="image" />
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <table class="table" >
+      <tbody>
+        <tr
+          *ngFor="let row of imagePromptStructure['solutionSets'][promptNumber]"
+          class="table-primary"
+        >
+          <td *ngFor="let image of row">
+            <button
+              type="button"
+              class="btn btn-outline-primary buttomButtons"
+              (click)="clickImage(image)"
+            >
+              <img class="img-fluid buttomImages" [src]="image" />
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  
+  </div>
 </div>
 <div>
   <p *ngIf="countingDown && useCountdownNumber" class="text-center display-1">
@@ -96,3 +100,4 @@
   <mat-spinner style="margin:0 auto;"> </mat-spinner>
   
 </div>
+
