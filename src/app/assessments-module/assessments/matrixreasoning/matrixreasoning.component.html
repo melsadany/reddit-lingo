@@ -39,7 +39,7 @@
         Start Instruction
       </button>
     </div>
-    <div *ngIf="stateManager.isInAssessment">
+    <div *ngIf="stateManager.isInAssessment"class="somePadding">
       <button
         type="button"
         class="start-button btn btn-success"
@@ -51,33 +51,36 @@
   </div>
 </div>
 <div *ngIf="showMatrix">
-  <table class="table-bordered table-active custom-table">
+  <div class="wrapTables">
+  <table class = "table" style="margin:auto">
     <tbody>
       <tr *ngFor="let row of imagePromptStructure['frameSets'][promptNumber]">
         <td *ngFor="let image of row">
-          <img class="img-fluid" [src]="image" />
+          <img class="img-fluid mainImage" [src]="image" />
         </td>
       </tr>
     </tbody>
   </table>
-  <table class="table-bordered" style="margin: 0px auto;">
-    <tbody>
-      <tr
-        *ngFor="let row of imagePromptStructure['solutionSets'][promptNumber]"
-        class="table-primary"
-      >
-        <td *ngFor="let image of row">
-          <button
-            type="button"
-            class="btn btn-outline-primary"
-            (click)="clickImage(image)"
-          >
-            <img class="img-fluid" [src]="image" />
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <table class="table" >
+      <tbody>
+        <tr
+          *ngFor="let row of imagePromptStructure['solutionSets'][promptNumber]"
+          class="table-primary"
+        >
+          <td *ngFor="let image of row">
+            <button
+              type="button"
+              class="btn btn-outline-primary buttomButtons"
+              (click)="clickImage(image)"
+            >
+              <img class="img-fluid buttomImages" [src]="image" />
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  
+  </div>
 </div>
 <div>
   <p *ngIf="countingDown && useCountdownNumber" class="text-center display-1">
@@ -91,8 +94,10 @@
   </div>
 </div>
 <div *ngIf="showCircleAnimation && useCountdownCircle">
-  <mat-spinner style="margin:0 auto;"> </mat-spinner>
   <div class="text-center">
     Wait
   </div>
+  <mat-spinner style="margin:0 auto;"> </mat-spinner>
+  
 </div>
+

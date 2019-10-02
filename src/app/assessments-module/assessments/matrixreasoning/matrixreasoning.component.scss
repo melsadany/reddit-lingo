@@ -1,4 +1,46 @@
+
 .custom-table {
   margin: 5px auto;
   border: 5px solid black;
 }
+.mainImage{
+  object-fit: contain;
+  width:100%;
+  height: 45vh;
+  max-height: 500px
+}
+.buttomButtons{
+  background-color: #d9eee8;
+}
+.buttomImages{
+  object-fit: contain;
+  width:100%;
+  height: 14vh;
+  max-height: 100px;
+}
+//override bootstrap things: td color (#d9eee8)
+td{
+  background-color: #f4f3f3; 
+  padding:2px;
+}
+.somePadding{
+  padding-top:20px;
+}
+.wrapTables{
+  display: flex;
+  flex-wrap: wrap;
+}
+//normal
+.table{
+  margin:auto;
+  width:50%;
+}
+
+/* On screens that are 1500px wide or less, go from four columns to two columns */
+@media screen and (max-width: 1500px) {
+  .table {
+    margin:auto;
+    width: 100%;
+  }
+}
+

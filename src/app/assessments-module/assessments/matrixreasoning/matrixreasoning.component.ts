@@ -17,6 +17,7 @@ export class MatrixreasoningComponent extends SelectionAssessment {
   promptsLength: number;
   countUpTimer: NodeJS.Timeout;
 
+
   constructor(
     public stateManager: StateManagerService,
     public dataService: AssessmentDataService
@@ -31,8 +32,9 @@ export class MatrixreasoningComponent extends SelectionAssessment {
         this.calculateFrameSets();
         this.calculateSolutionSets();
       });
+    
   }
-
+  
   setStateAndStart(): void {
     this.stateManager.showInnerAssessmentButton = false;
     this.stateManager.textOnInnerAssessmentButton = 'CONTINUE ASSESSMENT';
@@ -51,6 +53,7 @@ export class MatrixreasoningComponent extends SelectionAssessment {
   }
 
   advance(): void {
+    this.stateManager.showStartParagraph=false;
     this.advanceToNextPrompt(() => {
       this.showMatrix = true;
       this.startTimer();
