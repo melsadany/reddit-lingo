@@ -1,5 +1,5 @@
 <div class="mx-lg-5">
-  <div *ngIf="stateManager.showAssessmentFrontPage">
+  <div *ngIf="stateManager.showAssessmentFrontPage && !stateManager.isInAssessment">
     <p *ngIf="stateManager.showStartParagraph" class="py-4 text-center">
       In this task, you will see a grid of numbers. Read the numbers off as quickly and clearly as you can, from
       left-to-right
@@ -7,7 +7,7 @@
       “Two Two Five Six Nine Seven Three Two Five One Five Eight”.
     </p>
     <div *ngIf="showExample" class="text-center">
-      <img class="img-fluid" src="assets/in_use/examples/img/example_ran.png"
+      <img class="img-fluid mainImage" src="assets/in_use/examples/img/example_ran.png"
         style="margin-bottom: 20px; max-height: 350px;" />
     </div>
   </div>
@@ -23,37 +23,36 @@
         Start Instruction
       </button>
     </div>
-    <div *ngIf="stateManager.isInAssessment">
-      <button type="button" class="start-button btn btn-success"
+    <div *ngIf="stateManager.isInAssessment" style="padding-top:20px">
+      <button type="button"  class="start-button btn btn-success"
         (click)="advance()">{{stateManager.textOnInnerAssessmentButton}}</button>
     </div>
   </div>
 </div>
-<div class="imageParent" *ngIf="showImage">
-  <img class="rounded" src="{{currentImagePrompt}}">
-</div>
-<div class="text-center" *ngIf="audioRecordingService.isCurrentlyRecording()">
-  <img class="img-fluid mt-4" style="width: 120px; height: 120px;" src="assets/in_use/icons/recording_mic.png">
-  <p class="text-center py-4">You are recording.</p>
-  <p class="text-center">Read off what you see.</p>
-</div>
 <div class="text-center">
   <button type="button" class="stop-button btn btn-outline-secondary"
-    *ngIf="audioRecordingService.isCurrentlyRecording()" (click)="stopEarly()">DONE</button>
+    *ngIf="audioRecordingService.isCurrentlyRecording()" (click)="stopEarly()">Click this when done</button>
 </div>
+<div class="imageParent" *ngIf="showImage">
+  <img class="rounded mainImage" src="{{currentImagePrompt}}">
+</div>
+
 <div>
   <p *ngIf="countingDown && useCountdownNumber" class="text-center display-1">{{timeLeft}}</p>
 </div>
-<div *ngIf="showProgressAnimation && useCountdownBar">
-  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+<div *ngIf="showProgressAnimation && useCountdownBar"style="padding-top:30px">
+  <div style="padding-top:30px">
+    <mat-progress-bar style="padding-top:100px" mode="indeterminate"></mat-progress-bar>
+  </div>
   <div class="text-center">
     Wait
   </div>
 </div>
 <div *ngIf="showCircleAnimation && useCountdownCircle">
-  <mat-spinner style="margin:0 auto;">
-  </mat-spinner>
-  <div class="text-center">
+<div class="text-center padding-top: 20px">
     Wait
   </div>
+  <mat-spinner style="margin:0 auto;">
+  </mat-spinner>
+  
 </div>

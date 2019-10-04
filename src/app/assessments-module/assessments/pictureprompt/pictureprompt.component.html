@@ -1,6 +1,6 @@
 <div class="mx-lg-5">
   <div *ngIf="stateManager.showAssessmentFrontPage">
-    <p *ngIf="stateManager.showStartParagraph" class="py-4 text-center">
+    <p *ngIf="!showPromptImage" class="py-4 text-center">
       In this task, you will be shown a picture. Describe what you see in the
       picture, as if you were describing it to someone who could not see it.
       With each picture, your description will be recorded for 30 seconds.
@@ -25,11 +25,9 @@
   </div>
 </div>
 <div *ngIf="showPromptImage" class="text-center">
-  <img style="width: 540px; height: auto;" src=" {{ currentImagePrompt }}" />
+  <img class="mainImage" src=" {{ currentImagePrompt }}" />
 </div>
 <div class="text-center" *ngIf="audioRecordingService.isCurrentlyRecording()">
-  <img class="img-fluid mt-4" style="width: 120px; height: 120px;" src="assets/in_use/icons/recording_mic.png" />
-  <p class="text-center pt-4">You are recording.</p>
   <p class="text-center">Describe the picture.</p>
 </div>
 <div>

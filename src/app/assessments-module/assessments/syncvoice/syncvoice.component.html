@@ -27,8 +27,6 @@
     <img style="max-height:85px;" class="img-fluid" src="assets/in_use/animations/random_waveform.gif">
   </div>
   <div class="text-center" *ngIf="audioRecordingService.isCurrentlyRecording()">
-    <img class="img-fluid mt-4" style="width: 120px; height: 120px;" src="assets/in_use/icons/recording_mic.png" />
-    <p class="py-4">You are recording.</p>
   </div>
   <div>
     <p *ngIf="countingDown && useCountdownNumber" class="text-center display-1">{{timeLeft}}</p>
