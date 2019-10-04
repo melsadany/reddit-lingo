@@ -34,4 +34,49 @@ header {
       cursor: pointer;
     }
   }
- 
+  
+  .recording {
+    z-index: 100;
+    position: sticky; top:0;
+    height: 20px;
+    background-color: #f44336; /* Red */
+    color: white;
+    margin-bottom: 15px;
+  }
+  .blink {
+    -webkit-animation: blink 4s linear infinite;
+    -moz-animation: blink 4s  linear infinite;
+    -ms-animation: blink 4s  linear infinite;
+    -o-animation: blink 4s  linear infinite;
+     animation: blink 4s  linear infinite;
+  }
+  @-webkit-keyframes blink {
+    0% { opacity: .75; }
+    50% { opacity: .5; }
+    75% { opacity: .25; }
+    100% { opacity: .15; }
+  }
+  @-moz-keyframes blink {
+    0% { opacity: .75; }
+    50% { opacity: .5; }
+    75% { opacity: .25; }
+    100% { opacity: .15; }
+  }
+  @-ms-keyframes blink {
+    0% { opacity: .75; }
+    50% { opacity: .5; }
+    75% { opacity: .25; }
+    100% { opacity: .15; }
+  }
+  @-o-keyframes blink {
+    0% { opacity: .75; }
+    50% { opacity: .5; }
+    75% { opacity: .25; }
+    100% { opacity: .15; }
+  }
+  @keyframes blink {
+    0% { opacity: .75; }
+    50% { opacity: .5; }
+    50.01% { opacity: .25; }
+    100% { opacity: .15; }
+  }

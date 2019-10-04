@@ -31,6 +31,7 @@ export class RanComponent extends AudioAssessment {
   }
 
   setStateAndStart(): void {
+    this.stateManager.showAssessmentFrontPage=false;
     this.stateManager.showInnerAssessmentButton = false;
     this.stateManager.textOnInnerAssessmentButton = 'CONTINUE ASSESSMENT';
     this.stateManager.isInAssessment = true;
@@ -39,6 +40,8 @@ export class RanComponent extends AudioAssessment {
   }
 
   advance(): void {
+    console.log("setting assessment front page to false")
+    this.stateManager.showAssessmentFrontPage=false;
     this.advanceToNextPrompt(
       () => {
         this.showImage = true;
