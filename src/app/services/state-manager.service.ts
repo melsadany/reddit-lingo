@@ -293,9 +293,11 @@ export class StateManagerService {
         const currentPromptNumber = this.determineCurrentPromptNumber(
           existingAssessment['data'][selector]
         );
+        //could be the case that the assessment is in existingAssesmentData but not configured anymore; BT
+        if (this.assessments[existingAssessmentName]){
         this.assessments[existingAssessmentName][
           'prompt_number'
-        ] = currentPromptNumber;
+        ] = currentPromptNumber;}
         // console.log(
         //   'On prompt number: ' +
         //     currentPromptNumber +
