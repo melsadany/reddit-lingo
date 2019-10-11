@@ -10,6 +10,8 @@ import { HashKeyAssessmentData, AssessmentData } from '../structures/AssessmentD
   styleUrls: ['./hashkeyinitialize.component.scss']
 })
 export class HashkeyinitializeComponent {
+  private validFullScreenerHash= false;
+  private validSingleAssesmentHash =false;
   constructor(
     private route: ActivatedRoute,
     private routerServie: Router,
@@ -24,7 +26,7 @@ export class HashkeyinitializeComponent {
         .sendHashKeyToServer(userHashKey)
         .subscribe((data: HashKeyAssessmentData) => {
           this.dataService.initializeHashKeyData(userHashKey);
-          if (this.stateManager.singleAssessmentEnabled) {
+          if (this.stateManager.singleAssessmentEnabled && this.validSingleAssesmentHash) {
             this.stateManager.initializeSingleAssessmentState(data);
           } else {
             const initializeData: unknown = data;
@@ -48,9 +50,19 @@ export class HashkeyinitializeComponent {
   // map very basically to an assessment name. More interesting hash keys
   // need a more sophisticated parameterization.
   validHashKey(hashKey: string): boolean {
-    if (this.stateManager.hashKeyFirstFourMap(hashKey) !== 'home') {
-      return true;
-    }
+    // if it matches 8 or 12 anyletter/anynumbered hash (with no underscores) :BT
+    if (hashKey.match( /^[^_]+$/gmi)){
+      //don't want first four to be a 4 lettered singleassessment code if it is a full screener hashkey
+      if (hashKey.match(/^\w{8}$/gmi)&& this.stateManager.hashKeyFirstFourMap(hashKey) == 'home'){
+        this.validFullScreenerHash=true;return true
+      }
+      if (hashKey.match(/^\w{12}$/gmi)&& this.stateManager.hashKeyFirstFourMap(hashKey) !== 'home' && this.stateManager.singleAssessmentEnabled){
+        this.validSingleAssesmentHash =true
+        return true
+      }
+   
     return false;
+    }
+    return false
   }
 }
