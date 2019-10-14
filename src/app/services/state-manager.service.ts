@@ -475,34 +475,34 @@ export class StateManagerService {
     const firstFour = hashKey.slice(0, 4);
     let assessmentName = '';
     switch (firstFour) {
-      case 'licr':
+      case 'lic$':
         assessmentName = 'listeningcomprehension';
         break;
-      case 'mtxr':
+      case 'mtx$':
         assessmentName = 'matrixreasoning';
         break;
-      case 'pcpt':
+      case 'pcp$':
         assessmentName = 'pictureprompt';
         break;
-      case 'rnan':
+      case 'rna$':
         assessmentName = 'ran';
         break;
-      case 'snpt':
+      case 'snp$':
         assessmentName = 'sentencerepetition';
         break;
-      case 'svie':
+      case 'svi$':
         assessmentName = 'syncvoice';
         break;
-      case 'tmdt':
+      case 'tmd$':
         assessmentName = 'timeduration';
         break;
-      case 'wdas':
+      case 'wda$':
         assessmentName = 'wordassociationpath';
         break;
-      case 'wdap':
+      case 'wda$':
         assessmentName = 'wordassociationpair';
         break;
-      case 'rdfn':
+      case 'rdf$':
         assessmentName = 'wordfinding';
         break;
       default:
