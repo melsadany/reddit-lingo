@@ -34,12 +34,12 @@ export class StateManagerService {
   private _appConfig: LingoSettings = appConfig;
   private _assessments = {};
   private _IOSSafari: boolean;
-  private _singleAssessmentEnabled: boolean;
   private _audioInstruction: string;
   private _audioInstructionPlayer: HTMLAudioElement;
   private _finishedInstruction = false;
   private _playingInstruction = false;
   private _showStartParagraph = true;
+  private _isSingleAssessment = false;
 
   public get showStartParagraph(): boolean {
     return this._showStartParagraph;
@@ -49,6 +49,12 @@ export class StateManagerService {
   }
   public get playingInstruction(): boolean {
     return this._playingInstruction;
+  }
+  public set isSingleAssessment(value: boolean){
+    this._isSingleAssessment = value
+  }
+  public get isSingleAssessment():boolean{
+    return this._isSingleAssessment;
   }
   public set playingInstruction(value: boolean) {
     this._playingInstruction = value;
@@ -70,12 +76,6 @@ export class StateManagerService {
   }
   public set audioInstruction(value: string) {
     this._audioInstruction = value;
-  }
-  public get singleAssessmentEnabled(): boolean {
-    return this._singleAssessmentEnabled;
-  }
-  public set singleAssessmentEnabled(value: boolean) {
-    this._singleAssessmentEnabled = value;
   }
   public get IOSSafari(): boolean {
     return this._IOSSafari;
@@ -192,15 +192,12 @@ export class StateManagerService {
   constructor(private routerService: Router) {
     this.configureEnabledAssessments();
     this.configureDebugMode();
-    this.configureSingleAssessmentEnabled();
     this.totalAssessments = Object.keys(this.assessments).length;
     this.inMobileBrowser = this.mobileCheck();
     this.audioInstructionPlayer = new Audio();
   }
 
-  private configureSingleAssessmentEnabled(): void {
-    this.singleAssessmentEnabled = this.appConfig['appConfig']['settings']['singleAssessmentEnabled'];
-  }
+ 
 
   private configureEnabledAssessments(): void {
     const assessmentsConfig = this.appConfig['appConfig']['assessmentsConfig'];

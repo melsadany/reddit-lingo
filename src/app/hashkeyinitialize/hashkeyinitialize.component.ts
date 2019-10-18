@@ -10,8 +10,6 @@ import { HashKeyAssessmentData, AssessmentData } from '../structures/AssessmentD
   styleUrls: ['./hashkeyinitialize.component.scss']
 })
 export class HashkeyinitializeComponent {
-  private validFullScreenerHash= false;
-  private validSingleAssesmentHash =false;
   constructor(
     private route: ActivatedRoute,
     private routerService: Router,
@@ -26,7 +24,7 @@ export class HashkeyinitializeComponent {
         .sendHashKeyToServer(userHashKey)
         .subscribe((data: HashKeyAssessmentData) => {
           this.dataService.initializeHashKeyData(userHashKey);
-          if ( this.validSingleAssesmentHash) {
+          if (this.stateManager.isSingleAssessment) {
             this.stateManager.initializeSingleAssessmentState(data);
           } else {
             const initializeData: unknown = data;
@@ -57,8 +55,8 @@ export class HashkeyinitializeComponent {
       return true
     }
     if (hashKey.length==12 && hashKey.slice(4).match(/^\w+$/gmi) && this.stateManager.hashKeyFirstFourMap(hashKey) !== 'home'){
+      this.stateManager.isSingleAssessment=true;
   
-      this.validSingleAssesmentHash =true
       return true
   
     }
