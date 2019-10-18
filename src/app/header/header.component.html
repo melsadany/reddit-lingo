@@ -12,12 +12,12 @@
         </ng-container>
         <ng-template #resumeAssessment>
           <li class="nav-item">
-            <a *ngIf="stateManager.singleAssessmentEnabled" class="nav-link"
+            <a *ngIf="stateManager.isSingleAssessment" class="nav-link"
               [routerLink]="['assessments', stateManager.currentAssessment]">
               Single Assessment: {{stateManager.translateAssessmentName(this.stateManager.currentAssessment)}}
               <span class="sr-only">(current)</span>
             </a>
-            <a *ngIf="!stateManager.singleAssessmentEnabled" class="nav-link"
+            <a *ngIf="!stateManager.isSingleAssessment" class="nav-link"
               [routerLink]="['assessments', stateManager.currentAssessment]">
               Current Assessment: {{stateManager.translateAssessmentName(this.stateManager.currentAssessment)}}
               ({{stateManager.currentAssessmentNumber}} out of {{stateManager.totalAssessments}})

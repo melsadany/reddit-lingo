@@ -55,7 +55,6 @@
     "settings": {
       "countdownTimerLength": 3,
       "countdownTimerType": "circle",
-      "singleAssessmentEnabled": false,
       "debugEnabled": true
     }
   }
