@@ -39,9 +39,10 @@ async function insertFreshAssessmentData(reqData) {
       if (err) {
         console.log(err)
       } else {
-        uploadDir(
-          path.join(LINGO_DATA_LOCAL_PATH, userID),
-          path.join(LINGO_DATA_OUTPUT_S3_PATH, userID)
+        uploadJSONFileToS3(
+          fileName,
+          path.join(LINGO_DATA_OUTPUT_S3_PATH, userID),
+          userID + '.json'
         )
         resolve(freshData)
       }
@@ -84,6 +85,7 @@ async function updateAssessmentData(reqData) {
         } else {
           let uploadPath
           let S3UploadPath
+          let S3UploadKey
           if (hashKey) {
             uploadPath = path.join(
               LINGO_DATA_LOCAL_PATH,
@@ -95,11 +97,13 @@ async function updateAssessmentData(reqData) {
               'hashkey_assessment',
               hashKey
             )
+            S3UploadKey = hashKey + '.json'
           } else {
             uploadPath = path.join(LINGO_DATA_LOCAL_PATH, userID)
             S3UploadPath = path.join(LINGO_DATA_OUTPUT_S3_PATH, userID)
+            S3UploadKey = userID + '.json'
           }
-          uploadDir(uploadPath, S3UploadPath)
+          uploadJSONFileToS3(uploadPath, S3UploadPath, S3UploadKey)
           resolve(dataFile)
         }
       })
@@ -156,6 +160,7 @@ async function pushOnePieceAssessmentData(reqData) {
         } else {
           let uploadPath
           let S3UploadPath
+          let S3UploadKey
           if (hashKey) {
             uploadPath = path.join(
               LINGO_DATA_LOCAL_PATH,
@@ -167,11 +172,13 @@ async function pushOnePieceAssessmentData(reqData) {
               'hashkey_assessment',
               hashKey
             )
+            S3UploadKey = hashKey + '.json'
           } else {
             uploadPath = path.join(LINGO_DATA_LOCAL_PATH, userID)
             S3UploadPath = path.join(LINGO_DATA_OUTPUT_S3_PATH, userID)
+            S3UploadKey = userID + '.json'
           }
-          uploadDir(uploadPath, S3UploadPath, selector)
+          uploadJSONFileToS3(uploadPath, S3UploadPath, S3UploadKey)
           resolve(dataFile)
         }
       })
@@ -221,9 +228,13 @@ function insertNewIDJson() {
             reject(err)
           } else {
             console.log('Successfully saved new ID json')
-            uploadDir(
-              path.join(LINGO_DATA_LOCAL_PATH, 'userID'),
-              path.join(LINGO_DATA_OUTPUT_S3_PATH, 'userID')
+            uploadJSONFileToS3(
+              fileName,
+              path.join(
+                LINGO_DATA_OUTPUT_S3_PATH,
+                'userID',
+                'next_user_id.json'
+              )
             )
             resolve(0)
           }
@@ -233,7 +244,7 @@ function insertNewIDJson() {
   })
 }
 
-function saveWavFile(reqData, userID, hashKey, selector) {
+function saveWavFile(reqData, userID, hashKey, selector, bucketName) {
   const promptNumber = reqData.assessments[0].data[selector][0]['prompt_number']
   const assessmentName = reqData.assessments[0]['assess_name']
   let wavFilePath
@@ -275,6 +286,16 @@ function saveWavFile(reqData, userID, hashKey, selector) {
     () => {
       // console.log('saved file')
       // KRM: For debugging
+      uploadWavToS3(
+        wavFileName,
+        path.join(
+          LINGO_DATA_OUTPUT_S3_PATH,
+          userID,
+          'recording_data',
+          assessmentName,
+          promptNumber + '.wav'
+        )
+      )
     }
   )
   reqData.assessments[0].data[selector][0]['recorded_data'] = wavFileName
@@ -304,9 +325,10 @@ function getNextUserID() {
               reject(err)
             } else {
               console.log('Successfully updated ID json')
-              uploadDir(
-                path.join(LINGO_DATA_LOCAL_PATH, 'userID'),
-                path.join(LINGO_DATA_OUTPUT_S3_PATH, 'userID')
+              uploadJSONFileToS3(
+                fileName,
+                path.join(LINGO_DATA_OUTPUT_S3_PATH, 'userID'),
+                'next_user_ID.json'
               )
               resolve(currentID)
             }
@@ -368,9 +390,14 @@ function insertNewHashKeyJson(hashKey) {
         reject(err)
       } else {
         console.log('Successfully saved new HashKey json')
-        uploadDir(
-          path.join(LINGO_DATA_LOCAL_PATH, 'hashkey_assessment', hashKey),
-          path.join(LINGO_DATA_OUTPUT_S3_PATH, 'hashkey_assessment', hashKey)
+        uploadJSONFileToS3(
+          path.join(fileName),
+          path.join(
+            LINGO_DATA_OUTPUT_S3_PATH,
+            'hashkey_assessment',
+            hashKey,
+            hashKey + '.json'
+          )
         )
         resolve(freshData)
       }
@@ -483,47 +510,84 @@ function getMatrixReasoningImgAssets(assetFolder) {
   })
 }
 
-function uploadDir(s3Path, bucketName, selector) {
-  console.log('FOLDER_NAME: ' + bucketName)
+// function uploadDir(s3Path, bucketName, selector, fileName) {
+//   console.log('FOLDER_NAME: ' + bucketName)
 
-  function walkSync(currentDirPath, callback) {
-    fs.readdirSync(currentDirPath).forEach(fileName => {
-      let filePath = path.join(currentDirPath, fileName)
-      let stat = fs.statSync(filePath)
-      if (stat.isFile()) {
-        callback(filePath, stat)
-      } else if (stat.isDirectory()) {
-        walkSync(filePath, callback)
-      }
-    })
+//   function walkSync(currentDirPath, callback) {
+//     fs.readdirSync(currentDirPath).forEach(fileName => {
+//       let filePath = path.join(currentDirPath, fileName)
+//       let stat = fs.statSync(filePath)
+//       if (stat.isFile()) {
+//         callback(filePath, stat)
+//       } else if (stat.isDirectory()) {
+//         walkSync(filePath, callback)
+//       }
+//     })
+//   }
+
+//   walkSync(s3Path, (filePath, stat) => {
+//     let bucketPath = filePath.substring(s3Path.length + 1)
+//     let body = fs.readFileSync(filePath)
+//     let params
+//     if (selector === 'recorded_data') {
+//       params = {
+//         Bucket: bucketName,
+//         Key: bucketPath,
+//         Body: body,
+//         ContentType: 'audio/wav'
+//       }
+//     } else {
+//       params = {
+//         Bucket: bucketName,
+//         Key: bucketPath,
+//         Body: body
+//       }
+//     }
+
+//     S3.putObject(params, (err, data) => {
+//       if (err) {
+//         console.log(err)
+//       } else {
+//         console.log('Successfully uploaded ' + bucketPath + ' to ' + bucketName)
+//       }
+//     })
+//   })
+// }
+
+function uploadJSONFileToS3(localJSONLocation, S3BucketPath, objectKeyName) {
+  let jsonData = fs.readFileSync(localJSONLocation)
+  let params = {
+    Bucket: S3BucketPath,
+    Key: objectKeyName,
+    Body: jsonData
   }
 
-  walkSync(s3Path, (filePath, stat) => {
-    let bucketPath = filePath.substring(s3Path.length + 1)
-    let body = fs.readFileSync(filePath)
-    let params
-    if (selector === 'recorded_data') {
-      params = {
-        Bucket: bucketName,
-        Key: bucketPath,
-        Body: body,
-        ContentType: 'audio/wav'
-      }
+  S3.putObject(params, (err, data) => {
+    if (err) {
+      console.log(err)
     } else {
-      params = {
-        Bucket: bucketName,
-        Key: bucketPath,
-        Body: body
-      }
+      console.log(
+        'Successfully uploaded ' + objectKeyName + ' to ' + S3BucketPath
+      )
     }
+  })
+}
 
-    S3.putObject(params, (err, data) => {
-      if (err) {
-        console.log(err)
-      } else {
-        console.log('Successfully uploaded ' + bucketPath + ' to ' + bucketName)
-      }
-    })
+function uploadWavToS3(localWavFileName, S3BucketPath, S3ObjectKeyName) {
+  let body = fs.readFileSync(localWavFileName)
+  let params = {
+    Bucket: S3BucketPath,
+    Key: S3ObjectKeyName,
+    Body: body,
+    ContentType: 'audio/wav'
+  }
+
+  S3.putObject(params, (err, data) => {
+    if (err) {
+      console.log(err)
+    } else {
+      console.log('Successfully uploaded ' + S3BucketPath + '/' + S3BucketPath)
+    }
   })
 }
 
