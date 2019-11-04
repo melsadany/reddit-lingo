@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StateManagerService } from '../services/state-manager.service';
 import { AssessmentDataService } from '../services/assessment-data.service';
-import { HashKeyAssessmentData, AssessmentData } from '../structures/AssessmentDataStructures';
+import { SingleAssessmentData, AssessmentData } from '../structures/AssessmentDataStructures';
 
 @Component({
   selector: 'app-hashkeyinitialize',
@@ -12,7 +12,7 @@ import { HashKeyAssessmentData, AssessmentData } from '../structures/AssessmentD
 export class HashkeyinitializeComponent {
   constructor(
     private route: ActivatedRoute,
-    private routerService: Router,
+    private routerServie: Router,
     private stateManager: StateManagerService,
     private dataService: AssessmentDataService
   ) {
@@ -22,9 +22,10 @@ export class HashkeyinitializeComponent {
       this.stateManager.hashKey = userHashKey;
       this.dataService
         .sendHashKeyToServer(userHashKey)
-        .subscribe((data: HashKeyAssessmentData) => {
+        .subscribe((data: SingleAssessmentData) => {
+          // KRM: Implementing setting for single assessment turned on or off
           this.dataService.initializeHashKeyData(userHashKey);
-          if (this.stateManager.isSingleAssessment) {
+          if (this.stateManager.singleAssessmentEnabled) {
             this.stateManager.initializeSingleAssessmentState(data);
           } else {
             const initializeData: unknown = data;
@@ -36,11 +37,10 @@ export class HashkeyinitializeComponent {
           // important elsewhere. Therefore I just cast the data object accordingly to pass it in the regular intializeState method
           // when we want hash_key users to take the full assessments.
         });
-      this.routerService.navigate(['home']);
+      this.routerServie.navigate(['home']);
     } else {
-      //show the haskeyinitialize.component.html error page
       console.log('bad hkey');
-      //this.routerService.navigate(['home']);
+      this.routerServie.navigate(['home']);
     }
   }
 
@@ -49,17 +49,9 @@ export class HashkeyinitializeComponent {
   // map very basically to an assessment name. More interesting hash keys
   // need a more sophisticated parameterization.
   validHashKey(hashKey: string): boolean {
-    // if it matches 8 or 12 anyletter/anynumbered hash (with no underscores) :BT
-  
-    if (hashKey.match(/^\w{8}$/gmi)){
-      return true
+    if (this.stateManager.hashKeyFirstFourMap(hashKey) !== 'home') {
+      return true;
     }
-    if (hashKey.length==12 && hashKey.slice(4).match(/^\w+$/gmi) && this.stateManager.hashKeyFirstFourMap(hashKey) !== 'home'){
-      this.stateManager.isSingleAssessment=true;
-  
-      return true
-  
-    }
-    return false
+    return false;
   }
 }

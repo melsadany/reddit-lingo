@@ -15,10 +15,10 @@ export class AssessmentsControllerComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    if (!this.stateManager.startedByHandFromHome) {
-      console.log('Going home');
-      this.stateManager.goHome();
-    }
+    //if (!this.stateManager.startedByHandFromHome) {
+    //  console.log('Going home');
+     // this.stateManager.goHome();
+   // }
   }
 
   public getCanvasElement(): ElementRef {

@@ -5,7 +5,13 @@
         "enabled": true
       },
       "prescreenerquestions": {
-        "enabled": false
+        "enabled": true
+      },
+      "wordassociationpair": {
+        "enabled": false,
+        "useSpecificStartWord": false,
+        "startWord": "cat",
+        "hideInstructionsOnAssessmentStart": true
       },
       "wordassociationpath": {
         "enabled": true,
@@ -14,39 +20,39 @@
         "showRunningChoices": true,
         "hideInstructionsOnAssessmentStart": true
       },
-      "wordassociationpair": {
-        "enabled": false,
-        "useSpecificStartWord": false,
-        "startWord": "cat",
-        "hideInstructionsOnAssessmentStart": true
-      },
       "wordfinding": {
-        "enabled": true,
-        "hideInstructionsOnAssessmentStart": false
-      },
-      "sentencerepetition": {
-        "enabled": true,
-        "prompt_countdowns": [3]
-      },
-      "matrixreasoning": {
-        "enabled": true,
-        "hideInstructionsOnAssessmentStart": false
-      },
-      "syncvoice": {
         "enabled": true,
         "hideInstructionsOnAssessmentStart": false
       },
       "timeduration": {
         "enabled": true,
-        "circle_durations": [5, 1.5, 0.5]
+        "circle_durations": [5, 1.5, 0.5, 9, 0.75],
+        "hideInstructionsOnAssessmentStart": false
+      },
+      "sentencerepetition": {
+        "enabled": true,
+        "prompt_countdowns": [3],
+        "hideInstructionsOnAssessmentStart": false
+      },
+      "matrixreasoning": {
+        "enabled": true,
+        "hideInstructionsOnAssessmentStart": true
+      },
+      "syncvoice": {
+        "enabled": true,
+        "hideInstructionsOnAssessmentStart": false
       },
       "ran": {
         "enabled": true,
-        "hideInstructionsOnAssessmentStart": false
+        "hideInstructionsOnAssessmentStart": true
       },
       "listeningcomprehension": {
         "enabled": true,
-        "hideInstructionsOnAssessmentStart": false
+        "hideInstructionsOnAssessmentStart": true
+      },
+      "pictureprompt": {
+        "enabled": true,
+        "hideInstructionsOnAssessmentStart": true
       },
       "postscreenerquestions": {
         "enabled": false
@@ -55,7 +61,10 @@
     "settings": {
       "countdownTimerLength": 3,
       "countdownTimerType": "circle",
-      "debugEnabled": true
+      "singleAssessmentEnabled": false,
+      "debugEnabled": false,
+      "MTurkEnabled": true,
+      "SetTimeoutTimeInMinutes": 5
     }
   }
 }

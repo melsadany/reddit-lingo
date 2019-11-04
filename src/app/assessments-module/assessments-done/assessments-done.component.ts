@@ -16,6 +16,12 @@ export class AssessmentsDoneComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log ("after..and this.state.assignemntID = ",this.stateManager.MTurkAssignmentId)
+    console.log("from asssessment-done component.. the getURlParam func ID =",this.stateManager.getUrlParameter('assignment_id'
+    ));
     this.dataService.deleteHashKeyCookie();
+    this.dataService.deleteUserIdCookie();
+    this.dataService.deleteAssignmentId();
+
   }
 }
