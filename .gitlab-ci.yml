@@ -1,35 +1,37 @@
-#image: node:10.16.0-alpine
+image: node:10.16.0-alpine
 
-#stages:
-#  - build
+stages:
+  - build
 
-#build and deploy lingo:
-#  stage: build
-#  script:
-#    - 'apk --no-cache --virtual build-dependencies add python make g++ && yarn && apk del build-dependencies'
-#    - 'apk -Uuv add groff less python py-pip'
-#    - 'pip install awscli'
-#    - 'apk --purge -v del py-pip'
-#    - 'rm /var/cache/apk/*'
-#    - yarn ng build --prod
-#    - echo $CI_COMMIT_REF_NAME
-#    - if [[ $CI_COMMIT_REF_NAME == 'test' ]]; then
-#        BUILD_FOLDER=lingo-test-build;
-#      elif [[ $CI_COMMIT_REF_NAME == 'app1' ]]; then
-#        BUILD_FOLDER=lingo-app1-build;
-#      elif [[ $CI_COMMIT_REF_NAME == 'app2' ]]; then
-#        BUILD_FOLDER=lingo-app2-build;
-#      elif [[ $CI_COMMIT_REF_NAME == 'lingo' ]]; then
-#        BUILD_FOLDER=lingo-root-build;
-#      elif [[ $CI_COMMIT_REF_NAME == 'master' ]]; then
-#        BUILD_FOLDER=lingo-master-builds;
-#      else
-#        BUILD_FOLDER=unkown;
-#      fi;
+build and deploy lingo:
+  stage: build
+  script:
+    - 'apk --no-cache --virtual build-dependencies add python make g++ && yarn && apk del build-dependencies'
+    - 'apk -Uuv add groff less python py-pip'
+    - 'pip install awscli'
+    - 'apk --purge -v del py-pip'
+    - 'rm /var/cache/apk/*'
+    - yarn ng build --prod
+    - echo $CI_COMMIT_REF_NAME
+    - if [[ $CI_COMMIT_REF_NAME == 'test' ]]; then
+        BUILD_FOLDER=lingo-test-build;
+      elif [[ $CI_COMMIT_REF_NAME == 'app1' ]]; then
+        BUILD_FOLDER=lingo-app1-build;
+      elif [[ $CI_COMMIT_REF_NAME == 'app2' ]]; then
+        BUILD_FOLDER=lingo-app2-build;
+      elif [[ $CI_COMMIT_REF_NAME == 'lingo' ]]; then
+        BUILD_FOLDER=lingo-root-build;
+      elif [[ $CI_COMMIT_REF_NAME == 'master' ]]; then
+        BUILD_FOLDER=lingo-master-builds;
+      elif [[ $CI_COMMIT_REF_NAME == 'mturk' ]]; then
+        BUILD_FOLDER=lingo-mturk-builds;
+      else
+        BUILD_FOLDER=unkown;
+      fi;
 
-#    - echo $BUILD_FOLDER
-#    - aws s3 rm s3://lingo-builds/$BUILD_FOLDER/dist --recursive
-#    - aws s3 rm s3://lingo-builds/$BUILD_FOLDER/server --recursive
-#    - aws s3 sync ./dist s3://lingo-builds/$BUILD_FOLDER/dist
-#    - aws s3 sync ./server s3://lingo-builds/$BUILD_FOLDER/server
-#    - aws s3 cp ./package.json s3://lingo-builds/$BUILD_FOLDER/package.json
+    - echo $BUILD_FOLDER
+    - aws s3 rm s3://lingo-builds/$BUILD_FOLDER/dist --recursive
+    - aws s3 rm s3://lingo-builds/$BUILD_FOLDER/server --recursive
+    - aws s3 sync ./dist s3://lingo-builds/$BUILD_FOLDER/dist
+    - aws s3 sync ./server s3://lingo-builds/$BUILD_FOLDER/server
+    - aws s3 cp ./package.json s3://lingo-builds/$BUILD_FOLDER/package.json
