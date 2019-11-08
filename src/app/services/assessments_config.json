@@ -64,7 +64,7 @@
       "singleAssessmentEnabled": false,
       "debugEnabled": false,
       "MTurkEnabled": true,
-      "SetTimeoutTimeInMinutes": 5
+      "SetTimeoutTimeInMinutes": 40
     }
   }
 }

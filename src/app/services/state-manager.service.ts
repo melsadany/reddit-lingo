@@ -228,19 +228,19 @@ export class StateManagerService {
     this.MTurkAssignmentId = this.route.snapshot.paramMap.get('assignmentId');
     //console.log("paramMap.get -",this.route.snapshot.queryParams.get("assignmentId"))
    
-    console.log("this.route.snapshot result AssignemntID =" ,this.MTurkAssignmentId);
+    //console.log("this.route.snapshot result AssignemntID =" ,this.MTurkAssignmentId);
     
     //incase MTurkAssignementId is null we find it using getURLParameter
-    console.log('windows uri:',window.location.search)
-    this.MTurkAssignmentId = "chickenNuggets"
+    //console.log('windows uri:',window.location.search)
+    
   //  console.log('getassignemntid function returns:',this.dataService.getAssignmentId())
     this.MTurkAssignmentId = this.MTurkAssignmentId ? this.MTurkAssignmentId:this.getUrlParameter('assignmentId');
     this.MTurkAssignmentId = this.MTurkAssignmentId ? this.MTurkAssignmentId:this.getUrlParameter('assignment_id');
     console.log('geturlParam funct result:',this.getUrlParameter('assignmentId'))
-    console.log('other getParam funct result = ',this.getUrlParameter('assignment_id'))
+   // console.log('other getParam funct result = ',this.getUrlParameter('assignment_id'))
   //  this.MTurkAssignmentId = this.MTurkAssignmentId ? this.dataService.getAssignmentId() : this.MTurkAssignmentId;
     this.MTurkWorkerId = this.route.snapshot.queryParamMap.get('workerId');
-    console.log('MTurkAssignmentId:', this.MTurkAssignmentId);
+    //console.log('MTurkAssignmentId:', this.MTurkAssignmentId);
   }
 
 public  getUrlParameter(name:string) {
