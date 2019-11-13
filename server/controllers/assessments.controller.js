@@ -14,13 +14,14 @@ const LINGO_DATA_OUTPUT_S3_PATH =
   'lingo-assessment-data/' + process.env.LINGO_FOLDER
 
 const AssessmentSchemaValidator = Joi.object({
-  user_id: Joi.number().required(),
+  user_id: Joi.string().required(),
   assessments: Joi.array(),
   google_speech_to_text_assess: Joi.array()
 })
 
 async function insertFreshAssessmentData(reqData) {
-  console.log('Insert fresh assessment data')
+  console.log('Insert fresh assessment data with req data vvvvv')
+  console.log(reqData)
   await Joi.validate(reqData, AssessmentSchemaValidator, {
     abortEarly: false
   })
@@ -183,8 +184,10 @@ function getUserAssessmentData(searchUserId) {
   const userID = searchUserId
   const fileName = path.join(LINGO_DATA_LOCAL_PATH, userID, userID + '.json')
   return new Promise((resolve, reject) => {
+    console.log("in getUserAssessmentData with userID =", userID)
     fs.readFile(fileName, 'utf-8', (err, data) => {
       if (err) {
+        console.log("error not found for path")
         resolve(
           insertFreshAssessmentData({
             user_id: userID,
@@ -213,7 +216,7 @@ function insertNewIDJson() {
       fs.writeFile(
         fileName,
         JSON.stringify({
-          userID: 0
+          userID: Math.random().toString(36).replace('0.', '')
         }),
         err => {
           if (err) {
@@ -225,7 +228,7 @@ function insertNewIDJson() {
               path.join(LINGO_DATA_LOCAL_PATH, 'userID'),
               path.join(LINGO_DATA_OUTPUT_S3_PATH, 'userID')
             )
-            resolve(0)
+            resolve(Math.random().toString(36).replace('0.', ''))
           }
         }
       )
@@ -296,7 +299,7 @@ function getNextUserID() {
         fs.writeFile(
           fileName,
           JSON.stringify({
-            userID: currentID + 1
+            userID: Math.random().toString(36).replace('0.', '')
           }),
           err => {
             if (err) {
