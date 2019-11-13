@@ -228,7 +228,7 @@
             "riot": [
                 "house",
                 "forest",
-                "quite",
+                "quiet",
                 "fire",
                 "night",
                 "morning",
@@ -238,7 +238,7 @@
             ],
             "house": [
                 "forest",
-                "quite",
+                "quiet",
                 "fire",
                 "night",
                 "morning",
@@ -250,7 +250,7 @@
             "sleep": [
                 "house",
                 "forest",
-                "quite",
+                "quiet",
                 "fire",
                 "night",
                 "morning",
@@ -261,7 +261,7 @@
             "night": [
                 "house",
                 "forest",
-                "quite",
+                "quiet",
                 "fire",
                 "morning",
                 "rain",
@@ -272,7 +272,7 @@
             "fire": [
                 "house",
                 "forest",
-                "quite",
+                "quiet",
                 "night",
                 "morning",
                 "rain",
@@ -283,7 +283,7 @@
             "morning": [
                 "house",
                 "forest",
-                "quite",
+                "quiet",
                 "fire",
                 "night",
                 "rain",
@@ -291,7 +291,7 @@
                 "riot",
                 "sleep"
             ],
-            "quite": [
+            "quiet": [
                 "house",
                 "forest",
                 "fire",
@@ -305,7 +305,7 @@
             "rain": [
                 "house",
                 "forest",
-                "quite",
+                "quiet",
                 "fire",
                 "night",
                 "morning",
@@ -315,7 +315,7 @@
             ],
             "forest": [
                 "house",
-                "quite",
+                "quiet",
                 "fire",
                 "night",
                 "morning",
@@ -327,7 +327,7 @@
             "library": [
                 "house",
                 "forest",
-                "quite",
+                "quiet",
                 "fire",
                 "night",
                 "morning",
