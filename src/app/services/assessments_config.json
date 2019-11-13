@@ -5,7 +5,7 @@
         "enabled": true
       },
       "prescreenerquestions": {
-        "enabled": false
+        "enabled": true
       },
       "wordassociationpath": {
         "enabled": true,
