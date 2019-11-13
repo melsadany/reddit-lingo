@@ -20,8 +20,6 @@ const AssessmentSchemaValidator = Joi.object({
 })
 
 async function insertFreshAssessmentData(reqData) {
-  console.log('Insert fresh assessment data with req data vvvvv')
-  console.log(reqData)
   await Joi.validate(reqData, AssessmentSchemaValidator, {
     abortEarly: false
   })
@@ -184,10 +182,8 @@ function getUserAssessmentData(searchUserId) {
   const userID = searchUserId
   const fileName = path.join(LINGO_DATA_LOCAL_PATH, userID, userID + '.json')
   return new Promise((resolve, reject) => {
-    console.log("in getUserAssessmentData with userID =", userID)
     fs.readFile(fileName, 'utf-8', (err, data) => {
       if (err) {
-        console.log("error not found for path")
         resolve(
           insertFreshAssessmentData({
             user_id: userID,
