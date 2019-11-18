@@ -50,6 +50,9 @@
       },
       "postscreenerquestions": {
         "enabled": false
+      }, 
+      "pictureprompt": {
+        "enabled": true
       }
     },
     "settings": {
