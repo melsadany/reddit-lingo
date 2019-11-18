@@ -48,6 +48,9 @@
         "enabled": true,
         "hideInstructionsOnAssessmentStart": false
       },
+      "pictureprompt": {
+        "enabled": true
+      }
       "postscreenerquestions": {
         "enabled": false
       }
