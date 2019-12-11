@@ -14,13 +14,12 @@ const LINGO_DATA_OUTPUT_S3_PATH =
   'lingo-assessment-data/' + process.env.LINGO_FOLDER
 
 const AssessmentSchemaValidator = Joi.object({
-  user_id: Joi.number().required(),
+  user_id: Joi.string().required(),
   assessments: Joi.array(),
   google_speech_to_text_assess: Joi.array()
 })
 
 async function insertFreshAssessmentData(reqData) {
-  console.log('Insert fresh assessment data')
   await Joi.validate(reqData, AssessmentSchemaValidator, {
     abortEarly: false
   })
@@ -52,24 +51,15 @@ async function insertFreshAssessmentData(reqData) {
 async function updateAssessmentData(reqData) {
   // console.log(reqData)
   // KRM: For seeing what data was already stored for a user
-  let hashKey
   let userID
   let fileName
   return new Promise((resolve, reject) => {
-    if (reqData.hash_key) {
-      hashKey = reqData.hash_key
-      fileName = path.join(
-        LINGO_DATA_LOCAL_PATH,
-        'hashkey_assessment',
-        hashKey,
-        hashKey + '.json'
-      )
-    } else {
-      userID = reqData.user_id
-      fileName = path.join(LINGO_DATA_LOCAL_PATH, userID, userID + '.json')
-    }
+
+    userID = reqData.user_id
+    fileName = path.join(LINGO_DATA_LOCAL_PATH, userID, userID + '.json')
+  
     if (reqData.assessments[0].data.recorded_data) {
-      saveWavFile(reqData, userID, hashKey, 'recorded_data')
+      saveWavFile(reqData, userID, 'recorded_data')
     }
     fs.readFile(fileName, 'utf-8', (err, data) => {
       if (err) {
@@ -84,21 +74,10 @@ async function updateAssessmentData(reqData) {
         } else {
           let uploadPath
           let S3UploadPath
-          if (hashKey) {
-            uploadPath = path.join(
-              LINGO_DATA_LOCAL_PATH,
-              'hashkey_assessment',
-              hashKey
-            )
-            S3UploadPath = path.join(
-              LINGO_DATA_OUTPUT_S3_PATH,
-              'hashkey_assessment',
-              hashKey
-            )
-          } else {
-            uploadPath = path.join(LINGO_DATA_LOCAL_PATH, userID)
-            S3UploadPath = path.join(LINGO_DATA_OUTPUT_S3_PATH, userID)
-          }
+          
+          uploadPath = path.join(LINGO_DATA_LOCAL_PATH, userID)
+          S3UploadPath = path.join(LINGO_DATA_OUTPUT_S3_PATH, userID)
+          
           uploadDir(uploadPath, S3UploadPath)
           resolve(dataFile)
         }
@@ -108,26 +87,17 @@ async function updateAssessmentData(reqData) {
 }
 
 async function pushOnePieceAssessmentData(reqData) {
-  let hashKey
   let userID
   let fileName
   return new Promise((resolve, reject) => {
-    if (reqData.hash_key) {
-      hashKey = reqData.hash_key
-      fileName = path.join(
-        LINGO_DATA_LOCAL_PATH,
-        'hashkey_assessment',
-        hashKey,
-        hashKey + '.json'
-      )
-    } else {
-      userID = reqData.user_id
-      fileName = path.join(LINGO_DATA_LOCAL_PATH, userID, userID + '.json')
-    }
+
+    userID = reqData.user_id
+    fileName = path.join(LINGO_DATA_LOCAL_PATH, userID, userID + '.json')
+  
     let selector = ''
     if (reqData.assessments[0].data.recorded_data) {
       selector = 'recorded_data'
-      saveWavFile(reqData, userID, hashKey, selector)
+      saveWavFile(reqData, userID, selector)
     } else if (reqData.assessments[0].data.selection_data) {
       selector = 'selection_data'
     } else {
@@ -156,21 +126,10 @@ async function pushOnePieceAssessmentData(reqData) {
         } else {
           let uploadPath
           let S3UploadPath
-          if (hashKey) {
-            uploadPath = path.join(
-              LINGO_DATA_LOCAL_PATH,
-              'hashkey_assessment',
-              hashKey
-            )
-            S3UploadPath = path.join(
-              LINGO_DATA_OUTPUT_S3_PATH,
-              'hashkey_assessment',
-              hashKey
-            )
-          } else {
-            uploadPath = path.join(LINGO_DATA_LOCAL_PATH, userID)
-            S3UploadPath = path.join(LINGO_DATA_OUTPUT_S3_PATH, userID)
-          }
+          
+          uploadPath = path.join(LINGO_DATA_LOCAL_PATH, userID)
+          S3UploadPath = path.join(LINGO_DATA_OUTPUT_S3_PATH, userID)
+        
           uploadDir(uploadPath, S3UploadPath, selector)
           resolve(dataFile)
         }
@@ -179,6 +138,21 @@ async function pushOnePieceAssessmentData(reqData) {
   })
 }
 
+function checkUserExist(searchUserId){
+  const userID = searchUserId
+  const fileName = path.join(LINGO_DATA_LOCAL_PATH, userID, userID + '.json')
+  return new Promise((resolve, reject) => {
+    fs.readFile(fileName, 'utf-8', (err, data) => {
+      if (err) {
+        console.log("File not found error")
+        resolve(false)
+      
+      } else {
+        resolve(JSON.parse(data))
+      }
+    });
+  }).catch(error => {console.log("This is a promise error.."); console.log(error);})
+}
 function getUserAssessmentData(searchUserId) {
   const userID = searchUserId
   const fileName = path.join(LINGO_DATA_LOCAL_PATH, userID, userID + '.json')
@@ -198,7 +172,8 @@ function getUserAssessmentData(searchUserId) {
     })
   })
 }
-
+//don't need anymore
+/*
 function insertNewIDJson() {
   const fileName = path.join(
     LINGO_DATA_LOCAL_PATH,
@@ -210,49 +185,39 @@ function insertNewIDJson() {
       fs.mkdirSync(path.join(LINGO_DATA_LOCAL_PATH, 'userID'), {
         recursive: true
       })
+   
+      const next_uuid = uuidv1({nsecs: Math.floor(Math.random() * 10000)});
+      
+      const currentID = uuidv1({nsecs: Math.floor(Math.random() * 10000)})
+    
       fs.writeFile(
         fileName,
         JSON.stringify({
-          userID: 0
+          userID: next_uuid
         }),
         err => {
           if (err) {
             console.log(err)
             reject(err)
           } else {
-            console.log('Successfully saved new ID json')
             uploadDir(
               path.join(LINGO_DATA_LOCAL_PATH, 'userID'),
               path.join(LINGO_DATA_OUTPUT_S3_PATH, 'userID')
             )
-            resolve(0)
+            resolve(currentID)
           }
         }
       )
     }
   })
 }
-
-function saveWavFile(reqData, userID, hashKey, selector) {
+*/
+function saveWavFile(reqData, userID, selector) {
   const promptNumber = reqData.assessments[0].data[selector][0]['prompt_number']
   const assessmentName = reqData.assessments[0]['assess_name']
   let wavFilePath
   let wavFileName
-  if (hashKey) {
-    wavFilePath = path.join(
-      LINGO_DATA_LOCAL_PATH,
-      'hashkey_assessment',
-      hashKey,
-      'recording_data',
-      assessmentName
-    )
-    wavFileName = path.join(wavFilePath, promptNumber + '.wav')
-    if (!fs.existsSync(wavFilePath)) {
-      fs.mkdirSync(path.join(wavFilePath), {
-        recursive: true
-      })
-    }
-  } else if (userID) {
+ if (userID) {
     wavFilePath = path.join(
       LINGO_DATA_LOCAL_PATH,
       userID,
@@ -279,7 +244,8 @@ function saveWavFile(reqData, userID, hashKey, selector) {
   )
   reqData.assessments[0].data[selector][0]['recorded_data'] = wavFileName
 }
-
+//don't need anymore [:BT]
+/*
 function getNextUserID() {
   const fileName = path.join(
     LINGO_DATA_LOCAL_PATH,
@@ -292,11 +258,12 @@ function getNextUserID() {
         console.log('UserID json does not exist, creating now.')
         resolve(insertNewIDJson())
       } else {
+        const next_uuid = uuidv1({nsecs: Math.floor(Math.random() * 10000)});
         let currentID = JSON.parse(data).userID
         fs.writeFile(
           fileName,
           JSON.stringify({
-            userID: currentID + 1
+            userID: next_uuid
           }),
           err => {
             if (err) {
@@ -316,19 +283,20 @@ function getNextUserID() {
     })
   })
 }
+*/
 
-function sendHashKey(hashKey) {
+//first 
+function sendHashKey(hashKey,userId) {
   const fileName = path.join(
     LINGO_DATA_LOCAL_PATH,
-    'hashkey_assessment',
-    hashKey,
-    hashKey + '.json'
+    userId,
+    userId + '.json'
   )
   return new Promise((resolve, reject) => {
     fs.readFile(fileName, 'utf-8', (err, data) => {
       if (err) {
         console.log(err) // KRM: User hasn't used this hash key before
-        resolve(insertNewHashKeyJson(hashKey))
+        resolve(insertNewHashKeyJson(hashKey,userId))
       } else {
         resolve(JSON.parse(data)) // KRM: Send back their data if it already exists
       }
@@ -336,27 +304,27 @@ function sendHashKey(hashKey) {
   })
 }
 
-function insertNewHashKeyJson(hashKey) {
+function insertNewHashKeyJson(hashKey,userId) {
   const freshData = JSON.stringify({
     hash_key: hashKey,
+    user_id: userId,
     assessments: [],
     google_speech_to_text_assess: []
   })
   const fileName = path.join(
     LINGO_DATA_LOCAL_PATH,
-    'hashkey_assessment',
-    hashKey,
-    hashKey + '.json'
+    userId,
+    userId + '.json'
   )
   return new Promise((resolve, reject) => {
     if (
       !fs.existsSync(
-        path.join(LINGO_DATA_LOCAL_PATH, 'hashkey_assessment', hashKey)
+        path.join(LINGO_DATA_LOCAL_PATH, userId)
       )
     ) {
       console.log('Making HashKey directory')
       fs.mkdirSync(
-        path.join(LINGO_DATA_LOCAL_PATH, 'hashkey_assessment', hashKey),
+        path.join(LINGO_DATA_LOCAL_PATH, userId),
         {
           recursive: true
         }
@@ -369,8 +337,8 @@ function insertNewHashKeyJson(hashKey) {
       } else {
         console.log('Successfully saved new HashKey json')
         uploadDir(
-          path.join(LINGO_DATA_LOCAL_PATH, 'hashkey_assessment', hashKey),
-          path.join(LINGO_DATA_OUTPUT_S3_PATH, 'hashkey_assessment', hashKey)
+          path.join(LINGO_DATA_LOCAL_PATH,  userId),
+          path.join(LINGO_DATA_OUTPUT_S3_PATH, userId)
         )
         resolve(freshData)
       }
@@ -532,7 +500,7 @@ module.exports = {
   pushOnePieceAssessmentData,
   getUserAssessmentData,
   updateAssessmentData,
-  getNextUserID,
   sendHashKey,
-  getAssets
+  getAssets,
+  checkUserExist
 }

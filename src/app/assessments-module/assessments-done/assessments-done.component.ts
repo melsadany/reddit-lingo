@@ -17,5 +17,6 @@ export class AssessmentsDoneComponent implements OnInit {
 
   ngOnInit(): void {
     this.dataService.deleteHashKeyCookie();
+    this.dataService.deleteUserIdCookie();
   }
 }

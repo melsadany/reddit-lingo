@@ -224,7 +224,10 @@ export class StateManagerService {
       console.log(this.assessments[assessment]);
     }
   }
-
+  public serveDiagnostics() {
+    this.assessmentsLeftLinkedList.append('diagnostics');
+    this.loadingState = false;
+  }
   public initializeSingleAssessmentState(
     hashKeyAssessmentData: HashKeyAssessmentData | AssessmentData
   ): void {
