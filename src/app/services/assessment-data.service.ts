@@ -12,6 +12,7 @@ import {
 import 'rxjs/add/operator/map';
 import { StateManagerService } from './state-manager.service';
 import { async } from '@angular/core/testing';
+import { resolve } from 'dns';
 const uuidv1 = require('uuid/v1')
 
 @Injectable()
@@ -52,28 +53,43 @@ export class AssessmentDataService {
       // KRM: Seting the data will initialize the state of the assessments
     }
   }
+  public validHashKey(hashKey: string): boolean {
+    // if it matches 8 or 12 anyletter/anynumbered hash (with no underscores) :BT
+  
+
+    if (hashKey.length==12 && hashKey.slice(4).match(/^\w+$/gmi) && this.stateManager.hashKeyFirstFourMap(hashKey) !== 'home'){
+      this.stateManager.isSingleAssessment = true;
+      return true
+    }
+    return false
+  }
 
   public initializeHashKeyData(hashkey :string): Promise<string> {
-    this.setHashKeyCookie(hashkey)
-    this.stateManager.hashKey=hashkey;
-    //if there is no userId cookie, we can't uptain the json data for the hash so we have to create a new one
-    if (this.checkUserIdCookie()) {
-      this.currentUserId = this.getUserIdCookie()
-      return ( new Promise ((resolve) => resolve (this.currentUserId)));
+    if (this.validHashKey(this.getHashKeyCookie())){
+      if (this.checkUserIdCookie()){
+        this.currentUserId = this.getUserIdCookie()
+      }
+      else{ this.currentUserId = this.generateNewUserId()}
     }
-    
     else {
-       
-        return  (new Promise((resolve) => {
-         this.currentUserId =  this.generateNewUserId();
-        this.setUserIdCookie(this.currentUserId);
-        console.log("THIS GOES FIRST id is in initializehashkeydata.." + this.currentUserId)
-        resolve (this.currentUserId)
-        }))
-    }
-    //automatically set userhash even if they had one already (will always defualt to new hashkey)
-   
-  
+      if (this.stateManager.isSingleAssessment){
+          this.currentUserId =  this.generateNewUserId();
+          this.setUserIdCookie(this.currentUserId);
+      }
+      else {
+        if (this.checkUserIdCookie()){
+          this.currentUserId = this.getUserIdCookie();
+          this.stateManager.addHashToJson = true;
+        }
+        else {
+          this.currentUserId =  this.generateNewUserId();
+          this.setUserIdCookie(this.currentUserId);
+        }
+      }
+      this.setHashKeyCookie(hashkey);
+      this.stateManager.hashKey = hashkey;
+  }
+    return  (new Promise((resolve) => {resolve (this.currentUserId)}));
     
   }
   
@@ -124,7 +140,6 @@ export class AssessmentDataService {
   }
 
   public setUserIdCookieAndSetData(): void {
-    
       this.currentUserId = this.generateNewUserId();
       this.setUserIdCookie(this.currentUserId);
       this.stateManager.serveDiagnostics()
@@ -143,7 +158,6 @@ export class AssessmentDataService {
     this._partialAssessmentDataSubscription.subscribe(
       (data: AssessmentData | boolean) => {
         if (data==false){
-          console.log("found id so but not in directory yet (in setData)")
           this.stateManager.serveDiagnostics();
         }
         else {
@@ -178,13 +192,16 @@ export class AssessmentDataService {
   ,sendBackData?: boolean): Observable<Object> {
     let structure;
       //optional sendBackData boolean tells whether to send back data or just a success string
+      //addHashkeyToJason check
       structure = {
         sendBackData: sendBackData,
+        addHashkeyToJson: this.stateManager.addHashToJson,
         user_id: this.getUserIdCookie(),
         hash_key: this.getHashKeyCookie(),
         assessments: [assessmentsData],
         google_speech_to_text_assess: [googleData]
       };
+      this.stateManager.addHashToJson = false;
     
     return this.http.post('/api/assessmentsAPI/SaveAssessments', structure, {
       responseType: 'json'
@@ -199,10 +216,12 @@ export class AssessmentDataService {
 
     structure = {
       user_id: this.getUserIdCookie(),
+      addHashkeyToJson: this.stateManager.addHashToJson,
+      hash_key: this.getHashKeyCookie(),
       assessments: [assessmentsData],
       google_speech_to_text_assess: [googleData]
     };
-    
+    this.stateManager.addHashToJson = false;
     return this.http.post('/api/assessmentsAPI/PushOnePieceData', structure, {
       responseType: 'text'
     });

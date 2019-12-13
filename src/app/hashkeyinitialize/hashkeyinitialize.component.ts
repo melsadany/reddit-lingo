@@ -18,6 +18,7 @@ export class HashkeyinitializeComponent {
   ) {
     const userHashKey = this.route.snapshot.paramMap.get('hashKey');
     // KRM: Here is where we verify the hash key based on some predetermined parameters.
+    // if they are returning, they continue, else, they get served diagnostics before getting a file created.
     if (this.validHashKey(userHashKey)) {
       this.stateManager.hashKey = userHashKey;
       let userIdPromise = this.dataService.initializeHashKeyData(userHashKey);
@@ -26,6 +27,7 @@ export class HashkeyinitializeComponent {
         this.dataService
         .checkUserExist(userId) //.sendHashKeyToServer(userHashKey,useId)
         .subscribe((data: AssessmentData | boolean) => {
+          //adds diagnostics to list of assessments to take since asssessment list will be empty since they don't have a file yet
           if (data==false){
             this.stateManager.serveDiagnostics();
           }

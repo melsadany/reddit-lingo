@@ -14,6 +14,7 @@ const LINGO_DATA_OUTPUT_S3_PATH =
   'lingo-assessment-data/' + process.env.LINGO_FOLDER
 
 const AssessmentSchemaValidator = Joi.object({
+  hash_keys: Joi.array(),
   user_id: Joi.string().required(),
   assessments: Joi.array(),
   google_speech_to_text_assess: Joi.array()
@@ -67,6 +68,9 @@ async function updateAssessmentData(reqData) {
       }
       const dataFile = JSON.parse(data)
       dataFile.assessments.push(reqData.assessments[0])
+      if (reqData.addHashkeyToJson){
+        dataFile.hash_keys.push(reqData.hash_key);
+      }
       fs.writeFile(fileName, JSON.stringify(dataFile), err => {
         if (err) {
           console.log(err)
@@ -119,6 +123,9 @@ async function pushOnePieceAssessmentData(reqData) {
           }
         }
       }
+      if (reqData.addHashkeyToJson){
+        dataFile.hash_keys.push(reqData.hash_key);
+      }
       fs.writeFile(fileName, JSON.stringify(dataFile), err => {
         if (err) {
           console.log(err)
@@ -161,6 +168,7 @@ function getUserAssessmentData(searchUserId) {
       if (err) {
         resolve(
           insertFreshAssessmentData({
+            hash_keys: [],
             user_id: userID,
             assessments: [],
             google_speech_to_text_assess: []
@@ -172,46 +180,8 @@ function getUserAssessmentData(searchUserId) {
     })
   })
 }
-//don't need anymore
-/*
-function insertNewIDJson() {
-  const fileName = path.join(
-    LINGO_DATA_LOCAL_PATH,
-    'userID',
-    'next_user_ID' + '.json'
-  )
-  return new Promise((resolve, reject) => {
-    if (!fs.existsSync(path.join(LINGO_DATA_LOCAL_PATH, 'userID'))) {
-      fs.mkdirSync(path.join(LINGO_DATA_LOCAL_PATH, 'userID'), {
-        recursive: true
-      })
-   
-      const next_uuid = uuidv1({nsecs: Math.floor(Math.random() * 10000)});
-      
-      const currentID = uuidv1({nsecs: Math.floor(Math.random() * 10000)})
-    
-      fs.writeFile(
-        fileName,
-        JSON.stringify({
-          userID: next_uuid
-        }),
-        err => {
-          if (err) {
-            console.log(err)
-            reject(err)
-          } else {
-            uploadDir(
-              path.join(LINGO_DATA_LOCAL_PATH, 'userID'),
-              path.join(LINGO_DATA_OUTPUT_S3_PATH, 'userID')
-            )
-            resolve(currentID)
-          }
-        }
-      )
-    }
-  })
-}
-*/
+//don't need anymore insertNewIDJson anymore : B
+
 function saveWavFile(reqData, userID, selector) {
   const promptNumber = reqData.assessments[0].data[selector][0]['prompt_number']
   const assessmentName = reqData.assessments[0]['assess_name']
@@ -244,48 +214,8 @@ function saveWavFile(reqData, userID, selector) {
   )
   reqData.assessments[0].data[selector][0]['recorded_data'] = wavFileName
 }
-//don't need anymore [:BT]
-/*
-function getNextUserID() {
-  const fileName = path.join(
-    LINGO_DATA_LOCAL_PATH,
-    'userID',
-    'next_user_ID' + '.json'
-  )
-  return new Promise((resolve, reject) => {
-    fs.readFile(fileName, 'utf-8', (err, data) => {
-      if (err) {
-        console.log('UserID json does not exist, creating now.')
-        resolve(insertNewIDJson())
-      } else {
-        const next_uuid = uuidv1({nsecs: Math.floor(Math.random() * 10000)});
-        let currentID = JSON.parse(data).userID
-        fs.writeFile(
-          fileName,
-          JSON.stringify({
-            userID: next_uuid
-          }),
-          err => {
-            if (err) {
-              console.log(err)
-              reject(err)
-            } else {
-              console.log('Successfully updated ID json')
-              uploadDir(
-                path.join(LINGO_DATA_LOCAL_PATH, 'userID'),
-                path.join(LINGO_DATA_OUTPUT_S3_PATH, 'userID')
-              )
-              resolve(currentID)
-            }
-          }
-        )
-      }
-    })
-  })
-}
-*/
+//don't need anymore getNextUserID anymore [:BT]
 
-//first 
 function sendHashKey(hashKey,userId) {
   const fileName = path.join(
     LINGO_DATA_LOCAL_PATH,
@@ -306,7 +236,7 @@ function sendHashKey(hashKey,userId) {
 
 function insertNewHashKeyJson(hashKey,userId) {
   const freshData = JSON.stringify({
-    hash_key: hashKey,
+    hash_keys: [hashKey],
     user_id: userId,
     assessments: [],
     google_speech_to_text_assess: []

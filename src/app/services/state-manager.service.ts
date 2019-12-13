@@ -40,12 +40,19 @@ export class StateManagerService {
   private _playingInstruction = false;
   private _showStartParagraph = true;
   private _isSingleAssessment = false;
+  private _addHashToJson = false;
 
   public get showStartParagraph(): boolean {
     return this._showStartParagraph;
   }
   public set showStartParagraph(value: boolean) {
     this._showStartParagraph = value;
+  }
+  public get addHashToJson(): boolean{
+    return this._addHashToJson;
+  }
+  public set addHashToJson(value :boolean){
+    this._addHashToJson = value;
   }
   public get playingInstruction(): boolean {
     return this._playingInstruction;
