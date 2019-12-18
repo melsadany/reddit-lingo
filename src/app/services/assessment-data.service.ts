@@ -65,13 +65,17 @@ export class AssessmentDataService {
   }
 
   public initializeHashKeyData(hashkey :string): Promise<string> {
+    //checks if old hash is valid (if so, they need to finish it)
     if (this.validHashKey(this.getHashKeyCookie())){
       if (this.checkUserIdCookie()){
         this.currentUserId = this.getUserIdCookie()
+        
       }
       else{ this.currentUserId = this.generateNewUserId()}
+      this.stateManager.hashKey = this.getHashKeyCookie();
     }
     else {
+      //tells if new hash is valid (if it is then start new single assessment overiding any previous progress)
       if (this.stateManager.isSingleAssessment){
           this.currentUserId =  this.generateNewUserId();
           this.setUserIdCookie(this.currentUserId);
@@ -79,7 +83,9 @@ export class AssessmentDataService {
       else {
         if (this.checkUserIdCookie()){
           this.currentUserId = this.getUserIdCookie();
+          if (this.getHashKeyCookie() != hashkey){
           this.stateManager.addHashToJson = true;
+          }
         }
         else {
           this.currentUserId =  this.generateNewUserId();
@@ -248,6 +254,7 @@ export class AssessmentDataService {
   */
 
   public sendHashKeyToServer(hashKey: string, userId: string): Observable<Object> {
+    console.log("in sendHaskey to server with sendNewHash value "+ this.stateManager.addHashToJson)
     return this.http.get(
       '/api/assessmentsAPI/InitializeSingleUserAssessment/' + hashKey +'/'+ userId,
       {}
