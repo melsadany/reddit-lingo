@@ -193,6 +193,7 @@ export class AssessmentDataService {
     let structure;
       //optional sendBackData boolean tells whether to send back data or just a success string
       //addHashkeyToJason check
+      if (this.checkUserIdCookie()){
       structure = {
         sendBackData: sendBackData,
         addHashkeyToJson: this.stateManager.addHashToJson,
@@ -203,9 +204,14 @@ export class AssessmentDataService {
       };
       this.stateManager.addHashToJson = false;
     
-    return this.http.post('/api/assessmentsAPI/SaveAssessments', structure, {
-      responseType: 'json'
-    });
+      return this.http.post('/api/assessmentsAPI/SaveAssessments', structure, {
+        responseType: 'json'
+        });
+     }
+     else {
+      window.location.assign('/')
+      return (JSON.parse("Error: no userID found."))
+     }
   }
 
   public postSingleAudioDataToMongo(
@@ -213,7 +219,7 @@ export class AssessmentDataService {
     googleData: GoogleSpeechToTextDataStructure
   ): Observable<string> {
     let structure;
-
+    if (this.checkUserIdCookie()){
     structure = {
       user_id: this.getUserIdCookie(),
       addHashkeyToJson: this.stateManager.addHashToJson,
@@ -225,6 +231,10 @@ export class AssessmentDataService {
     return this.http.post('/api/assessmentsAPI/PushOnePieceData', structure, {
       responseType: 'text'
     });
+    }
+    else {
+      window.location.assign('/');
+     }
   }
 
 
