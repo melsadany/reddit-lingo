@@ -9,7 +9,7 @@ router.post('/SaveAssessments', (req, res) => {
       'Content-Type': 'application/json',
       'Content-disposition': 'attachment; filename=' + req.params.user_id + '.json'
     });
-    if (req.body.sendBackData) {res.send(data)} else res.send('Success')
+    if (req.body.sendBackData) {res.send(data)} else  res.json({success:true})
     })
     .catch((err) => {
       console.log(err)
