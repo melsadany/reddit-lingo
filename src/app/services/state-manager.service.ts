@@ -503,7 +503,7 @@ export class StateManagerService {
       case 'tmd$':
         assessmentName = 'timeduration';
         break;
-      case 'wda$':
+      case 'wap$':
         assessmentName = 'wordassociationpath';
         break;
       case 'wda$':
