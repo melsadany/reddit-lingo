@@ -10,70 +10,21 @@
       </div> -->
       <div class="form-group text-center pt-4">
         <mat-form-field class="form-group">
-          <input matInput placeholder="Current Age (In Years)" formControlName="currentAge">
+          <input matInput placeholder="First Name" formControlName="firstName">
         </mat-form-field>
       </div>
-      <div class="form-group text-center">
-        <mat-form-field>
-          <mat-select placeholder="Highest Education" formControlName="highestEducation">
-            <mat-option *ngFor="let educationOption of educationOptions" [value]="educationOption">
-              {{educationOption}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-      <div class="form-group text-center">
+      <div class="form-group text-center pt-4">
         <mat-form-field class="form-group">
-          <mat-select placeholder="Current Ocupation" formControlName="currentOccupation">
-            <mat-option *ngFor="let currentOccupation of currentOccupationOptions" [value]="currentOccupation">
-              {{currentOccupation}}
-            </mat-option>
-          </mat-select>
+          <input matInput placeholder="Last Name" formControlName="lastName">
         </mat-form-field>
       </div>
-      <div *ngIf="isStudentOccupation()">
-        <div class="form-group text-center">
-          <mat-form-field class="form-group">
-            <input matInput placeholder="Major of Study" formControlName="majorOfStudy">
-          </mat-form-field>
-        </div>
-      </div>
-      <div class="form-group text-center">
+      <div class="form-group text-center pt-4">
         <mat-form-field class="form-group">
-          <mat-select placeholder="Annual Income" formControlName="annualIncome">
-            <mat-option *ngFor="let annualIncomeOption of annualIncomeOptions" [value]="annualIncomeOption">
-              {{annualIncomeOption}}
-            </mat-option>
-          </mat-select>
+          <input matInput placeholder="ID" formControlName="id">
         </mat-form-field>
       </div>
-      <div class="form-group text-center">
-        <mat-form-field class="form-group">
-          <mat-select placeholder="Gender" formControlName="gender">
-            <mat-option *ngFor="let genderOption of genderOptions" [value]="genderOption">
-              {{genderOption}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-      <div class="form-group text-center">
-        <mat-form-field class="form-group">
-          <mat-select placeholder="Race" formControlName="race">
-            <mat-option *ngFor="let raceOption of raceOptions" [value]="raceOption">
-              {{raceOption}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-      <div class="form-group text-center">
-        <mat-form-field class="form-group">
-          <mat-select placeholder="Ethnicity" formControlName="ethnicity">
-            <mat-option *ngFor="let ethnicityOption of ethnicityOptions" [value]="ethnicityOption">
-              {{ethnicityOption}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
+      
+  
       <div class="text-center">
         <button type='submit' [disabled]="!dataForm.valid" class='btn btn-primary btn-lg'>Continue</button>
       </div>
