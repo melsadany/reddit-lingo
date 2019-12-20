@@ -20,9 +20,7 @@ build and deploy lingo:
       elif [[ $CI_COMMIT_REF_NAME == 'app2' ]]; then
         BUILD_FOLDER=lingo-app2-build;
       elif [[ $CI_COMMIT_REF_NAME == 'lingo' ]]; then
-        BUILD_FOLDER=lingo-root-build;      
-      elif [[ $CI_COMMIT_REF_NAME == 'recording' ]]; then
-        BUILD_FOLDER=lingo-recording-build;
+        BUILD_FOLDER=lingo-root-build;
       elif [[ $CI_COMMIT_REF_NAME == 'master' ]]; then
         BUILD_FOLDER=lingo-master-builds;
       else

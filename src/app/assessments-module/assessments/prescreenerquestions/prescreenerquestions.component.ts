@@ -129,15 +129,18 @@ export class PrescreenerquestionsComponent implements OnInit {
     this.stateManager.sendToCurrentIfAlreadyCompleted(this.assessmentName);
     this.stateManager.isInAssessment = true;
     this.dataForm = this.fb.group({
-      firstName: [
+      currentAge: [
         '',
-        Validators.required
+        [Validators.required, this.numbersOnly(/^\+?(0|[1-9]\d*)$/)]
       ],
-      lastName: ['', Validators.required],
-      id: ['', Validators.required],
-
+      highestEducation: ['', Validators.required],
+      currentOccupation: ['', Validators.required],
+      annualIncome: ['', Validators.required],
+      gender: ['', Validators.required],
+      race: ['', Validators.required],
+      ethnicity: ['', Validators.required]
     });
-    /*this.dataForm.addControl(
+    this.dataForm.addControl(
       'majorOfStudy',
       new FormControl()
     );
@@ -150,15 +153,17 @@ export class PrescreenerquestionsComponent implements OnInit {
             .setValidators([Validators.required]);
         }
       });
-      */
   }
 
   postData(): void {
     const selection_data = {
-      firstName: this.dataForm.get('firstName').value,
-      lastName: this.dataForm.get('lastName').value,
-      id: this.dataForm.get('id').value,
-     
+      age: this.dataForm.get('currentAge').value,
+      highestEducation: this.dataForm.get('highestEducation').value,
+      currentOccupation: this.dataForm.get('currentOccupation').value,
+      annualIncome: this.dataForm.get('annualIncome').value,
+      gender: this.dataForm.get('gender').value,
+      race: this.dataForm.get('race').value,
+      ethnicity: this.dataForm.get('ethnicity').value
     };
     this.dataService
       .postAssessmentDataToFileSystem(
