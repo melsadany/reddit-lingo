@@ -11,7 +11,7 @@ import { AudioRecordingService } from '../../../services/audio-recording.service
 
 import WaveSurfer from 'wavesurfer.js';
 import { AssessmentDataService } from '../../../services/assessment-data.service';
-
+import { HashKeyAssessmentData, AssessmentData } from '../../../structures/AssessmentDataStructures';
 @Component({
   selector: 'app-diagnostics',
   templateUrl: './diagnostics.component.html',
@@ -297,6 +297,7 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
     this.cantHearMic = false;
   }
 
+  //this creates the files in the directory of the server since this assessment is finished
   didRecordCorrectly(): void {
     if (this.playingAudio) {
       this.playPause();
@@ -310,9 +311,42 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
       assess_name: 'diagnostics',
       data: { data: 'none' }
     };
-    this.dataService
-      .postAssessmentDataToFileSystem(assessmentData, assessmentGoogleData)
-      .subscribe();
-    this.stateManager.finishThisAssessmentAndAdvance('diagnostics');
+    //create file now we know they've done something (diagnostics)
+  
+      let hash_key = this.dataService.getHashKeyCookie()
+      let user_id = this.dataService.getUserIdCookie()
+      if (hash_key && user_id){
+        this.dataService
+        .sendHashKeyToServer(hash_key,user_id )
+        .subscribe((data: HashKeyAssessmentData) => { 
+      
+          this.dataService
+          .postAssessmentDataToFileSystem(assessmentData, assessmentGoogleData,true).subscribe(newdata => {  
+          if (this.stateManager.isSingleAssessment) {
+            this.stateManager.initializeSingleAssessmentState(<AssessmentData> newdata);
+          } else {
+            const initializeData: unknown = newdata;
+            this.stateManager.initializeState(<AssessmentData>initializeData);
+          } 
+            this.stateManager.finishThisAssessmentAndAdvance('diagnostics');});
+          // KRM: The big difference between SingleAssessmentData and AssessmentData is the user_id vs the hask_key fields.
+          // The methods initializeState and initializeSingleAssessmentState don't actually utilize those fields with their
+          // respective types, so they could essentially be the same type if not for the differently named field, which is pretty
+          // important elsewhere. Therefore I just cast the data object accordingly to pass it in the regular intializeState method
+          // when we want hash_key users to take the full assessments.
+        });
+      }
+      else {
+        
+        this.dataService.getUserAssessmentDataFromFileSystem(user_id).subscribe(() => {
+          this.dataService
+          .postAssessmentDataToFileSystem(assessmentData, assessmentGoogleData,true).subscribe(  newdata => {
+            this.stateManager.initializeState(<AssessmentData> newdata);
+            this.stateManager.finishThisAssessmentAndAdvance('diagnostics');});
+          
+          
+        })
+        }
+       
   }
 }

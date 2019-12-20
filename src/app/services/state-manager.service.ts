@@ -40,12 +40,19 @@ export class StateManagerService {
   private _playingInstruction = false;
   private _showStartParagraph = true;
   private _isSingleAssessment = false;
+  private _addHashToJson = false;
 
   public get showStartParagraph(): boolean {
     return this._showStartParagraph;
   }
   public set showStartParagraph(value: boolean) {
     this._showStartParagraph = value;
+  }
+  public get addHashToJson(): boolean{
+    return this._addHashToJson;
+  }
+  public set addHashToJson(value :boolean){
+    this._addHashToJson = value;
   }
   public get playingInstruction(): boolean {
     return this._playingInstruction;
@@ -224,7 +231,10 @@ export class StateManagerService {
       console.log(this.assessments[assessment]);
     }
   }
-
+  public serveDiagnostics() {
+    this.assessmentsLeftLinkedList.append('diagnostics');
+    this.loadingState = false;
+  }
   public initializeSingleAssessmentState(
     hashKeyAssessmentData: HashKeyAssessmentData | AssessmentData
   ): void {
@@ -493,7 +503,7 @@ export class StateManagerService {
       case 'tmd$':
         assessmentName = 'timeduration';
         break;
-      case 'wda$':
+      case 'wap$':
         assessmentName = 'wordassociationpath';
         break;
       case 'wda$':
