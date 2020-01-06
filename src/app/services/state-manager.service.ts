@@ -43,6 +43,8 @@ export class StateManagerService {
   private _MTurkEnabled: any;
   private _MTurkAssignmentId: string;
   private _MTurkWorkerId: any;
+  private _isSingleAssessment = false;
+  private _addHashToJson = false;
 
   public get MTurkWorkerId(): any {
     return this._MTurkWorkerId;
@@ -68,9 +70,22 @@ export class StateManagerService {
   public set showStartParagraph(value: boolean) {
     this._showStartParagraph = value;
   }
+  public get addHashToJson(): boolean{
+    return this._addHashToJson;
+  }
+  public set addHashToJson(value :boolean){
+    this._addHashToJson = value;
+  }
   public get playingInstruction(): boolean {
     return this._playingInstruction;
   }
+  public set isSingleAssessment(value: boolean){
+    this._isSingleAssessment = value
+  }
+  public get isSingleAssessment():boolean{
+    return this._isSingleAssessment;
+  }
+
   public set playingInstruction(value: boolean) {
     this._playingInstruction = value;
   }
@@ -236,7 +251,7 @@ export class StateManagerService {
   //  console.log('getassignemntid function returns:',this.dataService.getAssignmentId())
     this.MTurkAssignmentId = this.MTurkAssignmentId ? this.MTurkAssignmentId:this.getUrlParameter('assignmentId');
     this.MTurkAssignmentId = this.MTurkAssignmentId ? this.MTurkAssignmentId:this.getUrlParameter('assignment_id');
-    console.log('geturlParam funct result:',this.getUrlParameter('assignmentId'))
+   // console.log('geturlParam funct result:',this.getUrlParameter('assignmentId'))
    // console.log('other getParam funct result = ',this.getUrlParameter('assignment_id'))
   //  this.MTurkAssignmentId = this.MTurkAssignmentId ? this.dataService.getAssignmentId() : this.MTurkAssignmentId;
     this.MTurkWorkerId = this.route.snapshot.queryParamMap.get('workerId');
@@ -244,7 +259,7 @@ export class StateManagerService {
   }
 
 public  getUrlParameter(name:string) {
-    console.log("in the getUrlParameter function..");
+    //console.log("in the getUrlParameter function..");
     name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
     var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
     var results = regex.exec(window.location.search);
@@ -276,7 +291,10 @@ public  getUrlParameter(name:string) {
       console.log(this.assessments[assessment]);
     }
   }
-
+  public serveDiagnostics() {
+    this.assessmentsLeftLinkedList.append('diagnostics');
+    this.loadingState = false;
+  }
   public initializeSingleAssessmentState(
     singleAssessmentData: SingleAssessmentData | AssessmentData
   ): void {
@@ -547,7 +565,7 @@ public  getUrlParameter(name:string) {
       case 'tmdt':
         assessmentName = 'timeduration';
         break;
-      case 'wdas':
+      case 'wap$':
         assessmentName = 'wordassociationpath';
         break;
       case 'wdap':

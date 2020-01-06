@@ -11,6 +11,9 @@ import {
 } from '../structures/AssessmentDataStructures';
 import 'rxjs/add/operator/map';
 import { StateManagerService } from './state-manager.service';
+import { async } from '@angular/core/testing';
+import { resolve } from 'dns';
+const uuidv1 = require('uuid/v1')
 
 @Injectable()
 export class AssessmentDataService {
@@ -52,28 +55,72 @@ export class AssessmentDataService {
       // KRM: Seting the data will initialize the state of the assessments
     }
   }
+  public validHashKey(hashKey: string): boolean {
+    // if it matches 8 or 12 anyletter/anynumbered hash (with no underscores) :BT
+  
 
-  public initializeHashKeyData(userHashKey: string): void {
-    if (this.checkUserIdCookie()) {
-      this.deleteUserIdCookie();
+    if (hashKey.length==12 && hashKey.slice(4).match(/^\w+$/gmi) && this.stateManager.hashKeyFirstFourMap(hashKey) !== 'home'){
+      this.stateManager.isSingleAssessment = true;
+      return true
     }
-    this.setHashKeyCookie(userHashKey);
+    return false
   }
 
+  public initializeHashKeyData(hashkey :string): Promise<string> {
+    //checks if old hash is valid (if so, they need to finish it)
+    if (this.validHashKey(this.getHashKeyCookie())){
+      if (this.checkUserIdCookie()){
+        this.currentUserId = this.getUserIdCookie()
+        
+      }
+      else{ this.currentUserId = this.generateNewUserId()}
+      this.stateManager.hashKey = this.getHashKeyCookie();
+    }
+    else {
+      //tells if new hash is valid (if it is then start new single assessment overiding any previous progress)
+      if (this.stateManager.isSingleAssessment){
+          this.currentUserId =  this.generateNewUserId();
+          this.setUserIdCookie(this.currentUserId);
+      }
+      else {
+        if (this.checkUserIdCookie()){
+          this.currentUserId = this.getUserIdCookie();
+          if (this.getHashKeyCookie() != hashkey){
+          this.stateManager.addHashToJson = true;
+          }
+        }
+        else {
+          this.currentUserId =  this.generateNewUserId();
+          this.setUserIdCookie(this.currentUserId);
+        }
+      }
+      this.setHashKeyCookie(hashkey);
+      this.stateManager.hashKey = hashkey;
+  }
+    return  (new Promise((resolve) => {resolve (this.currentUserId)}));
+    
+  }
+  
   public setHashKeyCookie(value: string): void {
     console.log('Setting hash key cookie: ' + value);
     this.cookieService.set('hash_key', value, 200);
   }
-
   public deleteHashKeyCookie(): void {
-    this.cookieService.delete('hash_key');
+      this.cookieService.delete('hash_key');
   }
-
+ 
+  public setSingleAssessmentCookie(value): void {
+    console.log('Setting single assessment to: ' + value);
+    this.cookieService.set('single_assessment', value, 200);
+  }
+  public getSingleAssessmentCookie(): string {
+    return this.cookieService.get('single_assessment');
+  }
   public setUserIdCookie(value: string): void {
     console.log('Setting user cookie: ' + value);
     this.cookieService.set('user_id', value, 200);
   }
-
+  
   public deleteUserIdCookie(): void {
     this.cookieService.delete('user_id');
   }
@@ -113,25 +160,32 @@ export class AssessmentDataService {
   }
 
   public setUserIdCookieAndSetData(): void {
-    this.getNextUserID().subscribe((value: UserIdObject) => {
-      this.currentUserId = value.nextID.toString();
+      this.currentUserId = this.generateNewUserId();
       this.setUserIdCookie(this.currentUserId);
-      this.setData();
-    });
+      this.stateManager.serveDiagnostics()
   }
+  public generateNewUserId () : string {
+      return (uuidv1({nsecs: Math.floor(Math.random() * 10000)}).toString())
+    }
 
   public setData(): void {
     // KRM: Get the data for the current user
     // that has already been put in the database from pervious assessments
-    this._partialAssessmentDataSubscription = this.getUserAssessmentDataFromFileSystem(
+    
+    this._partialAssessmentDataSubscription = this.checkUserExist(
       this.getUserIdCookie()
     );
     this._partialAssessmentDataSubscription.subscribe(
-      (data: AssessmentData) => {
-        this.partialAssessmentData = data;
-        this.stateManager.initializeState(this.partialAssessmentData);
-        // KRM: Initialize the current state of the assessments based
-        // on the past assessments already completed
+      (data: AssessmentData | boolean) => {
+        if (data==false){
+          this.stateManager.serveDiagnostics();
+        }
+        else {
+          this.partialAssessmentData = <AssessmentData> data;
+          this.stateManager.initializeState(this.partialAssessmentData);
+          // KRM: Initialize the current state of the assessments based
+          // on the past assessments already completed
+        }
       }
     );
   }
@@ -155,59 +209,74 @@ export class AssessmentDataService {
   public postAssessmentDataToFileSystem(
     assessmentsData: AssessmentDataStructure,
     googleData: GoogleSpeechToTextDataStructure
-  ): Observable<string> {
+  ,sendBackData?: boolean): Observable<Object> {
     let structure;
-    if (this.stateManager.hashKey) {
+      //optional sendBackData boolean tells whether to send back data or just a success string
+      //addHashkeyToJason check
+      if (this.checkUserIdCookie()){
       structure = {
+        sendBackData: sendBackData,
+        addHashkeyToJson: this.stateManager.addHashToJson,
+        user_id: this.getUserIdCookie(),
         hash_key: this.getHashKeyCookie(),
         assessments: [assessmentsData],
         google_speech_to_text_assess: [googleData]
       };
-    } else {
-      structure = {
-        user_id: this.getUserIdCookie(),
-        assessments: [assessmentsData],
-        google_speech_to_text_assess: [googleData]
-      };
-    }
-    return this.http.post('/api/assessmentsAPI/SaveAssessments', structure, {
-      responseType: 'text'
-    });
+      this.stateManager.addHashToJson = false;
+    
+      return this.http.post('/api/assessmentsAPI/SaveAssessments', structure, {
+        responseType: 'json'
+        });
+     }
+     else {
+      window.location.assign('/')
+      return (JSON.parse("Error: no userID found."))
+     }
   }
-
+//post audio after first
   public postSingleAudioDataToMongo(
     assessmentsData: AssessmentDataStructure,
     googleData: GoogleSpeechToTextDataStructure
   ): Observable<string> {
     let structure;
-    if (this.stateManager.hashKey) {
-      structure = {
-        hash_key: this.getHashKeyCookie(),
-        assessments: [assessmentsData],
-        google_speech_to_text_assess: [googleData]
-      };
-    } else {
-      structure = {
-        user_id: this.getUserIdCookie(),
-        assessments: [assessmentsData],
-        google_speech_to_text_assess: [googleData]
-      };
-    }
+    if (this.checkUserIdCookie()){
+    structure = {
+      user_id: this.getUserIdCookie(),
+      addHashkeyToJson: this.stateManager.addHashToJson,
+      hash_key: this.getHashKeyCookie(),
+      assessments: [assessmentsData],
+      google_speech_to_text_assess: [googleData]
+    };
+    this.stateManager.addHashToJson = false;
     return this.http.post('/api/assessmentsAPI/PushOnePieceData', structure, {
       responseType: 'text'
     });
+    }
+    else {
+      window.location.assign('/');
+     }
   }
 
+
+  //don't need anymore [:BT]
+  /*
   public getNextUserID(): Observable<UserIdObject> {
     return <Observable<UserIdObject>>(
       this.http.get('/api/assessmentsAPI/NextUserID', {})
     );
   }
+  */
 
-  public sendHashKeyToServer(hashKey: string): Observable<Object> {
+  public sendHashKeyToServer(hashKey: string, userId: string): Observable<Object> {
+    console.log("in sendHaskey to server with sendNewHash value "+ this.stateManager.addHashToJson)
     return this.http.get(
-      '/api/assessmentsAPI/InitializeSingleUserAssessment/' + hashKey,
+      '/api/assessmentsAPI/InitializeSingleUserAssessment/' + hashKey +'/'+ userId,
       {}
+    );
+  }
+  public checkUserExist(user_id): Observable<AssessmentData> {
+    return <Observable<AssessmentData>>(
+      this.http.get('/api/assessmentsAPI/CheckUserExist/' + user_id)
     );
   }
 

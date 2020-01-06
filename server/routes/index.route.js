@@ -1,5 +1,5 @@
 const express = require('express')
-const assessmentsAPIRoutes = require('./assessments.route')
+const assessmentsAPIRoutes = require('./assessments.route.js')
 
 const router = express.Router() // eslint-disable-line new-cap
 

@@ -18,18 +18,27 @@ export class HashkeyinitializeComponent {
   ) {
     const userHashKey = this.route.snapshot.paramMap.get('hashKey');
     // KRM: Here is where we verify the hash key based on some predetermined parameters.
+    // if they are returning, they continue, else, they get served diagnostics before getting a file created.
     if (this.validHashKey(userHashKey)) {
       this.stateManager.hashKey = userHashKey;
-      this.dataService
-        .sendHashKeyToServer(userHashKey)
-        .subscribe((data: SingleAssessmentData) => {
-          // KRM: Implementing setting for single assessment turned on or off
-          this.dataService.initializeHashKeyData(userHashKey);
-          if (this.stateManager.singleAssessmentEnabled) {
-            this.stateManager.initializeSingleAssessmentState(data);
-          } else {
-            const initializeData: unknown = data;
-            this.stateManager.initializeState(<AssessmentData>initializeData);
+      let userIdPromise = this.dataService.initializeHashKeyData(userHashKey);
+      userIdPromise.then( (userId:string) => {
+        
+        this.dataService
+        .checkUserExist(userId) //.sendHashKeyToServer(userHashKey,useId)
+        .subscribe((data: AssessmentData | boolean) => {
+          //adds diagnostics to list of assessments to take since asssessment list will be empty since they don't have a file yet
+          if (data==false){
+            this.stateManager.serveDiagnostics();
+          }
+          else {
+
+            if (this.stateManager.isSingleAssessment) {
+              this.stateManager.initializeSingleAssessmentState(<AssessmentData> data);
+            } else {
+              const initializeData: unknown = data;
+              this.stateManager.initializeState(<AssessmentData>initializeData);
+            } 
           }
           // KRM: The big difference between SingleAssessmentData and AssessmentData is the user_id vs the hask_key fields.
           // The methods initializeState and initializeSingleAssessmentState don't actually utilize those fields with their
@@ -38,7 +47,11 @@ export class HashkeyinitializeComponent {
           // when we want hash_key users to take the full assessments.
         });
       this.routerServie.navigate(['home']);
-    } else {
+      } 
+      );
+    } 
+    else {
+      //show the haskeyinitialize.component.html error page
       console.log('bad hkey');
       this.routerServie.navigate(['home']);
     }
@@ -49,9 +62,15 @@ export class HashkeyinitializeComponent {
   // map very basically to an assessment name. More interesting hash keys
   // need a more sophisticated parameterization.
   validHashKey(hashKey: string): boolean {
-    if (this.stateManager.hashKeyFirstFourMap(hashKey) !== 'home') {
-      return true;
+    // if it matches 8 or 12 anyletter/anynumbered hash (with no underscores) :BT
+  
+
+    if (hashKey.length==12 && hashKey.slice(4).match(/^\w+$/gmi) && this.stateManager.hashKeyFirstFourMap(hashKey) !== 'home'){
+      this.stateManager.isSingleAssessment=true;
+  
+      return true
     }
-    return false;
+   
+    return true
   }
 }

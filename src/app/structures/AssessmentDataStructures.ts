@@ -88,6 +88,23 @@ export interface GoogleSpeechToTextDataStructure {
  * Used for single assessment sessions. The hash key is present in the structure as only when a hash key is provided in the
  * intial url will an assessment user be using this structure.
  */
+export interface HashKeyAssessmentData {
+  /**
+   * The hash key value for this single assessment user.
+   */
+  hash_key: string;
+  /**
+   * Array of assessment data collected so far for this user.
+   */
+  assessments: Array<AssessmentDataStructure>;
+  /**
+   * Array of google speech to text data collected so far for this user.
+   * At this point in time (4/10/19) there is not a concrete plan on utilzing
+   * this field.
+   */
+  google_speech_to_text_assess: Array<GoogleSpeechToTextDataStructure>;
+}
+
 export interface SingleAssessmentData {
   /**
    * The hash key value for this single assessment user.
