@@ -128,7 +128,11 @@ export class AudioRecordingService {
   private record(): void {
     const config = {
       type: 'audio',
-      mimeType: 'audio/webm'
+      mimeType: 'audio/webm',
+      recorderType: 'StereoAudioRecorder',
+      sampleRate: "44100",
+      bufferSize: "4096",
+      numberOfAudioChannels: "2"
     };
     this.setCurrentlyRecording(true);
     this.recorder = new RecordRTC.StereoAudioRecorder(this.stream, config);
