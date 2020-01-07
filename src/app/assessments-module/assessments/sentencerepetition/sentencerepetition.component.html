@@ -17,16 +17,18 @@
         class="start-button btn btn-success" (click)="stateManager.playInstructions()">
         Start Instruction
       </button>
-      <button *ngIf="showStartRecord" type="button"
-      class="start-button btn btn-success" (click)="startRecordingNow()">
-      Start Recording
-    </button>
-    </div>
+    
+    </div>  
+    
     <div *ngIf="stateManager.isInAssessment">
       <button type="button" class="start-button btn btn-success"
         (click)="advance()">{{stateManager.textOnInnerAssessmentButton}}</button>
     </div>
   </div>
+  <button *ngIf="showStartRecord" type="button"
+    class="start-button btn btn-success" (click)="startRecordingNow()">
+    Start Recording
+  </button>
   <div class="text-center" *ngIf="playingAudio">
     <img style="max-height:85px;" class="img-fluid" src="assets/in_use/animations/random_waveform.gif">
   </div>

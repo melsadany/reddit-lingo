@@ -16,7 +16,7 @@ export class SentencerepetitionComponent extends AudioAssessment {
   playingAudio = false;
   audioDurationMs: number;
   promptStructure: {};
-  public showStartRecord=false;
+  showStartRecord=false;
 
   constructor(
     public stateManager: StateManagerService,
@@ -42,13 +42,16 @@ export class SentencerepetitionComponent extends AudioAssessment {
   advance(): void {
     this.advanceToNextPrompt(
       () => {
+        console.log("show start recording button")
+        
       this.showStartRecord = true;
+      console.log(this.showStartRecord)
         /*this.startRecording(this.audioDurationMs, () =>
           this.stopRecording(
             () => (this.stateManager.showInnerAssessmentButton = true)
           )
-        ),
-      () => this.startAudioForSet()*/  }
+        ),*/},
+      () => this.startAudioForSet()  
     );
   }
 
@@ -67,16 +70,27 @@ export class SentencerepetitionComponent extends AudioAssessment {
   startRecordingNow(): void {
     console.log("pushed start recording button")
     this.showStartRecord=false;
+    console.log("isRecording= ",this.isRecording)
+    console.log(this.audioDurationMs," (lenght in ms)")
     if (!this.isRecording) {
       //this.showWaveForm = false;
-      this.isRecording = true;
-      
+      //this.isRecording = true;
+      //this.audioRecordingService.startRecording();
+
       this.startRecording(this.audioDurationMs, () =>
           this.stopRecording(
             () => (this.stateManager.showInnerAssessmentButton = true)
           )
-        ),
-      () => this.startAudioForSet()
+        )
+    }
+  }
+  stopRecordingNow(): void {
+    if (this.isRecording) {
+      this.audioRecordingService.stopRecording();
+      this.isRecording = false;
+      this.doneRecording = true;
+      //this.showWaveForm = true;
+      clearTimeout(this.intervalCountup);
     }
   }
   setupPrompt(): HTMLAudioElement {
