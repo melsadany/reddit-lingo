@@ -65,6 +65,7 @@ export class SentencerepetitionComponent extends AudioAssessment {
     );
   }
   startRecordingNow(): void {
+    console.log("pushed start recording button")
     this.showStartRecord=false;
     if (!this.isRecording) {
       //this.showWaveForm = false;
