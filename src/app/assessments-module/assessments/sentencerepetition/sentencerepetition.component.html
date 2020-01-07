@@ -17,6 +17,10 @@
         class="start-button btn btn-success" (click)="stateManager.playInstructions()">
         Start Instruction
       </button>
+      <button *ngIf="showStartRecord" type="button"
+      class="start-button btn btn-success" (click)="startRecordingNow()">
+      Start Recording
+    </button>
     </div>
     <div *ngIf="stateManager.isInAssessment">
       <button type="button" class="start-button btn btn-success"

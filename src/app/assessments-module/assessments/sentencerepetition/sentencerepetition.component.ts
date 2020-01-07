@@ -16,6 +16,7 @@ export class SentencerepetitionComponent extends AudioAssessment {
   playingAudio = false;
   audioDurationMs: number;
   promptStructure: {};
+  public showStartRecord=false;
 
   constructor(
     public stateManager: StateManagerService,
@@ -40,13 +41,14 @@ export class SentencerepetitionComponent extends AudioAssessment {
 
   advance(): void {
     this.advanceToNextPrompt(
-      () =>
-        this.startRecording(this.audioDurationMs, () =>
+      () => {
+      this.showStartRecord = true;
+        /*this.startRecording(this.audioDurationMs, () =>
           this.stopRecording(
             () => (this.stateManager.showInnerAssessmentButton = true)
           )
         ),
-      () => this.startAudioForSet()
+      () => this.startAudioForSet()*/  }
     );
   }
 
@@ -62,7 +64,20 @@ export class SentencerepetitionComponent extends AudioAssessment {
       }
     );
   }
-
+  startRecordingNow(): void {
+    this.showStartRecord=false;
+    if (!this.isRecording) {
+      //this.showWaveForm = false;
+      this.isRecording = true;
+      
+      this.startRecording(this.audioDurationMs, () =>
+          this.stopRecording(
+            () => (this.stateManager.showInnerAssessmentButton = true)
+          )
+        ),
+      () => this.startAudioForSet()
+    }
+  }
   setupPrompt(): HTMLAudioElement {
     this.stateManager.showInnerAssessmentButton = false;
     const audio = new Audio();
