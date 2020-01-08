@@ -86,6 +86,7 @@ export class AudioRecordingService {
           this._recordingFailed.next();
           return;
         });
+        return;
     }
     console.log('recording')
     this.record();
