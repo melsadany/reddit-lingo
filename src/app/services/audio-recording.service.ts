@@ -134,6 +134,7 @@ export class AudioRecordingService {
       bufferSize: 4096,
       numberOfAudioChannels: 2
     };
+    console.log("in record function in audio-recording-service.ts")
     this.setCurrentlyRecording(true);
     this.recorder = new RecordRTC.StereoAudioRecorder(this.stream, config);
     this.recorder.record();
@@ -174,6 +175,7 @@ export class AudioRecordingService {
             );
             this.stopMedia();
             this._recorded.next({ blob: blob, user_id: wavName });
+            console.log("this._recorded: ");console.log(this._recorded.asObservable());
           }
         },
         () => {
@@ -185,6 +187,7 @@ export class AudioRecordingService {
   }
 
   private stopMedia(): void {
+    console.log(this.recorder,"- this.reorder")
     if (this.recorder) {
       this.recorder = null;
       clearInterval(this.interval);

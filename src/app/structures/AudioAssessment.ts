@@ -91,6 +91,7 @@ export class AudioAssessment extends BaseAssessment implements OnDestroy {
     this.recordedOutputSubscription = this.audioRecordingService
       .getRecordedBlob()
       .subscribe(data => {
+        console.log("recordedOutputSubscription")
         this.handleRecordedOutput(data);
       });
   }
@@ -109,6 +110,7 @@ export class AudioAssessment extends BaseAssessment implements OnDestroy {
   }
 
   handleRecordedOutput(data: RecordedAudioOutput): void {
+    console.log("handleRecordedOutput")
     const currentBlob = data.blob;
     const reader: FileReader = new FileReader();
     reader.readAsDataURL(currentBlob);
@@ -158,6 +160,7 @@ export class AudioAssessment extends BaseAssessment implements OnDestroy {
     onDoneRecordingCallback: Function
   ): void {
     if (!this.isRecording) {
+      console.log("in start recording in audioAssessemnt.ts")
       this.isRecording = true;
       this.audioRecordingService.startRecording();
       this.intervalCountup = setTimeout(() => {

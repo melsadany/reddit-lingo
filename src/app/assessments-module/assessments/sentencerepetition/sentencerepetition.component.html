@@ -29,6 +29,14 @@
     class="start-button btn btn-success" (click)="startRecordingNow()">
     Start Recording
   </button>
+  <div *ngIf="showWave">
+    <button type="button" class="start-button btn btn-info" (click)="playPause()">
+      {{textOnTestAudioButton}}
+    </button>
+  </div>
+  <div *ngIf="showWave" class="ws">
+    <div class="wavesurfer" #wavesurfer></div>
+  </div>
   <div class="text-center" *ngIf="playingAudio">
     <img style="max-height:85px;" class="img-fluid" src="assets/in_use/animations/random_waveform.gif">
   </div>
