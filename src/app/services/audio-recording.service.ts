@@ -2,6 +2,9 @@ import { Injectable } from '@angular/core';
 import RecordRTC from 'recordrtc';
 import moment from 'moment';
 import { Observable, Subject } from 'rxjs';
+import { timingSafeEqual } from 'crypto';
+import { __core_private_testing_placeholder__ } from '@angular/core/testing';
+import { ConstantPool } from '@angular/compiler';
 
 export interface RecordedAudioOutput {
   blob: Blob;
@@ -25,7 +28,10 @@ export class AudioRecordingService {
   private _recordingFailed = new Subject<string>();
   private _currentlyRecording = false;
   private _gettingMicErrorText: string;
-
+  private firstClick=false;
+  public secondRecorder: RecorderType;
+  public secondStream: MediaStream;
+  usedFirstRecorder = false;
   public get inMicrophoneError(): boolean {
     return this._inMicrophoneError;
   }
@@ -76,7 +82,9 @@ export class AudioRecordingService {
             this.inMicrophoneError = false;
           }
           this.stream = s;
-          this.captureStream();
+          this.secondStream = s.clone()
+          this.firstClick=true;
+          this.captureStream()
           return;
           
         })
@@ -117,10 +125,17 @@ export class AudioRecordingService {
 
   startRecording(): void {
     this._recordingTime.next('00:00');
+    console.log("streams:")
+    console.log(this.stream)
+    console.log(this.secondStream)
     if (this.recorder) {
       return;
-    } else if (!this.stream) {
-      this.captureStream();
+    }  else if (this.secondStream){this.record();}
+      else if (!this.stream)  {
+      
+     this.captureStream()
+
+    
     } else {
       this.record();
     }
@@ -151,7 +166,18 @@ export class AudioRecordingService {
       this.recorder=null;
     }
     this.recorder = new RecordRTC.StereoAudioRecorder(this.stream, config);
-    this.recorder.record();
+    if (this.secondRecorder){
+      console.log("using second Recorder");
+      this.secondRecorder.record();
+    } else{
+      console.log("using first recorder")
+      this.recorder.record(); 
+      this.secondRecorder = new RecordRTC.StereoAudioRecorder(this.secondStream, config);
+      }
+    
+     
+    
+    
     this.startTime = moment();
     this.interval = setInterval(() => {
       const currentTime = moment();
@@ -179,9 +205,15 @@ export class AudioRecordingService {
    * Stop recording the user's microphone
    */
   stopRecording(): void {
-    if (this.recorder) {
+    console.log("STOP recording function in audio-recording service")
+    var currentRecorder;
+    if (this.usedFirstRecorder){console.log("stopping second recorder!!");
+      currentRecorder=this.secondRecorder}
+    else{console.log("stopping first recorder");currentRecorder=this.recorder;this.usedFirstRecorder=true;}
+    if (currentRecorder) {
       this.setCurrentlyRecording(false);
-      this.recorder.stop(
+
+      currentRecorder.stop(
         (blob: Blob) => {
           if (this.startTime) {
             const wavName = encodeURIComponent(
@@ -201,7 +233,7 @@ export class AudioRecordingService {
   }
 
   private stopMedia(): void {
-    console.log(this.recorder,"- this.reorder")
+    console.log(this.recorder,"- this.recorder")
     if (this.recorder) {
       this.recorder = null;
       clearInterval(this.interval);
