@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import RecordRTC from '../dev/recordrtc';
+import RecordRTC from 'recordrtc';
 import moment from 'moment';
 import { Observable, Subject } from 'rxjs';
 
@@ -67,20 +67,28 @@ export class AudioRecordingService {
    * Uses navigator.mediaDevices to capture the microphone from the user in browser
    */
   captureStream(): void {
-    navigator.mediaDevices
-      .getUserMedia({ audio: true })
-      .then(s => {
-        if (this.inMicrophoneError) {
-          this.inMicrophoneError = false;
-        }
-        this.stream = s;
-        this.record();
-      })
-      .catch(error => {
-        alert(error);
-        this.handleMicError(error);
-        this._recordingFailed.next();
-      });
+    console.log('capturing stream - ',!this.stream)
+    if(!this.stream){
+      navigator.mediaDevices
+        .getUserMedia({ audio: true })
+        .then(s => {
+          if (this.inMicrophoneError) {
+            this.inMicrophoneError = false;
+          }
+          this.stream = s;
+          this.captureStream();
+          return;
+          
+        })
+        .catch(error => {
+          alert(error);
+          this.handleMicError(error);
+          this._recordingFailed.next();
+          return;
+        });
+    }
+    console.log('recording')
+    this.record();
   }
 
   isCurrentlyRecording(): Boolean {
@@ -131,11 +139,16 @@ export class AudioRecordingService {
       mimeType: 'audio/webm',
       recorderType: 'StereoAudioRecorder',
       sampleRate: 44100,
+      checkForInactiveTracks: true,
       bufferSize: 4096,
       numberOfAudioChannels: 2
     };
     console.log("in record function in audio-recording-service.ts")
     this.setCurrentlyRecording(true);
+    if(this.recorder){
+      this.recorder.destroy();
+      this.recorder=null;
+    }
     this.recorder = new RecordRTC.StereoAudioRecorder(this.stream, config);
     this.recorder.record();
     this.startTime = moment();
