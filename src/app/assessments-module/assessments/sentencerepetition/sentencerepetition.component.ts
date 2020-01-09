@@ -26,7 +26,7 @@ export class SentencerepetitionComponent extends AudioAssessment {
   playing=false;
   progress =0;
   showWave=false;
-  createWaveOnce=true;
+  createWaveOnce=false;
   textOnTestAudioButton="play/pause"
   constructor(
     public stateManager: StateManagerService,
@@ -105,14 +105,14 @@ export class SentencerepetitionComponent extends AudioAssessment {
   advance(): void {
     this.advanceToNextPrompt(
       () =>
-        this.startRecording(this.audioDurationMs, () =>
-          this.stopRecording(
+        this.startRecording(this.audioDurationMs, 
             () => {this.stateManager.showInnerAssessmentButton = true;
               ;this.audioRecordingService.getRecordedBlob().subscribe(data => {
                 console.log("loading wave now")
                 if(!this.createWaveOnce){this.loadWave(data);}});
+                this.createWaveOnce=false;
             }
-          )
+          
         ),
       () => this.startAudioForSet()
     );
