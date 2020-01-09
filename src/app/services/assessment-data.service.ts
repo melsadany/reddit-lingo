@@ -163,10 +163,12 @@ export class AssessmentDataService {
     );
     this._partialAssessmentDataSubscription.subscribe(
       (data: AssessmentData | boolean) => {
+        this.stateManager.serveDiagnostics();
         if (data==false){
-          this.stateManager.serveDiagnostics();
+          
         }
         else {
+          this.stateManager.hasDoneDiagnostics = true;
           this.partialAssessmentData = <AssessmentData> data;
           this.stateManager.initializeState(this.partialAssessmentData);
           // KRM: Initialize the current state of the assessments based

@@ -1,10 +1,7 @@
 import { Injectable } from '@angular/core';
-import RecordRTC from '../dev/recordrtc/';
+import RecordRTC from '../dev/recordrtc';
 import moment from 'moment';
 import { Observable, Subject } from 'rxjs';
-
-import { __core_private_testing_placeholder__ } from '@angular/core/testing';
-
 
 export interface RecordedAudioOutput {
   blob: Blob;
@@ -28,11 +25,14 @@ export class AudioRecordingService {
   private _recordingFailed = new Subject<string>();
   private _currentlyRecording = false;
   private _gettingMicErrorText: string;
-  private firstClick=false;
-  public secondRecorder: RecorderType;
-  public secondStream: MediaStream;
-  usedFirstRecorder = false;
-  deviceId;
+  private _deviceId: string;
+
+  public get deviceId(): string{
+    return this._deviceId;
+  }
+  public set deviceId(value: string) {
+    this._deviceId = value;
+  }
   public get inMicrophoneError(): boolean {
     return this._inMicrophoneError;
   }
@@ -74,33 +74,21 @@ export class AudioRecordingService {
    * Uses navigator.mediaDevices to capture the microphone from the user in browser
    */
   captureStream(): void {
-    console.log('capturing stream - ',!this.stream)
-    console.log("DEVICE ID= ", this.deviceId)
-    //if(!this.stream){
-      
-      
-      navigator.mediaDevices
-        .getUserMedia(this.deviceId ? {audio : {deviceId: {exact: this.deviceId}}} : {audio: true})
-        .then(s => {
-          if (this.inMicrophoneError) {
-            this.inMicrophoneError = false;
-          }
-          this.stream = s;
-          this.deviceId = this.stream.getAudioTracks()[0].getSettings().deviceId;
-          //this.secondStream = s.clone()
-          this.firstClick=true;
-          this.record();
-          return;
-          
-        })
-        .catch(error => {
-          alert(error);
-          this.handleMicError(error);
-          this._recordingFailed.next();
-          return;
-        });
-        return;
-    
+    navigator.mediaDevices
+      .getUserMedia(this.deviceId ? {audio : {deviceId: {exact: this.deviceId}}} : {audio: true})
+      .then(s => {
+        if (this.inMicrophoneError) {
+          this.inMicrophoneError = false;
+        }
+        this.stream = s;
+        this.deviceId = this.stream.getAudioTracks()[0].getSettings().deviceId;
+        this.record();
+      })
+      .catch(error => {
+        alert(error);
+        this.handleMicError(error);
+        this._recordingFailed.next();
+      });
   }
 
   isCurrentlyRecording(): Boolean {
@@ -129,19 +117,8 @@ export class AudioRecordingService {
   startRecording(): void {
     this._recordingTime.next('00:00');
     
-     this.captureStream()
-     return
-    if (this.recorder) {
-      return;
-    }  //else if (this.secondStream){this.record();}
-      else //if (!this.stream)  {
-      
-   return;
-
-   /* 
-    } else {
-      this.record();
-    }  */
+    this.captureStream()
+    return;
   }
 
   abortRecording(): void {
@@ -162,27 +139,14 @@ export class AudioRecordingService {
       bufferSize: 4096,
       numberOfAudioChannels: 2
     };
-    console.log("in record function in audio-recording-service.ts")
     this.setCurrentlyRecording(true);
     if(this.recorder){
       this.recorder.destroy();
       this.recorder=null;
     }
     this.recorder = new RecordRTC.StereoAudioRecorder(this.stream, config);
-    /*
-    if (this.secondRecorder){
-      console.log("using second Recorder");
-      this.secondRecorder.record();
-    } */
-    //else{
-      //console.log("using first recorder")
-      this.recorder.record(); 
-      //this.secondRecorder = new RecordRTC.StereoAudioRecorder(this.secondStream, config);
-     // }
-    
-     
-    
-    
+    this.recorder.record();
+
     this.startTime = moment();
     this.interval = setInterval(() => {
       const currentTime = moment();
@@ -210,15 +174,8 @@ export class AudioRecordingService {
    * Stop recording the user's microphone
    */
   stopRecording(): void {
-    console.log("STOP recording function in audio-recording service")
-   /* var currentRecorder;
-    if (this.usedFirstRecorder){console.log("stopping second recorder!!");
-      currentRecorder=this.secondRecorder}
-    else{console.log("stopping first recorder");currentRecorder=this.recorder;this.usedFirstRecorder=true;}
-    */
     if (this.recorder) {
       this.setCurrentlyRecording(false);
-
       this.recorder.stop(
         (blob: Blob) => {
           if (this.startTime) {
@@ -227,7 +184,6 @@ export class AudioRecordingService {
             );
             this.stopMedia();
             this._recorded.next({ blob: blob, user_id: wavName });
-            console.log("this._recorded: ");console.log(this._recorded.asObservable());
           }
         },
         () => {
@@ -239,7 +195,6 @@ export class AudioRecordingService {
   }
 
   private stopMedia(): void {
-    console.log(this.recorder,"- this.recorder")
     if (this.recorder) {
       this.recorder = null;
       clearInterval(this.interval);
