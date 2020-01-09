@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import RecordRTC from 'recordrtc';
+import RecordRTC from '../dev/recordrtc/';
 import moment from 'moment';
 import { Observable, Subject } from 'rxjs';
-import { timingSafeEqual } from 'crypto';
+
 import { __core_private_testing_placeholder__ } from '@angular/core/testing';
-import { ConstantPool } from '@angular/compiler';
+
 
 export interface RecordedAudioOutput {
   blob: Blob;
@@ -89,7 +89,7 @@ export class AudioRecordingService {
           this.deviceId = this.stream.getAudioTracks()[0].getSettings().deviceId;
           //this.secondStream = s.clone()
           this.firstClick=true;
-          this.captureStream();
+          this.record();
           return;
           
         })
