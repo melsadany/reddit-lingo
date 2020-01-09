@@ -76,7 +76,7 @@ export class AudioRecordingService {
   captureStream(): void {
     console.log('capturing stream - ',!this.stream)
     console.log("DEVICE ID= ", this.deviceId)
-    if(!this.stream){
+    //if(!this.stream){
       
       
       navigator.mediaDevices
@@ -100,7 +100,7 @@ export class AudioRecordingService {
           return;
         });
         return;
-    }
+    //}
     console.log('recording')
     this.record();
   }
@@ -132,13 +132,15 @@ export class AudioRecordingService {
     this._recordingTime.next('00:00');
     console.log("streams:")
     console.log(this.stream)
-    console.log(this.secondStream)
+    console.log(this.secondStream) 
+     this.captureStream()
+     return
     if (this.recorder) {
       return;
     }  //else if (this.secondStream){this.record();}
       else //if (!this.stream)  {
       
-     this.captureStream()
+   return;
 
    /* 
     } else {
