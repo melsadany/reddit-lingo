@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import RecordRTC from '../dev/recordrtc';
+import RecordRTC from 'recordrtc';
 import moment from 'moment';
 import { Observable, Subject } from 'rxjs';
 
