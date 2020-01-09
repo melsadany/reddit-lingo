@@ -104,19 +104,20 @@ export class SentencerepetitionComponent extends AudioAssessment {
   } 
   advance(): void {
     this.advanceToNextPrompt(
-      () => {
-        console.log("show start recording button")
-        
-      this.showStartRecord = true;
-      console.log(this.showStartRecord)
-        /*this.startRecording(this.audioDurationMs, () =>
+      () =>
+        this.startRecording(this.audioDurationMs, () =>
           this.stopRecording(
-            () => (this.stateManager.showInnerAssessmentButton = true)
+            () => {this.stateManager.showInnerAssessmentButton = true;
+              ;this.audioRecordingService.getRecordedBlob().subscribe(data => {
+                console.log("loading wave now")
+                if(!this.createWaveOnce){this.loadWave(data);}});
+            }
           )
-        ),*/},
-      () => this.startAudioForSet()  
+        ),
+      () => this.startAudioForSet()
     );
   }
+
 
   startAudioForSet(): Promise<string> {
     const audio = this.setupPrompt();

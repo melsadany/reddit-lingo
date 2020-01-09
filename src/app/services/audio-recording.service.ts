@@ -100,9 +100,7 @@ export class AudioRecordingService {
           return;
         });
         return;
-    //}
-    console.log('recording')
-    this.record();
+    
   }
 
   isCurrentlyRecording(): Boolean {
@@ -130,9 +128,7 @@ export class AudioRecordingService {
 
   startRecording(): void {
     this._recordingTime.next('00:00');
-    console.log("streams:")
-    console.log(this.stream)
-    console.log(this.secondStream) 
+    
      this.captureStream()
      return
     if (this.recorder) {
@@ -173,14 +169,16 @@ export class AudioRecordingService {
       this.recorder=null;
     }
     this.recorder = new RecordRTC.StereoAudioRecorder(this.stream, config);
+    /*
     if (this.secondRecorder){
       console.log("using second Recorder");
       this.secondRecorder.record();
-    } else{
-      console.log("using first recorder")
+    } */
+    //else{
+      //console.log("using first recorder")
       this.recorder.record(); 
       //this.secondRecorder = new RecordRTC.StereoAudioRecorder(this.secondStream, config);
-      }
+     // }
     
      
     
