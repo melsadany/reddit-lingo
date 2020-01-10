@@ -46,7 +46,7 @@ export class SentencerepetitionComponent extends AudioAssessment {
             () => (this.stateManager.showInnerAssessmentButton = true)
           )
         ),
-      () => this.startAudioForSet();
+      () => this.startAudioForSet()
     );
   }
 
