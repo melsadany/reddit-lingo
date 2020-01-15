@@ -96,7 +96,7 @@ export class WordassociationPathComponent extends SelectionAssessment {
 
   clickWord(word: string): void {
     this.selectedWordsThisPrompt.push(word);
-    console.log(this.selectedWordsThisPrompt);
+    //console.log(this.selectedWordsThisPrompt);
     this.spanNumber = Math.ceil(12 / this.selectedWordsThisPrompt.length);
     
     if (this.selectedWordsThisPrompt.length === this.wordCount) {

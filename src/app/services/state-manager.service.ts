@@ -42,6 +42,12 @@ export class StateManagerService {
   private _isSingleAssessment = false;
   private _addHashToJson = false;
   private _hasDoneDiagnostics = false;
+  private _contentRandomization = appConfig['appConfig']['settings']['contentRandomization'];
+  
+
+  public get contentRandomization(): boolean {
+    return this._contentRandomization;
+  }
 
   public get hasDoneDiagnostics(): boolean {
     return this._hasDoneDiagnostics;
@@ -219,6 +225,7 @@ export class StateManagerService {
       if (assessmentsConfig[assessmentName]['enabled']) {
         this.assessments[assessmentName] = {
           prompt_number: 0,
+          promptsDone: new Array<number>(),
           completed: false
         };
         if (assessmentsConfig[assessmentName]['prompt_countdowns']) {
@@ -261,7 +268,7 @@ export class StateManagerService {
           selector = 'selection_data';
         }
         const currentPromptNumber = this.determineCurrentPromptNumber(
-          existingAssessment['data'][selector]
+          existingAssessment['data'][selector],existingAssessmentName
         );
         this.assessments[existingAssessmentName][
           'prompt_number'
@@ -305,7 +312,7 @@ export class StateManagerService {
           selector = 'selection_data';
         }
         const currentPromptNumber = this.determineCurrentPromptNumber(
-          existingAssessment['data'][selector]
+          existingAssessment['data'][selector],existingAssessmentName
         );
         //could be the case that the assessment is in existingAssesmentData but not configured anymore; BT
         if (this.assessments[existingAssessmentName]){
@@ -333,10 +340,16 @@ export class StateManagerService {
     }
     this.loadingState = false;
   }
-
-  private determineCurrentPromptNumber(existingData: Array<Object>): number {
+  private determineCurrentPromptNumber(existingData: Array<Object>,assess_name:string): number {
+    this.createPromptsDone(existingData,assess_name);
     const latestEntryIndex = existingData.length - 1;
     return existingData[latestEntryIndex]['prompt_number'] + 1;
+  }
+
+  public createPromptsDone(existingData:Array<Object>,name: string) :void{
+    existingData.forEach(element => {
+      this.assessments[name]["promptsDone"].push(element["prompt_number"])
+    });
   }
 
   private determineNextAssessment(): string {
