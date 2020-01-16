@@ -11,9 +11,6 @@ import {
 } from '../structures/AssessmentDataStructures';
 import 'rxjs/add/operator/map';
 import { StateManagerService } from './state-manager.service';
-import { async } from '@angular/core/testing';
-import { resolve } from 'dns';
-const uuidv1 = require('uuid/v1')
 
 const uuidv1 = require('uuid/v1')
 
