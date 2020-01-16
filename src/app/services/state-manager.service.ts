@@ -41,7 +41,14 @@ export class StateManagerService {
   private _showStartParagraph = true;
   private _isSingleAssessment = false;
   private _addHashToJson = false;
+  private _hasDoneDiagnostics = false;
 
+  public get hasDoneDiagnostics(): boolean {
+    return this._hasDoneDiagnostics;
+  }
+  public set hasDoneDiagnostics(value: boolean) {
+    this._hasDoneDiagnostics = value;
+  }
   public get showStartParagraph(): boolean {
     return this._showStartParagraph;
   }
@@ -375,7 +382,7 @@ export class StateManagerService {
   public navigateTo(assessmentName: string): void {
     if (
       assessmentName !== 'done' &&
-      this.assessments[assessmentName]['completed']
+      this.assessments[assessmentName]['completed'] && assessmentName != "diagnostics"
     ) {
       console.log('Routing to already completed assessment: ' + assessmentName);
       return; // KRM: Do something better here to handle this, but I don't think I would ever call this with

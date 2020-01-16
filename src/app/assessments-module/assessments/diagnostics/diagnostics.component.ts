@@ -302,6 +302,10 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
     if (this.playingAudio) {
       this.playPause();
     }
+    if(this.stateManager.hasDoneDiagnostics){
+      this.stateManager.finishThisAssessmentAndAdvance('diagnostics');
+      return;
+    }
     const assessmentData = {
       assess_name: 'diagnostics',
       data: { data: 'none' },
