@@ -46,7 +46,7 @@
     "ng-circle-progress": "^1.4.0",
     "ng2-dragula": "^2.1.1",
     "ngx-cookie-service": "^2.1.0",
-    "recordrtc": "5.5.4",
+    "recordrtc": "5.5.8",
     "rxjs": "^6.3.3",
     "rxjs-compat": "^6.3.3",
     "swagger-ui-express": "^4.0.2",

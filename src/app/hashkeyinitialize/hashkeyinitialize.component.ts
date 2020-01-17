@@ -28,11 +28,11 @@ export class HashkeyinitializeComponent {
         .checkUserExist(userId) //.sendHashKeyToServer(userHashKey,useId)
         .subscribe((data: AssessmentData | boolean) => {
           //adds diagnostics to list of assessments to take since asssessment list will be empty since they don't have a file yet
+          this.stateManager.serveDiagnostics();
           if (data==false){
-            this.stateManager.serveDiagnostics();
           }
           else {
-
+            this.stateManager.hasDoneDiagnostics=true;
             if (this.stateManager.isSingleAssessment) {
               this.stateManager.initializeSingleAssessmentState(<AssessmentData> data);
             } else {

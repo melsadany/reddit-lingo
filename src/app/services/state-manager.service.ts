@@ -45,6 +45,8 @@ export class StateManagerService {
   private _MTurkWorkerId: any;
   private _isSingleAssessment = false;
   private _addHashToJson = false;
+  private _hasDoneDiagnostics = false;
+
 
   public get MTurkWorkerId(): any {
     return this._MTurkWorkerId;
@@ -63,6 +65,13 @@ export class StateManagerService {
   }
   public set MTurkEnabled(value: any) {
     this._MTurkEnabled = value;
+  }
+  public get hasDoneDiagnostics(): boolean {
+    return this._hasDoneDiagnostics;
+  }
+  public set hasDoneDiagnostics(value: boolean) {
+    this._hasDoneDiagnostics = value;
+>>>>>>> src/app/services/state-manager.service.ts
   }
   public get showStartParagraph(): boolean {
     return this._showStartParagraph;
@@ -437,7 +446,7 @@ public  getUrlParameter(name:string) {
   public navigateTo(assessmentName: string): void {
     if (
       assessmentName !== 'done' &&
-      this.assessments[assessmentName]['completed']
+      this.assessments[assessmentName]['completed'] && assessmentName != "diagnostics"
     ) {
       console.log('Routing to already completed assessment: ' + assessmentName);
       return; // KRM: Do something better here to handle this, but I don't think I would ever call this with
