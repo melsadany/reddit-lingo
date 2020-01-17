@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
 import { Observable } from 'rxjs';
-import { UserIdObject } from '../structures/UserIdObject';
+
 import {
   AssessmentData,
   AssessmentDataStructure,
@@ -13,6 +13,8 @@ import 'rxjs/add/operator/map';
 import { StateManagerService } from './state-manager.service';
 import { async } from '@angular/core/testing';
 import { resolve } from 'dns';
+const uuidv1 = require('uuid/v1')
+
 const uuidv1 = require('uuid/v1')
 
 @Injectable()
@@ -151,7 +153,13 @@ export class AssessmentDataService {
       this.stateManager.serveDiagnostics()
   }
   public generateNewUserId () : string {
-      return (uuidv1({nsecs: Math.floor(Math.random() * 10000)}).toString())
+    let today = new Date();
+    let dd = String(today.getDate()).padStart(2, '0');
+    let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    let yyyy = today.getFullYear();
+
+    let date = yyyy + '-'+ mm + '-' + dd;
+    return (date + "_"+uuidv1({nsecs: Math.floor(Math.random() * 10000)}).toString())
     }
 
   public setData(): void {
@@ -163,10 +171,12 @@ export class AssessmentDataService {
     );
     this._partialAssessmentDataSubscription.subscribe(
       (data: AssessmentData | boolean) => {
+        this.stateManager.serveDiagnostics();
         if (data==false){
-          this.stateManager.serveDiagnostics();
+          
         }
         else {
+          this.stateManager.hasDoneDiagnostics = true;
           this.partialAssessmentData = <AssessmentData> data;
           this.stateManager.initializeState(this.partialAssessmentData);
           // KRM: Initialize the current state of the assessments based

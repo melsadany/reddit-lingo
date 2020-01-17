@@ -25,7 +25,14 @@ export class AudioRecordingService {
   private _recordingFailed = new Subject<string>();
   private _currentlyRecording = false;
   private _gettingMicErrorText: string;
+  private _deviceId: string;
 
+  public get deviceId(): string{
+    return this._deviceId;
+  }
+  public set deviceId(value: string) {
+    this._deviceId = value;
+  }
   public get inMicrophoneError(): boolean {
     return this._inMicrophoneError;
   }
@@ -68,12 +75,13 @@ export class AudioRecordingService {
    */
   captureStream(): void {
     navigator.mediaDevices
-      .getUserMedia({ audio: true })
+      .getUserMedia(this.deviceId ? {audio : {deviceId: {exact: this.deviceId}}} : {audio: true})
       .then(s => {
         if (this.inMicrophoneError) {
           this.inMicrophoneError = false;
         }
         this.stream = s;
+        this.deviceId = this.stream.getAudioTracks()[0].getSettings().deviceId;
         this.record();
       })
       .catch(error => {
@@ -108,13 +116,9 @@ export class AudioRecordingService {
 
   startRecording(): void {
     this._recordingTime.next('00:00');
-    if (this.recorder) {
-      return;
-    } else if (!this.stream) {
-      this.captureStream();
-    } else {
-      this.record();
-    }
+    
+    this.captureStream()
+    return;
   }
 
   abortRecording(): void {
@@ -128,11 +132,21 @@ export class AudioRecordingService {
   private record(): void {
     const config = {
       type: 'audio',
-      mimeType: 'audio/webm'
+      mimeType: 'audio/webm',
+      recorderType: 'StereoAudioRecorder',
+      sampleRate: 44100,
+      checkForInactiveTracks: true,
+      bufferSize: 4096,
+      numberOfAudioChannels: 2
     };
     this.setCurrentlyRecording(true);
+    if(this.recorder){
+      this.recorder.destroy();
+      this.recorder=null;
+    }
     this.recorder = new RecordRTC.StereoAudioRecorder(this.stream, config);
     this.recorder.record();
+
     this.startTime = moment();
     this.interval = setInterval(() => {
       const currentTime = moment();
