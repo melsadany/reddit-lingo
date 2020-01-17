@@ -71,7 +71,6 @@ export class StateManagerService {
   }
   public set hasDoneDiagnostics(value: boolean) {
     this._hasDoneDiagnostics = value;
->>>>>>> src/app/services/state-manager.service.ts
   }
   public get showStartParagraph(): boolean {
     return this._showStartParagraph;
