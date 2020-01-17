@@ -126,7 +126,7 @@ export class AudioAssessment extends BaseAssessment implements OnDestroy {
       // Might be better to do this async so we don't have the chance of blocking for a short
       // period before moving to the next prompt.
       this.pushAudioData();
-      this.promptNumber++;
+      this.determineNextPromptNumber(this.promptNumber);
       // this.advanceToNextPrompt();  KRM: For automatic advancement
     };
   }
@@ -141,10 +141,11 @@ export class AudioAssessment extends BaseAssessment implements OnDestroy {
       assess_name: this.assessmentName,
       data: { text: 'None' }
     };
-    if (this.promptNumber === 0) {
+    if (this.firstPrompt) {
       this.dataService
         .postAssessmentDataToFileSystem(assessmentData, assessmentGoogleData)
         .subscribe();
+        this.firstPrompt=false;
     } else {
       this.dataService
         .postSingleAudioDataToMongo(assessmentData, assessmentGoogleData)
@@ -197,8 +198,8 @@ export class AudioAssessment extends BaseAssessment implements OnDestroy {
     } else if (this.useCountdownCircle) {
       countdownFunction = (arg): void => this.showProgressCircle(arg);
     }
-    if (this.promptNumber < this.promptsLength) {
-      if (this.promptNumber + 1 === this.promptsLength) {
+    if (this.promptsToDo.length>0) {
+      if (this.promptsToDo.length==0) {
         this.lastPrompt = true;
         this.stateManager.textOnInnerAssessmentButton =
           'FINISH ASSESSMENT AND ADVANCE';

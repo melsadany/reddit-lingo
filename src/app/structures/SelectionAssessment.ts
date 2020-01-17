@@ -53,7 +53,7 @@ export class SelectionAssessment extends BaseAssessment implements OnDestroy {
 
     this.selectionData.push(pushObject);
     this.pushSelectionData();
-    this.promptNumber++;
+    this.determineNextPromptNumber(this.promptNumber);
     intermediateFunction();
     if (this.lastPrompt) {
       this.stateManager.showInnerAssessmentButton = true;
@@ -73,7 +73,7 @@ export class SelectionAssessment extends BaseAssessment implements OnDestroy {
       wait_time: this.lastPromptWaitTime
     });
     this.pushSelectionData();
-    this.promptNumber++;
+    this.determineNextPromptNumber(this.promptNumber);
     intermediateFunction();
     if (this.lastPrompt) {
       this.stateManager.showInnerAssessmentButton = true;
@@ -92,10 +92,12 @@ export class SelectionAssessment extends BaseAssessment implements OnDestroy {
       assess_name: this.assessmentName,
       data: { text: 'None' }
     };
-    if (this.promptNumber === 0) {
+    console.log("is first prompt? ",this.firstPrompt)
+    if (this.firstPrompt) {
       this.dataService
         .postAssessmentDataToFileSystem(assessmentData, assessmentGoogleData)
         .subscribe();
+        this.firstPrompt=false;
     } else {
       this.dataService
         .postSingleAudioDataToMongo(assessmentData, assessmentGoogleData)
@@ -116,8 +118,8 @@ export class SelectionAssessment extends BaseAssessment implements OnDestroy {
     } else if (this.useCountdownCircle) {
       countdownFunction = (arg): void => this.showProgressCircle(arg);
     }
-    if (this.promptNumber < this.promptsLength) {
-      if (this.promptNumber + 1 === this.promptsLength) {
+    if (this.promptsToDo.length>0) {
+      if (this.promptsToDo.length==0) {
         this.lastPrompt = true;
         this.stateManager.textOnInnerAssessmentButton =
           'FINISH ASSESSMENT AND ADVANCE';

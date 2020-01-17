@@ -25,7 +25,21 @@ export class BaseAssessment implements OnInit {
   private _promptNumber = 0;
   private _promptsLength: number;
   private _lastPrompt = false;
-
+  private _promptsToDo = new Array<number>();
+  private _firstPrompt : boolean;
+  
+  public get firstPrompt():boolean {
+    return this._firstPrompt;
+  }
+  public set firstPrompt(value: boolean ) {
+    this._firstPrompt = value;
+  }
+  public get promptsToDo(): Array<number> {
+    return this._promptsToDo;
+  }
+  public set promptsToDo(value: Array<number> ) {
+    this._promptsToDo = value;
+  }
   public get lastPrompt(): boolean {
     return this._lastPrompt;
   }
@@ -144,9 +158,12 @@ export class BaseAssessment implements OnInit {
 
   ngOnInit(): void {
     this.stateManager.sendToCurrentIfAlreadyCompleted(this.assessmentName);
-    this.promptNumber = this.stateManager.assessments[this.assessmentName][
-      'prompt_number'
-    ];
+    this.firstPrompt = this.stateManager.assessments[this.assessmentName]["promptsDone"].length == 0
+    this.determinePromptsToDo(this.stateManager.assessments[this.assessmentName]["promptsDone"]);
+    this.determineNextPromptNumber();
+    
+    //this.promptNumber = this.stateManager.assessments[this.assessmentName]['prompt_number'];
+    
     this.dataService
       .getAssets('audio', this.assessmentName)
       .subscribe((value: AssetsObject) => {
@@ -156,6 +173,27 @@ export class BaseAssessment implements OnInit {
         }
       });
   }
+  determinePromptsToDo(doneList : Array<number>){
+    for (let i = 0; i < this.promptsLength; i++){
+      if (!doneList.includes(i)){
+        this.promptsToDo.push(i);
+      }
+    }
+  }
+  determineNextPromptNumber(currentPrompt? :number): void {
+    console.log("prompts to do: ");
+    console.log(this.promptsToDo)
+    if (currentPrompt){
+      this.promptsToDo = this.promptsToDo.filter(i => i != currentPrompt)
+      this.promptsLength--;
+    }
+    if (this.stateManager.contentRandomization){
+      this.promptNumber = (this.promptsToDo[Math.floor(Math.random()*this.promptsToDo.length)])
+    }
+    else this.promptNumber = (this.promptsToDo[0])
+  }
+
+
 
   startDisplayedCountdownTimer(onCountdownEndCallback: Function): void {
     this.countingDown = true;
