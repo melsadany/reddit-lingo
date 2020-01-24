@@ -120,7 +120,9 @@ export class AssessmentDataService {
   }
   
   public deleteUserIdCookie(): void {
+    console.log("deleting user_id cookie")
     this.cookieService.delete('user_id');
+    this.cookieService.delete('user_id','/')
   }
 
   public checkUserIdCookie(): boolean {
