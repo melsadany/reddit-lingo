@@ -23,6 +23,7 @@ export class ListeningcomprehensionComponent extends SelectionAssessment {
   ) {
     super(stateManager, dataService);
     this.configureAssessmentSettings();
+    this.waitToDeterminePromptsToDo=true;
     this.dataService
       .getAssets('audio', this.assessmentName)
       .subscribe((value: AssetsObject) => {
@@ -33,6 +34,7 @@ export class ListeningcomprehensionComponent extends SelectionAssessment {
       .getAssets('img', this.assessmentName)
       .subscribe((value: AssetsObject) => {
         this.imgsPromptStructure = value.promptStructure;
+        this.determinePromptsToDo()
       });
   }
 

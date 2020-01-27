@@ -24,6 +24,7 @@ export class MatrixreasoningComponent extends SelectionAssessment {
   ) {
     super(stateManager, dataService);
     this.configureAssessmentSettings();
+    this.waitToDeterminePromptsToDo=true;
     this.dataService
       .getAssets('img', this.assessmentName)
       .subscribe((value: AssetsObject) => {
@@ -31,6 +32,7 @@ export class MatrixreasoningComponent extends SelectionAssessment {
         this.imagePromptStructure = value.promptStructure;
         this.calculateFrameSets();
         this.calculateSolutionSets();
+        this.determinePromptsToDo();
       });
     
   }

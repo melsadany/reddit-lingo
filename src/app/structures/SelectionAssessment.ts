@@ -92,7 +92,6 @@ export class SelectionAssessment extends BaseAssessment implements OnDestroy {
       assess_name: this.assessmentName,
       data: { text: 'None' }
     };
-    console.log("is first prompt? ",this.firstPrompt)
     if (this.firstPrompt) {
       this.dataService
         .postAssessmentDataToFileSystem(assessmentData, assessmentGoogleData)
@@ -119,7 +118,7 @@ export class SelectionAssessment extends BaseAssessment implements OnDestroy {
       countdownFunction = (arg): void => this.showProgressCircle(arg);
     }
     if (this.promptsToDo.length>0) {
-      if (this.promptsToDo.length==0) {
+      if (this.promptsToDo.length==1 || this.finishEarly) {
         this.lastPrompt = true;
         this.stateManager.textOnInnerAssessmentButton =
           'FINISH ASSESSMENT AND ADVANCE';
