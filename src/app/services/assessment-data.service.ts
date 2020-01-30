@@ -140,7 +140,9 @@ export class AssessmentDataService {
 
   public deleteUserCookieDebugMode(): void {
     if (this.stateManager.DEBUG_MODE) {
-      this.deleteUserIdCookie();
+      var c = confirm("Are you sure you want to do delete the user's cookie? You will have to restart the whole assessment.");  
+  
+      if (c == true) {this.deleteUserIdCookie();window.location.assign('/')}
     }
   }
 
@@ -162,25 +164,26 @@ export class AssessmentDataService {
   public setData(): void {
     // KRM: Get the data for the current user
     // that has already been put in the database from pervious assessments
-    
-    this._partialAssessmentDataSubscription = this.checkUserExist(
-      this.getUserIdCookie()
-    );
-    this._partialAssessmentDataSubscription.subscribe(
-      (data: AssessmentData | boolean) => {
-        this.stateManager.serveDiagnostics();
-        if (data==false){
-          
+    if (this.stateManager.assessmentsLeftLinkedList.length==0){
+      this._partialAssessmentDataSubscription = this.checkUserExist(
+        this.getUserIdCookie()
+      );
+      this._partialAssessmentDataSubscription.subscribe(
+        (data: AssessmentData | boolean) => {
+          this.stateManager.serveDiagnostics();
+          if (data==false){
+            
+          }
+          else {
+            this.stateManager.hasDoneDiagnostics = true;
+            this.partialAssessmentData = <AssessmentData> data;
+            this.stateManager.initializeState(this.partialAssessmentData);
+            // KRM: Initialize the current state of the assessments based
+            // on the past assessments already completed
+          }
         }
-        else {
-          this.stateManager.hasDoneDiagnostics = true;
-          this.partialAssessmentData = <AssessmentData> data;
-          this.stateManager.initializeState(this.partialAssessmentData);
-          // KRM: Initialize the current state of the assessments based
-          // on the past assessments already completed
-        }
-      }
-    );
+      );
+    }
   }
 
   public getUserAssessmentDataFromFileSystem(
