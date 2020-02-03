@@ -35,11 +35,54 @@ header {
     }
   }
   
+  .sidenav {
+    height: 100vh;
+    width: 160px;
+    float: left;
+    position: absolute;
+    background-color: rgb(214, 213, 213);
+    
+    div{
+      padding-top: 25px;
+      button{
+        color: rgb(0, 0, 0);
+        background-color: transparent;
+        border:2px solid black;
+        padding-top : 2px;
+      }
+      button:active{
+        color: rgb(214, 213, 213);
+        background-color: black;
+      }
+      p{
+        text-align:center;
+        font-weight:550; 
+        padding:8px;
+      }
+    }
+  }
+  .sidenavBlue {
+    height: 100vh;
+    width: 160px;
+    float: left;
+    position: absolute;
+    background-color: #6CC3D5;
+    align-items: center;
+  }
   .recording {
-    z-index: 100;
+    z-index: 2;
     position: sticky; top:0;
     height: 20px;
     background-color: #f44336; /* Red */
+    color: white;
+    margin-bottom: 15px;
+  }
+  .warning {
+    z-index: 100;
+    position: sticky; 
+    padding-top:20px;
+    height: 30px;
+    background-color: #6CC3D5; /* Red */
     color: white;
     margin-bottom: 15px;
   }

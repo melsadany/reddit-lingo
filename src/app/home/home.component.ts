@@ -12,6 +12,7 @@ export class HomeComponent implements OnInit {
   // KRM: Need this injection for the template
 
   ngOnInit(): void {
+    this.stateManager.showSideNav=false;
     if (this.stateManager.hashKey && this.dataService.checkHashKeyCooke()) {
       console.log('hk set');
     } else if (

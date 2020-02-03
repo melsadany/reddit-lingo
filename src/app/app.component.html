@@ -1,5 +1,5 @@
 <app-header></app-header>
-<div class="container-fluid">
+<div class="container-fluid" [ngStyle]="{'padding-left': stateManager.showSideNav ? '160px' : '15px'}">
   <div class="row">
     <div class="col"></div>
     <div class="col-sm-12 col-md-10 col-lg-8">
