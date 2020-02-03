@@ -199,7 +199,7 @@ export class AudioAssessment extends BaseAssessment implements OnDestroy {
       countdownFunction = (arg): void => this.showProgressCircle(arg);
     }
     if (this.promptsToDo.length>0) {
-      if (this.promptsToDo.length==0) {
+      if (this.promptsToDo.length==1 || this.finishEarly) {
         this.lastPrompt = true;
         this.stateManager.textOnInnerAssessmentButton =
           'FINISH ASSESSMENT AND ADVANCE';

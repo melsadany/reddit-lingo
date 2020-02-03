@@ -27,7 +27,28 @@ export class BaseAssessment implements OnInit {
   private _lastPrompt = false;
   private _promptsToDo = new Array<number>();
   private _firstPrompt : boolean;
-  
+  private _waitToDeterminePromptsToDo:boolean;
+  private _promptsDoneCount=0;
+  private _finishEarly=false;
+
+  public get finishEarly():boolean {
+    return this._finishEarly;
+  }
+  public set finishEarly(value: boolean ) {
+    this._finishEarly = value;
+  }
+  public get promptsDoneCount(): number {
+    return this._promptsDoneCount;
+  }
+  public set promptsDoneCount(value: number) {
+    this._promptsDoneCount = value;
+  }
+  public get waitToDeterminePromptsToDo():boolean {
+    return this._waitToDeterminePromptsToDo;
+  }
+  public set waitToDeterminePromptsToDo(value: boolean ) {
+    this._waitToDeterminePromptsToDo = value;
+  }
   public get firstPrompt():boolean {
     return this._firstPrompt;
   }
@@ -159,10 +180,6 @@ export class BaseAssessment implements OnInit {
   ngOnInit(): void {
     this.stateManager.sendToCurrentIfAlreadyCompleted(this.assessmentName);
     this.firstPrompt = this.stateManager.assessments[this.assessmentName]["promptsDone"].length == 0
-    this.determinePromptsToDo(this.stateManager.assessments[this.assessmentName]["promptsDone"]);
-    this.determineNextPromptNumber();
-    
-    //this.promptNumber = this.stateManager.assessments[this.assessmentName]['prompt_number'];
     
     this.dataService
       .getAssets('audio', this.assessmentName)
@@ -172,26 +189,43 @@ export class BaseAssessment implements OnInit {
           this.stateManager.playInstructions();
         }
       });
+    
+      //this is set in the actual assessment .ts files if they request asssets from the server and need to wait to get the promtNumber count
+    if (!this.waitToDeterminePromptsToDo){this.determinePromptsToDo();}
+    
   }
-  determinePromptsToDo(doneList : Array<number>){
+  public determinePromptsToDo(){
+    const doneList =this.stateManager.assessments[this.assessmentName]["promptsDone"]
     for (let i = 0; i < this.promptsLength; i++){
       if (!doneList.includes(i)){
         this.promptsToDo.push(i);
+        
       }
+      else{this.promptsDoneCount++;}
     }
+    this.determineNextPromptNumber();
   }
   determineNextPromptNumber(currentPrompt? :number): void {
-    console.log("prompts to do: ");
-    console.log(this.promptsToDo)
-    if (currentPrompt){
-      this.promptsToDo = this.promptsToDo.filter(i => i != currentPrompt)
+    if (currentPrompt || currentPrompt==0){
+      this.promptsToDo = this.promptsToDo.filter(i =>  i != currentPrompt)
       this.promptsLength--;
+      this.promptsDoneCount++;
     }
-    if (this.stateManager.contentRandomization){
+    const maxPrompts = this.stateManager.appConfig['appConfig']['assessmentsConfig'][this.assessmentName]["maxPrompts"];
+   
+    if (maxPrompts<=this.promptsDoneCount && maxPrompts!=0){
+      this.promptsToDo=[];
+    }
+  
+    if (this.stateManager.appConfig['appConfig']['assessmentsConfig'][this.assessmentName]["randomize"]){
       this.promptNumber = (this.promptsToDo[Math.floor(Math.random()*this.promptsToDo.length)])
     }
-    else this.promptNumber = (this.promptsToDo[0])
-  }
+    else {this.promptNumber = this.promptsToDo[0];}
+   
+    if ((maxPrompts-1)==this.promptsDoneCount){
+        this.finishEarly=true;
+      }
+    }
 
 
 

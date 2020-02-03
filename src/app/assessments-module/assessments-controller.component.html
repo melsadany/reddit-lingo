@@ -2,7 +2,11 @@
 <button *ngIf="stateManager.showOutsideAssessmentButton" type='button' class='btn btn-primary btn-lg'
   (click)="stateManager.goToNextAssessment()">{{stateManager.textOnOutsideAssessmentButton}}</button>
 <div *ngIf="stateManager.DEBUG_MODE" class="py-4 text-center">
-  <button type='button' style="margin-bottom:4px;white-space: normal;" class='btn btn-outline-danger btn-lg button-down'
+  <button type='button' *ngIf="!audioRecordingService.isCurrentlyRecording()" style="margin-bottom:4px;white-space: normal;" class='btn btn-outline-danger btn-lg button-down'
+    (click)="stateManager.nextAssessmentDebugMode()">DEBUG
+    ENABLED: NEXT
+    ASSESSMENT</button>
+    <button type='button' disabled *ngIf="audioRecordingService.isCurrentlyRecording()" style="margin-bottom:4px;white-space: normal;" class='btn btn-outline-danger btn-lg button-down'
     (click)="stateManager.nextAssessmentDebugMode()">DEBUG
     ENABLED: NEXT
     ASSESSMENT</button>
