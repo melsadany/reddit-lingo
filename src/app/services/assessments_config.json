@@ -55,7 +55,13 @@
     "settings": {
       "countdownTimerLength": 3,
       "countdownTimerType": "circle",
-      "debugEnabled": false
+      "debugEnabled": true,
+      "contentRandomization":false
+    },
+    "kioskSettings":{
+      "kioskMode":true,
+      "setIdleTimeoutInMinutes": 5,
+      "setWarningTimeoutInSeconds":17
     }
   }
 }

@@ -8,7 +8,6 @@ import { Router } from '@angular/router';
 import { LinkedList } from '../structures/LinkedList';
 import appConfig from './assessments_config.json';
 import { LingoSettings } from '../structures/LingoSettings';
-import { AssessmentDataService } from './assessment-data.service';
 
 @Injectable({
   providedIn: 'root'
@@ -42,6 +41,26 @@ export class StateManagerService {
   private _isSingleAssessment = false;
   private _addHashToJson = false;
   private _hasDoneDiagnostics = false;
+  private _contentRandomization = appConfig['appConfig']['settings']['contentRandomization'];
+  private _idleTime = appConfig['appConfig']['kioskSettings']['setIdleTimeoutInMinutes']*60*1000;
+  private _warningTime = appConfig['appConfig']['kioskSettings']['setWarningTimeoutInSeconds'];
+  private _showSideNav= false;
+
+  public get showSideNav(): boolean {
+    return this._showSideNav;
+  }
+  public set showSideNav(value: boolean) {
+    this._showSideNav = value;
+  }
+  public get warningTime():number {
+    return this._warningTime;
+  }
+  public get idleTime(): number {
+    return this._idleTime;
+  }
+  public get contentRandomization(): boolean {
+    return this._contentRandomization;
+  }
 
   public get hasDoneDiagnostics(): boolean {
     return this._hasDoneDiagnostics;
@@ -212,13 +231,13 @@ export class StateManagerService {
   }
 
  
-
   private configureEnabledAssessments(): void {
     const assessmentsConfig = this.appConfig['appConfig']['assessmentsConfig'];
     for (const assessmentName of Object.keys(assessmentsConfig)) {
       if (assessmentsConfig[assessmentName]['enabled']) {
         this.assessments[assessmentName] = {
           prompt_number: 0,
+          promptsDone: new Array<number>(),
           completed: false
         };
         if (assessmentsConfig[assessmentName]['prompt_countdowns']) {
@@ -261,7 +280,7 @@ export class StateManagerService {
           selector = 'selection_data';
         }
         const currentPromptNumber = this.determineCurrentPromptNumber(
-          existingAssessment['data'][selector]
+          existingAssessment['data'][selector],existingAssessmentName
         );
         this.assessments[existingAssessmentName][
           'prompt_number'
@@ -305,7 +324,7 @@ export class StateManagerService {
           selector = 'selection_data';
         }
         const currentPromptNumber = this.determineCurrentPromptNumber(
-          existingAssessment['data'][selector]
+          existingAssessment['data'][selector],existingAssessmentName
         );
         //could be the case that the assessment is in existingAssesmentData but not configured anymore; BT
         if (this.assessments[existingAssessmentName]){
@@ -333,10 +352,16 @@ export class StateManagerService {
     }
     this.loadingState = false;
   }
-
-  private determineCurrentPromptNumber(existingData: Array<Object>): number {
+  private determineCurrentPromptNumber(existingData: Array<Object>,assess_name:string): number {
+    this.createPromptsDone(existingData,assess_name);
     const latestEntryIndex = existingData.length - 1;
     return existingData[latestEntryIndex]['prompt_number'] + 1;
+  }
+
+  public createPromptsDone(existingData:Array<Object>,name: string) :void{
+    existingData.forEach(element => {
+      this.assessments[name]["promptsDone"].push(element["prompt_number"])
+    });
   }
 
   private determineNextAssessment(): string {
@@ -361,6 +386,10 @@ export class StateManagerService {
     this.startedByHandFromHome = true;
     this.goToNextAssessment();
   }
+  public goToDonePage(): void {
+    this.startedByHandFromHome = true;
+    this.routerService.navigate(['/assessments/done']);
+  }
 
   playInstructions(): void {
     this.audioInstructionPlayer.src = this.audioInstruction;
@@ -380,6 +409,8 @@ export class StateManagerService {
   }
 
   public navigateTo(assessmentName: string): void {
+    if (assessmentName != "diagnostics" && assessmentName!="done"){this.showSideNav=true;}
+    else{this.showSideNav=false;}
     if (
       assessmentName !== 'done' &&
       this.assessments[assessmentName]['completed'] && assessmentName != "diagnostics"
@@ -396,6 +427,7 @@ export class StateManagerService {
   }
 
   public goHome(): void {
+    this.showSideNav=false;
     this.routerService.navigate(['home']);
   }
 
