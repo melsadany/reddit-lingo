@@ -30,7 +30,14 @@ export class BaseAssessment implements OnInit {
   private _waitToDeterminePromptsToDo:boolean;
   private _promptsDoneCount=0;
   private _finishEarly=false;
+  private _dataTitle;
 
+  public get dataTitle():string {
+    return this._dataTitle;
+  }
+  public set dataTitle(value: string ) {
+    this._dataTitle = value;
+  }
   public get finishEarly():boolean {
     return this._finishEarly;
   }
@@ -293,6 +300,13 @@ export class BaseAssessment implements OnInit {
 
   finishAssessment(): void {
     this.stateManager.finishThisAssessmentAndAdvance(this.assessmentName);
+  }
+  fixDataTitle(){
+    if (this.dataTitle && typeof this.dataTitle=="string"){
+      const specify = this.dataTitle.split('/')
+      this.dataTitle=specify[specify.length-1];
+      this.dataTitle=this.dataTitle.split('.')[0]
+    }
   }
 
   configureAssessmentSettings(): void {

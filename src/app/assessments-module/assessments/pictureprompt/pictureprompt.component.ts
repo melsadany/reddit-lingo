@@ -44,6 +44,7 @@ export class PicturepromptComponent extends AudioAssessment {
 
   getNextImagePath(): void {
     this.currentImagePrompt = this.audioPromptStructure[this.promptNumber][0];
+    this.dataTitle=this.currentImagePrompt
   }
 
   advance(): void {

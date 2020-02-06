@@ -111,13 +111,15 @@ export class AudioAssessment extends BaseAssessment implements OnDestroy {
   handleRecordedOutput(data: RecordedAudioOutput): void {
     const currentBlob = data.blob;
     const reader: FileReader = new FileReader();
+    this.fixDataTitle();
     reader.readAsDataURL(currentBlob);
     reader.onloadend = (): any => {
       const currentRecordedBlobAsBase64 = reader.result.slice(22);
       const pushObject = {
         prompt_number: this.promptNumber,
         recorded_data: currentRecordedBlobAsBase64,
-        wait_time: this.lastPromptWaitTime
+        wait_time: this.lastPromptWaitTime,
+        dataGiven: this.dataTitle ? this.dataTitle : null
       };
       if (this.assessmentName === 'ran') {
         pushObject['recorded_time'] = this.recordedTime;

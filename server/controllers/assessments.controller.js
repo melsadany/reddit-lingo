@@ -213,6 +213,7 @@ function getUserAssessmentData(searchUserId) {
 
 function saveWavFile(reqData, userID, selector, bucketName) {
   const promptNumber = reqData.assessments[0].data[selector][0]['prompt_number']
+  const dataTitle =  reqData.assessments[0].data[selector][0]["dataGiven"];
   const assessmentName = reqData.assessments[0]['assess_name']
   let wavFilePath
   let wavFileName
@@ -229,7 +230,13 @@ function saveWavFile(reqData, userID, selector, bucketName) {
       recursive: true
     })
   }
-  wavFileName = path.join(wavFilePath, promptNumber + '.wav')
+  if(dataTitle){
+    wavFileName = path.join(wavFilePath, dataTitle + '.wav')
+  }
+  else{
+     wavFileName = path.join(wavFilePath, promptNumber + '.wav')
+  }
+ 
   fs.writeFile(
     wavFileName,
     reqData.assessments[0].data[selector][0]['recorded_data'],

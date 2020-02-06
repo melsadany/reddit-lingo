@@ -41,10 +41,12 @@ export class SelectionAssessment extends BaseAssessment implements OnDestroy {
     intermediateFunction: Function,
     advanceCallBack: Function
   ): void {
+    this.fixDataTitle()
     const pushObject = {
       prompt_number: this.promptNumber,
       image_selected: image.split('/').slice(-1)[0],
-      wait_time: this.lastPromptWaitTime
+      wait_time: this.lastPromptWaitTime,
+      dataGiven: this.dataTitle ? this.dataTitle : null
     };
     if (this.assessmentName === 'matrixreasoning') {
       pushObject['time_to_select'] = this.timeToSelect / 1000;
@@ -67,10 +69,12 @@ export class SelectionAssessment extends BaseAssessment implements OnDestroy {
     intermediateFunction: Function,
     advanceCallBack: Function
   ): void {
+    this.fixDataTitle()
     this.selectionData.push({
       prompt_number: this.promptNumber,
       words_selected: words,
-      wait_time: this.lastPromptWaitTime
+      wait_time: this.lastPromptWaitTime,
+      dataGiven: this.dataTitle ? this.dataTitle : null
     });
     this.pushSelectionData();
     this.determineNextPromptNumber(this.promptNumber);
