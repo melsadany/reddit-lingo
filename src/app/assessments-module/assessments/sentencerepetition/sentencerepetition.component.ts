@@ -69,6 +69,7 @@ export class SentencerepetitionComponent extends AudioAssessment {
     this.stateManager.showInnerAssessmentButton = false;
     const audio = new Audio();
     audio.src = this.promptStructure[this.promptNumber][0];
+    this.dataTitle=this.promptStructure[this.promptNumber][0];
     audio.onplaying = (ev: Event): any => (this.playingAudio = true);
     audio.ondurationchange = (en: Event): number =>
       (this.audioDurationMs = audio.duration * 1000 + 3000);

@@ -49,6 +49,7 @@ export class ListeningcomprehensionComponent extends SelectionAssessment {
     this.calculateImageNames();
     const audio = new Audio();
     audio.src = this.audioPromptStructure[this.promptNumber][0];
+    this.dataTitle=this.audioPromptStructure[this.promptNumber][0];
     audio.onplaying = (ev: Event): any => (this.playingAudio = true);
     return audio;
   }

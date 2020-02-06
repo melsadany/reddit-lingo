@@ -57,6 +57,7 @@ export class MatrixreasoningComponent extends SelectionAssessment {
   advance(): void {
     this.stateManager.showStartParagraph=false;
     this.advanceToNextPrompt(() => {
+      this.dataTitle= this.imagePromptStructure['frameSets'][this.promptNumber][0][0]
       this.showMatrix = true;
       this.startTimer();
     });
@@ -103,6 +104,7 @@ export class MatrixreasoningComponent extends SelectionAssessment {
       },
       () =>
         this.advanceToNextPrompt(() => {
+          this.dataTitle= this.imagePromptStructure['frameSets'][this.promptNumber][0][0]//.toString()
           this.showMatrix = true;
           this.startTimer();
         })
