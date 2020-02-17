@@ -1,5 +1,5 @@
 const Joi = require('joi')
-const fs = require('fs')
+const fs = require('fs-extra')
 const path = require('path')
 const AWS = require('aws-sdk')
 const S3 = new AWS.S3()
@@ -10,6 +10,23 @@ const LINGO_DATA_LOCAL_PATH = path.join(
   '../',
   'assessment_data'
 )
+var CronJob = require('cron').CronJob;
+
+var job = new CronJob('0 4 0 * * *', function() {
+  
+  console.log('Deleting Local Audio Recording Files..');
+  fs.readdir(LINGO_DATA_LOCAL_PATH, function (err, files) {
+      if (err){console.log(err)}
+      else{
+        files.forEach( function (file) {
+          try{fs.remove(LINGO_DATA_LOCAL_PATH + "/"+file+ "/recording_data");}
+          catch{error => {console.log("There was an error deleting directory!");console.log(error)}}
+        })
+      }
+  })
+}, null, true, 'America/Chicago');
+
+job.start();
 
 const S3_DATA_BUCKET_NAME = 'lingo-assessment-data'
 const DEPLOYMENT_SPECIFIC_FOLDER = process.env.LINGO_FOLDER
@@ -18,7 +35,8 @@ const AssessmentSchemaValidator = Joi.object({
   user_id: Joi.string().required(),
   hash_keys: Joi.array(),
   assessments: Joi.array(),
-  google_speech_to_text_assess: Joi.array()
+  google_speech_to_text_assess: Joi.array(),
+  startTime: Joi.string()
 })
 
 async function insertFreshAssessmentData(reqData) {
@@ -40,6 +58,7 @@ async function insertFreshAssessmentData(reqData) {
     fs.writeFile(fileName, freshData, err => {
       if (err) {
         console.log(err)
+        reject("Cant Write file!",err)
       } else {
         if (DEPLOYMENT_SPECIFIC_FOLDER){
         uploadJSONFileToS3(
@@ -69,39 +88,88 @@ async function updateAssessmentData(reqData) {
     fs.readFile(fileName, 'utf-8', (err, data) => {
       if (err) {
         console.log(err)
+        reject(400)
       }
-      const dataFile = JSON.parse(data)
-      dataFile.assessments.push(reqData.assessments[0])
-      if (reqData.addHashkeyToJson){
-        dataFile.hash_keys.push(reqData.hash_key);
+      else{
+        const dataFile = JSON.parse(data)
+        dataFile.assessments.push(reqData.assessments[0])
+        if (reqData.addHashkeyToJson){
+          dataFile.hash_keys.push(reqData.hash_key);
+        }
+        fs.writeFile(fileName, JSON.stringify(dataFile), err => {
+          if (err) {
+            console.log(err)
+            reject(err)
+          } else {
+            let localUploadPath
+            let S3UploadKey
+            if (DEPLOYMENT_SPECIFIC_FOLDER){
+              localUploadPath = path.join(
+                LINGO_DATA_LOCAL_PATH,
+                userID,
+                userID + '.json'
+              )
+              S3UploadKey = path.join(
+                DEPLOYMENT_SPECIFIC_FOLDER,
+                userID,
+                userID + '.json'
+              )
+              uploadJSONFileToS3(localUploadPath, S3_DATA_BUCKET_NAME, S3UploadKey)
+            }
+            resolve(dataFile)
+          }
+        })
       }
+    })
+  })
+}
+async function addEndTime(userID){
+  fileName = path.join(LINGO_DATA_LOCAL_PATH, userID, userID + '.json')
+  return new Promise((resolve, reject) => {
+  fs.readFile(fileName, 'utf-8', (err, data) => {
+    if (err){console.log(err);reject(400)}
+    else{
+      var dataFile = JSON.parse(data)
+      var date = new Date();
+
+      const month = ((date.getMonth()+1)<10?'0':'') + (date.getMonth()+1);
+      const theDate = (date.getDate()<10?'0':'') + date.getDate();
+      const hours = (date.getHours()<10?'0':'') + date.getHours();
+      const minutes= (date.getMinutes()<10?'0':'') + date.getMinutes();
+      const endTime = date.getFullYear() + "-" + month + "-" + theDate + "T"  
+        + hours + ":" + minutes
+    
+      dataFile.endTime = endTime
+
       fs.writeFile(fileName, JSON.stringify(dataFile), err => {
         if (err) {
           console.log(err)
           reject(err)
-        } else {
+        } 
+        else {
           let localUploadPath
-          let S3UploadKey
+          let S3UploadPath
           if (DEPLOYMENT_SPECIFIC_FOLDER){
             localUploadPath = path.join(
               LINGO_DATA_LOCAL_PATH,
               userID,
               userID + '.json'
             )
-            S3UploadKey = path.join(
+            S3UploadPath = path.join(
               DEPLOYMENT_SPECIFIC_FOLDER,
               userID,
               userID + '.json'
             )
-            uploadJSONFileToS3(localUploadPath, S3_DATA_BUCKET_NAME, S3UploadKey)
+            uploadJSONFileToS3(localUploadPath, S3_DATA_BUCKET_NAME, S3UploadPath)
           }
-          resolve(dataFile)
+          resolve(200)
         }
       })
-    })
+    }
   })
+  resolve(200);}).catch(e => {console.log(e);resolve(400)});
+    
 }
-
 async function pushOnePieceAssessmentData(reqData) {
   let userID
   let fileName
@@ -120,48 +188,50 @@ async function pushOnePieceAssessmentData(reqData) {
       console.log('Selector error')
     }
     fs.readFile(fileName, 'utf-8', (err, data) => {
-      if (err) console.log(err)
-      const dataFile = JSON.parse(data)
-      for (let i = 0; i < dataFile.assessments.length; i++) {
-        if (
-          dataFile.assessments[i].assess_name ===
-          reqData.assessments[0].assess_name
-        ) {
-          dataFile.assessments[i].data[selector].push(
-            reqData.assessments[0].data[selector][0]
-          )
-          if (reqData.assessments[0].completed === true) {
-            dataFile.assessments[i].completed = true
+      if (err) {console.log(err); reject(400)}
+      else{
+        const dataFile = JSON.parse(data)
+        for (let i = 0; i < dataFile.assessments.length; i++) {
+          if (
+            dataFile.assessments[i].assess_name ===
+            reqData.assessments[0].assess_name
+          ) {
+            dataFile.assessments[i].data[selector].push(
+              reqData.assessments[0].data[selector][0]
+            )
+            if (reqData.assessments[0].completed === true) {
+              dataFile.assessments[i].completed = true
+            }
           }
         }
-      }
-      if (reqData.addHashkeyToJson){
-        dataFile.hash_keys.push(reqData.hash_key);
-      }
-      fs.writeFile(fileName, JSON.stringify(dataFile), err => {
-        if (err) {
-          console.log(err)
-          reject(err)
-        } else {
-          let localUploadPath
-          let S3UploadPath
-          if (DEPLOYMENT_SPECIFIC_FOLDER){
-            localUploadPath = path.join(
-              LINGO_DATA_LOCAL_PATH,
-              userID,
-              userID + '.json'
-            )
-            S3UploadPath = path.join(
-              DEPLOYMENT_SPECIFIC_FOLDER,
-              userID,
-              userID + '.json'
-            )
-          
-            uploadJSONFileToS3(localUploadPath, S3_DATA_BUCKET_NAME, S3UploadPath)
-          }
-          resolve(dataFile)
+        if (reqData.addHashkeyToJson){
+          dataFile.hash_keys.push(reqData.hash_key);
         }
-      })
+        fs.writeFile(fileName, JSON.stringify(dataFile), err => {
+          if (err) {
+            console.log(err)
+            reject(err)
+          } else {
+            let localUploadPath
+            let S3UploadPath
+            if (DEPLOYMENT_SPECIFIC_FOLDER){
+              localUploadPath = path.join(
+                LINGO_DATA_LOCAL_PATH,
+                userID,
+                userID + '.json'
+              )
+              S3UploadPath = path.join(
+                DEPLOYMENT_SPECIFIC_FOLDER,
+                userID,
+                userID + '.json'
+              )
+            
+              uploadJSONFileToS3(localUploadPath, S3_DATA_BUCKET_NAME, S3UploadPath)
+            }
+            resolve(dataFile)
+          }
+        })
+      }
     })
   })
 }
@@ -182,12 +252,7 @@ function checkUserExist(searchUserId){
   }).catch(error => {console.log("This is a promise error.."); console.log(error);})
 }
 
-function getUserAssessmentData(searchUserId) {
-  console.log("in get UserAssessmentdata")
- 
-  console.log(searchUserId)
- 
-
+function getUserAssessmentData(searchUserId,date) {
   const userID = searchUserId.toString()
 
   const fileName = path.join(LINGO_DATA_LOCAL_PATH, userID, userID + '.json')
@@ -199,7 +264,8 @@ function getUserAssessmentData(searchUserId) {
             user_id: userID,
             hash_keys: [],
             assessments: [],
-            google_speech_to_text_assess: []
+            google_speech_to_text_assess: [],
+            startTime: date
           })
         )
       } else {
@@ -253,7 +319,7 @@ function saveWavFile(reqData, userID, selector, bucketName) {
           userID,
           'recording_data',
           assessmentName,
-          promptNumber + '.wav'
+          (dataTitle ? dataTitle : promptNumber) + '.wav'
         )
         
         uploadWavToS3(wavFileName, S3_DATA_BUCKET_NAME, S3UploadPath)
@@ -264,7 +330,7 @@ function saveWavFile(reqData, userID, selector, bucketName) {
 }
 //dont need getNextUserID anymore [BT]
 
-function sendHashKey(hashKey,userId) {
+function sendHashKey(hashKey,userId,date) {
   const fileName = path.join(
     LINGO_DATA_LOCAL_PATH,
     userId,
@@ -274,7 +340,7 @@ function sendHashKey(hashKey,userId) {
     fs.readFile(fileName, 'utf-8', (err, data) => {
       if (err) {
         console.log(err) // KRM: User hasn't used this hash key before
-        resolve(insertNewHashKeyJson(hashKey,userId))
+        resolve(insertNewHashKeyJson(hashKey,userId,date))
       } else {
         resolve(JSON.parse(data)) // KRM: Send back their data if it already exists
       }
@@ -282,12 +348,13 @@ function sendHashKey(hashKey,userId) {
   })
 }
 
-function insertNewHashKeyJson(hashKey,userId) {
+function insertNewHashKeyJson(hashKey,userId,date) {
   const freshData = JSON.stringify({
     user_id: userId,
     hash_keys: [hashKey],
     assessments: [],
-    google_speech_to_text_assess: []
+    google_speech_to_text_assess: [],
+    startTime: date
   })
   const fileName = path.join(
     LINGO_DATA_LOCAL_PATH,
@@ -489,6 +556,7 @@ module.exports = {
   pushOnePieceAssessmentData,
   getUserAssessmentData,
   updateAssessmentData,
+  addEndTime,
   sendHashKey,
   getAssets,
   checkUserExist

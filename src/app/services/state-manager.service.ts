@@ -42,22 +42,7 @@ export class StateManagerService {
   private _addHashToJson = false;
   private _hasDoneDiagnostics = false;
   private _contentRandomization = appConfig['appConfig']['settings']['contentRandomization'];
-  private _idleTime = appConfig['appConfig']['kioskSettings']['setIdleTimeoutInMinutes']*60*1000;
-  private _warningTime = appConfig['appConfig']['kioskSettings']['setWarningTimeoutInSeconds'];
-  private _showSideNav= false;
 
-  public get showSideNav(): boolean {
-    return this._showSideNav;
-  }
-  public set showSideNav(value: boolean) {
-    this._showSideNav = value;
-  }
-  public get warningTime():number {
-    return this._warningTime;
-  }
-  public get idleTime(): number {
-    return this._idleTime;
-  }
   public get contentRandomization(): boolean {
     return this._contentRandomization;
   }
@@ -409,8 +394,6 @@ export class StateManagerService {
   }
 
   public navigateTo(assessmentName: string): void {
-    if (assessmentName != "diagnostics" && assessmentName!="done"){this.showSideNav=true;}
-    else{this.showSideNav=false;}
     if (
       assessmentName !== 'done' &&
       this.assessments[assessmentName]['completed'] && assessmentName != "diagnostics"
@@ -427,7 +410,6 @@ export class StateManagerService {
   }
 
   public goHome(): void {
-    this.showSideNav=false;
     this.routerService.navigate(['home']);
   }
 
