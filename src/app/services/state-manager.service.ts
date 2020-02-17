@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import {
   AssessmentData,
-  HashKeyAssessmentData,
+  SingleAssessmentData,
   AssetsObject
 } from '../structures/AssessmentDataStructures';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { LinkedList } from '../structures/LinkedList';
 import appConfig from './assessments_config.json';
 import { LingoSettings } from '../structures/LingoSettings';
@@ -33,11 +33,15 @@ export class StateManagerService {
   private _appConfig: LingoSettings = appConfig;
   private _assessments = {};
   private _IOSSafari: boolean;
+  private _singleAssessmentEnabled: boolean;
   private _audioInstruction: string;
   private _audioInstructionPlayer: HTMLAudioElement;
   private _finishedInstruction = false;
   private _playingInstruction = false;
   private _showStartParagraph = true;
+  private _MTurkEnabled: any;
+  private _MTurkAssignmentId: string;
+  private _MTurkWorkerId: any;
   private _isSingleAssessment = false;
   private _addHashToJson = false;
   private _hasDoneDiagnostics = false;
@@ -47,6 +51,25 @@ export class StateManagerService {
     return this._contentRandomization;
   }
 
+
+  public get MTurkWorkerId(): any {
+    return this._MTurkWorkerId;
+  }
+  public set MTurkWorkerId(value: any) {
+    this._MTurkWorkerId = value;
+  }
+  public get MTurkAssignmentId(): string {
+    return this._MTurkAssignmentId;
+  }
+  public set MTurkAssignmentId(value: string) {
+    this._MTurkAssignmentId = value;
+  }
+  public get MTurkEnabled(): any {
+    return this._MTurkEnabled;
+  }
+  public set MTurkEnabled(value: any) {
+    this._MTurkEnabled = value;
+  }
   public get hasDoneDiagnostics(): boolean {
     return this._hasDoneDiagnostics;
   }
@@ -74,6 +97,7 @@ export class StateManagerService {
   public get isSingleAssessment():boolean{
     return this._isSingleAssessment;
   }
+
   public set playingInstruction(value: boolean) {
     this._playingInstruction = value;
   }
@@ -94,6 +118,12 @@ export class StateManagerService {
   }
   public set audioInstruction(value: string) {
     this._audioInstruction = value;
+  }
+  public get singleAssessmentEnabled(): boolean {
+    return this._singleAssessmentEnabled;
+  }
+  public set singleAssessmentEnabled(value: boolean) {
+    this._singleAssessmentEnabled = value;
   }
   public get IOSSafari(): boolean {
     return this._IOSSafari;
@@ -207,15 +237,47 @@ export class StateManagerService {
     this._textOnOutsideAssessmentButton = value;
   }
 
-  constructor(private routerService: Router) {
+  constructor(private routerService: Router, private route: ActivatedRoute) {
     this.configureEnabledAssessments();
     this.configureDebugMode();
+    this.configureSingleAssessmentEnabled();
     this.totalAssessments = Object.keys(this.assessments).length;
     this.inMobileBrowser = this.mobileCheck();
     this.audioInstructionPlayer = new Audio();
   }
 
- 
+  private configureSingleAssessmentEnabled(): void {
+    this.singleAssessmentEnabled = this.appConfig['appConfig']['settings']['singleAssessmentEnabled'];
+  }
+
+  public configureMTurk(): void {
+    this.MTurkEnabled = this.appConfig['appConfig']['settings']['MTurkEnabled'];
+    this.MTurkAssignmentId = this.route.snapshot.paramMap.get('assignmentId');
+    //console.log("paramMap.get -",this.route.snapshot.queryParams.get("assignmentId"))
+   
+    //console.log("this.route.snapshot result AssignemntID =" ,this.MTurkAssignmentId);
+    
+    //incase MTurkAssignementId is null we find it using getURLParameter
+    //console.log('windows uri:',window.location.search)
+    
+  //  console.log('getassignemntid function returns:',this.dataService.getAssignmentId())
+    this.MTurkAssignmentId = this.MTurkAssignmentId ? this.MTurkAssignmentId:this.getUrlParameter('assignmentId');
+    this.MTurkAssignmentId = this.MTurkAssignmentId ? this.MTurkAssignmentId:this.getUrlParameter('assignment_id');
+   // console.log('geturlParam funct result:',this.getUrlParameter('assignmentId'))
+   // console.log('other getParam funct result = ',this.getUrlParameter('assignment_id'))
+  //  this.MTurkAssignmentId = this.MTurkAssignmentId ? this.dataService.getAssignmentId() : this.MTurkAssignmentId;
+    this.MTurkWorkerId = this.route.snapshot.queryParamMap.get('workerId');
+    //console.log('MTurkAssignmentId:', this.MTurkAssignmentId);
+  }
+
+public  getUrlParameter(name:string) {
+    //console.log("in the getUrlParameter function..");
+    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+    var results = regex.exec(window.location.search);
+    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+};
+
   private configureEnabledAssessments(): void {
     const assessmentsConfig = this.appConfig['appConfig']['assessmentsConfig'];
     for (const assessmentName of Object.keys(assessmentsConfig)) {
@@ -247,12 +309,12 @@ export class StateManagerService {
     this.loadingState = false;
   }
   public initializeSingleAssessmentState(
-    hashKeyAssessmentData: HashKeyAssessmentData | AssessmentData
+    singleAssessmentData: SingleAssessmentData | AssessmentData
   ): void {
     const singleAssessmentName = this.hashKeyFirstFourMap(
       this.hashKey.slice(0, 4)
     );
-    for (const existingAssessment of hashKeyAssessmentData.assessments) {
+    for (const existingAssessment of singleAssessmentData.assessments) {
       const existingAssessmentName = existingAssessment['assess_name'];
       if (existingAssessment['completed']) {
         this.assessments[existingAssessmentName]['completed'] = true;
@@ -278,10 +340,10 @@ export class StateManagerService {
         // ); KRM: For debugging
       }
     }
-    if (this.assessments['diagnostics'] && !this.assessments['diagnostics']['completed']) {
+    if (!this.assessments['diagnostics']['completed']) {
       this.assessmentsLeftLinkedList.append('diagnostics');
     }
-    if (this.assessments['prescreenerquestions'] && !this.assessments['prescreenerquestions']['completed']) {
+    if (!this.assessments['prescreenerquestions']['completed']) {
       this.assessmentsLeftLinkedList.append('prescreenerquestions');
     }
     if (this.assessments[singleAssessmentName]['completed']) {
@@ -294,6 +356,10 @@ export class StateManagerService {
   }
 
   public initializeState(existingAssessmentData: AssessmentData): void {
+    // if (this.appConfig['appConfig']['settings']['MTurkEnabled']) {
+    //   console.log('MTurk Enabled');
+    //   this.configureMTurk();
+    // }
     this.configureEnabledAssessments();
     for (const existingAssessment of existingAssessmentData.assessments) {
       const existingAssessmentName = existingAssessment['assess_name'];
@@ -311,11 +377,9 @@ export class StateManagerService {
         const currentPromptNumber = this.determineCurrentPromptNumber(
           existingAssessment['data'][selector],existingAssessmentName
         );
-        //could be the case that the assessment is in existingAssesmentData but not configured anymore; BT
-        if (this.assessments[existingAssessmentName]){
         this.assessments[existingAssessmentName][
           'prompt_number'
-        ] = currentPromptNumber;}
+        ] = currentPromptNumber;
         // console.log(
         //   'On prompt number: ' +
         //     currentPromptNumber +
@@ -503,34 +567,34 @@ export class StateManagerService {
     const firstFour = hashKey.slice(0, 4);
     let assessmentName = '';
     switch (firstFour) {
-      case 'lic$':
+      case 'licr':
         assessmentName = 'listeningcomprehension';
         break;
-      case 'mtx$':
+      case 'mtxr':
         assessmentName = 'matrixreasoning';
         break;
-      case 'pcp$':
+      case 'pcpt':
         assessmentName = 'pictureprompt';
         break;
-      case 'rna$':
+      case 'rnan':
         assessmentName = 'ran';
         break;
-      case 'snp$':
+      case 'snpt':
         assessmentName = 'sentencerepetition';
         break;
-      case 'svi$':
+      case 'svie':
         assessmentName = 'syncvoice';
         break;
-      case 'tmd$':
+      case 'tmdt':
         assessmentName = 'timeduration';
         break;
       case 'wap$':
         assessmentName = 'wordassociationpath';
         break;
-      case 'wda$':
+      case 'wdap':
         assessmentName = 'wordassociationpair';
         break;
-      case 'rdf$':
+      case 'rdfn':
         assessmentName = 'wordfinding';
         break;
       default:

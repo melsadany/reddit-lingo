@@ -45,7 +45,9 @@ export class AssessmentDataService {
   }
 
   public initializeData(): void {
+    console.log("in initialize data for")
     if (!this.checkUserIdCookie()) {
+      
       this.setUserIdCookieAndSetData();
     } else {
       this.setData();
@@ -146,6 +148,18 @@ export class AssessmentDataService {
   
       if (c == true) {this.deleteUserIdCookie();window.location.assign('/')}
     }
+  }
+  public setAssignmentId(value:string){
+    //console.log("setting up assignment_id cookie..")
+    this.cookieService.set('assignment_id', value, 200);
+  }
+  public getAssignmentId():string{
+    //console.log("getting the assignment_id cookie..")
+    return this.cookieService.get('assignment_id')
+  }
+  public deleteAssignmentId():void{
+    //console.log("Deleting assignment_id cookie..")
+    this.cookieService.delete('assignment_id',"/");
   }
 
   public setUserIdCookieAndSetData(): void {

@@ -105,6 +105,23 @@ export interface HashKeyAssessmentData {
   google_speech_to_text_assess: Array<GoogleSpeechToTextDataStructure>;
 }
 
+export interface SingleAssessmentData {
+  /**
+   * The hash key value for this single assessment user.
+   */
+  hash_key: string;
+  /**
+   * Array of assessment data collected so far for this user.
+   */
+  assessments: Array<AssessmentDataStructure>;
+  /**
+   * Array of google speech to text data collected so far for this user.
+   * At this point in time (4/10/19) there is not a concrete plan on utilzing
+   * this field.
+   */
+  google_speech_to_text_assess: Array<GoogleSpeechToTextDataStructure>;
+}
+
 /**
  * Structure for holding assessments asset data for the assessments UI. This is used to programatically determine how many
  * assets are present in the corresponding assessment folder at run time to prevent hard coding how many prompts we want

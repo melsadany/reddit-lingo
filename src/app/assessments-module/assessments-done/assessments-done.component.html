@@ -1,6 +1,41 @@
-<div class='pb-5 text-center'>
+<div class="pb-5 text-center">
   <p class="py-4 text-center">All assessments have been completed.</p>
   <div>
-    <button class="btn btn-primary btn-lg button-down" [routerLink]="['/home']">Go home</button>
+    <!------- FOR TEST MTURK --------->
+     <form  
+      ngNoForm
+      action="https://workersandbox.mturk.com/mturk/externalSubmit"
+      method="POST"
+      id="mturk"
+    >
+     <!------- FOR PRODUCTION MTURK --------->
+    <!-- 
+      <form 
+      ngNoForm
+      action="https://www.mturk.com/mturk/externalSubmit"
+      method="POST"
+      id="mturk"
+    > -->
+      <input
+        type="hidden"
+        id="assignmentId"
+        name="assignmentId"
+        [value]="stateManager.MTurkAssignmentId"
+      />
+      <p class="py-4 text-center" style="font-size: 25px">
+        Please provide feedback regarding any technical difficulties you
+        encountered while taking this HIT. Be sure to include your browser and
+        operating system.
+      </p>
+      <textarea
+        class="form-control mt-4"
+        rows="5"
+        name="feedback"
+        id="feedback"
+      ></textarea>
+      <button type="submit" class="btn btn-primary btn-lg button-down mt-4">
+        Click here to complete this HIT.
+      </button>
+    </form>
   </div>
 </div>
