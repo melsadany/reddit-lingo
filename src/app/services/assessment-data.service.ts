@@ -20,7 +20,7 @@ export class AssessmentDataService {
   private _partialAssessmentData: AssessmentData;
   private _partialAssessmentDataSubscription: Observable<
     AssessmentData
-  > = this.getUserAssessmentDataFromFileSystem(this.getUserIdCookie());
+  > ;
   private _audioAssetsLocation = 'assets/in_use/audio/';
   constructor(
     private cookieService: CookieService,
@@ -189,10 +189,10 @@ export class AssessmentDataService {
   }
 
   public getUserAssessmentDataFromFileSystem(
-    user_id: string
+    user_id: string,date:string
   ): Observable<AssessmentData> {
     return <Observable<AssessmentData>>(
-      this.http.get('/api/assessmentsAPI/GetUserAssessment/' + user_id)
+      this.http.get('/api/assessmentsAPI/GetUserAssessment/' + user_id+"/"+date)
     );
   }
 
@@ -202,6 +202,9 @@ export class AssessmentDataService {
     return <Observable<AssessmentData>>(
       this.http.get('/api/assessmentsAPI/GetUserAssessment/' + hash_key)
     );
+  }
+  public sendEndTime(userId :string): Observable<any>{
+    return <Observable<any>>this.http.get('/api/assessmentsAPI/AddEndTime/'+userId);
   }
 
   public postAssessmentDataToFileSystem(
@@ -265,10 +268,10 @@ export class AssessmentDataService {
   }
   */
 
-  public sendHashKeyToServer(hashKey: string, userId: string): Observable<Object> {
+  public sendHashKeyToServer(hashKey: string, userId: string,date:string): Observable<Object> {
     console.log("in sendHaskey to server with sendNewHash value "+ this.stateManager.addHashToJson)
     return this.http.get(
-      '/api/assessmentsAPI/InitializeSingleUserAssessment/' + hashKey +'/'+ userId,
+      '/api/assessmentsAPI/InitializeSingleUserAssessment/' + hashKey +'/'+ userId+'/'+date,
       {}
     );
   }

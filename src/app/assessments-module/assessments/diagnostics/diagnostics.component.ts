@@ -52,11 +52,15 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
   private _showWaveForm = false;
   private _cantHearMic = false;
   private _hasRecordedTest = false;
+  private _date= new Date();
   @ViewChild('wavesurfer') ws: ElementRef;
   @Input() waveColor = '#ff1e7f';
   @Input() progressColor = '#00F';
   @Input() cursorColor = '#CCC';
 
+  public get date(): Date{
+    return this._date
+  }
   public get isRecording(): boolean {
     return this._isRecording;
   }
@@ -299,6 +303,15 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
 
   //this creates the files in the directory of the server since this assessment is finished
   didRecordCorrectly(): void {
+    const month = ((this.date.getMonth()+1)<10?'0':'') + (this.date.getMonth()+1);
+    const theDate = (this.date.getDate()<10?'0':'') + this.date.getDate();
+    const hours = (this.date.getHours()<10?'0':'') + this.date.getHours();
+    const minutes= (this.date.getMinutes()<10?'0':'') + this.date.getMinutes();
+    const startTime = this.date.getFullYear() + "-" + month + "-" + theDate + "T"  
+      + hours + ":" + minutes
+   
+    console.log(startTime)
+
     if (this.playingAudio) {
       this.playPause();
     }
@@ -321,7 +334,7 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
       let user_id = this.dataService.getUserIdCookie()
       if (hash_key && user_id){
         this.dataService
-        .sendHashKeyToServer(hash_key,user_id )
+        .sendHashKeyToServer(hash_key,user_id,startTime)
         .subscribe((data: HashKeyAssessmentData) => { 
       
           this.dataService
@@ -342,7 +355,7 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
       }
       else {
         
-        this.dataService.getUserAssessmentDataFromFileSystem(user_id).subscribe(() => {
+        this.dataService.getUserAssessmentDataFromFileSystem(user_id,startTime).subscribe(() => {
           this.dataService
           .postAssessmentDataToFileSystem(assessmentData, assessmentGoogleData,true).subscribe(  newdata => {
             this.stateManager.initializeState(<AssessmentData> newdata);

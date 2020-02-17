@@ -80,11 +80,6 @@
       "countdownTimerLength": 3,
       "countdownTimerType": "circle",
       "debugEnabled": true
-    },
-    "kioskSettings":{
-      "kioskMode":true,
-      "setIdleTimeoutInMinutes": 5,
-      "setWarningTimeoutInSeconds":17
     }
   }
 }
