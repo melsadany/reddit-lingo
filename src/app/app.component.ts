@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { StateManagerService } from './services/state-manager.service';
-import { AssessmentDataService } from './services/assessment-data.service';
 
 @Component({
   selector: 'app-root',
@@ -8,7 +7,7 @@ import { AssessmentDataService } from './services/assessment-data.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  constructor(private stateManager: StateManagerService, private dataService: AssessmentDataService) { }
+  constructor(public stateManager: StateManagerService) { }
 
   public ngOnInit(): void {
     this.stateManager.isInAssessment = false;

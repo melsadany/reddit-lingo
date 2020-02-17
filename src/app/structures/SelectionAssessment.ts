@@ -41,10 +41,12 @@ export class SelectionAssessment extends BaseAssessment implements OnDestroy {
     intermediateFunction: Function,
     advanceCallBack: Function
   ): void {
+    this.fixDataTitle()
     const pushObject = {
       prompt_number: this.promptNumber,
       image_selected: image.split('/').slice(-1)[0],
-      wait_time: this.lastPromptWaitTime
+      wait_time: this.lastPromptWaitTime,
+      dataGiven: this.dataTitle ? this.dataTitle : null
     };
     if (this.assessmentName === 'matrixreasoning') {
       pushObject['time_to_select'] = this.timeToSelect / 1000;
@@ -53,7 +55,7 @@ export class SelectionAssessment extends BaseAssessment implements OnDestroy {
 
     this.selectionData.push(pushObject);
     this.pushSelectionData();
-    this.promptNumber++;
+    this.determineNextPromptNumber(this.promptNumber);
     intermediateFunction();
     if (this.lastPrompt) {
       this.stateManager.showInnerAssessmentButton = true;
@@ -67,13 +69,15 @@ export class SelectionAssessment extends BaseAssessment implements OnDestroy {
     intermediateFunction: Function,
     advanceCallBack: Function
   ): void {
+    this.fixDataTitle()
     this.selectionData.push({
       prompt_number: this.promptNumber,
       words_selected: words,
-      wait_time: this.lastPromptWaitTime
+      wait_time: this.lastPromptWaitTime,
+      dataGiven: this.dataTitle ? this.dataTitle : null
     });
     this.pushSelectionData();
-    this.promptNumber++;
+    this.determineNextPromptNumber(this.promptNumber);
     intermediateFunction();
     if (this.lastPrompt) {
       this.stateManager.showInnerAssessmentButton = true;
@@ -92,10 +96,11 @@ export class SelectionAssessment extends BaseAssessment implements OnDestroy {
       assess_name: this.assessmentName,
       data: { text: 'None' }
     };
-    if (this.promptNumber === 0) {
+    if (this.firstPrompt) {
       this.dataService
         .postAssessmentDataToFileSystem(assessmentData, assessmentGoogleData)
         .subscribe();
+        this.firstPrompt=false;
     } else {
       this.dataService
         .postSingleAudioDataToMongo(assessmentData, assessmentGoogleData)
@@ -116,8 +121,8 @@ export class SelectionAssessment extends BaseAssessment implements OnDestroy {
     } else if (this.useCountdownCircle) {
       countdownFunction = (arg): void => this.showProgressCircle(arg);
     }
-    if (this.promptNumber < this.promptsLength) {
-      if (this.promptNumber + 1 === this.promptsLength) {
+    if (this.promptsToDo.length>0) {
+      if (this.promptsToDo.length==1 || this.finishEarly) {
         this.lastPrompt = true;
         this.stateManager.textOnInnerAssessmentButton =
           'FINISH ASSESSMENT AND ADVANCE';

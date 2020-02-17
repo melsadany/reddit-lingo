@@ -22,11 +22,13 @@ export class RanComponent extends AudioAssessment {
   ) {
     super(stateManager, audioRecordingService, dataService);
     this.configureAssessmentSettings();
+    this.waitToDeterminePromptsToDo=true;
     this.dataService
       .getAssets('img', this.assessmentName)
       .subscribe((value: AssetsObject) => {
         this.promptsLength = value.assetsLength;
         this.audioPromptStructure = value.promptStructure;
+        this.determinePromptsToDo();
       });
   }
 
@@ -40,7 +42,6 @@ export class RanComponent extends AudioAssessment {
   }
 
   advance(): void {
-    console.log("setting assessment front page to false")
     this.stateManager.showAssessmentFrontPage=false;
     this.advanceToNextPrompt(
       () => {
@@ -71,5 +72,6 @@ export class RanComponent extends AudioAssessment {
 
   getNextImagePath(): void {
     this.currentImagePrompt = this.audioPromptStructure[this.promptNumber][0];
+    this.dataTitle=this.audioPromptStructure[this.promptNumber][0];
   }
 }

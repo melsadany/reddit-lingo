@@ -111,13 +111,15 @@ export class AudioAssessment extends BaseAssessment implements OnDestroy {
   handleRecordedOutput(data: RecordedAudioOutput): void {
     const currentBlob = data.blob;
     const reader: FileReader = new FileReader();
+    this.fixDataTitle();
     reader.readAsDataURL(currentBlob);
     reader.onloadend = (): any => {
       const currentRecordedBlobAsBase64 = reader.result.slice(22);
       const pushObject = {
         prompt_number: this.promptNumber,
         recorded_data: currentRecordedBlobAsBase64,
-        wait_time: this.lastPromptWaitTime
+        wait_time: this.lastPromptWaitTime,
+        dataGiven: this.dataTitle ? this.dataTitle : null
       };
       if (this.assessmentName === 'ran') {
         pushObject['recorded_time'] = this.recordedTime;
@@ -126,7 +128,7 @@ export class AudioAssessment extends BaseAssessment implements OnDestroy {
       // Might be better to do this async so we don't have the chance of blocking for a short
       // period before moving to the next prompt.
       this.pushAudioData();
-      this.promptNumber++;
+      this.determineNextPromptNumber(this.promptNumber);
       // this.advanceToNextPrompt();  KRM: For automatic advancement
     };
   }
@@ -141,10 +143,11 @@ export class AudioAssessment extends BaseAssessment implements OnDestroy {
       assess_name: this.assessmentName,
       data: { text: 'None' }
     };
-    if (this.promptNumber === 0) {
+    if (this.firstPrompt) {
       this.dataService
         .postAssessmentDataToFileSystem(assessmentData, assessmentGoogleData)
         .subscribe();
+        this.firstPrompt=false;
     } else {
       this.dataService
         .postSingleAudioDataToMongo(assessmentData, assessmentGoogleData)
@@ -197,8 +200,8 @@ export class AudioAssessment extends BaseAssessment implements OnDestroy {
     } else if (this.useCountdownCircle) {
       countdownFunction = (arg): void => this.showProgressCircle(arg);
     }
-    if (this.promptNumber < this.promptsLength) {
-      if (this.promptNumber + 1 === this.promptsLength) {
+    if (this.promptsToDo.length>0) {
+      if (this.promptsToDo.length==1 || this.finishEarly) {
         this.lastPrompt = true;
         this.stateManager.textOnInnerAssessmentButton =
           'FINISH ASSESSMENT AND ADVANCE';

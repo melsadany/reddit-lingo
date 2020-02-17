@@ -25,7 +25,49 @@ export class BaseAssessment implements OnInit {
   private _promptNumber = 0;
   private _promptsLength: number;
   private _lastPrompt = false;
+  private _promptsToDo = new Array<number>();
+  private _firstPrompt : boolean;
+  private _waitToDeterminePromptsToDo:boolean;
+  private _promptsDoneCount=0;
+  private _finishEarly=false;
+  private _dataTitle;
 
+  public get dataTitle():string {
+    return this._dataTitle;
+  }
+  public set dataTitle(value: string ) {
+    this._dataTitle = value;
+  }
+  public get finishEarly():boolean {
+    return this._finishEarly;
+  }
+  public set finishEarly(value: boolean ) {
+    this._finishEarly = value;
+  }
+  public get promptsDoneCount(): number {
+    return this._promptsDoneCount;
+  }
+  public set promptsDoneCount(value: number) {
+    this._promptsDoneCount = value;
+  }
+  public get waitToDeterminePromptsToDo():boolean {
+    return this._waitToDeterminePromptsToDo;
+  }
+  public set waitToDeterminePromptsToDo(value: boolean ) {
+    this._waitToDeterminePromptsToDo = value;
+  }
+  public get firstPrompt():boolean {
+    return this._firstPrompt;
+  }
+  public set firstPrompt(value: boolean ) {
+    this._firstPrompt = value;
+  }
+  public get promptsToDo(): Array<number> {
+    return this._promptsToDo;
+  }
+  public set promptsToDo(value: Array<number> ) {
+    this._promptsToDo = value;
+  }
   public get lastPrompt(): boolean {
     return this._lastPrompt;
   }
@@ -144,9 +186,8 @@ export class BaseAssessment implements OnInit {
 
   ngOnInit(): void {
     this.stateManager.sendToCurrentIfAlreadyCompleted(this.assessmentName);
-    this.promptNumber = this.stateManager.assessments[this.assessmentName][
-      'prompt_number'
-    ];
+    this.firstPrompt = this.stateManager.assessments[this.assessmentName]["promptsDone"].length == 0
+    
     this.dataService
       .getAssets('audio', this.assessmentName)
       .subscribe((value: AssetsObject) => {
@@ -155,7 +196,45 @@ export class BaseAssessment implements OnInit {
           this.stateManager.playInstructions();
         }
       });
+    
+      //this is set in the actual assessment .ts files if they request asssets from the server and need to wait to get the promtNumber count
+    if (!this.waitToDeterminePromptsToDo){this.determinePromptsToDo();}
+    
   }
+  public determinePromptsToDo(){
+    const doneList =this.stateManager.assessments[this.assessmentName]["promptsDone"]
+    for (let i = 0; i < this.promptsLength; i++){
+      if (!doneList.includes(i)){
+        this.promptsToDo.push(i);
+        
+      }
+      else{this.promptsDoneCount++;}
+    }
+    this.determineNextPromptNumber();
+  }
+  determineNextPromptNumber(currentPrompt? :number): void {
+    if (currentPrompt || currentPrompt==0){
+      this.promptsToDo = this.promptsToDo.filter(i =>  i != currentPrompt)
+      this.promptsLength--;
+      this.promptsDoneCount++;
+    }
+    const maxPrompts = this.stateManager.appConfig['appConfig']['assessmentsConfig'][this.assessmentName]["maxPrompts"];
+   
+    if (maxPrompts<=this.promptsDoneCount && maxPrompts!=0){
+      this.promptsToDo=[];
+    }
+  
+    if (this.stateManager.appConfig['appConfig']['assessmentsConfig'][this.assessmentName]["randomize"]){
+      this.promptNumber = (this.promptsToDo[Math.floor(Math.random()*this.promptsToDo.length)])
+    }
+    else {this.promptNumber = this.promptsToDo[0];}
+   
+    if ((maxPrompts-1)==this.promptsDoneCount){
+        this.finishEarly=true;
+      }
+    }
+
+
 
   startDisplayedCountdownTimer(onCountdownEndCallback: Function): void {
     this.countingDown = true;
@@ -221,6 +300,13 @@ export class BaseAssessment implements OnInit {
 
   finishAssessment(): void {
     this.stateManager.finishThisAssessmentAndAdvance(this.assessmentName);
+  }
+  fixDataTitle(){
+    if (this.dataTitle && typeof this.dataTitle=="string"){
+      const specify = this.dataTitle.split('/')
+      this.dataTitle=specify[specify.length-1];
+      this.dataTitle=this.dataTitle.split('.')[0]
+    }
   }
 
   configureAssessmentSettings(): void {

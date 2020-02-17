@@ -84,10 +84,9 @@ export class TimedurationComponent extends SelectionAssessment {
       });
       this.pushSelectionData();
       this.updateCircleState();
-      this.promptNumber++;
+      this.determineNextPromptNumber(this.promptNumber);
       this.stateManager.showInnerAssessmentButton = true;
       this.currentTimeSelected = 0;
-      this.advance();
     }
   }
 
