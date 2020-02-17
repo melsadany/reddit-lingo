@@ -23,8 +23,8 @@ build and deploy lingo:
         BUILD_FOLDER=lingo-root-build;
       elif [[ $CI_COMMIT_REF_NAME == 'master' ]]; then
         BUILD_FOLDER=lingo-master-builds;
-      elif [[ $CI_COMMIT_REF_NAME == 'mturk' ]]; then
-        BUILD_FOLDER=lingo-mturk-builds;
+      elif [[ $CI_COMMIT_REF_NAME == 'kiosk' ]]; then
+        BUILD_FOLDER=lingo-kiosk-build;
       else
         BUILD_FOLDER=unkown;
       fi;
@@ -35,3 +35,6 @@ build and deploy lingo:
     - aws s3 sync ./dist s3://lingo-builds/$BUILD_FOLDER/dist
     - aws s3 sync ./server s3://lingo-builds/$BUILD_FOLDER/server
     - aws s3 cp ./package.json s3://lingo-builds/$BUILD_FOLDER/package.json
+
+
+

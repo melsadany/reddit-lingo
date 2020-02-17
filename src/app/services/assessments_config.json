@@ -5,10 +5,10 @@
         "enabled": true
       },
       "prescreenerquestions": {
-        "enabled": true
+        "enabled": false
       },
-      "wordassociationpair": {
-        "enabled": false,
+      "wordassociationpath": {
+        "enabled": true,
         "useSpecificStartWord": false,
         "startWord": "cat",
         "randomize":true,
@@ -16,8 +16,8 @@
         "showRunningChoices": true,
         "hideInstructionsOnAssessmentStart": true
       },
-      "wordassociationpath": {
-        "enabled": true,
+      "wordassociationpair": {
+        "enabled": false,
         "useSpecificStartWord": false,
         "startWord": "cat",
         "randomize":true,
@@ -28,11 +28,6 @@
         "enabled": true,
         "randomize":true,
         "maxPrompts":3,
-        "hideInstructionsOnAssessmentStart": false
-      },
-      "timeduration": {
-        "enabled": true,
-        "circle_durations": [5, 1.5, 0.5, 9, 0.75],
         "hideInstructionsOnAssessmentStart": false
       },
       "sentencerepetition": {
@@ -84,10 +79,7 @@
     "settings": {
       "countdownTimerLength": 3,
       "countdownTimerType": "circle",
-      "singleAssessmentEnabled": false,
-      "debugEnabled": false,
-      "MTurkEnabled": true,
-      "SetTimeoutTimeInMinutes": 40
+      "debugEnabled": true
     }
   }
 }
