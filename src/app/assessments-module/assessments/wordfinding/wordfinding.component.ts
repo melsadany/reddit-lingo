@@ -35,6 +35,7 @@ export class WordfindingComponent extends AudioAssessment {
     const currentChoices = letterData[this.promptNumber]['letters'];
     this.currentLetter =
       currentChoices[Math.floor(Math.random() * currentChoices.length)];
+    this.dataTitle=this.currentLetter;
   }
 
   advance(): void {

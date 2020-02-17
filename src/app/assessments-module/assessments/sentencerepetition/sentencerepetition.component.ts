@@ -24,11 +24,13 @@ export class SentencerepetitionComponent extends AudioAssessment {
   ) {
     super(stateManager, audioRecordingService, dataService);
     this.configureAssessmentSettings();
+    this.waitToDeterminePromptsToDo=true;
     this.dataService
       .getAssets('audio', this.assessmentName)
       .subscribe((value: AssetsObject) => {
         this.promptsLength = value.assetsLength;
         this.promptStructure = value.promptStructure;
+        this.determinePromptsToDo();
       });
   }
 
@@ -67,6 +69,7 @@ export class SentencerepetitionComponent extends AudioAssessment {
     this.stateManager.showInnerAssessmentButton = false;
     const audio = new Audio();
     audio.src = this.promptStructure[this.promptNumber][0];
+    this.dataTitle=this.promptStructure[this.promptNumber][0];
     audio.onplaying = (ev: Event): any => (this.playingAudio = true);
     audio.ondurationchange = (en: Event): number =>
       (this.audioDurationMs = audio.duration * 1000 + 3000);

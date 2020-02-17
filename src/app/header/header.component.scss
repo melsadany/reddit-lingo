@@ -1,82 +1,82 @@
 header {
-    width: 100%;
-    .logo {
-      background-image: url('../../assets/in_use/icons/logo.png');
-      width: 50px;
-      height: 50px;
-      background-size: contain;
-      background-repeat: no-repeat;
-    }
-    .example-spacer {
-      flex: 1 1 auto;
-    }
-    .links {
-      color: white;
-      font-family: 'Helvetica Neue', sans-serif;
-      font-size: 15px;
-      font-weight: initial;
-      letter-spacing: -1px;
-      line-height: 1;
-      text-align: center;
-      padding: 15px;
-      &.side {
-        padding: 0 14px;
-      }
-    }
-    .mat-toolbar {
-      background: black;
-    }
-    .mat-icon {
-      vertical-align: middle;
-      margin: 0 5px;
-    }
-    a {
-      cursor: pointer;
-    }
+  width: 100%;
+  .logo {
+    background-image: url('../../assets/in_use/icons/logo.png');
+    width: 50px;
+    height: 50px;
+    background-size: contain;
+    background-repeat: no-repeat;
   }
-  
-  .recording {
-    z-index: 100;
-    position: sticky; top:0;
-    height: 20px;
-    background-color: #f44336; /* Red */
+  .example-spacer {
+    flex: 1 1 auto;
+  }
+  .links {
     color: white;
-    margin-bottom: 15px;
+    font-family: 'Helvetica Neue', sans-serif;
+    font-size: 15px;
+    font-weight: initial;
+    letter-spacing: -1px;
+    line-height: 1;
+    text-align: center;
+    padding: 15px;
+    &.side {
+      padding: 0 14px;
+    }
   }
-  .blink {
-    -webkit-animation: blink 4s linear infinite;
-    -moz-animation: blink 4s  linear infinite;
-    -ms-animation: blink 4s  linear infinite;
-    -o-animation: blink 4s  linear infinite;
-     animation: blink 4s  linear infinite;
+  .mat-toolbar {
+    background: black;
   }
-  @-webkit-keyframes blink {
-    0% { opacity: .75; }
-    50% { opacity: .5; }
-    75% { opacity: .25; }
-    100% { opacity: .15; }
+  .mat-icon {
+    vertical-align: middle;
+    margin: 0 5px;
   }
-  @-moz-keyframes blink {
-    0% { opacity: .75; }
-    50% { opacity: .5; }
-    75% { opacity: .25; }
-    100% { opacity: .15; }
+  a {
+    cursor: pointer;
   }
-  @-ms-keyframes blink {
-    0% { opacity: .75; }
-    50% { opacity: .5; }
-    75% { opacity: .25; }
-    100% { opacity: .15; }
-  }
-  @-o-keyframes blink {
-    0% { opacity: .75; }
-    50% { opacity: .5; }
-    75% { opacity: .25; }
-    100% { opacity: .15; }
-  }
-  @keyframes blink {
-    0% { opacity: .75; }
-    50% { opacity: .5; }
-    50.01% { opacity: .25; }
-    100% { opacity: .15; }
-  }
+}
+
+.recording {
+  z-index: 100;
+  position: sticky; top:0;
+  height: 20px;
+  background-color: #f44336; /* Red */
+  color: white;
+  margin-bottom: 15px;
+}
+.blink {
+  -webkit-animation: blink 4s linear infinite;
+  -moz-animation: blink 4s  linear infinite;
+  -ms-animation: blink 4s  linear infinite;
+  -o-animation: blink 4s  linear infinite;
+   animation: blink 4s  linear infinite;
+}
+@-webkit-keyframes blink {
+  0% { opacity: .75; }
+  50% { opacity: .5; }
+  75% { opacity: .25; }
+  100% { opacity: .15; }
+}
+@-moz-keyframes blink {
+  0% { opacity: .75; }
+  50% { opacity: .5; }
+  75% { opacity: .25; }
+  100% { opacity: .15; }
+}
+@-ms-keyframes blink {
+  0% { opacity: .75; }
+  50% { opacity: .5; }
+  75% { opacity: .25; }
+  100% { opacity: .15; }
+}
+@-o-keyframes blink {
+  0% { opacity: .75; }
+  50% { opacity: .5; }
+  75% { opacity: .25; }
+  100% { opacity: .15; }
+}
+@keyframes blink {
+  0% { opacity: .75; }
+  50% { opacity: .5; }
+  50.01% { opacity: .25; }
+  100% { opacity: .15; }
+}

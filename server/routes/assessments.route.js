@@ -45,8 +45,8 @@ router.get('/CheckUserExist/:user_id',(req,res) => {
 })
 
 //call if we want there to be a new written file if user doesnt exist 
-router.get('/GetUserAssessment/:user_id', (req, res) => {
-  const dataPromise = assessCtrl.getUserAssessmentData(req.params.user_id)
+router.get('/GetUserAssessment/:user_id/:date', (req, res) => {
+  const dataPromise = assessCtrl.getUserAssessmentData(req.params.user_id,req.params.date)
   dataPromise.then((data) => {
     res.set({
       'Content-Type': 'application/json',
@@ -72,9 +72,19 @@ router.get('/NextUserId', (req, res) => {
   })
 })
 */
+//adds ending time of finishing assessment
+router.get('/AddEndTime/:user_id',(req,res) => {
+  const dataPromise = assessCtrl.addEndTime(req.params.user_id)
+  dataPromise.then(() => {
+    res.set({
+      'Content-Type': 'application/json'
+    })
+    res.send({MyStatus:200});
+  }).catch((err) => {res.sendStatus(404, err)})
+});
 
-router.get('/InitializeSingleUserAssessment/:hash_key/:user_id', (req, res) => {
-  assessCtrl.sendHashKey(req.params.hash_key,req.params.user_id).then((data) => res.send(data)).catch((err) => {
+router.get('/InitializeSingleUserAssessment/:hash_key/:user_id/:date', (req, res) => {
+  assessCtrl.sendHashKey(req.params.hash_key,req.params.user_id,req.params.date).then((data) => res.send(data)).catch((err) => {
     console.log(err)
     res.send(err)
   })

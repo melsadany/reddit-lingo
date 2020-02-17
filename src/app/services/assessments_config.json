@@ -11,45 +11,66 @@
         "enabled": false,
         "useSpecificStartWord": false,
         "startWord": "cat",
-        "showRunningChoices": false,
+        "randomize":true,
+        "maxPrompts":1,
+        "showRunningChoices": true,
         "hideInstructionsOnAssessmentStart": true
       },
       "wordassociationpair": {
         "enabled": false,
         "useSpecificStartWord": false,
         "startWord": "cat",
+        "randomize":true,
+        "maxPrompts":0,
         "hideInstructionsOnAssessmentStart": true
       },
       "wordfinding": {
         "enabled": true,
+        "randomize":true,
+        "maxPrompts":3,
         "hideInstructionsOnAssessmentStart": false
       },
       "sentencerepetition": {
         "enabled": true,
+        "randomize":true,
+        "maxPrompts":0,
         "prompt_countdowns": [3]
       },
       "matrixreasoning": {
         "enabled": true,
-        "hideInstructionsOnAssessmentStart": true
+        "randomize":true,
+        "maxPrompts":3,
+        "hideInstructionsOnAssessmentStart": false
       },
       "syncvoice": {
         "enabled": true,
+        "randomize":true,
+        "maxPrompts":0,
         "hideInstructionsOnAssessmentStart": false
       },
       "timeduration": {
         "enabled": true,
+        "randomize":false,
+        "maxPrompts":100,
         "circle_durations": [5, 1.5, 0.5]
       },
       "ran": {
         "enabled": true,
-        "hideInstructionsOnAssessmentStart": true
+        "randomize":true,
+        "maxPrompts":0,
+        "hideInstructionsOnAssessmentStart": false
       },
       "listeningcomprehension": {
         "enabled": true,
+        "randomize":true,
+        "maxPrompts":3,
         "hideInstructionsOnAssessmentStart": false
       },
-      "pictureprompt": {
-        "enabled": true
+      "pictureprompt":{
+        "enabled":true,
+        "randomize":true,
+        "maxPrompts":3,
+        "hideInstructionsOnAssessmentStart": false
       },
       "postscreenerquestions": {
         "enabled": false
@@ -58,7 +79,7 @@
     "settings": {
       "countdownTimerLength": 3,
       "countdownTimerType": "circle",
-      "debugEnabled": false
+      "debugEnabled": true
     }
   }
 }
