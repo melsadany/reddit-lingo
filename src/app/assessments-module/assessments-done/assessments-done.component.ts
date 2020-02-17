@@ -17,13 +17,8 @@ export class AssessmentsDoneComponent implements OnInit {
 
   ngOnInit(): void {
     this.dataService.sendEndTime(this.dataService.getUserIdCookie()).subscribe();
-
-    if (!this.stateManager.MTurkAssignmentId){this.stateManager.MTurkAssignmentId=this.dataService.getAssignmentId();}
-    
-   // console.log ("after..and this.state.assignemntID = ",this.stateManager.MTurkAssignmentId)
     this.dataService.deleteHashKeyCookie();
     this.dataService.deleteUserIdCookie();
-    this.dataService.deleteAssignmentId();
-
+    
   }
 }
