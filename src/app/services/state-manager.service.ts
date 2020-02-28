@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {
   AssessmentData,
-  SingleAssessmentData,
+  HashKeyAssessmentData,
   AssetsObject
 } from '../structures/AssessmentDataStructures';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -46,7 +46,11 @@ export class StateManagerService {
   private _addHashToJson = false;
   private _hasDoneDiagnostics = false;
   private _contentRandomization = appConfig['appConfig']['settings']['contentRandomization'];
+  private _validateUserId= appConfig['appConfig']['settings']['validateUserId'];
 
+  public get validateUserId():string{
+    return this._validateUserId
+  }
   public get contentRandomization(): boolean {
     return this._contentRandomization;
   }
@@ -97,7 +101,6 @@ export class StateManagerService {
   public get isSingleAssessment():boolean{
     return this._isSingleAssessment;
   }
-
   public set playingInstruction(value: boolean) {
     this._playingInstruction = value;
   }
@@ -277,7 +280,7 @@ public  getUrlParameter(name:string) {
     var results = regex.exec(window.location.search);
     return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 };
-
+ 
   private configureEnabledAssessments(): void {
     const assessmentsConfig = this.appConfig['appConfig']['assessmentsConfig'];
     for (const assessmentName of Object.keys(assessmentsConfig)) {
@@ -309,12 +312,12 @@ public  getUrlParameter(name:string) {
     this.loadingState = false;
   }
   public initializeSingleAssessmentState(
-    singleAssessmentData: SingleAssessmentData | AssessmentData
+    hashKeyAssessmentData: HashKeyAssessmentData | AssessmentData
   ): void {
     const singleAssessmentName = this.hashKeyFirstFourMap(
       this.hashKey.slice(0, 4)
     );
-    for (const existingAssessment of singleAssessmentData.assessments) {
+    for (const existingAssessment of hashKeyAssessmentData.assessments) {
       const existingAssessmentName = existingAssessment['assess_name'];
       if (existingAssessment['completed']) {
         this.assessments[existingAssessmentName]['completed'] = true;
@@ -340,10 +343,10 @@ public  getUrlParameter(name:string) {
         // ); KRM: For debugging
       }
     }
-    if (!this.assessments['diagnostics']['completed']) {
+    if (this.assessments['diagnostics'] && !this.assessments['diagnostics']['completed']) {
       this.assessmentsLeftLinkedList.append('diagnostics');
     }
-    if (!this.assessments['prescreenerquestions']['completed']) {
+    if (this.assessments['prescreenerquestions'] && !this.assessments['prescreenerquestions']['completed']) {
       this.assessmentsLeftLinkedList.append('prescreenerquestions');
     }
     if (this.assessments[singleAssessmentName]['completed']) {
@@ -377,9 +380,11 @@ public  getUrlParameter(name:string) {
         const currentPromptNumber = this.determineCurrentPromptNumber(
           existingAssessment['data'][selector],existingAssessmentName
         );
+        //could be the case that the assessment is in existingAssesmentData but not configured anymore; BT
+        if (this.assessments[existingAssessmentName]){
         this.assessments[existingAssessmentName][
           'prompt_number'
-        ] = currentPromptNumber;
+        ] = currentPromptNumber;}
         // console.log(
         //   'On prompt number: ' +
         //     currentPromptNumber +
@@ -567,34 +572,34 @@ public  getUrlParameter(name:string) {
     const firstFour = hashKey.slice(0, 4);
     let assessmentName = '';
     switch (firstFour) {
-      case 'licr':
+      case 'lic$':
         assessmentName = 'listeningcomprehension';
         break;
-      case 'mtxr':
+      case 'mtx$':
         assessmentName = 'matrixreasoning';
         break;
-      case 'pcpt':
+      case 'pcp$':
         assessmentName = 'pictureprompt';
         break;
-      case 'rnan':
+      case 'rna$':
         assessmentName = 'ran';
         break;
-      case 'snpt':
+      case 'snp$':
         assessmentName = 'sentencerepetition';
         break;
-      case 'svie':
+      case 'svi$':
         assessmentName = 'syncvoice';
         break;
-      case 'tmdt':
+      case 'tmd$':
         assessmentName = 'timeduration';
         break;
       case 'wap$':
         assessmentName = 'wordassociationpath';
         break;
-      case 'wdap':
+      case 'wda$':
         assessmentName = 'wordassociationpair';
         break;
-      case 'rdfn':
+      case 'rdf$':
         assessmentName = 'wordfinding';
         break;
       default:
