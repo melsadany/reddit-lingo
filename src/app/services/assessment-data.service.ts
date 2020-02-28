@@ -45,9 +45,17 @@ export class AssessmentDataService {
   public set partialAssessmentData(value: AssessmentData) {
     this._partialAssessmentData = value;
   }
+  public returnTime(date :Date):string{
+    const month = ((date.getMonth()+1)<10?'0':'') + (date.getMonth()+1);
+    const theDate = (date.getDate()<10?'0':'') + date.getDate();
+    const hours = (date.getHours()<10?'0':'') + date.getHours();
+    const minutes= (date.getMinutes()<10?'0':'') + date.getMinutes();
+    return(date.getFullYear() + "-" + month + "-" + theDate + "T"  
+      + hours + ":" + minutes)
+  }
 
   public initializeData(): void {
-    if (!this.checkUserIdCookie()) {
+    if (!this.validateUserId(this.getUserIdCookie())) {
       this.setUserIdCookieAndSetData();
     } else {
       this.setData();
@@ -68,7 +76,7 @@ export class AssessmentDataService {
   public initializeHashKeyData(hashkey :string): Promise<string> {
     //checks if old hash is valid (if so, they need to finish it)
     if (this.validHashKey(this.getHashKeyCookie())){
-      if (this.checkUserIdCookie()){
+      if (this.validateUserId(this.getUserIdCookie())){
         this.currentUserId = this.getUserIdCookie()
         
       }
@@ -82,7 +90,7 @@ export class AssessmentDataService {
           this.setUserIdCookie(this.currentUserId);
       }
       else {
-        if (this.checkUserIdCookie()){
+        if (this.validateUserId(this.getUserIdCookie())){
           this.currentUserId = this.getUserIdCookie();
           if (this.getHashKeyCookie() != hashkey){
           this.stateManager.addHashToJson = true;
@@ -98,6 +106,22 @@ export class AssessmentDataService {
   }
     return  (new Promise((resolve) => {resolve (this.currentUserId)}));
     
+  }
+  public validateUserId(userId :string):boolean{
+    if(!userId)return false
+    if(this.stateManager.validateUserId!="*"){
+      const listStr = this.stateManager.validateUserId.split("/")
+       return (new RegExp(listStr[1],listStr[2])).test(userId)
+    }
+    else{
+      return true
+    }
+  }
+
+  public handleInvalidUserId(){
+    const con = confirm("Error: invalid user_id.")
+    this.deleteUserIdCookie()
+    window.location.assign('/')
   }
   
   public setHashKeyCookie(value: string): void {
@@ -193,9 +217,11 @@ export class AssessmentDataService {
   public getUserAssessmentDataFromFileSystem(
     user_id: string,date:string
   ): Observable<AssessmentData> {
-    return <Observable<AssessmentData>>(
+    if (this.validateUserId(user_id))
+      return <Observable<AssessmentData>>(
       this.http.get('/api/assessmentsAPI/GetUserAssessment/' + user_id+"/"+date)
     );
+    else this.handleInvalidUserId()
   }
 
   public getHashKeyAssessmentDataFromFileSystem(
@@ -206,8 +232,11 @@ export class AssessmentDataService {
     );
   }
   public sendEndTime(userId :string): Observable<any>{
-    return <Observable<any>>this.http.get('/api/assessmentsAPI/AddEndTime/'+userId);
-  }
+    const structure= {userId:userId,time:this.returnTime(new Date())}
+    if(this.validateUserId(userId))
+      return <Observable<any>>this.http.post('/api/assessmentsAPI/AddEndTime',structure,{responseType:'json'});
+    else this.handleInvalidUserId()
+    }
 
   public postAssessmentDataToFileSystem(
     assessmentsData: AssessmentDataStructure,
@@ -216,7 +245,7 @@ export class AssessmentDataService {
     let structure;
       //optional sendBackData boolean tells whether to send back data or just a success string
       //addHashkeyToJason check
-      if (this.checkUserIdCookie()){
+    if (this.validateUserId(this.getUserIdCookie())){
       structure = {
         sendBackData: sendBackData,
         addHashkeyToJson: this.stateManager.addHashToJson,
@@ -231,10 +260,7 @@ export class AssessmentDataService {
         responseType: 'json'
         });
      }
-     else {
-      window.location.assign('/')
-      return (JSON.parse("Error: no userID found."))
-     }
+    else this.handleInvalidUserId()
   }
 //post audio after first
   public postSingleAudioDataToMongo(
@@ -242,22 +268,20 @@ export class AssessmentDataService {
     googleData: GoogleSpeechToTextDataStructure
   ): Observable<string> {
     let structure;
-    if (this.checkUserIdCookie()){
-    structure = {
-      user_id: this.getUserIdCookie(),
-      addHashkeyToJson: this.stateManager.addHashToJson,
-      hash_key: this.getHashKeyCookie(),
-      assessments: [assessmentsData],
-      google_speech_to_text_assess: [googleData]
-    };
-    this.stateManager.addHashToJson = false;
-    return this.http.post('/api/assessmentsAPI/PushOnePieceData', structure, {
-      responseType: 'text'
-    });
+    if (this.validateUserId(this.getUserIdCookie())){
+      structure = {
+        user_id: this.getUserIdCookie(),
+        addHashkeyToJson: this.stateManager.addHashToJson,
+        hash_key: this.getHashKeyCookie(),
+        assessments: [assessmentsData],
+        google_speech_to_text_assess: [googleData]
+      };
+      this.stateManager.addHashToJson = false;
+      return this.http.post('/api/assessmentsAPI/PushOnePieceData', structure, {
+        responseType: 'text'
+      });
     }
-    else {
-      window.location.assign('/');
-     }
+    else this.handleInvalidUserId()
   }
 
 
@@ -272,15 +296,18 @@ export class AssessmentDataService {
 
   public sendHashKeyToServer(hashKey: string, userId: string,date:string): Observable<Object> {
     console.log("in sendHaskey to server with sendNewHash value "+ this.stateManager.addHashToJson)
-    return this.http.get(
-      '/api/assessmentsAPI/InitializeSingleUserAssessment/' + hashKey +'/'+ userId+'/'+date,
-      {}
-    );
+    if (this.validateUserId(userId))
+      return this.http.get(
+        '/api/assessmentsAPI/InitializeSingleUserAssessment/' + hashKey +'/'+ userId+'/'+date
+      );
+    else this.handleInvalidUserId()
   }
   public checkUserExist(user_id): Observable<AssessmentData> {
-    return <Observable<AssessmentData>>(
-      this.http.get('/api/assessmentsAPI/CheckUserExist/' + user_id)
-    );
+    if(this.validateUserId(user_id))
+      return <Observable<AssessmentData>>(
+        this.http.get('/api/assessmentsAPI/CheckUserExist/' + user_id)
+      );
+    else this.handleInvalidUserId()
   }
 
   public getAssets(

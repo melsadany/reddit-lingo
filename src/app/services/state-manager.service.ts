@@ -42,7 +42,11 @@ export class StateManagerService {
   private _addHashToJson = false;
   private _hasDoneDiagnostics = false;
   private _contentRandomization = appConfig['appConfig']['settings']['contentRandomization'];
+  private _validateUserId= appConfig['appConfig']['settings']['validateUserId'];
 
+  public get validateUserId():string{
+    return this._validateUserId
+  }
   public get contentRandomization(): boolean {
     return this._contentRandomization;
   }

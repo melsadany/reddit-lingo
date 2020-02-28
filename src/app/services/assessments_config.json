@@ -77,6 +77,7 @@
       }
     },
     "settings": {
+      "validateUserId":"*",
       "countdownTimerLength": 3,
       "countdownTimerType": "circle",
       "debugEnabled": true
