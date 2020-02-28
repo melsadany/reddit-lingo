@@ -72,10 +72,11 @@ router.get('/NextUserId', (req, res) => {
   })
 })
 */
+
 //adds ending time of finishing assessment
-router.get('/AddEndTime/:user_id',(req,res) => {
-  const dataPromise = assessCtrl.addEndTime(req.params.user_id)
-  dataPromise.then(() => {
+router.post('/AddEndTime',(req,res) => {
+  assessCtrl.addEndTime(req.body)
+    .then(() => {
     res.set({
       'Content-Type': 'application/json'
     })

@@ -40,7 +40,6 @@ const AssessmentSchemaValidator = Joi.object({
 })
 
 async function insertFreshAssessmentData(reqData) {
-  console.log('Insert fresh assessment data')
   await Joi.validate(reqData, AssessmentSchemaValidator, {
     abortEarly: false
   })
@@ -58,16 +57,14 @@ async function insertFreshAssessmentData(reqData) {
     fs.writeFile(fileName, freshData, err => {
       if (err) {
         console.log(err)
-        reject("Cant Write file!",err)
-      } else {
-        if (DEPLOYMENT_SPECIFIC_FOLDER){
-        uploadJSONFileToS3(
-          fileName,
-          S3_DATA_BUCKET_NAME,
-          path.join(DEPLOYMENT_SPECIFIC_FOLDER, userID, userID + '.json')
-        )}
-        resolve(freshData)
-      }
+      } 
+      if (DEPLOYMENT_SPECIFIC_FOLDER){
+      uploadJSONFileToS3(
+        fileName,
+        S3_DATA_BUCKET_NAME,
+        path.join(DEPLOYMENT_SPECIFIC_FOLDER, userID, userID + '.json')
+      )}
+      resolve(freshData)
     })
   })
 }
@@ -97,33 +94,33 @@ async function updateAssessmentData(reqData) {
           fs.writeFile(fileName, JSON.stringify(dataFile), err => {
             if (err) {
               console.log(err)
-              reject(err)
-            } else {
-              let localUploadPath
-              let S3UploadKey
-              if (DEPLOYMENT_SPECIFIC_FOLDER){
-                localUploadPath = path.join(
-                  LINGO_DATA_LOCAL_PATH,
-                  userID,
-                  userID + '.json'
-                )
-                S3UploadKey = path.join(
-                  DEPLOYMENT_SPECIFIC_FOLDER,
-                  userID,
-                  userID + '.json'
-                )
-                uploadJSONFileToS3(localUploadPath, S3_DATA_BUCKET_NAME, S3UploadKey)
-              }
-              resolve(dataFile)
             }
+            let localUploadPath
+            let S3UploadKey
+            if (DEPLOYMENT_SPECIFIC_FOLDER){
+              localUploadPath = path.join(
+                LINGO_DATA_LOCAL_PATH,
+                userID,
+                userID + '.json'
+              )
+              S3UploadKey = path.join(
+                DEPLOYMENT_SPECIFIC_FOLDER,
+                userID,
+                userID + '.json'
+              )
+              uploadJSONFileToS3(localUploadPath, S3_DATA_BUCKET_NAME, S3UploadKey)
+            }
+            resolve(dataFile)
           })
         }
-        else{reject(400)}
+        else{reject({"JsonNotFound":"The user json object was not found on the instance or s3."})}
       })
     })
   })
 }
-async function addEndTime(userID){
+async function addEndTime(body){
+  userID=body.userId
+
   fileName = path.join(LINGO_DATA_LOCAL_PATH, userID, userID + '.json')
   return new Promise((resolve, reject) => {
   fs.readFile(fileName, 'utf-8', (err, data) => {
@@ -131,45 +128,31 @@ async function addEndTime(userID){
     myPromise.then(result => {
       if (result){
         var dataFile = JSON.parse(result)
-        var date = new Date();
-
-        const month = ((date.getMonth()+1)<10?'0':'') + (date.getMonth()+1);
-        const theDate = (date.getDate()<10?'0':'') + date.getDate();
-        const hours = (date.getHours()<10?'0':'') + date.getHours();
-        const minutes= (date.getMinutes()<10?'0':'') + date.getMinutes();
-        const endTime = date.getFullYear() + "-" + month + "-" + theDate + "T"  
-        const endTime = date.getFullYear() + "-" + month + "-" + theDate + "T"  
-        const endTime = date.getFullYear() + "-" + month + "-" + theDate + "T"  
-          + hours + ":" + minutes
-      
-        dataFile.endTime = endTime
+        dataFile.endTime = body.time
 
         fs.writeFile(fileName, JSON.stringify(dataFile), err => {
           if (err) {
             console.log(err)
-            reject(err)
           } 
-          else {
-            let localUploadPath
-            let S3UploadPath
-            if (DEPLOYMENT_SPECIFIC_FOLDER){
-              localUploadPath = path.join(
-                LINGO_DATA_LOCAL_PATH,
-                userID,
-                userID + '.json'
-              )
-              S3UploadPath = path.join(
-                DEPLOYMENT_SPECIFIC_FOLDER,
-                userID,
-                userID + '.json'
-              )
-              uploadJSONFileToS3(localUploadPath, S3_DATA_BUCKET_NAME, S3UploadPath)
-            }
-            resolve(200)
+          let localUploadPath
+          let S3UploadPath
+          if (DEPLOYMENT_SPECIFIC_FOLDER){
+            localUploadPath = path.join(
+              LINGO_DATA_LOCAL_PATH,
+              userID,
+              userID + '.json'
+            )
+            S3UploadPath = path.join(
+              DEPLOYMENT_SPECIFIC_FOLDER,
+              userID,
+              userID + '.json'
+            )
+            uploadJSONFileToS3(localUploadPath, S3_DATA_BUCKET_NAME, S3UploadPath)
           }
+          resolve(200)
         })
       }
-      else{reject(400)}
+      else{reject({"JsonNotFound":"The user json object was not found on the instance or s3."})}
     })
   })
   resolve(200);}).catch(e => {console.log(e);resolve(400)});
@@ -216,29 +199,28 @@ async function pushOnePieceAssessmentData(reqData) {
           fs.writeFile(fileName, JSON.stringify(dataFile), err => {
             if (err) {
               console.log(err)
-              reject(err)
-            } else {
-              let localUploadPath
-              let S3UploadPath
-              if (DEPLOYMENT_SPECIFIC_FOLDER){
-                localUploadPath = path.join(
-                  LINGO_DATA_LOCAL_PATH,
-                  userID,
-                  userID + '.json'
-                )
-                S3UploadPath = path.join(
-                  DEPLOYMENT_SPECIFIC_FOLDER,
-                  userID,
-                  userID + '.json'
-                )
-              
-                uploadJSONFileToS3(localUploadPath, S3_DATA_BUCKET_NAME, S3UploadPath)
-              }
-              resolve(dataFile)
+            } 
+            let localUploadPath
+            let S3UploadPath
+            if (DEPLOYMENT_SPECIFIC_FOLDER){
+              localUploadPath = path.join(
+                LINGO_DATA_LOCAL_PATH,
+                userID,
+                userID + '.json'
+              )
+              S3UploadPath = path.join(
+                DEPLOYMENT_SPECIFIC_FOLDER,
+                userID,
+                userID + '.json'
+              )
+            
+              uploadJSONFileToS3(localUploadPath, S3_DATA_BUCKET_NAME, S3UploadPath)
             }
+            resolve(dataFile)
+
           })
         }
-        else{reject(400)}
+        else{reject({"JsonNotFound":"The user json object was not found on the instance or s3."})}
       })
     })
   })
@@ -252,7 +234,7 @@ function checkUserExist(searchUserId){
       if (err) {
         console.log("File not found on instance")
 
-        result = getObjectFromS3(fileName,userID).then(result =>resolve(JSON.parse(result)))
+        getObjectFromS3(fileName,userID).then(result =>resolve(JSON.parse(result)))
       
       } else {
         resolve(JSON.parse(data))
@@ -267,19 +249,22 @@ function getUserAssessmentData(searchUserId,date) {
   const fileName = path.join(LINGO_DATA_LOCAL_PATH, userID, userID + '.json')
   return new Promise((resolve, reject) => {
     fs.readFile(fileName, 'utf-8', (err, data) => {
-      if (err) {
-        resolve(
-          insertFreshAssessmentData({
-            user_id: userID,
-            hash_keys: [],
-            assessments: [],
-            google_speech_to_text_assess: [],
-            startTime: date
-          })
-        )
-      } else {
-        resolve(JSON.parse(data))
-      }
+      var myPromise = checkJsonExist(err,data,fileName,userID);
+      myPromise.then(result => {
+        if (result==false){
+          resolve(
+            insertFreshAssessmentData({
+              user_id: userID,
+              hash_keys: [],
+              assessments: [],
+              google_speech_to_text_assess: [],
+              startTime: date
+            })
+          )
+        } else {
+          resolve(JSON.parse(result))
+        }
+      })
     })
   })
 }
@@ -318,7 +303,10 @@ function saveWavFile(reqData, userID, selector, bucketName) {
     {
       encoding: 'base64'
     },
-    () => {
+    (err) => {
+      if (err) {
+        console.log(err)
+      } 
       // console.log('saved file')
       // KRM: For debugging
       let S3UploadPath
@@ -347,12 +335,15 @@ function sendHashKey(hashKey,userId,date) {
   )
   return new Promise((resolve, reject) => {
     fs.readFile(fileName, 'utf-8', (err, data) => {
-      if (err) {
-        console.log(err) // KRM: User hasn't used this hash key before
-        resolve(insertNewHashKeyJson(hashKey,userId,date))
-      } else {
-        resolve(JSON.parse(data)) // KRM: Send back their data if it already exists
-      }
+      var myPromise = checkJsonExist(err,data,fileName,userID);
+      myPromise.then(result => {
+        if (result==false){
+          console.log(err) // KRM: User hasn't used this hash key before
+          resolve(insertNewHashKeyJson(hashKey,userId,date))
+        } else {
+          resolve(JSON.parse(result)) // KRM: Send back their data if it already exists
+        }
+      })
     })
   })
 }
@@ -376,7 +367,6 @@ function insertNewHashKeyJson(hashKey,userId,date) {
         path.join(LINGO_DATA_LOCAL_PATH, userId)
       )
     ) {
-      console.log('Making HashKey directory')
       fs.mkdirSync(
         path.join(LINGO_DATA_LOCAL_PATH, userId),
         {
@@ -387,22 +377,20 @@ function insertNewHashKeyJson(hashKey,userId,date) {
     fs.writeFile(fileName, freshData, err => {
       if (err) {
         console.log(err)
-        reject(err)
-      } else {
-        console.log('Successfully saved new HashKey json')
-        if (DEPLOYMENT_SPECIFIC_FOLDER){
-          uploadJSONFileToS3(
-            fileName,
-            S3_DATA_BUCKET_NAME,
-            path.join(
-              DEPLOYMENT_SPECIFIC_FOLDER,
-              userId,
-              userId + '.json'
-            )
-          )
-        }
-        resolve(freshData)
       }
+      console.log('Successfully saved new HashKey json')
+      if (DEPLOYMENT_SPECIFIC_FOLDER){
+        uploadJSONFileToS3(
+          fileName,
+          S3_DATA_BUCKET_NAME,
+          path.join(
+            DEPLOYMENT_SPECIFIC_FOLDER,
+            userId,
+            userId + '.json'
+          )
+        )
+      }
+      resolve(freshData)
     })
   })
 }
@@ -514,9 +502,12 @@ function getMatrixReasoningImgAssets(assetFolder) {
 async function checkJsonExist(err,data,fileName,userID){
   return  new Promise((resolve,reject)=>{
     if (err) {
-      console.log("couldn't find the file in the instance")
-      console.log(err)
-      getObjectFromS3(fileName,userID).then(result => resolve(result))}
+      if (err.code==="ENOENT"){
+        console.log("couldn't find the file in the instance")
+        console.log(err.code)}
+      else{console.log("something went wrong..");console.log(err)}
+      getObjectFromS3(fileName,userID).then(result => resolve(result))
+    }
    else{resolve(data)}
   })
 }
@@ -533,8 +524,13 @@ async function getObjectFromS3(fileName,userID) {
       };
       
       S3.getObject(params, function(err, data) {
-        if (err) {console.log("couldn't find json in s3");console.log(err); resolve(false) }// an error occurred
+        if (err) {// an error occurred
+          if (err.code==="NoSuchKey"){ 
+            console.log("couldn't find json in s3");console.log(err.code,":",err.message)}
+          else console.log(err); 
+          resolve(false)}
         else{   // successful response
+          console.log("successfully found in s3")
           if (!fs.existsSync(path.join(LINGO_DATA_LOCAL_PATH, userID))) {
             fs.mkdirSync(path.join(LINGO_DATA_LOCAL_PATH, userID), {
               recursive: true

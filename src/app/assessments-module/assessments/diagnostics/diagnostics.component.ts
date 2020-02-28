@@ -303,12 +303,7 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
 
   //this creates the files in the directory of the server since this assessment is finished
   didRecordCorrectly(): void {
-    const month = ((this.date.getMonth()+1)<10?'0':'') + (this.date.getMonth()+1);
-    const theDate = (this.date.getDate()<10?'0':'') + this.date.getDate();
-    const hours = (this.date.getHours()<10?'0':'') + this.date.getHours();
-    const minutes= (this.date.getMinutes()<10?'0':'') + this.date.getMinutes();
-    const startTime = this.date.getFullYear() + "-" + month + "-" + theDate + "T"  
-      + hours + ":" + minutes
+    const startTime =this.dataService.returnTime(this.date)
    
     console.log(startTime)
 
