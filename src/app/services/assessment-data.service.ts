@@ -53,7 +53,7 @@ export class AssessmentDataService {
   }
 
   public initializeData(): void {
-    if (!this.checkUserIdCookie()) {
+    if (!this.validateUserId(this.getUserIdCookie())) {
       this.setUserIdCookieAndSetData();
     } else {
       this.setData();
@@ -74,7 +74,7 @@ export class AssessmentDataService {
   public initializeHashKeyData(hashkey :string): Promise<string> {
     //checks if old hash is valid (if so, they need to finish it)
     if (this.validHashKey(this.getHashKeyCookie())){
-      if (this.checkUserIdCookie()){
+      if (this.validateUserId(this.getUserIdCookie())){
         this.currentUserId = this.getUserIdCookie()
         
       }
@@ -88,7 +88,7 @@ export class AssessmentDataService {
           this.setUserIdCookie(this.currentUserId);
       }
       else {
-        if (this.checkUserIdCookie()){
+        if (this.validateUserId(this.getUserIdCookie())){
           this.currentUserId = this.getUserIdCookie();
           if (this.getHashKeyCookie() != hashkey){
           this.stateManager.addHashToJson = true;
@@ -296,15 +296,16 @@ export class AssessmentDataService {
     console.log("in sendHaskey to server with sendNewHash value "+ this.stateManager.addHashToJson)
     if (this.validateUserId(userId))
       return this.http.get(
-        '/api/assessmentsAPI/InitializeSingleUserAssessment/' + hashKey +'/'+ userId+'/'+date,
-        {}
+        '/api/assessmentsAPI/InitializeSingleUserAssessment/' + hashKey +'/'+ userId+'/'+date
       );
     else this.handleInvalidUserId()
   }
   public checkUserExist(user_id): Observable<AssessmentData> {
-    return <Observable<AssessmentData>>(
-      this.http.get('/api/assessmentsAPI/CheckUserExist/' + user_id)
-    );
+    if(this.validateUserId(user_id))
+      return <Observable<AssessmentData>>(
+        this.http.get('/api/assessmentsAPI/CheckUserExist/' + user_id)
+      );
+    else this.handleInvalidUserId()
   }
 
   public getAssets(

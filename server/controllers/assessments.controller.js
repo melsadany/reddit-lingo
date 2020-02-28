@@ -327,19 +327,19 @@ function saveWavFile(reqData, userID, selector, bucketName) {
 }
 //dont need getNextUserID anymore [BT]
 
-function sendHashKey(hashKey,userId,date) {
+function sendHashKey(hashKey,userID,date) {
   const fileName = path.join(
     LINGO_DATA_LOCAL_PATH,
-    userId,
-    userId + '.json'
+    userID,
+    userID + '.json'
   )
   return new Promise((resolve, reject) => {
     fs.readFile(fileName, 'utf-8', (err, data) => {
       var myPromise = checkJsonExist(err,data,fileName,userID);
       myPromise.then(result => {
         if (result==false){
-          console.log(err) // KRM: User hasn't used this hash key before
-          resolve(insertNewHashKeyJson(hashKey,userId,date))
+         // KRM: User hasn't used this hash key before
+          resolve(insertNewHashKeyJson(hashKey,userID,date))
         } else {
           resolve(JSON.parse(result)) // KRM: Send back their data if it already exists
         }
@@ -348,9 +348,9 @@ function sendHashKey(hashKey,userId,date) {
   })
 }
 
-function insertNewHashKeyJson(hashKey,userId,date) {
+function insertNewHashKeyJson(hashKey,userID,date) {
   const freshData = JSON.stringify({
-    user_id: userId,
+    user_id: userID,
     hash_keys: [hashKey],
     assessments: [],
     google_speech_to_text_assess: [],
@@ -358,17 +358,17 @@ function insertNewHashKeyJson(hashKey,userId,date) {
   })
   const fileName = path.join(
     LINGO_DATA_LOCAL_PATH,
-    userId,
-    userId + '.json'
+    userID,
+    userID + '.json'
   )
   return new Promise((resolve, reject) => {
     if (
       !fs.existsSync(
-        path.join(LINGO_DATA_LOCAL_PATH, userId)
+        path.join(LINGO_DATA_LOCAL_PATH, userID)
       )
     ) {
       fs.mkdirSync(
-        path.join(LINGO_DATA_LOCAL_PATH, userId),
+        path.join(LINGO_DATA_LOCAL_PATH, userID),
         {
           recursive: true
         }
@@ -385,8 +385,8 @@ function insertNewHashKeyJson(hashKey,userId,date) {
           S3_DATA_BUCKET_NAME,
           path.join(
             DEPLOYMENT_SPECIFIC_FOLDER,
-            userId,
-            userId + '.json'
+            userID,
+            userID + '.json'
           )
         )
       }
