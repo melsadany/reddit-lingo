@@ -7,6 +7,12 @@
       "prescreenerquestions": {
         "enabled": false
       },
+    "syncvoice": {
+        "enabled": true,
+        "randomize":false,
+        "maxPrompts":0,
+        "hideInstructionsOnAssessmentStart": false
+      },
       "wordassociationpath": {
         "enabled": false,
         "useSpecificStartWord": false,
@@ -40,12 +46,6 @@
         "enabled": true,
         "randomize":true,
         "maxPrompts":3,
-        "hideInstructionsOnAssessmentStart": false
-      },
-      "syncvoice": {
-        "enabled": true,
-        "randomize":true,
-        "maxPrompts":0,
         "hideInstructionsOnAssessmentStart": false
       },
       "timeduration": {
