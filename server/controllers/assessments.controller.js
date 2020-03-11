@@ -30,6 +30,8 @@ job.start();
 
 const S3_DATA_BUCKET_NAME = 'lingo-assessment-data'
 const DEPLOYMENT_SPECIFIC_FOLDER = process.env.LINGO_FOLDER
+const S3_VALID_IDS_BUCKET = 'valid-hashes'
+const S3_VALID_IDS_FILE= 'valid_hashes.txt'
 
 const AssessmentSchemaValidator = Joi.object({
   user_id: Joi.string().required(),
@@ -596,6 +598,25 @@ function putObjectToS3(params, logData) {
   })
 }
 
+function validateHashWithS3(hashKey){
+  return  new Promise((resolve,reject)=>{
+    var params = {
+      Bucket: S3_VALID_IDS_BUCKET, 
+      Key: S3_VALID_IDS_FILE,
+      ResponseContentType:'text'
+    };
+    
+    S3.getObject(params, function(err, data) {
+      if (err){console.log("Error getting s3 valid ids file");console.log(err);resolve(false)}
+      else {
+        let valid_ids= data.Body.toString().split('\n')
+        let matches = valid_ids.filter(element => element==hashKey)
+        resolve(matches.length>0)
+      }
+    })
+  })
+}
+
 module.exports = {
   insertFreshAssessmentData,
   pushOnePieceAssessmentData,
@@ -606,5 +627,6 @@ module.exports = {
   getAssets,
   checkUserExist,
   checkJsonExist,
-  getObjectFromS3
+  getObjectFromS3,
+  validateHashWithS3
 }

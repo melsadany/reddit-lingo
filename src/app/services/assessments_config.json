@@ -77,7 +77,10 @@
       }
     },
     "settings": {
+      "hashkeyAsGUID":false,
+      "endUrl":"",
       "validateUserId":"*",
+      "validateHashWithS3":false,
       "countdownTimerLength": 3,
       "countdownTimerType": "circle",
       "debugEnabled": true
