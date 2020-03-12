@@ -2,8 +2,9 @@ const Joi = require('joi')
 const fs = require('fs-extra')
 const path = require('path')
 const AWS = require('aws-sdk')
+AWS.config.update({region:'us-east-1'});
 const S3 = new AWS.S3()
-
+const lambda = new AWS.Lambda();
 const LINGO_DATA_LOCAL_PATH = path.join(
   __dirname,
   '../',
@@ -29,7 +30,7 @@ var job = new CronJob('0 4 0 * * *', function() {
 job.start();
 
 const S3_DATA_BUCKET_NAME = 'lingo-assessment-data'
-const DEPLOYMENT_SPECIFIC_FOLDER = process.env.LINGO_FOLDER
+const DEPLOYMENT_SPECIFIC_FOLDER =process.env.LINGO_FOLDER
 const S3_VALID_IDS_BUCKET = 'valid-hashes'
 const S3_VALID_IDS_FILE= 'valid_hashes.txt'
 
@@ -562,10 +563,11 @@ function uploadJSONFileToS3(localJSONLocation, S3Bucket, objectKeyName) {
     localName: localJSONLocation,
     S3Bucket: S3Bucket,
     objectKeyName: objectKeyName
-  })
+  },false)
 }
 
 function uploadWavToS3(localWavFileName, S3Bucket, objectKeyName) {
+  console.log("uploadingWavToS3...")
   let body = fs.readFileSync(localWavFileName)
   let params = {
     Bucket: S3Bucket,
@@ -578,10 +580,10 @@ function uploadWavToS3(localWavFileName, S3Bucket, objectKeyName) {
     localName: localWavFileName,
     S3Bucket: S3Bucket,
     objectKeyName: objectKeyName
-  })
+  },true)
 }
 
-function putObjectToS3(params, logData) {
+function putObjectToS3(params, logData,wavFile) {
   S3.putObject(params, (err, data) => {
     if (err) {
       console.log(err)
@@ -594,6 +596,7 @@ function putObjectToS3(params, logData) {
           '/' +
           logData.objectKeyName
       )
+      if(wavFile)transcribeAudioAndSendToS3(logData)
     }
   })
 }
@@ -617,6 +620,56 @@ function validateHashWithS3(hashKey){
   })
 }
 
+function transcribeAudioAndSendToS3(logData){
+
+  console.log("in transcribe function")
+  console.log(logData.objectKeyName, "<- keyname")
+  console.log(logData.S3Bucket, "<- bucket")
+  /*
+  const options = {
+    hostname: '',
+    port: 443,
+    path: '/default/transcribeRecordings?path=' +logData.objectKeyName+"&"+"bucket="+logData.S3Bucket,
+    method: 'GET',
+    headers: {
+      'x-api-key': "",
+      //'Content-Type': 'application/x-www-form-urlencoded',
+      //'Content-Length': postData.length
+    }
+  }
+  var req = https.get(options,res =>{
+    console.log("making request")   
+    console.log("options:")
+    console.log(JSON.stringify(options))
+    console.log(`statusCode: ${res.statusCode}`)
+    let data=''
+    res.on('data', d => {
+      data+=d
+    })
+    
+    res.on('end',d => {
+      console.log(data.toString())
+      console.log("done!")
+    })
+  }).on("error",(err) => {
+    console.log("there was an error", err)
+  })
+  console.log("the request")
+  console.log(req)
+  */
+ var params = {
+    FunctionName: "arn:aws:lambda:us-east-1:000246156158:function:transcribeRecordings", 
+    ClientContext: "none", 
+    InvocationType: "Event", 
+    LogType: "Tail", 
+    Payload: JSON.stringify(logData), 
+ };
+ lambda.invoke(params, function(err, data) {
+   if (err) console.log(err, err.stack); // an error occurred
+   else     console.log(data); console.log("sucessfully invoked transcribe lamda")          // successful response
+  });
+}
+
 module.exports = {
   insertFreshAssessmentData,
   pushOnePieceAssessmentData,
@@ -628,5 +681,6 @@ module.exports = {
   checkUserExist,
   checkJsonExist,
   getObjectFromS3,
-  validateHashWithS3
+  validateHashWithS3,
+  transcribeAudioAndSendToS3
 }
