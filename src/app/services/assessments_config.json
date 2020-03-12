@@ -77,10 +77,10 @@
       }
     },
     "settings": {
-      "hashkeyAsGUID":false,
-      "endUrl":"",
+      "hashkeyAsGUID":true,
+      "endUrl":"https://whotv.com/weather",
       "validateUserId":"*",
-      "validateHashWithS3":false,
+      "validateHashWithS3":true,
       "countdownTimerLength": 3,
       "countdownTimerType": "circle",
       "debugEnabled": true
