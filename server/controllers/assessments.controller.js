@@ -31,8 +31,6 @@ job.start();
 
 const S3_DATA_BUCKET_NAME = 'lingo-assessment-data'
 const DEPLOYMENT_SPECIFIC_FOLDER =process.env.LINGO_FOLDER
-const S3_VALID_IDS_BUCKET = 'valid-hashes'
-const S3_VALID_IDS_FILE= 'valid_hashes.txt'
 
 const AssessmentSchemaValidator = Joi.object({
   user_id: Joi.string().required(),
@@ -603,60 +601,28 @@ function putObjectToS3(params, logData,wavFile) {
 
 function validateHashWithS3(hashKey){
   return  new Promise((resolve,reject)=>{
-    var params = {
-      Bucket: S3_VALID_IDS_BUCKET, 
-      Key: S3_VALID_IDS_FILE,
-      ResponseContentType:'text'
-    };
-    
-    S3.getObject(params, function(err, data) {
-      if (err){console.log("Error getting s3 valid ids file");console.log(err);resolve(false)}
-      else {
-        let valid_ids= data.Body.toString().split('\n')
-        let matches = valid_ids.filter(element => element==hashKey)
-        resolve(matches.length>0)
-      }
-    })
+    if (DEPLOYMENT_SPECIFIC_FOLDER){
+      var params = {
+        Bucket: S3_DATA_BUCKET_NAME, 
+        Key: DEPLOYMENT_SPECIFIC_FOLDER+"/valid_hashes.txt",
+        ResponseContentType:'text'
+      };
+      console.log(JSON.stringify(params))
+      S3.getObject(params, function(err, data) {
+        if (err){console.log("Error getting s3 valid ids file");console.log(err);resolve(false)}
+        else {
+          let valid_ids= data.Body.toString().split('\n')
+          let matches = valid_ids.filter(element => element==hashKey)
+          resolve(matches.length>0)
+        }
+      })
+    }
+    else resolve(true)
   })
 }
 
 function transcribeAudioAndSendToS3(logData){
 
-  console.log("in transcribe function")
-  console.log(logData.objectKeyName, "<- keyname")
-  console.log(logData.S3Bucket, "<- bucket")
-  /*
-  const options = {
-    hostname: '',
-    port: 443,
-    path: '/default/transcribeRecordings?path=' +logData.objectKeyName+"&"+"bucket="+logData.S3Bucket,
-    method: 'GET',
-    headers: {
-      'x-api-key': "",
-      //'Content-Type': 'application/x-www-form-urlencoded',
-      //'Content-Length': postData.length
-    }
-  }
-  var req = https.get(options,res =>{
-    console.log("making request")   
-    console.log("options:")
-    console.log(JSON.stringify(options))
-    console.log(`statusCode: ${res.statusCode}`)
-    let data=''
-    res.on('data', d => {
-      data+=d
-    })
-    
-    res.on('end',d => {
-      console.log(data.toString())
-      console.log("done!")
-    })
-  }).on("error",(err) => {
-    console.log("there was an error", err)
-  })
-  console.log("the request")
-  console.log(req)
-  */
  var params = {
     FunctionName: "arn:aws:lambda:us-east-1:000246156158:function:transcribeRecordings", 
     ClientContext: "none", 
@@ -666,7 +632,7 @@ function transcribeAudioAndSendToS3(logData){
  };
  lambda.invoke(params, function(err, data) {
    if (err) console.log(err, err.stack); // an error occurred
-   else     console.log(data); console.log("sucessfully invoked transcribe lamda")          // successful response
+   else     console.log("sucessfully invoked transcribe lamda")          // successful response
   });
 }
 
