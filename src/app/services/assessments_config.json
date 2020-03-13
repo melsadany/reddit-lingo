@@ -77,10 +77,10 @@
       }
     },
     "settings": {
-      "hashkeyAsGUID":true,
-      "endUrl":"",
-      "validateUserId":"*",
+      "hashkeyAsGUID":true,   
       "validateHashWithS3":true,
+      "validateUserId":"*",
+      "endUrl":"",
       "countdownTimerLength": 3,
       "countdownTimerType": "circle",
       "debugEnabled": true
