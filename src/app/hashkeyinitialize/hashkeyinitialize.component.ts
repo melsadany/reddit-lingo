@@ -9,8 +9,9 @@ import { SingleAssessmentData, AssessmentData } from '../structures/AssessmentDa
   templateUrl: './hashkeyinitialize.component.html',
   styleUrls: ['./hashkeyinitialize.component.scss']
 })
-export class HashkeyinitializeComponent {
-  constructor(
+export  class  HashkeyinitializeComponent {
+  public loading=true;
+   constructor(
     private route: ActivatedRoute,
     private routerServie: Router,
     private stateManager: StateManagerService,
@@ -19,7 +20,8 @@ export class HashkeyinitializeComponent {
     const userHashKey = this.route.snapshot.paramMap.get('hashKey');
     // KRM: Here is where we verify the hash key based on some predetermined parameters.
     // if they are returning, they continue, else, they get served diagnostics before getting a file created.
-    if (this.validHashKey(userHashKey)) {
+    this.validHashKey(userHashKey).then(result => {
+    if (result) {
       this.stateManager.hashKey = userHashKey;
       let userIdPromise = this.dataService.initializeHashKeyData(userHashKey);
       userIdPromise.then( (userId:string) => {
@@ -29,7 +31,7 @@ export class HashkeyinitializeComponent {
         .subscribe((data: AssessmentData | boolean) => {
           //adds diagnostics to list of assessments to take since asssessment list will be empty since they don't have a file yet
           this.stateManager.serveDiagnostics();
-          if (data==false){
+          if (data==false){  //need this because data can only be assessment data or false
           }
           else {
             this.stateManager.hasDoneDiagnostics=true;
@@ -51,26 +53,35 @@ export class HashkeyinitializeComponent {
       );
     } 
     else {
+      this.loading=false;
       //show the haskeyinitialize.component.html error page
       console.log('bad hkey');
-      this.routerServie.navigate(['home']);
-    }
+
+      //this.routerService.navigate(['home']);
+    }})
   }
 
   // KRM: This is the method that validates the hash key
   // Right now, all it does is make sure that the first four characters
   // map very basically to an assessment name. More interesting hash keys
   // need a more sophisticated parameterization.
-  validHashKey(hashKey: string): boolean {
+  validHashKey(hashKey: string): Promise<boolean> {
+    return new Promise((res,rej)=>{
+    if (this.stateManager.hashkeyAsGUID){
+      if (this.stateManager.validateHashWithS3){
+          this.dataService.validateHashWithS3(hashKey).subscribe(result =>{
+            res(result) 
+          })  
+      }
+      else res(this.dataService.validateUserId(hashKey)) 
+    }
     // if it matches 8 or 12 anyletter/anynumbered hash (with no underscores) :BT
-  
-
-    if (hashKey.length==12 && hashKey.slice(4).match(/^\w+$/gmi) && this.stateManager.hashKeyFirstFourMap(hashKey) !== 'home'){
+    else if (hashKey.length==12 && hashKey.slice(4).match(/^\w+$/gmi) && this.stateManager.hashKeyFirstFourMap(hashKey) !== 'home'){
       this.stateManager.isSingleAssessment=true;
   
-      return true
+      res(true) 
     }
-   
-    return true
+    else res(true)
+    })
   }
 }

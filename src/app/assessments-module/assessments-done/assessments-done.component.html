@@ -1,5 +1,6 @@
-<div class="pb-5 text-center">
+<div *ngIf="!stateManager.endUrl || stateManager.completedAssessmentsAlready " class='pb-5 text-center'>
   <p class="py-4 text-center">All assessments have been completed.</p>
+  <p *ngIf="stateManager.completedAssessmentsAlready" class="py-4 text-center">Looks like the hash you provided has already been completed. Make sure you have the correct Url with the correct hash ending.</p>
   <div>
     <!------- FOR TEST MTURK --------->
      <form  
@@ -38,4 +39,7 @@
       </button>
     </form>
   </div>
+</div>
+<div *ngIf="stateManager.endUrl && !stateManager.completedAssessmentsAlready" class='pb-5 text-center'>
+<p class="py-4 text-center">Please wait while we redirect you to the confirmation webpage.</p>
 </div>

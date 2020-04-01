@@ -47,7 +47,26 @@ export class StateManagerService {
   private _hasDoneDiagnostics = false;
   private _contentRandomization = appConfig['appConfig']['settings']['contentRandomization'];
   private _validateUserId= appConfig['appConfig']['settings']['validateUserId'];
-
+  private _endUrl= appConfig['appConfig']['settings']["endUrl"]
+  private _hashkeyAsGUID= appConfig['appConfig']['settings']["hashkeyAsGUID"]
+  private _completedAssessmentsAlready:boolean;
+  private _validateHashWithS3= appConfig['appConfig']['settings']["validateHashWithS3"]
+  
+  public get validateHashWithS3(): boolean {
+    return this._validateHashWithS3;
+  }
+  public get completedAssessmentsAlready(): boolean {
+    return this._completedAssessmentsAlready;
+  }
+  public set completedAssessmentsAlready(value: boolean) {
+    this._completedAssessmentsAlready = value;
+  }
+  public get endUrl():string{
+    return this._endUrl
+  }
+  public get hashkeyAsGUID():boolean{
+    return this._hashkeyAsGUID
+  }
   public get validateUserId():string{
     return this._validateUserId
   }
@@ -355,6 +374,10 @@ public  getUrlParameter(name:string) {
     } else {
       this.assessmentsLeftLinkedList.append(singleAssessmentName);
     }
+    if (this.assessmentsLeftLinkedList.length<2){
+      this.assessmentsLeftLinkedList.removeHead()
+      this.completedAssessmentsAlready=true;
+    }
     this.loadingState = false;
   }
 
@@ -405,6 +428,10 @@ public  getUrlParameter(name:string) {
       this.showOutsideAssessmentButton = false;
     }
     this.loadingState = false;
+    if (this.assessmentsLeftLinkedList.length<2){
+      this.assessmentsLeftLinkedList.removeHead()
+      this.completedAssessmentsAlready=true;
+    }
   }
   private determineCurrentPromptNumber(existingData: Array<Object>,assess_name:string): number {
     this.createPromptsDone(existingData,assess_name);
