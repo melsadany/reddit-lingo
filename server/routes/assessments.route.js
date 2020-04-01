@@ -99,4 +99,10 @@ router.get('/GetAssets', (req, res) => {
   }).catch(err => console.log(err))
 })
 
+router.get('/validateHashWithS3/:hash_key',(req,res) => {
+  assessCtrl.validateHashWithS3(req.params.hash_key)
+  .then((data) => {
+      res.send(data)
+  }).catch((err) => res.sendStatus(404, err))
+})
 module.exports = router

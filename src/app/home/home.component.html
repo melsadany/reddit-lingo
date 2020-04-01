@@ -1,4 +1,4 @@
-<div *ngIf="!stateManager.chromeiOs">
+<div *ngIf="!stateManager.chromeiOs && !showHashError">
   <p>Thank you for your interest in our research! The purpose of this study is to better understand the specific factors
     that contribute to individual differences in language ability. Approximately 5,000 people will take part in this
     study at the University of Iowa. All individuals must be over the age of eighteen.</p>
@@ -30,6 +30,9 @@
       </div>
     </div>
   </div>
+</div>
+<div *ngIf="showHashError"class="mx-lg-5 " style="padding-top: 30px;">
+  <p> Sorry, there was an error. There was no provided hashkey. Please make sure you have a valid hashkey.</p>
 </div>
 <div *ngIf="stateManager.chromeiOs">
   <p>

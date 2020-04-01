@@ -63,9 +63,10 @@ export class AssessmentDataService {
     }
   }
   public validHashKey(hashKey: string): boolean {
-    // if it matches 8 or 12 anyletter/anynumbered hash (with no underscores) :BT
-  
-
+    // if it matches 8 or 12 anyletter/anynumbered hash and is single assessment type (with no underscores) :BT
+    if (this.stateManager.hashkeyAsGUID){
+      return this.validateUserId(hashKey)
+    }
     if (hashKey.length==12 && hashKey.slice(4).match(/^\w+$/gmi) && this.stateManager.hashKeyFirstFourMap(hashKey) !== 'home'){
       this.stateManager.isSingleAssessment = true;
       return true
@@ -74,13 +75,21 @@ export class AssessmentDataService {
   }
 
   public initializeHashKeyData(hashkey :string): Promise<string> {
+    
+    if (this.stateManager.hashkeyAsGUID){
+      this.currentUserId=hashkey;
+      this.setUserIdCookie(hashkey)
+      this.setHashKeyCookie(hashkey);
+      this.stateManager.hashKey = hashkey;
+    }
     //checks if old hash is valid (if so, they need to finish it)
-    if (this.validHashKey(this.getHashKeyCookie())){
+    else if (this.validHashKey(this.getHashKeyCookie())){
       if (this.validateUserId(this.getUserIdCookie())){
         this.currentUserId = this.getUserIdCookie()
         
       }
-      else{ this.currentUserId = this.generateNewUserId()}
+      else{ this.currentUserId = this.generateNewUserId()
+        this.setUserIdCookie(this.currentUserId);}
       this.stateManager.hashKey = this.getHashKeyCookie();
     }
     else {
@@ -187,7 +196,7 @@ export class AssessmentDataService {
 
     let date = yyyy + '-'+ mm + '-' + dd;
     return (date + "_"+uuidv1({nsecs: Math.floor(Math.random() * 10000)}).toString())
-    }
+  }
 
   public setData(): void {
     // KRM: Get the data for the current user
@@ -323,4 +332,9 @@ export class AssessmentDataService {
       this.http.get('/api/assessmentsAPI/GetAssets', options)
     );
   }
+
+  public validateHashWithS3(hashkey :string): Observable<boolean>{
+    return <Observable<boolean>> (this.http.get('/api/assessmentsAPI/validateHashWithS3/'+hashkey))
+  }
+
 }
