@@ -2,8 +2,9 @@ const Joi = require('joi')
 const fs = require('fs-extra')
 const path = require('path')
 const AWS = require('aws-sdk')
+AWS.config.update({region:'us-east-1'});
 const S3 = new AWS.S3()
-
+const lambda = new AWS.Lambda();
 const LINGO_DATA_LOCAL_PATH = path.join(
   __dirname,
   '../',
@@ -29,7 +30,7 @@ var job = new CronJob('0 4 0 * * *', function() {
 job.start();
 
 const S3_DATA_BUCKET_NAME = 'lingo-assessment-data'
-const DEPLOYMENT_SPECIFIC_FOLDER = process.env.LINGO_FOLDER
+const DEPLOYMENT_SPECIFIC_FOLDER =process.env.LINGO_FOLDER
 
 const AssessmentSchemaValidator = Joi.object({
   user_id: Joi.string().required(),
@@ -560,10 +561,11 @@ function uploadJSONFileToS3(localJSONLocation, S3Bucket, objectKeyName) {
     localName: localJSONLocation,
     S3Bucket: S3Bucket,
     objectKeyName: objectKeyName
-  })
+  },false)
 }
 
 function uploadWavToS3(localWavFileName, S3Bucket, objectKeyName) {
+  console.log("uploadingWavToS3...")
   let body = fs.readFileSync(localWavFileName)
   let params = {
     Bucket: S3Bucket,
@@ -576,10 +578,10 @@ function uploadWavToS3(localWavFileName, S3Bucket, objectKeyName) {
     localName: localWavFileName,
     S3Bucket: S3Bucket,
     objectKeyName: objectKeyName
-  })
+  },true)
 }
 
-function putObjectToS3(params, logData) {
+function putObjectToS3(params, logData,wavFile) {
   S3.putObject(params, (err, data) => {
     if (err) {
       console.log(err)
@@ -592,8 +594,46 @@ function putObjectToS3(params, logData) {
           '/' +
           logData.objectKeyName
       )
+      if(wavFile)transcribeAudioAndSendToS3(logData)
     }
   })
+}
+
+function validateHashWithS3(hashKey){
+  return  new Promise((resolve,reject)=>{
+    if (DEPLOYMENT_SPECIFIC_FOLDER){
+      var params = {
+        Bucket: S3_DATA_BUCKET_NAME, 
+        Key: DEPLOYMENT_SPECIFIC_FOLDER+"/valid_hashes.txt",
+        ResponseContentType:'text'
+      };
+      console.log(JSON.stringify(params))
+      S3.getObject(params, function(err, data) {
+        if (err){console.log("Error getting s3 valid ids file");console.log(err);resolve(false)}
+        else {
+          let valid_ids= data.Body.toString().split('\n')
+          let matches = valid_ids.filter(element => element==hashKey)
+          resolve(matches.length>0)
+        }
+      })
+    }
+    else resolve(true)
+  })
+}
+
+function transcribeAudioAndSendToS3(logData){
+
+ var params = {
+    FunctionName: "arn:aws:lambda:us-east-1:000246156158:function:transcribeRecordings", 
+    ClientContext: "none", 
+    InvocationType: "Event", 
+    LogType: "Tail", 
+    Payload: JSON.stringify(logData), 
+ };
+ lambda.invoke(params, function(err, data) {
+   if (err) console.log(err, err.stack); // an error occurred
+   else     console.log("sucessfully invoked transcribe lamda")          // successful response
+  });
 }
 
 module.exports = {
@@ -606,5 +646,7 @@ module.exports = {
   getAssets,
   checkUserExist,
   checkJsonExist,
-  getObjectFromS3
+  getObjectFromS3,
+  validateHashWithS3,
+  transcribeAudioAndSendToS3
 }
