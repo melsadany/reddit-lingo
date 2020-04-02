@@ -77,8 +77,8 @@
       }
     },
     "settings": {
-      "hashkeyAsGUID":true,   
-      "validateHashWithS3":true,
+      "hashkeyAsGUID":false,   
+      "validateHashWithS3":false,
       "validateUserId":"*",
       "endUrl":"",
       "countdownTimerLength": 3,
