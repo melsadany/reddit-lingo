@@ -27,7 +27,7 @@ export class AssessmentsDoneComponent implements OnInit {
     this.dataService.deleteAssignmentId();
 
     if (this.stateManager.endUrl && !this.stateManager.completedAssessmentsAlready){
-      window.location.replace(this.stateManager.endUrl + user_id)
+      window.location.replace(this.stateManager.endUrl+user_id)
     }
   }
 }
