@@ -21,7 +21,7 @@ export class AssessmentsDoneComponent implements OnInit {
     this.dataService.deleteHashKeyCookie();
     this.dataService.deleteUserIdCookie();
     if (this.stateManager.endUrl && !this.stateManager.completedAssessmentsAlready){
-      window.location.replace(this.stateManager.endUrl)
+      window.location.replace(this.stateManager.endUrl+user_id)
     }
   }
 }
