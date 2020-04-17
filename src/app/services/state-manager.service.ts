@@ -4,7 +4,7 @@ import {
   HashKeyAssessmentData,
   AssetsObject
 } from '../structures/AssessmentDataStructures';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { LinkedList } from '../structures/LinkedList';
 import appConfig from './assessments_config.json';
 import { LingoSettings } from '../structures/LingoSettings';
@@ -33,15 +33,11 @@ export class StateManagerService {
   private _appConfig: LingoSettings = appConfig;
   private _assessments = {};
   private _IOSSafari: boolean;
-  private _singleAssessmentEnabled: boolean;
   private _audioInstruction: string;
   private _audioInstructionPlayer: HTMLAudioElement;
   private _finishedInstruction = false;
   private _playingInstruction = false;
   private _showStartParagraph = true;
-  private _MTurkEnabled: any;
-  private _MTurkAssignmentId: string;
-  private _MTurkWorkerId: any;
   private _isSingleAssessment = false;
   private _addHashToJson = false;
   private _hasDoneDiagnostics = false;
@@ -72,26 +68,6 @@ export class StateManagerService {
   }
   public get contentRandomization(): boolean {
     return this._contentRandomization;
-  }
-
-
-  public get MTurkWorkerId(): any {
-    return this._MTurkWorkerId;
-  }
-  public set MTurkWorkerId(value: any) {
-    this._MTurkWorkerId = value;
-  }
-  public get MTurkAssignmentId(): string {
-    return this._MTurkAssignmentId;
-  }
-  public set MTurkAssignmentId(value: string) {
-    this._MTurkAssignmentId = value;
-  }
-  public get MTurkEnabled(): any {
-    return this._MTurkEnabled;
-  }
-  public set MTurkEnabled(value: any) {
-    this._MTurkEnabled = value;
   }
   public get hasDoneDiagnostics(): boolean {
     return this._hasDoneDiagnostics;
@@ -140,12 +116,6 @@ export class StateManagerService {
   }
   public set audioInstruction(value: string) {
     this._audioInstruction = value;
-  }
-  public get singleAssessmentEnabled(): boolean {
-    return this._singleAssessmentEnabled;
-  }
-  public set singleAssessmentEnabled(value: boolean) {
-    this._singleAssessmentEnabled = value;
   }
   public get IOSSafari(): boolean {
     return this._IOSSafari;
@@ -259,46 +229,14 @@ export class StateManagerService {
     this._textOnOutsideAssessmentButton = value;
   }
 
-  constructor(private routerService: Router, private route: ActivatedRoute) {
+  constructor(private routerService: Router) {
     this.configureEnabledAssessments();
     this.configureDebugMode();
-    this.configureSingleAssessmentEnabled();
     this.totalAssessments = Object.keys(this.assessments).length;
     this.inMobileBrowser = this.mobileCheck();
     this.audioInstructionPlayer = new Audio();
   }
 
-  private configureSingleAssessmentEnabled(): void {
-    this.singleAssessmentEnabled = this.appConfig['appConfig']['settings']['singleAssessmentEnabled'];
-  }
-
-  public configureMTurk(): void {
-    this.MTurkEnabled = this.appConfig['appConfig']['settings']['MTurkEnabled'];
-    this.MTurkAssignmentId = this.route.snapshot.paramMap.get('assignmentId');
-    //console.log("paramMap.get -",this.route.snapshot.queryParams.get("assignmentId"))
-   
-    //console.log("this.route.snapshot result AssignemntID =" ,this.MTurkAssignmentId);
-    
-    //incase MTurkAssignementId is null we find it using getURLParameter
-    //console.log('windows uri:',window.location.search)
-    
-  //  console.log('getassignemntid function returns:',this.dataService.getAssignmentId())
-    this.MTurkAssignmentId = this.MTurkAssignmentId ? this.MTurkAssignmentId:this.getUrlParameter('assignmentId');
-    this.MTurkAssignmentId = this.MTurkAssignmentId ? this.MTurkAssignmentId:this.getUrlParameter('assignment_id');
-   // console.log('geturlParam funct result:',this.getUrlParameter('assignmentId'))
-   // console.log('other getParam funct result = ',this.getUrlParameter('assignment_id'))
-  //  this.MTurkAssignmentId = this.MTurkAssignmentId ? this.dataService.getAssignmentId() : this.MTurkAssignmentId;
-    this.MTurkWorkerId = this.route.snapshot.queryParamMap.get('workerId');
-    //console.log('MTurkAssignmentId:', this.MTurkAssignmentId);
-  }
-
-public  getUrlParameter(name:string) {
-    //console.log("in the getUrlParameter function..");
-    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-    var results = regex.exec(window.location.search);
-    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
-};
  
   private configureEnabledAssessments(): void {
     const assessmentsConfig = this.appConfig['appConfig']['assessmentsConfig'];
@@ -382,10 +320,6 @@ public  getUrlParameter(name:string) {
   }
 
   public initializeState(existingAssessmentData: AssessmentData): void {
-    // if (this.appConfig['appConfig']['settings']['MTurkEnabled']) {
-    //   console.log('MTurk Enabled');
-    //   this.configureMTurk();
-    // }
     this.configureEnabledAssessments();
     for (const existingAssessment of existingAssessmentData.assessments) {
       const existingAssessmentName = existingAssessment['assess_name'];

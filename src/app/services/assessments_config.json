@@ -83,10 +83,7 @@
       "endUrl":"",
       "countdownTimerLength": 3,
       "countdownTimerType": "circle",
-      "singleAssessmentEnabled": false,
-      "debugEnabled": false,
-      "MTurkEnabled": true,
-      "SetTimeoutTimeInMinutes": 40
+      "debugEnabled": true
     }
   }
 }
