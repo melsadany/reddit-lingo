@@ -6,13 +6,16 @@
 .mainImage{
   object-fit: contain;
   width:100%;
-  height: 45vh;
+  height: 35vh;
   max-height: 500px
 }
 .buttomButtons{
-  background-color: #d9eee8;
+  background-color: #e2dfdf;
   display: block;
   margin: auto;
+}
+.buttomButtons:hover{
+  border-color:black;
 }
 .buttomImages{
   object-fit: contain;
@@ -31,6 +34,7 @@ td{
 .wrapTables{
   display: flex;
   flex-wrap: wrap;
+  padding-top:15px;
 }
 //normal
 .table{
@@ -46,3 +50,8 @@ td{
   }
 }
 
+.permission{
+  margin-top: 50px;
+  font-size: small;
+  color: #afafaf
+}
