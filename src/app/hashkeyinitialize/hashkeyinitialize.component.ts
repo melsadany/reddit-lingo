@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StateManagerService } from '../services/state-manager.service';
 import { AssessmentDataService } from '../services/assessment-data.service';
-import { HashKeyAssessmentData, AssessmentData } from '../structures/AssessmentDataStructures';
+import { SingleAssessmentData, AssessmentData } from '../structures/AssessmentDataStructures';
 
 @Component({
   selector: 'app-hashkeyinitialize',
@@ -13,7 +13,7 @@ export  class  HashkeyinitializeComponent {
   public loading=true;
    constructor(
     private route: ActivatedRoute,
-    private routerService: Router,
+    private routerServie: Router,
     private stateManager: StateManagerService,
     private dataService: AssessmentDataService
   ) {
@@ -48,7 +48,7 @@ export  class  HashkeyinitializeComponent {
           // important elsewhere. Therefore I just cast the data object accordingly to pass it in the regular intializeState method
           // when we want hash_key users to take the full assessments.
         });
-      this.routerService.navigate(['home']);
+      this.routerServie.navigate(['home']);
       } 
       );
     } 

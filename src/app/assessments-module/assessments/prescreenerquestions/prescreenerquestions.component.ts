@@ -123,6 +123,7 @@ export class PrescreenerquestionsComponent implements OnInit {
         return true;
       }
     }
+    return true
   }
 
   ngOnInit(): void {
@@ -140,17 +141,21 @@ export class PrescreenerquestionsComponent implements OnInit {
       race: ['', Validators.required],
       ethnicity: ['', Validators.required]
     });
-    this.dataForm.addControl(
-      'majorOfStudy',
-      new FormControl()
-    );
     this.dataForm
       .get('currentOccupation')
       .valueChanges.subscribe(occupation => {
         if (occupation === 'Student (specify major)') {
+          this.dataForm.addControl(
+            'majorOfStudy',
+            new FormControl()
+          );
           this.dataForm
             .get('majorOfStudy')
             .setValidators([Validators.required]);
+        }
+        else  {
+          this.dataForm.removeControl(
+            'majorOfStudy');
         }
       });
   }
@@ -160,6 +165,7 @@ export class PrescreenerquestionsComponent implements OnInit {
       age: this.dataForm.get('currentAge').value,
       highestEducation: this.dataForm.get('highestEducation').value,
       currentOccupation: this.dataForm.get('currentOccupation').value,
+      majorOfStudy:this.dataForm.get('majorOfStudy') ? this.dataForm.get('majorOfStudy').value : "NA",
       annualIncome: this.dataForm.get('annualIncome').value,
       gender: this.dataForm.get('gender').value,
       race: this.dataForm.get('race').value,
