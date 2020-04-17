@@ -70,7 +70,7 @@
           <td *ngFor="let image of row">
             <button
               type="button"
-              class="btn btn-outline-primary buttomButtons"
+              class="btn buttomButtons"
               (click)="clickImage(image)"
             >
               <img class="img-fluid buttomImages" [src]="image" />
@@ -100,4 +100,5 @@
   <mat-spinner style="margin:0 auto;"> </mat-spinner>
   
 </div>
+<div *ngIf="showMatrix" class="text-center permission">Images used with kind permission of the UK Biobank</div>
 
