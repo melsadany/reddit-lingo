@@ -1,6 +1,6 @@
 <div *ngIf="!stateManager.endUrl || stateManager.completedAssessmentsAlready " class='pb-5 text-center'>
   <p class="py-4 text-center">All assessments have been completed.</p>
-  <p *ngIf="stateManager.completedAssessmentsAlready" class="py-4 text-center">Looks like the hash you provided has already been completed. Make sure you have the correct Url with the correct hash ending.</p>
+  <p *ngIf="stateManager.completedAssessmentsAlready" class="py-4 text-center">All assessments have been completed. It appears you are trying to use an ID that has already been used to complete the assessments. Make sure you have the correct URL and try again.</p>
   <div>
     <button class="btn btn-primary btn-lg button-down" [routerLink]="['/home']">Go home</button>
   </div>

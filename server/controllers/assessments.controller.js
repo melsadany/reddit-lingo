@@ -592,7 +592,7 @@ function putObjectToS3(params, logData,wavFile) {
           '/' +
           logData.objectKeyName
       )
-      if(wavFile)transcribeAudioAndSendToS3(logData)
+      if(wavFile){}//transcribeAudioAndSendToS3(logData)
     }
   })
 }
