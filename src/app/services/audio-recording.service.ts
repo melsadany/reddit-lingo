@@ -70,6 +70,12 @@ export class AudioRecordingService {
     this._gettingMicErrorText = value;
   }
 
+  enableTracks(){
+    if(this.stream){
+      this.stream.getAudioTracks().forEach(track => track.enabled=true)
+    }
+  }
+
   /**
    * Uses navigator.mediaDevices to capture the microphone from the user in browser
    */
@@ -116,8 +122,15 @@ export class AudioRecordingService {
 
   startRecording(): void {
     this._recordingTime.next('00:00');
-    
-    this.captureStream()
+    if (this.stream){
+      if (!this.stream.active){
+        this.captureStream()
+      }
+      else {
+        this.enableTracks();this.record()
+      }
+    }
+    else this.captureStream()
     return;
   }
 
@@ -141,7 +154,9 @@ export class AudioRecordingService {
     };
     this.setCurrentlyRecording(true);
     if(this.recorder){
-      this.recorder.destroy();
+      try{ this.recorder.destroy();}
+      catch{console.log("Error: couldn't destroy recorder.")}
+     
       this.recorder=null;
     }
     this.recorder = new RecordRTC.StereoAudioRecorder(this.stream, config);
@@ -196,9 +211,12 @@ export class AudioRecordingService {
 
   private stopMedia(): void {
     if (this.recorder) {
-      this.recorder = null;
+      //this.recorder = null;
       clearInterval(this.interval);
       this.startTime = null;
+    }
+    if(this.stream){
+      this.stream.getAudioTracks().forEach(track => track.enabled=false)
     }
   }
 
