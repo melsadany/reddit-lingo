@@ -135,7 +135,7 @@ export class AudioRecordingService {
     this._recordingTime.next('00:00');
     if (this.stream){
       this.checkStatus()
-      if (!this.stream.active || this.stream.getAudioTracks()[0].muted){
+      if (!this.active || this.muted || !this.enabled){
         this.captureStream()
       }
       else {
