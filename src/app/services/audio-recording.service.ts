@@ -73,6 +73,7 @@ export class AudioRecordingService {
   public active: boolean;
   public readyState: string;
   public enabled: boolean;
+  public captures=0;
   enableTracks(){
     if(this.stream){
       this.stream.getAudioTracks().forEach(track => track.enabled=true)
@@ -82,7 +83,8 @@ export class AudioRecordingService {
   /**
    * Uses navigator.mediaDevices to capture the microphone from the user in browser
    */
-  captureStream(): void {
+  captureStream(): void {console.log("streamin")
+    this.captures+=1;
     navigator.mediaDevices
       .getUserMedia(this.deviceId ? {audio : {deviceId: {exact: this.deviceId}}} : {audio: true})
       .then(s => {
@@ -135,6 +137,7 @@ export class AudioRecordingService {
     this._recordingTime.next('00:00');
     if (this.stream){
       this.checkStatus()
+      console.log(this.active,this.muted,this.enabled)
       if (!this.active || this.muted || !this.enabled){
         this.captureStream()
       }
@@ -230,7 +233,7 @@ export class AudioRecordingService {
       this.startTime = null;
     }
     if(this.stream){
-      this.stream.getAudioTracks().forEach(track => track.enabled=false)
+      //this.stream.getAudioTracks().forEach(track => track.enabled=false)
     }
   }
 
