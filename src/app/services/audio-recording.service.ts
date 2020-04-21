@@ -136,13 +136,14 @@ export class AudioRecordingService {
   startRecording(): void {
     this._recordingTime.next('00:00');
     if (this.stream){
+      this.enableTracks()
       this.checkStatus()
       console.log(this.active,this.muted,this.enabled)
       if (!this.active || this.muted || !this.enabled){
         this.captureStream()
       }
       else {
-        this.enableTracks();this.record()
+        this.record()
       }
     }
     else this.captureStream()
@@ -233,7 +234,7 @@ export class AudioRecordingService {
       this.startTime = null;
     }
     if(this.stream){
-      //this.stream.getAudioTracks().forEach(track => track.enabled=false)
+      this.stream.getAudioTracks().forEach(track => track.enabled=false)
     }
   }
 
