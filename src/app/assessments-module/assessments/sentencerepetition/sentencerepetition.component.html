@@ -5,7 +5,7 @@
       seconds,
       and you will be asked to repeat the sentence back.
     </p>
-    <p>Debug: ACTIVE: {{audioRecordingService.active}} MUTED:{{audioRecordingService.muted}}</p>
+    <p>Debug: ACTIVE: {{audioRecordingService.active}} MUTED:{{audioRecordingService.muted}}ENABLED: {{audioRecordingService.enabled}} READYSTATE:{{audioRecordingService.readyState}}</p>
   </div>
   <div *ngIf="stateManager.showInnerAssessmentButton" class="text-center button-down">
     <div *ngIf="!stateManager.isInAssessment">

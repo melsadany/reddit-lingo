@@ -71,7 +71,8 @@ export class AudioRecordingService {
   }
   public muted: boolean;
   public active: boolean;
-
+  public readyState: string;
+  public enabled: boolean;
   enableTracks(){
     if(this.stream){
       this.stream.getAudioTracks().forEach(track => track.enabled=true)
@@ -122,9 +123,13 @@ export class AudioRecordingService {
     return this._recordingFailed.asObservable();
   }
   public checkStatus(){
-
+    console.log(this.stream)
+    console.log(this.stream.getAudioTracks())
+    console.log(this.stream.getAudioTracks()[0])
     this.active=this.stream.active
     this.muted=this.stream.getAudioTracks()[0].muted
+    this.readyState=this.stream.getAudioTracks()[0].readyState
+    this.enabled = this.stream.getAudioTracks()[0].enabled
   }
   startRecording(): void {
     this._recordingTime.next('00:00');
