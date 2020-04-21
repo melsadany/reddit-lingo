@@ -123,7 +123,7 @@ export class AudioRecordingService {
   startRecording(): void {
     this._recordingTime.next('00:00');
     if (this.stream){
-      if (!this.stream.active){
+      if (!this.stream.active || this.stream.getAudioTracks()[0].muted){
         this.captureStream()
       }
       else {
@@ -147,10 +147,10 @@ export class AudioRecordingService {
       type: 'audio',
       mimeType: 'audio/webm',
       recorderType: 'StereoAudioRecorder',
-      sampleRate: 44100,
+      sampleRate: 48000,
       checkForInactiveTracks: true,
       bufferSize: 4096,
-      numberOfAudioChannels: 2
+      numberOfAudioChannels: 1
     };
     this.setCurrentlyRecording(true);
     if(this.recorder){
