@@ -69,6 +69,8 @@ export class AudioRecordingService {
   public set gettingMicErrorText(value: string) {
     this._gettingMicErrorText = value;
   }
+  public muted: boolean;
+  public active: boolean;
 
   enableTracks(){
     if(this.stream){
@@ -119,10 +121,15 @@ export class AudioRecordingService {
   recordingFailed(): Observable<string> {
     return this._recordingFailed.asObservable();
   }
+  public checkStatus(){
 
+    this.active=this.stream.active
+    this.muted=this.stream.getAudioTracks()[0].muted
+  }
   startRecording(): void {
     this._recordingTime.next('00:00');
     if (this.stream){
+      this.checkStatus()
       if (!this.stream.active || this.stream.getAudioTracks()[0].muted){
         this.captureStream()
       }
@@ -143,6 +150,7 @@ export class AudioRecordingService {
    * Starts the recording of the user's microphone
    */
   private record(): void {
+    this.checkStatus()
     const config = {
       type: 'audio',
       mimeType: 'audio/webm',
@@ -189,6 +197,7 @@ export class AudioRecordingService {
    * Stop recording the user's microphone
    */
   stopRecording(): void {
+    this.checkStatus()
     if (this.recorder) {
       this.setCurrentlyRecording(false);
       this.recorder.stop(
