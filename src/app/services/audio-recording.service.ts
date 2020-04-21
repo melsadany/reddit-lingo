@@ -132,6 +132,7 @@ export class AudioRecordingService {
     this.muted=this.stream.getAudioTracks()[0].muted
     this.readyState=this.stream.getAudioTracks()[0].readyState
     this.enabled = this.stream.getAudioTracks()[0].enabled
+    
   }
   startRecording(): void {
     this._recordingTime.next('00:00');
@@ -234,7 +235,7 @@ export class AudioRecordingService {
       this.startTime = null;
     }
     if(this.stream){
-      this.stream.getAudioTracks().forEach(track => track.enabled=false)
+      this.stream.getAudioTracks().forEach(track => track.stop())
     }
   }
 
