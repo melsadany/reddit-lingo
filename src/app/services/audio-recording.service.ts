@@ -95,8 +95,11 @@ export class AudioRecordingService {
         this.stream = s;
         this.deviceId = this.stream.getAudioTracks()[0].getSettings().deviceId;
         console.log("device settings",this.stream.getAudioTracks()[0].getSettings())
-  
-        this.track=this.stream.getTrackById(this.stream.getAudioTracks()[0].id)
+        if (this.track){
+          this.stream.removeTrack(this.stream.getAudioTracks()[0])
+          this.stream.addTrack(this.track)
+        }
+        this.track=this.stream.getAudioTracks()[0].clone()
         console.log(this.track)
         console.log(this.stream.getAudioTracks()[0])
         this.track.onisolationchange = function() { alert("lost permission!"); };
@@ -143,15 +146,15 @@ export class AudioRecordingService {
   }
   startRecording(): void {
     this._recordingTime.next('00:00');
+    this.enableTracks()
     if (this.stream){
-      this.enableTracks()
       this.checkStatus()
       console.log(this.active,this.muted,this.enabled)
       if (!this.active || this.muted || !this.enabled){
-        this.stream.addTrack(this.track);this.record()//this.captureStream()
+        this.captureStream()
       }
       else {
-        this.record()
+        this.captureStream()
       }
     }
     else this.captureStream()
@@ -242,7 +245,8 @@ export class AudioRecordingService {
       this.startTime = null;
     }
     if(this.stream){
-      this.stream.removeTrack(this.track)
+      this.stream.getAudioTracks().forEach(track => track.stop())
+      this.stream.removeTrack(this.stream.getAudioTracks()[0])
       console.log("now tracks are..")
       console.log(this.stream.getTracks())
       //this.stream.getAudioTracks().forEach(track => track.stop())
