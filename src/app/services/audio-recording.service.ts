@@ -74,6 +74,7 @@ export class AudioRecordingService {
   public readyState: string;
   public enabled: boolean;
   public captures=0;
+  public track:MediaStreamTrack;
   enableTracks(){
     if(this.stream){
       this.stream.getAudioTracks().forEach(track => track.enabled=true)
@@ -93,6 +94,12 @@ export class AudioRecordingService {
         }
         this.stream = s;
         this.deviceId = this.stream.getAudioTracks()[0].getSettings().deviceId;
+        console.log("device settings",this.stream.getAudioTracks()[0].getSettings())
+  
+        this.track=this.stream.getTrackById(this.stream.getAudioTracks()[0].id)
+        console.log(this.track)
+        console.log(this.stream.getAudioTracks()[0])
+        this.track.onisolationchange = function() { alert("lost permission!"); };
         this.record();
       })
       .catch(error => {
@@ -129,9 +136,9 @@ export class AudioRecordingService {
     console.log(this.stream.getAudioTracks())
     console.log(this.stream.getAudioTracks()[0])
     this.active=this.stream.active
-    this.muted=this.stream.getAudioTracks()[0].muted
-    this.readyState=this.stream.getAudioTracks()[0].readyState
-    this.enabled = this.stream.getAudioTracks()[0].enabled
+    this.muted=this.stream.getAudioTracks()[0] ? this.stream.getAudioTracks()[0].muted : false
+    this.readyState=this.stream.getAudioTracks()[0] ? this.stream.getAudioTracks()[0].readyState: "null"
+    this.enabled = this.stream.getAudioTracks()[0] ? this.stream.getAudioTracks()[0].enabled : false
     
   }
   startRecording(): void {
@@ -141,7 +148,7 @@ export class AudioRecordingService {
       this.checkStatus()
       console.log(this.active,this.muted,this.enabled)
       if (!this.active || this.muted || !this.enabled){
-        this.captureStream()
+        this.stream.addTrack(this.track);this.record()//this.captureStream()
       }
       else {
         this.record()
@@ -207,7 +214,7 @@ export class AudioRecordingService {
    * Stop recording the user's microphone
    */
   stopRecording(): void {
-    this.checkStatus()
+   // this.checkStatus()
     if (this.recorder) {
       this.setCurrentlyRecording(false);
       this.recorder.stop(
@@ -235,7 +242,10 @@ export class AudioRecordingService {
       this.startTime = null;
     }
     if(this.stream){
-      this.stream.getAudioTracks().forEach(track => track.stop())
+      this.stream.removeTrack(this.track)
+      console.log("now tracks are..")
+      console.log(this.stream.getTracks())
+      //this.stream.getAudioTracks().forEach(track => track.stop())
     }
   }
 
