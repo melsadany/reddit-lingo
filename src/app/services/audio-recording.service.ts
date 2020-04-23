@@ -257,7 +257,7 @@ public stopCurrentTrack(){
   this.stream.getAudioTracks().forEach(track => track.enabled=false)
   this.stream.getAudioTracks().forEach(track => track.stop())
   this.stream.removeTrack(this.stream.getAudioTracks()[0])
-  this.stream.stop();
+  //this.stream.stop();
   this.stream=null;}
 }
 
