@@ -93,13 +93,14 @@ export class AudioRecordingService {
           this.inMicrophoneError = false;
         }
         this.stream = s;
-        this.deviceId = this.stream.getAudioTracks()[0].getSettings().deviceId;
+       // this.deviceId = this.stream.getAudioTracks()[0].getSettings().deviceId;
         console.log("device settings",this.stream.getAudioTracks()[0].getSettings())
         if (this.track){
-          this.stream.removeTrack(this.stream.getAudioTracks()[0])
-          this.stream.addTrack(this.track)
+         // this.stream.removeTrack(this.stream.getAudioTracks()[0])
+        //  this.stream.addTrack(this.track)
         }
         this.track=this.stream.getAudioTracks()[0].clone()
+        this.deviceId=this.track.getSettings().deviceId;
         console.log(this.track)
         console.log(this.stream.getAudioTracks()[0])
         this.track.onisolationchange = function() { alert("lost permission!"); };
@@ -250,6 +251,12 @@ export class AudioRecordingService {
       console.log("now tracks are..")
       console.log(this.stream.getTracks())
       //this.stream.getAudioTracks().forEach(track => track.stop())
+    }
+    if(this.recorder){
+      try{ this.recorder.destroy();}
+      catch{console.log("Error: couldn't destroy recorder.")}
+     
+      this.recorder=null;
     }
   }
 
