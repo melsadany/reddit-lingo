@@ -76,6 +76,11 @@ export class AudioRecordingService {
   public captures=0;
   public track:MediaStreamTrack;
 
+  public null(){
+    if(this.stream){
+      this.stream.getAudioTracks().forEach(track => track=null)
+    }
+  }
   public enableTracks(){
     if(this.stream){
       this.stream.getAudioTracks().forEach(track => track.enabled=true)
@@ -147,11 +152,12 @@ export class AudioRecordingService {
     console.log(this.stream)
     console.log(this.stream.getAudioTracks())
     console.log(this.stream.getAudioTracks()[0])
+    try{
     this.active=this.stream.active
     this.muted=this.stream.getAudioTracks()[0] ? this.stream.getAudioTracks()[0].muted : null
     this.readyState=this.stream.getAudioTracks()[0] ? this.stream.getAudioTracks()[0].readyState: "null"
     this.enabled = this.stream.getAudioTracks()[0] ? this.stream.getAudioTracks()[0].enabled : null
-    
+    }catch {this.readyState="STREAM IS NULL"}
   }
   startRecording(): void {
     this._recordingTime.next('00:00');
@@ -247,10 +253,14 @@ export class AudioRecordingService {
     }
   }
 public stopCurrentTrack(){
+  if (this.stream){
   this.stream.getAudioTracks().forEach(track => track.enabled=false)
   this.stream.getAudioTracks().forEach(track => track.stop())
   this.stream.removeTrack(this.stream.getAudioTracks()[0])
+  this.stream.stop();
+  this.stream=null;}
 }
+
   private stopMedia(): void {
     if (this.recorder) {
       //this.recorder = null;
