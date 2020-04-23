@@ -75,12 +75,20 @@ export class AudioRecordingService {
   public enabled: boolean;
   public captures=0;
   public track:MediaStreamTrack;
-  enableTracks(){
+
+  public enableTracks(){
     if(this.stream){
       this.stream.getAudioTracks().forEach(track => track.enabled=true)
     }
   }
-
+  public muteTrack(b){
+    console.log("enabling")
+    this.track.enabled=b
+  }
+  public stopTrack(){
+    this.track.stop()
+  }
+  
   /**
    * Uses navigator.mediaDevices to capture the microphone from the user in browser
    */
@@ -140,9 +148,9 @@ export class AudioRecordingService {
     console.log(this.stream.getAudioTracks())
     console.log(this.stream.getAudioTracks()[0])
     this.active=this.stream.active
-    this.muted=this.stream.getAudioTracks()[0] ? this.stream.getAudioTracks()[0].muted : false
+    this.muted=this.stream.getAudioTracks()[0] ? this.stream.getAudioTracks()[0].muted : null
     this.readyState=this.stream.getAudioTracks()[0] ? this.stream.getAudioTracks()[0].readyState: "null"
-    this.enabled = this.stream.getAudioTracks()[0] ? this.stream.getAudioTracks()[0].enabled : false
+    this.enabled = this.stream.getAudioTracks()[0] ? this.stream.getAudioTracks()[0].enabled : null
     
   }
   startRecording(): void {
@@ -245,7 +253,8 @@ export class AudioRecordingService {
       clearInterval(this.interval);
       this.startTime = null;
     }
-    if(this.stream){
+    if(this.stream){ 
+      this.stream.getAudioTracks().forEach(track => track.enabled=false)
       this.stream.getAudioTracks().forEach(track => track.stop())
       this.stream.removeTrack(this.stream.getAudioTracks()[0])
       console.log("now tracks are..")

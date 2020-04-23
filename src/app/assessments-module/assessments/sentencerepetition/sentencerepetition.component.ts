@@ -39,7 +39,26 @@ export class SentencerepetitionComponent extends AudioAssessment {
     this.stateManager.isInAssessment = true;
     this.advance();
   }
-
+  public muted;
+  public enabled;
+  public readyState
+  checkTrack(){
+    this.muted =this.audioRecordingService.track.muted
+    this.enabled = this.audioRecordingService.track.enabled
+    this.readyState= this.audioRecordingService.track.readyState
+  }
+  mute(){
+    this.audioRecordingService.muteTrack(false)
+  }
+  enable(){
+    this.audioRecordingService.muteTrack(true)
+  }
+  check(){
+    this.audioRecordingService.checkStatus()
+  }
+  stop(){
+    this.audioRecordingService.stopTrack()
+  }
   advance(): void {
     this.advanceToNextPrompt(
       () =>
