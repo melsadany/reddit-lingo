@@ -59,6 +59,9 @@ export class SentencerepetitionComponent extends AudioAssessment {
   stop(){
     this.audioRecordingService.stopTrack()
   }
+  stopCurrentTrack(){
+    this.audioRecordingService.stopCurrentTrack()
+  }
   advance(): void {
     this.advanceToNextPrompt(
       () =>
