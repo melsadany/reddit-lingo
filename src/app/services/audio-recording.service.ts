@@ -173,7 +173,7 @@ export class AudioRecordingService {
         if (c || !c)this.captureStream()
       }
       else {
-        this.captureStream() 
+        this.enableTracks();this.record()
       }
     }
     else var c = confirm("You got me, I don't work anymore."+ "because stream is null")
