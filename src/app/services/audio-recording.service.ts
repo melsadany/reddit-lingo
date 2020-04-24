@@ -75,7 +75,7 @@ export class AudioRecordingService {
   public enabled: boolean;
   public captures=0;
   public track:MediaStreamTrack;
-
+  public blobSize;
   public null(){
     if(this.stream){
       this.stream.getAudioTracks().forEach(track => track=null)
@@ -106,17 +106,17 @@ export class AudioRecordingService {
           this.inMicrophoneError = false;
         }
         this.stream = s;
-       // this.deviceId = this.stream.getAudioTracks()[0].getSettings().deviceId;
+        this.deviceId = this.stream.getAudioTracks()[0].getSettings().deviceId;
         console.log("device settings",this.stream.getAudioTracks()[0].getSettings())
         if (this.track){
          // this.stream.removeTrack(this.stream.getAudioTracks()[0])
         //  this.stream.addTrack(this.track)
         }
-        this.track=this.stream.getAudioTracks()[0].clone()
-        this.deviceId=this.track.getSettings().deviceId;
+        //this.track=this.stream.getAudioTracks()[0].clone()
+        //this.deviceId=this.track.getSettings().deviceId;
         console.log(this.track)
         console.log(this.stream.getAudioTracks()[0])
-        this.track.onisolationchange = function() { alert("lost permission!"); };
+        this.stream.getAudioTracks()[0].onisolationchange = function() { alert("lost permission!"); };
         this.record();
       })
       .catch(error => {
@@ -165,8 +165,9 @@ export class AudioRecordingService {
     if (this.stream){
       this.checkStatus()
       console.log(this.active,this.muted,this.enabled)
-      if (!this.active || this.muted || !this.enabled){
-        this.captureStream()
+      if (!this.active || this.muted){
+        var c = confirm("You got me, I don't work anymore.")
+        if (c || !c)this.captureStream()
       }
       else {
         this.captureStream()
@@ -237,6 +238,7 @@ export class AudioRecordingService {
       this.setCurrentlyRecording(false);
       this.recorder.stop(
         (blob: Blob) => {
+          this.blobSize= blob.size
           if (this.startTime) {
             const wavName = encodeURIComponent(
               'audio_' + new Date().getTime() + '.wav'
@@ -269,11 +271,11 @@ public stopCurrentTrack(){
     }
     if(this.stream){ 
       this.stream.getAudioTracks().forEach(track => track.enabled=false)
-      this.stream.getAudioTracks().forEach(track => track.stop())
-      this.stream.removeTrack(this.stream.getAudioTracks()[0])
+      //this.stream.getAudioTracks().forEach(track => track.stop())
+     // this.stream.removeTrack(this.stream.getAudioTracks()[0])
 
-      this.track.enabled = false;
-      this.track.stop()
+     // this.track.enabled = false;
+      //this.track.stop()
       console.log("now tracks are..")
       console.log(this.stream.getTracks())
       //this.stream.getAudioTracks().forEach(track => track.stop())
