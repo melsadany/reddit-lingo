@@ -166,14 +166,18 @@ export class AudioRecordingService {
       this.checkStatus()
       console.log(this.active,this.muted,this.enabled)
       if (!this.active || this.muted){
-        var c = confirm("You got me, I don't work anymore.")
+        var reason=""
+        if(this.muted)reason="muted track "
+        if(!this.active)reason+= "& stream not active"
+        var c = confirm("You got me, I don't work anymore."+ "because "+reason)
         if (c || !c)this.captureStream()
       }
       else {
-        this.captureStream()
+        this.captureStream() 
       }
     }
-    else this.captureStream()
+    else var c = confirm("You got me, I don't work anymore."+ "because stream is null")
+    if (c || !c)this.captureStream()
     return;
   }
 
