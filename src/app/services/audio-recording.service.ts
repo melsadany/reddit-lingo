@@ -268,12 +268,12 @@ public stopCurrentTrack(){
       this.startTime = null;
     }
     if(this.stream){ 
-      //this.stream.getAudioTracks().forEach(track => track.enabled=false)
-      //this.stream.getAudioTracks().forEach(track => track.stop())
-     // this.stream.removeTrack(this.stream.getAudioTracks()[0])
+      this.stream.getAudioTracks().forEach(track => track.enabled=false)
+      this.stream.getAudioTracks().forEach(track => track.stop())
+      this.stream.removeTrack(this.stream.getAudioTracks()[0])
 
-      //this.track.enabled = false;
-    //  this.track.stop()
+      this.track.enabled = false;
+      this.track.stop()
       console.log("now tracks are..")
       console.log(this.stream.getTracks())
       //this.stream.getAudioTracks().forEach(track => track.stop())
