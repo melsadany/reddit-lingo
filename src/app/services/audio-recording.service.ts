@@ -179,8 +179,8 @@ export class AudioRecordingService {
       }
     }
     else var c = confirm("You got me, I don't work anymore."+ "because stream is null")
-    if (c || !c)this.captureStream()
-    return;
+    if (c || !c)window.open('/', '_blank');
+  
   }
 
   abortRecording(): void {
