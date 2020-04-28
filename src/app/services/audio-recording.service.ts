@@ -170,7 +170,7 @@ export class AudioRecordingService {
         if(this.muted)reason="muted track "
         if(!this.active)reason+= "& stream not active"
         if(this.blobSize<45)reason+="& blob size too small"
-        var c = confirm("You got me, I don't work anymore."+ "because "+reason)
+        //var c = confirm("You got me, I don't work anymore."+ "because "+reason)
       
         window.open('/', '_blank');
         window.close();
