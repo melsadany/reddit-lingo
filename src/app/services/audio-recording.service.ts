@@ -171,7 +171,8 @@ export class AudioRecordingService {
         if(!this.active)reason+= "& stream not active"
         if(this.blobSize<45)reason+="& blob size too small"
         var c = confirm("You got me, I don't work anymore."+ "because "+reason)
-        if (c || !c)window.open('/')
+        if (c || !c){window.open('/', '_blank');
+        window.close();}
       }
       else {
         this.enableTracks();this.record()
