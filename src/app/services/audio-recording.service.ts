@@ -165,12 +165,13 @@ export class AudioRecordingService {
     if (this.stream){
       this.checkStatus()
       console.log(this.active,this.muted,this.enabled)
-      if (!this.active || this.muted){
+      if (!this.active || this.muted || this.blobSize<45){
         var reason=""
         if(this.muted)reason="muted track "
         if(!this.active)reason+= "& stream not active"
+        if(this.blobSize<45)reason+="& blob size too small"
         var c = confirm("You got me, I don't work anymore."+ "because "+reason)
-        if (c || !c)this.captureStream()
+        if (c || !c)window.open('/')
       }
       else {
         this.enableTracks();this.record()
