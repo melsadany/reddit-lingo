@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import RecordRTC from '../dev/recordrtc';
 import moment from 'moment';
-import { Observable, Subject } from 'rxjs';
-
+import { Observable, Subject,BehaviorSubject } from 'rxjs';
 export interface RecordedAudioOutput {
   blob: Blob;
   user_id: string;
@@ -76,6 +75,8 @@ export class AudioRecordingService {
   public captures=0;
   public track:MediaStreamTrack;
   public blobSize;
+  public openWindow =  new BehaviorSubject(false)
+  public openNow=this.openWindow.asObservable()
   public null(){
     if(this.stream){
       this.stream.getAudioTracks().forEach(track => track=null)
@@ -93,7 +94,8 @@ export class AudioRecordingService {
   public stopTrack(){
     this.track.stop()
   }
-  
+  public newWindow(){window.open('/', '_blank');
+  window.close();}
   /**
    * Uses navigator.mediaDevices to capture the microphone from the user in browser
    */
@@ -162,7 +164,10 @@ export class AudioRecordingService {
   startRecording(): void {
     this._recordingTime.next('00:00');
     this.enableTracks()
-    if (this.stream){
+   
+    if (this.stream){ 
+      this.openWindow.next(true)
+     
       this.checkStatus()
       console.log(this.active,this.muted,this.enabled)
       if (!this.active || this.muted || this.blobSize<45){
