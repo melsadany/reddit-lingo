@@ -77,6 +77,7 @@ export class AudioRecordingService {
   public blobSize;
   public openWindow =  new BehaviorSubject(false)
   public openNow=this.openWindow.asObservable()
+  public lostMicError=false;
   public null(){
     if(this.stream){
       this.stream.getAudioTracks().forEach(track => track=null)
@@ -109,15 +110,15 @@ export class AudioRecordingService {
         }
         this.stream = s;
         this.deviceId = this.stream.getAudioTracks()[0].getSettings().deviceId;
-        console.log("device settings",this.stream.getAudioTracks()[0].getSettings())
+        //console.log("device settings",this.stream.getAudioTracks()[0].getSettings())
         if (this.track){
          // this.stream.removeTrack(this.stream.getAudioTracks()[0])
         //  this.stream.addTrack(this.track)
         }
         //this.track=this.stream.getAudioTracks()[0].clone()
         //this.deviceId=this.track.getSettings().deviceId;
-        console.log(this.track)
-        console.log(this.stream.getAudioTracks()[0])
+        //console.log(this.track)
+        //console.log(this.stream.getAudioTracks()[0])
         this.stream.getAudioTracks()[0].onisolationchange = function() { alert("lost permission!"); };
         this.record();
       })
@@ -131,7 +132,13 @@ export class AudioRecordingService {
   isCurrentlyRecording(): Boolean {
     return this._currentlyRecording;
   }
-
+  isMicLostError():Boolean {
+    console.log("VALUE IS:",this.lostMicError)
+    return this.lostMicError;
+  }
+  setInMicrophoneError(set: boolean):void{
+    this.lostMicError=set
+  }
   setCurrentlyRecording(set: boolean): void {
     if (set === this._currentlyRecording) {
       console.log('error, already set to this value');
@@ -151,9 +158,9 @@ export class AudioRecordingService {
     return this._recordingFailed.asObservable();
   }
   public checkStatus(){
-    console.log(this.stream)
-    console.log(this.stream.getAudioTracks())
-    console.log(this.stream.getAudioTracks()[0])
+    //console.log(this.stream)
+    //console.log(this.stream.getAudioTracks())
+   // console.log(this.stream.getAudioTracks()[0])
     try{
     this.active=this.stream.active
     this.muted=this.stream.getAudioTracks()[0] ? this.stream.getAudioTracks()[0].muted : null
@@ -166,20 +173,17 @@ export class AudioRecordingService {
     this.enableTracks()
    
     if (this.stream){ 
-      this.openWindow.next(true)
-     
+      
+      //console.log("lost mic")
+      this.setInMicrophoneError(true)
       this.checkStatus()
-      console.log(this.active,this.muted,this.enabled)
+      //console.log(this.active,this.muted,this.enabled)
       if (!this.active || this.muted || this.blobSize<45){
         var reason=""
         if(this.muted)reason="muted track "
         if(!this.active)reason+= "& stream not active"
         if(this.blobSize<45)reason+="& blob size too small"
-        //var c = confirm("You got me, I don't work anymore."+ "because "+reason)
-      
-        window.open('/', '_blank');
-        window.close();
-  
+        this.openWindow.next(true)
       }
       else {
         this.enableTracks();this.record()
@@ -289,8 +293,8 @@ public stopCurrentTrack(){
 
      // this.track.enabled = false;
       //this.track.stop()
-      console.log("now tracks are..")
-      console.log(this.stream.getTracks())
+     // console.log("now tracks are..")
+     // console.log(this.stream.getTracks())
       //this.stream.getAudioTracks().forEach(track => track.stop())
     }
     if(this.recorder){

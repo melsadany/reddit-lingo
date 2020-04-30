@@ -43,3 +43,11 @@
 <div class="text-center recording" *ngIf="audioRecordingService.isCurrentlyRecording()">
   <span class="blink">Recording</span>
 </div>
+<div class="modal" *ngIf="showRecordError" id="myModal">
+  <div class="modal-content">
+    <p>“We are sorry, microphone access was lost. A new window should open. Please enable access again when prompted. 
+      If a new window does not open, please close this window and return using the same link that brought you here.”</p>
+    <button class="btn btn-secondary btn-md button-down"(click)="newWindow()">Continue</button>
+
+  </div>
+</div>
