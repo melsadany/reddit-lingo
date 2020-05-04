@@ -141,10 +141,10 @@ export class AudioAssessment extends BaseAssessment implements OnDestroy {
     };
   }
 
-  pushAudioData(string?:string): void {
+  pushAudioData(): void {
     const assessmentData = {
       assess_name: this.assessmentName,
-      data: { recorded_data: string ? "failed" :this.recordedData },
+      data: { recorded_data: this.recordedData },
       completed: this.lastPrompt
     };
     const assessmentGoogleData = {
