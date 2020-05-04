@@ -32,11 +32,6 @@ export class SentencerepetitionComponent extends AudioAssessment {
         this.promptStructure = value.promptStructure;
         this.determinePromptsToDo();
       });
-    this.audioRecordingService.openNow.subscribe(value =>{console.log("GOTTEEE");if (value)this.newWindow()})
-  }
-  newWindow(){
-    var c = confirm("closing")
-    if (c || !c) {window.open('/',"_blank");window.close()}
   }
   setStateAndStart(): void {
     this.stateManager.textOnInnerAssessmentButton = 'CONTINUE ASSESSMENT';

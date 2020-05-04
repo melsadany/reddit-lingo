@@ -20,7 +20,14 @@ export class AudioAssessment extends BaseAssessment implements OnDestroy {
   private _recordedData: Object[] = [];
   private _intervalCountup: NodeJS.Timeout;
   private _isRecording = false;
+  private _micStatus : boolean | string;
 
+  public set micStatus(value: boolean | string){
+    this._micStatus=value
+  }
+  public get micStatus(): boolean | string{
+    return this._micStatus
+  }
   public get isRecording(): boolean {
     return this._isRecording;
   }
@@ -119,7 +126,8 @@ export class AudioAssessment extends BaseAssessment implements OnDestroy {
         prompt_number: this.promptNumber,
         recorded_data: currentRecordedBlobAsBase64,
         wait_time: this.lastPromptWaitTime,
-        dataGiven: this.dataTitle ? this.dataTitle : null
+        dataGiven: this.dataTitle ? this.dataTitle : null,
+        failed: this.audioRecordingService.blobSize<45 ? true : false
       };
       if (this.assessmentName === 'ran') {
         pushObject['recorded_time'] = this.recordedTime;
@@ -133,10 +141,10 @@ export class AudioAssessment extends BaseAssessment implements OnDestroy {
     };
   }
 
-  pushAudioData(): void {
+  pushAudioData(string?:string): void {
     const assessmentData = {
       assess_name: this.assessmentName,
-      data: { recorded_data: this.recordedData },
+      data: { recorded_data: string ? "failed" :this.recordedData },
       completed: this.lastPrompt
     };
     const assessmentGoogleData = {
@@ -161,11 +169,14 @@ export class AudioAssessment extends BaseAssessment implements OnDestroy {
     onDoneRecordingCallback: Function
   ): void {
     if (!this.isRecording) {
-      this.isRecording = true;
-      this.audioRecordingService.startRecording();
-      this.intervalCountup = setTimeout(() => {
-        this.stopRecording(() => onDoneRecordingCallback());
-      }, recordingTimerInMiliSeconds);
+      
+      if(this.micStatus!="failed"){
+        this.isRecording = true
+        this.audioRecordingService.startRecording(this.micStatus)
+        this.intervalCountup = setTimeout(() => {
+                this.stopRecording(() => onDoneRecordingCallback());
+              }, recordingTimerInMiliSeconds);
+      }
     }
   }
 
@@ -208,7 +219,11 @@ export class AudioAssessment extends BaseAssessment implements OnDestroy {
       }
       if (this.stateManager.appConfig['appConfig']['assessmentsConfig'][this.assessmentName]['hideInstructionsOnAssessmentStart']) {
         this.stateManager.showStartParagraph = false;
-      }
+      } 
+      this.micStatus=this.audioRecordingService.checkStatus()
+        if(this.micStatus=="failed"){
+          return 
+        }
       if (beforeAdvanceCall) {
         // KRM: This call must return a promise
         beforeAdvanceCall().then(() => {

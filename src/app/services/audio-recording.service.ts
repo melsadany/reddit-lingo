@@ -132,13 +132,6 @@ export class AudioRecordingService {
   isCurrentlyRecording(): Boolean {
     return this._currentlyRecording;
   }
-  isMicLostError():Boolean {
-    console.log("VALUE IS:",this.lostMicError)
-    return this.lostMicError;
-  }
-  setInMicrophoneError(set: boolean):void{
-    this.lostMicError=set
-  }
   setCurrentlyRecording(set: boolean): void {
     if (set === this._currentlyRecording) {
       console.log('error, already set to this value');
@@ -157,7 +150,8 @@ export class AudioRecordingService {
   recordingFailed(): Observable<string> {
     return this._recordingFailed.asObservable();
   }
-  public checkStatus(){
+  public checkStatus() : string | boolean{
+    console.log("checking mic status")
     //console.log(this.stream)
     //console.log(this.stream.getAudioTracks())
    // console.log(this.stream.getAudioTracks()[0])
@@ -167,30 +161,31 @@ export class AudioRecordingService {
     this.readyState=this.stream.getAudioTracks()[0] ? this.stream.getAudioTracks()[0].readyState: "null"
     this.enabled = this.stream.getAudioTracks()[0] ? this.stream.getAudioTracks()[0].enabled : null
     }catch {this.readyState="STREAM IS NULL"}
-  }
-  startRecording(): void {
-    this._recordingTime.next('00:00');
+
+
     this.enableTracks()
    
     if (this.stream){ 
-      
-      //console.log("lost mic")
-      this.setInMicrophoneError(true)
-      this.checkStatus()
       //console.log(this.active,this.muted,this.enabled)
       if (!this.active || this.muted || this.blobSize<45){
-        var reason=""
-        if(this.muted)reason="muted track "
-        if(!this.active)reason+= "& stream not active"
-        if(this.blobSize<45)reason+="& blob size too small"
         this.openWindow.next(true)
+        return "failed"
       }
       else {
-        this.enableTracks();this.record()
+        return false
       }
     }
+    else return true
+  }
+
+  startRecording(newStream?): void {
+    console.log("recording")
+    this._recordingTime.next('00:00');
+    if (this.stream){ 
+        if(newStream)this.captureStream()
+        else {this.enableTracks();this.record()}
+    }
     else this.captureStream()
-  
   }
 
   abortRecording(): void {
@@ -202,7 +197,6 @@ export class AudioRecordingService {
    * Starts the recording of the user's microphone
    */
   private record(): void {
-    this.checkStatus()
     const config = {
       type: 'audio',
       mimeType: 'audio/webm',
