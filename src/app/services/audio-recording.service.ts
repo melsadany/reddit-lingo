@@ -179,7 +179,7 @@ export class AudioRecordingService {
     this._recordingTime.next('00:00');
     if (this.stream){ 
         if(newStream)this.captureStream()
-        else {this.captureStream()}
+        else {this.enableTracks();this.record()}
     }
     else this.captureStream()
   }
