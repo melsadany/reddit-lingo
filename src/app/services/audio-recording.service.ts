@@ -119,7 +119,6 @@ export class AudioRecordingService {
         //this.deviceId=this.track.getSettings().deviceId;
         //console.log(this.track)
         //console.log(this.stream.getAudioTracks()[0])
-        this.stream.getAudioTracks()[0].onisolationchange = function() { alert("lost permission!"); };
         this.record();
       })
       .catch(error => {
@@ -161,9 +160,6 @@ export class AudioRecordingService {
     this.readyState=this.stream.getAudioTracks()[0] ? this.stream.getAudioTracks()[0].readyState: "null"
     this.enabled = this.stream.getAudioTracks()[0] ? this.stream.getAudioTracks()[0].enabled : null
     }catch {this.readyState="STREAM IS NULL"}
-
-
-    this.enableTracks()
    
     if (this.stream){ 
       //console.log(this.active,this.muted,this.enabled)
@@ -183,7 +179,7 @@ export class AudioRecordingService {
     this._recordingTime.next('00:00');
     if (this.stream){ 
         if(newStream)this.captureStream()
-        else {this.enableTracks();this.record()}
+        else {this.captureStream()}
     }
     else this.captureStream()
   }
@@ -270,7 +266,8 @@ public stopCurrentTrack(){
   this.stream.getAudioTracks().forEach(track => track.stop())
   this.stream.removeTrack(this.stream.getAudioTracks()[0])
   //this.stream.stop();
-  this.stream=null;}
+  //this.stream=null;
+}
 }
 
   private stopMedia(): void {
