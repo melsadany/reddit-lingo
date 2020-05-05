@@ -336,7 +336,6 @@ function saveWavFile(reqData, userID, selector, bucketName) {
       }
     }
   )
-  console.log("should be completely done")
   reqData.assessments[0].data[selector][0]['recorded_data'] = wavFileName
 }
 //dont need getNextUserID anymore [BT]
