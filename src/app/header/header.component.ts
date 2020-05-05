@@ -14,11 +14,6 @@ export class HeaderComponent {
     this.audioRecordingService.openNow.subscribe(value => {if(value){this.showRecordError=true;}})
   }
   public showRecordError=false
-
-  public newWindow(){
-    window.open('/','_blank')
-    try{window.close()}catch{(e)=>{console.log("wow")}}
-  }
   
   public updateHeader(): Boolean {
     if (this.stateManager.isInAssessment) {

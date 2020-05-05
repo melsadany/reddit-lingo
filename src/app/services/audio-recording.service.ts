@@ -77,30 +77,11 @@ export class AudioRecordingService {
   public blobSize;
   public openWindow =  new BehaviorSubject(false)
   public openNow=this.openWindow.asObservable()
-  public lostMicError=false;
-  public null(){
-    if(this.stream){
-      this.stream.getAudioTracks().forEach(track => track=null)
-    }
-  }
-  public enableTracks(){
-    if(this.stream){
-      this.stream.getAudioTracks().forEach(track => track.enabled=true)
-    }
-  }
-  public muteTrack(b){
-    console.log("enabling")
-    this.track.enabled=b
-  }
-  public stopTrack(){
-    this.track.stop()
-  }
-  public newWindow(){window.open('/', '_blank');
-  window.close();}
+
   /**
    * Uses navigator.mediaDevices to capture the microphone from the user in browser
    */
-  captureStream(): void {console.log("streamin")
+  captureStream(): void {
     this.captures+=1;
     navigator.mediaDevices
       .getUserMedia(this.deviceId ? {audio : {deviceId: {exact: this.deviceId}}} : {audio: true})
@@ -110,15 +91,6 @@ export class AudioRecordingService {
         }
         this.stream = s;
         this.deviceId = this.stream.getAudioTracks()[0].getSettings().deviceId;
-        //console.log("device settings",this.stream.getAudioTracks()[0].getSettings())
-        if (this.track){
-         // this.stream.removeTrack(this.stream.getAudioTracks()[0])
-        //  this.stream.addTrack(this.track)
-        }
-        //this.track=this.stream.getAudioTracks()[0].clone()
-        //this.deviceId=this.track.getSettings().deviceId;
-        //console.log(this.track)
-        //console.log(this.stream.getAudioTracks()[0])
         this.record();
       })
       .catch(error => {
@@ -150,10 +122,7 @@ export class AudioRecordingService {
     return this._recordingFailed.asObservable();
   }
   public checkStatus() : string | boolean{
-    console.log("checking mic status")
-    //console.log(this.stream)
-    //console.log(this.stream.getAudioTracks())
-   // console.log(this.stream.getAudioTracks()[0])
+
     try{
     this.active=this.stream.active
     this.muted=this.stream.getAudioTracks()[0] ? this.stream.getAudioTracks()[0].muted : null
@@ -175,7 +144,6 @@ export class AudioRecordingService {
   }
 
   startRecording(newStream?): void {
-    console.log("recording")
     this._recordingTime.next('00:00');
     if (this.stream){ 
         if(newStream)this.captureStream()
@@ -239,7 +207,6 @@ export class AudioRecordingService {
    * Stop recording the user's microphone
    */
   stopRecording(): void {
-   // this.checkStatus()
     if (this.recorder) {
       this.setCurrentlyRecording(false);
       this.recorder.stop(
@@ -260,15 +227,6 @@ export class AudioRecordingService {
       );
     }
   }
-public stopCurrentTrack(){
-  if (this.stream){
-  this.stream.getAudioTracks().forEach(track => track.enabled=false)
-  this.stream.getAudioTracks().forEach(track => track.stop())
-  this.stream.removeTrack(this.stream.getAudioTracks()[0])
-  //this.stream.stop();
-  //this.stream=null;
-}
-}
 
   private stopMedia(): void {
     if (this.recorder) {
@@ -278,14 +236,6 @@ public stopCurrentTrack(){
     }
     if(this.stream){ 
       this.stream.getAudioTracks().forEach(track => track.enabled=false)
-      //this.stream.getAudioTracks().forEach(track => track.stop())
-     // this.stream.removeTrack(this.stream.getAudioTracks()[0])
-
-     // this.track.enabled = false;
-      //this.track.stop()
-     // console.log("now tracks are..")
-     // console.log(this.stream.getTracks())
-      //this.stream.getAudioTracks().forEach(track => track.stop())
     }
     if(this.recorder){
       try{ this.recorder.destroy();}
