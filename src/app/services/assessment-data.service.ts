@@ -261,7 +261,7 @@ export class AssessmentDataService {
         user_id: this.getUserIdCookie(),
         hash_key: this.getHashKeyCookie(),
         assessments: [assessmentsData],
-        google_speech_to_text_assess: [googleData]
+        //google_speech_to_text_assess: [googleData]
       };
       this.stateManager.addHashToJson = false;
     
@@ -283,7 +283,7 @@ export class AssessmentDataService {
         addHashkeyToJson: this.stateManager.addHashToJson,
         hash_key: this.getHashKeyCookie(),
         assessments: [assessmentsData],
-        google_speech_to_text_assess: [googleData]
+        //google_speech_to_text_assess: [googleData]
       };
       this.stateManager.addHashToJson = false;
       return this.http.post('/api/assessmentsAPI/PushOnePieceData', structure, {

@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import RecordRTC from '../dev/recordrtc';
 import moment from 'moment';
-import { Observable, Subject } from 'rxjs';
-
+import { Observable, Subject,BehaviorSubject } from 'rxjs';
 export interface RecordedAudioOutput {
   blob: Blob;
   user_id: string;
@@ -69,11 +68,27 @@ export class AudioRecordingService {
   public set gettingMicErrorText(value: string) {
     this._gettingMicErrorText = value;
   }
+  public muted: boolean;
+  public active: boolean;
+  public readyState: string;
+  public enabled: boolean;
+  public captures=0;
+  public track:MediaStreamTrack;
+  public blobSize;
+  public openWindow =  new BehaviorSubject(false)
+  public openNow=this.openWindow.asObservable()
+
+  public enableTracks(){
+    if(this.stream){
+      this.stream.getAudioTracks().forEach(track => track.enabled=true)
+    }
+  }
 
   /**
    * Uses navigator.mediaDevices to capture the microphone from the user in browser
    */
   captureStream(): void {
+    this.captures+=1;
     navigator.mediaDevices
       .getUserMedia(this.deviceId ? {audio : {deviceId: {exact: this.deviceId}}} : {audio: true})
       .then(s => {
@@ -94,7 +109,6 @@ export class AudioRecordingService {
   isCurrentlyRecording(): Boolean {
     return this._currentlyRecording;
   }
-
   setCurrentlyRecording(set: boolean): void {
     if (set === this._currentlyRecording) {
       console.log('error, already set to this value');
@@ -113,12 +127,35 @@ export class AudioRecordingService {
   recordingFailed(): Observable<string> {
     return this._recordingFailed.asObservable();
   }
+  public checkStatus() : string | boolean{
 
-  startRecording(): void {
+    try{
+    this.active=this.stream.active
+    this.muted=this.stream.getAudioTracks()[0] ? this.stream.getAudioTracks()[0].muted : null
+    this.readyState=this.stream.getAudioTracks()[0] ? this.stream.getAudioTracks()[0].readyState: "null"
+    this.enabled = this.stream.getAudioTracks()[0] ? this.stream.getAudioTracks()[0].enabled : null
+    }catch {this.readyState="STREAM IS NULL"}
+   
+    if (this.stream){ 
+      //console.log(this.active,this.muted,this.enabled)
+      if (!this.active || this.muted || this.blobSize<45){
+        this.openWindow.next(true)
+        return "failed"
+      }
+      else {
+        return false
+      }
+    }
+    else return true
+  }
+
+  startRecording(newStream?): void {
     this._recordingTime.next('00:00');
-    
-    this.captureStream()
-    return;
+    if (this.stream){ 
+        if(newStream)this.captureStream()
+        else {this.enableTracks();this.record()}
+    }
+    else this.captureStream()
   }
 
   abortRecording(): void {
@@ -134,14 +171,16 @@ export class AudioRecordingService {
       type: 'audio',
       mimeType: 'audio/webm',
       recorderType: 'StereoAudioRecorder',
-      sampleRate: 44100,
+      sampleRate: 48000,
       checkForInactiveTracks: true,
       bufferSize: 4096,
-      numberOfAudioChannels: 2
+      numberOfAudioChannels: 1
     };
     this.setCurrentlyRecording(true);
     if(this.recorder){
-      this.recorder.destroy();
+      try{ this.recorder.destroy();}
+      catch{console.log("Error: couldn't destroy recorder.")}
+     
       this.recorder=null;
     }
     this.recorder = new RecordRTC.StereoAudioRecorder(this.stream, config);
@@ -178,6 +217,7 @@ export class AudioRecordingService {
       this.setCurrentlyRecording(false);
       this.recorder.stop(
         (blob: Blob) => {
+          this.blobSize= blob.size
           if (this.startTime) {
             const wavName = encodeURIComponent(
               'audio_' + new Date().getTime() + '.wav'
@@ -196,9 +236,18 @@ export class AudioRecordingService {
 
   private stopMedia(): void {
     if (this.recorder) {
-      this.recorder = null;
+      //this.recorder = null;
       clearInterval(this.interval);
       this.startTime = null;
+    }
+    if(this.stream){ 
+      this.stream.getAudioTracks().forEach(track => track.enabled=false)
+    }
+    if(this.recorder){
+      try{ this.recorder.destroy();}
+      catch{console.log("Error: couldn't destroy recorder.")}
+     
+      this.recorder=null;
     }
   }
 
