@@ -7,8 +7,14 @@
       "prescreenerquestions": {
         "enabled": false
       },
-      "wordassociationpath": {
+    "syncvoice": {
         "enabled": true,
+        "randomize":false,
+        "maxPrompts":0,
+        "hideInstructionsOnAssessmentStart": false
+      },
+      "wordassociationpath": {
+        "enabled": false,
         "useSpecificStartWord": false,
         "startWord": "cat",
         "randomize":true,
@@ -37,12 +43,6 @@
         "prompt_countdowns": [3]
       },
       "matrixreasoning": {
-        "enabled": true,
-        "randomize":true,
-        "maxPrompts":0,
-        "hideInstructionsOnAssessmentStart": false
-      },
-      "syncvoice": {
         "enabled": true,
         "randomize":true,
         "maxPrompts":0,
