@@ -11,6 +11,7 @@ const LINGO_DATA_LOCAL_PATH = path.join(
   '../',
   'assessment_data'
 )
+const WaveFile = require('wavefile').WaveFile;
 var CronJob = require('cron').CronJob;
 
 var job = new CronJob('0 4 0 * * *', function() {
@@ -277,6 +278,7 @@ function saveWavFile(reqData, userID, selector, bucketName) {
   const assessmentName = reqData.assessments[0]['assess_name']
   let wavFilePath
   let wavFileName
+  let wavFileTitle
   if (userID) {
     wavFilePath = path.join(
       LINGO_DATA_LOCAL_PATH,
@@ -284,6 +286,7 @@ function saveWavFile(reqData, userID, selector, bucketName) {
       'recording_data',
       assessmentName
     )
+  if (DEPLOYMENT_SPECIFIC_FOLDER) wavFileTitle = path.join(DEPLOYMENT_SPECIFIC_FOLDER, userID, 'recording_data', assessmentName )
   }
   if (!fs.existsSync(wavFilePath)) {
     fs.mkdirSync(path.join(wavFilePath), {
@@ -292,14 +295,24 @@ function saveWavFile(reqData, userID, selector, bucketName) {
   }
   if(dataTitle){
     wavFileName = path.join(wavFilePath, dataTitle + '.wav')
+    wavFileTitle = path.join(wavFileTitle,dataTitle + '.wav')
   }
   else{
      wavFileName = path.join(wavFilePath, promptNumber + '.wav')
+     wavFileTitle = path.join(wavFileTitle, promptNumber + '.wav')
   }
  
+  var blob = reqData.assessments[0].data[selector][0]['recorded_data'] 
+
+  var buf = Buffer.from(blob,'base64')
+  let wav = new WaveFile(buf)
+
+  if(DEPLOYMENT_SPECIFIC_FOLDER) wav.setTag("INAM",wavFileTitle);
+  
+
   fs.writeFile(
     wavFileName,
-    reqData.assessments[0].data[selector][0]['recorded_data'],
+    wav.toBuffer(),
     {
       encoding: 'base64'
     },
@@ -323,6 +336,7 @@ function saveWavFile(reqData, userID, selector, bucketName) {
       }
     }
   )
+  console.log("should be completely done")
   reqData.assessments[0].data[selector][0]['recorded_data'] = wavFileName
 }
 //dont need getNextUserID anymore [BT]
