@@ -8,7 +8,7 @@ import { AudioRecordingService } from '../services/audio-recording.service';
   styleUrls: ['./assessments-controller.component.scss']
 })
 export class AssessmentsControllerComponent implements OnInit {
-  @ViewChild('canvas') canvas: ElementRef;
+  @ViewChild('canvas', { static: false }) canvas: ElementRef;
   constructor(
     private dataService: AssessmentDataService,
     public stateManager: StateManagerService,

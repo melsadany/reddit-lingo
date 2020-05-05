@@ -33,25 +33,25 @@
       "wordfinding": {
         "enabled": true,
         "randomize":true,
-        "maxPrompts":3,
+        "maxPrompts":0,
         "hideInstructionsOnAssessmentStart": false
       },
       "sentencerepetition": {
         "enabled": true,
-        "randomize":true,
+        "randomize":false,
         "maxPrompts":0,
         "prompt_countdowns": [3]
       },
       "matrixreasoning": {
         "enabled": true,
         "randomize":true,
-        "maxPrompts":3,
+        "maxPrompts":0,
         "hideInstructionsOnAssessmentStart": false
       },
       "timeduration": {
         "enabled": true,
         "randomize":false,
-        "maxPrompts":100,
+        "maxPrompts":0,
         "circle_durations": [5, 1.5, 0.5]
       },
       "ran": {
@@ -63,13 +63,13 @@
       "listeningcomprehension": {
         "enabled": true,
         "randomize":true,
-        "maxPrompts":3,
+        "maxPrompts":0,
         "hideInstructionsOnAssessmentStart": false
       },
       "pictureprompt":{
         "enabled":true,
         "randomize":true,
-        "maxPrompts":3,
+        "maxPrompts":0,
         "hideInstructionsOnAssessmentStart": false
       },
       "postscreenerquestions": {

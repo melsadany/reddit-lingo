@@ -36,7 +36,7 @@ const AssessmentSchemaValidator = Joi.object({
   user_id: Joi.string().required(),
   hash_keys: Joi.array(),
   assessments: Joi.array(),
-  google_speech_to_text_assess: Joi.array(),
+  //google_speech_to_text_assess: Joi.array(),
   startTime: Joi.string()
 })
 
@@ -258,7 +258,6 @@ function getUserAssessmentData(searchUserId,date) {
               user_id: userID,
               hash_keys: [],
               assessments: [],
-              google_speech_to_text_assess: [],
               startTime: date
             })
           )
@@ -354,7 +353,6 @@ function insertNewHashKeyJson(hashKey,userID,date) {
     user_id: userID,
     hash_keys: [hashKey],
     assessments: [],
-    google_speech_to_text_assess: [],
     startTime: date
   })
   const fileName = path.join(
@@ -594,7 +592,7 @@ function putObjectToS3(params, logData,wavFile) {
           '/' +
           logData.objectKeyName
       )
-      if(wavFile)transcribeAudioAndSendToS3(logData)
+      if(wavFile){}//transcribeAudioAndSendToS3(logData)
     }
   })
 }

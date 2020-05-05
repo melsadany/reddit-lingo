@@ -33,13 +33,12 @@ export class SentencerepetitionComponent extends AudioAssessment {
         this.determinePromptsToDo();
       });
   }
-
   setStateAndStart(): void {
     this.stateManager.textOnInnerAssessmentButton = 'CONTINUE ASSESSMENT';
     this.stateManager.isInAssessment = true;
     this.advance();
   }
-
+  
   advance(): void {
     this.advanceToNextPrompt(
       () =>

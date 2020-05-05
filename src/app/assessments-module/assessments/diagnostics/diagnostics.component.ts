@@ -53,7 +53,7 @@ export class DiagnosticsComponent implements OnInit, OnDestroy {
   private _cantHearMic = false;
   private _hasRecordedTest = false;
   private _date= new Date();
-  @ViewChild('wavesurfer') ws: ElementRef;
+  @ViewChild('wavesurfer', { static: false }) ws: ElementRef;
   @Input() waveColor = '#ff1e7f';
   @Input() progressColor = '#00F';
   @Input() cursorColor = '#CCC';

@@ -31,5 +31,8 @@ export class AppComponent implements OnInit {
     if (this.stateManager.finishedAllAssessments) {
       this.stateManager.navigateTo('done');
     }
+    window.onbeforeunload = function() {
+      var c = confirm("U sure u want to leave dog?")
+    }
   }
 }
