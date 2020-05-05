@@ -4,12 +4,6 @@
       In this task, you will listen to a sentence. Once the sentence is finished, the screen will advance after three
       seconds,
       and you will be asked to repeat the sentence back.
-    </p><p>BLOBSIZE:{{audioRecordingService.blobSize}}</p>
-  <button (click)="stopCurrentTrack()">stopCurrentTrack</button><button (click)="enableTracks()">enableCurrentTrack</button><button (click)="null()">nullTracks</button>
-    <p>Debug:STREAM:{{audioRecordingService.stream}} ACTIVE: {{audioRecordingService.active}} MUTED:{{audioRecordingService.muted}}ENABLED: {{audioRecordingService.enabled}} READYSTATE:{{audioRecordingService.readyState}}  CAPTURES: {{audioRecordingService.captures}}</p>
-<button (click)="check()">check</button><button (click)="new()">new window</button> <!--button (click)="mute()">mute</button><button (click)="enable()">enable</button><button (click)="stop()">stop</button>
-    <p> TRACK: Muted: {{muted}} Enabled: {{enabled}} ReadyState: {{readyState}}</p>
-    <button (click)="checkTrack()">track Check</button-->
 </div>
   <div *ngIf="stateManager.showInnerAssessmentButton" class="text-center button-down">
     <div *ngIf="!stateManager.isInAssessment">

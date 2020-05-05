@@ -78,6 +78,12 @@ export class AudioRecordingService {
   public openWindow =  new BehaviorSubject(false)
   public openNow=this.openWindow.asObservable()
 
+  public enableTracks(){
+    if(this.stream){
+      this.stream.getAudioTracks().forEach(track => track.enabled=true)
+    }
+  }
+
   /**
    * Uses navigator.mediaDevices to capture the microphone from the user in browser
    */
