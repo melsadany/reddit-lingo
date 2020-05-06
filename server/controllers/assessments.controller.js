@@ -287,6 +287,7 @@ function saveWavFile(reqData, userID, selector, bucketName) {
       assessmentName
     )
   if (DEPLOYMENT_SPECIFIC_FOLDER) wavFileTitle = path.join(DEPLOYMENT_SPECIFIC_FOLDER, userID, 'recording_data', assessmentName )
+  else wavFileTitle = path.join("LOCAL/DEPLOYMENT",userID, 'recording_data', assessmentName)
   }
   if (!fs.existsSync(wavFilePath)) {
     fs.mkdirSync(path.join(wavFilePath), {
@@ -307,7 +308,7 @@ function saveWavFile(reqData, userID, selector, bucketName) {
   var buf = Buffer.from(blob,'base64')
   let wav = new WaveFile(buf)
 
-  if(DEPLOYMENT_SPECIFIC_FOLDER) wav.setTag("INAM",wavFileTitle);
+  wav.setTag("INAM",wavFileTitle);
   
 
   fs.writeFile(
