@@ -314,7 +314,7 @@ export class StateManagerService {
     }
     if (this.assessmentsLeftLinkedList.length<2){
       this.assessmentsLeftLinkedList.removeHead()
-      this.completedAssessmentsAlready=true;
+      this.completedAssessmentsAlready=false;
     }
     this.loadingState = false;
   }
@@ -364,7 +364,7 @@ export class StateManagerService {
     this.loadingState = false;
     if (this.assessmentsLeftLinkedList.length<2){
       this.assessmentsLeftLinkedList.removeHead()
-      this.completedAssessmentsAlready=true;
+      this.completedAssessmentsAlready=false;
     }
   }
   private determineCurrentPromptNumber(existingData: Array<Object>,assess_name:string): number {
