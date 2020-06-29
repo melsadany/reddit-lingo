@@ -37,7 +37,7 @@
         "prompt_countdowns": [3]
       },
       "matrixreasoning": {
-        "enabled": false,
+        "enabled": true,
         "randomize":true,
         "maxPrompts":0,
         "hideInstructionsOnAssessmentStart": false
