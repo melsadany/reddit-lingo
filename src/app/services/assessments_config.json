@@ -38,7 +38,7 @@
       },
       "matrixreasoning": {
         "enabled": true,
-        "randomize":true,
+        "randomize":false,
         "maxPrompts":0,
         "hideInstructionsOnAssessmentStart": false
       },
@@ -56,10 +56,10 @@
         "circle_durations": [5, 1.5, 0.5]
       },
       "ran": {
-        "enabled": false,
-        "randomize":true,
+        "enabled": true,
+        "randomize":false,
         "maxPrompts":0,
-        "hideInstructionsOnAssessmentStart": false
+        "hideInstructionsOnAssessmentStart": true
       },
       "listeningcomprehension": {
         "enabled": false,
