@@ -57,13 +57,13 @@
       },
       "ran": {
         "enabled": false,
-        "randomize":true,
+        "randomize":false,
         "maxPrompts":0,
         "hideInstructionsOnAssessmentStart": false
       },
       "listeningcomprehension": {
-        "enabled": false,
-        "randomize":true,
+        "enabled": true,
+        "randomize":false,
         "maxPrompts":0,
         "hideInstructionsOnAssessmentStart": false
       },

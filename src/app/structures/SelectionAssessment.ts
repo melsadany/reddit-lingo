@@ -48,7 +48,7 @@ export class SelectionAssessment extends BaseAssessment implements OnDestroy {
       wait_time: this.lastPromptWaitTime,
       dataGiven: this.dataTitle ? this.dataTitle : null
     };
-    if (this.assessmentName === 'matrixreasoning') {
+    if (this.assessmentName === 'matrixreasoning' || this.assessmentName === 'listeningcomprehension') {
       pushObject['time_to_select'] = this.timeToSelect / 1000;
       this.timeToSelect = 0;
     }
