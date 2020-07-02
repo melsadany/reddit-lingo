@@ -11,13 +11,8 @@
         "enabled": false,
         "useSpecificStartWord": false,
         "startWord": "cat",
-<<<<<<< HEAD
-        "randomize":true,
-        "maxPrompts":0,
-=======
         "randomize":false,
-        "maxPrompts":1,
->>>>>>> c2936bd78f06c6dd428fd34b0114629d6fe77782
+        "maxPrompts":0,
         "showRunningChoices": true,
         "hideInstructionsOnAssessmentStart": true
       },
@@ -29,28 +24,18 @@
         "maxPrompts":0,
         "hideInstructionsOnAssessmentStart": true
       },
-<<<<<<< HEAD
       "timeduration": {
-=======
-      "wordfinding": {
->>>>>>> c2936bd78f06c6dd428fd34b0114629d6fe77782
         "enabled": false,
         "randomize":false,
         "maxPrompts":0,
         "circle_durations": [5, 1.5, 0.5]
       },
-<<<<<<< HEAD
     "ran": {
         "enabled": true,
-=======
-      "sentencerepetition": {
-        "enabled": false,
->>>>>>> c2936bd78f06c6dd428fd34b0114629d6fe77782
         "randomize":false,
         "maxPrompts":0,
         "hideInstructionsOnAssessmentStart": true
       },
-<<<<<<< HEAD
       "wordfinding": {
         "enabled": true,
         "randomize": false,
@@ -72,42 +57,6 @@
     "pictureprompt":{
         "enabled":true,
         "randomize":true,
-=======
-      "matrixreasoning": {
-        "enabled": false,
-        "randomize":false,
-        "maxPrompts":0,
-        "hideInstructionsOnAssessmentStart": false
-      },
-      "syncvoice": {
-        "enabled": false,
-        "randomize":false,
-        "maxPrompts":0,
-        "hideInstructionsOnAssessmentStart": false
-      },
-
-      "timeduration": {
-        "enabled": false,
-        "randomize":false,
-        "maxPrompts":0,
-        "circle_durations": [5, 1.5, 0.5]
-      },
-      "ran": {
-        "enabled": false,
-        "randomize":false,
-        "maxPrompts":0,
-        "hideInstructionsOnAssessmentStart": false
-      },
-      "listeningcomprehension": {
-        "enabled": false,
-        "randomize":false,
-        "maxPrompts":0,
-        "hideInstructionsOnAssessmentStart": false
-      },
-      "pictureprompt":{
-        "enabled":false,
-        "randomize":false,
->>>>>>> c2936bd78f06c6dd428fd34b0114629d6fe77782
         "maxPrompts":0,
         "hideInstructionsOnAssessmentStart": false
       },
@@ -130,13 +79,8 @@
     "settings": {
       "hashkeyAsGUID":true,   
       "validateHashWithS3":false,
-<<<<<<< HEAD
       "validateUserId":"^.{32}$",
       "endUrl":"https://synapse.tempusresearch.com/engines/MWP1?s=b7beb02e7ac2412e9a931df09dafe674&r=Y&a=",
-=======
-      "validateUserId":".*",
-      "endUrl":"https://michaelson.lab.uiowa.edu/",
->>>>>>> c2936bd78f06c6dd428fd34b0114629d6fe77782
       "countdownTimerLength": 3,
       "countdownTimerType": "circle",
       "debugEnabled": true
