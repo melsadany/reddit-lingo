@@ -80,8 +80,8 @@
     "settings": {
       "hashkeyAsGUID":true,   
       "validateHashWithS3":false,
-      "validateUserId":"....",
-      "endUrl":"https://michaelson.lab.uiowa.edu",
+      "validateUserId":"*",
+      "endUrl":"https://michaelson.lab.uiowa.edu/",
       "countdownTimerLength": 3,
       "countdownTimerType": "circle",
       "debugEnabled": true
