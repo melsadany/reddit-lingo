@@ -11,7 +11,7 @@
         "enabled": false,
         "useSpecificStartWord": false,
         "startWord": "cat",
-        "randomize":true,
+        "randomize":false,
         "maxPrompts":1,
         "showRunningChoices": true,
         "hideInstructionsOnAssessmentStart": true
@@ -20,13 +20,13 @@
         "enabled": false,
         "useSpecificStartWord": false,
         "startWord": "cat",
-        "randomize":true,
+        "randomize":false,
         "maxPrompts":0,
         "hideInstructionsOnAssessmentStart": true
       },
       "wordfinding": {
         "enabled": false,
-        "randomize":true,
+        "randomize":false,
         "maxPrompts":0,
         "hideInstructionsOnAssessmentStart": false
       },
@@ -38,13 +38,13 @@
       },
       "matrixreasoning": {
         "enabled": false,
-        "randomize":true,
+        "randomize":false,
         "maxPrompts":0,
         "hideInstructionsOnAssessmentStart": false
       },
       "syncvoice": {
         "enabled": false,
-        "randomize":true,
+        "randomize":false,
         "maxPrompts":0,
         "hideInstructionsOnAssessmentStart": false
       },
@@ -62,14 +62,14 @@
         "hideInstructionsOnAssessmentStart": false
       },
       "listeningcomprehension": {
-        "enabled": true,
+        "enabled": false,
         "randomize":false,
         "maxPrompts":0,
         "hideInstructionsOnAssessmentStart": false
       },
       "pictureprompt":{
         "enabled":false,
-        "randomize":true,
+        "randomize":false,
         "maxPrompts":0,
         "hideInstructionsOnAssessmentStart": false
       },
@@ -78,10 +78,10 @@
       }
     },
     "settings": {
-      "hashkeyAsGUID":true,   
+      "hashkeyAsGUID":false,   
       "validateHashWithS3":false,
-      "validateUserId":"....",
-      "endUrl":"https://michaelson.lab.uiowa.edu",
+      "validateUserId":".*",
+      "endUrl":"https://michaelson.lab.uiowa.edu/",
       "countdownTimerLength": 3,
       "countdownTimerType": "circle",
       "debugEnabled": true
