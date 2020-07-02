@@ -25,19 +25,19 @@
         "hideInstructionsOnAssessmentStart": true
       },
       "wordfinding": {
-        "enabled": true,
+        "enabled": false,
         "randomize":true,
         "maxPrompts":0,
         "hideInstructionsOnAssessmentStart": false
       },
       "sentencerepetition": {
-        "enabled": true,
+        "enabled": false,
         "randomize":false,
         "maxPrompts":0,
         "prompt_countdowns": [3]
       },
       "matrixreasoning": {
-        "enabled": true,
+        "enabled": false,
         "randomize":true,
         "maxPrompts":0,
         "hideInstructionsOnAssessmentStart": false
@@ -50,25 +50,25 @@
       },
 
       "timeduration": {
-        "enabled": true,
+        "enabled": false,
         "randomize":false,
         "maxPrompts":0,
         "circle_durations": [5, 1.5, 0.5]
       },
       "ran": {
-        "enabled": true,
-        "randomize":true,
+        "enabled": false,
+        "randomize":false,
         "maxPrompts":0,
         "hideInstructionsOnAssessmentStart": false
       },
       "listeningcomprehension": {
         "enabled": true,
-        "randomize":true,
+        "randomize":false,
         "maxPrompts":0,
         "hideInstructionsOnAssessmentStart": false
       },
       "pictureprompt":{
-        "enabled":true,
+        "enabled":false,
         "randomize":true,
         "maxPrompts":0,
         "hideInstructionsOnAssessmentStart": false
@@ -78,10 +78,10 @@
       }
     },
     "settings": {
-      "hashkeyAsGUID":false,   
+      "hashkeyAsGUID":true,   
       "validateHashWithS3":false,
-      "validateUserId":"*",
-      "endUrl":"",
+      "validateUserId":"....",
+      "endUrl":"https://michaelson.lab.uiowa.edu",
       "countdownTimerLength": 3,
       "countdownTimerType": "circle",
       "debugEnabled": true

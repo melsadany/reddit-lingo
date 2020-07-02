@@ -16,6 +16,7 @@ export class ListeningcomprehensionComponent extends SelectionAssessment {
   playingAudio = false;
   audioPromptStructure: {};
   imgsPromptStructure: {};
+  countUpTimer: NodeJS.Timeout;
 
   constructor(
     public dataService: AssessmentDataService,
@@ -43,6 +44,16 @@ export class ListeningcomprehensionComponent extends SelectionAssessment {
     this.stateManager.textOnInnerAssessmentButton = 'CONTINUE ASSESSMENT';
     this.stateManager.isInAssessment = true;
     this.advance();
+  }
+
+  startTimer(): void {
+    this.countUpTimer = setInterval(() => {
+      this.timeToSelect = this.timeToSelect + 10;
+    }, 10);
+  }
+
+  stopTimer(): void {
+    clearInterval(this.countUpTimer);
   }
 
   setupPrompt(): HTMLAudioElement {
@@ -74,14 +85,18 @@ export class ListeningcomprehensionComponent extends SelectionAssessment {
   clickImage(image: string): void {
     this.sendImageSelectionAndAdvance(
       image,
-      () => (this.showImage = false),
+      () => {this.showImage = false;
+             this.stopTimer();
+      },
       () => this.advance()
     );
   }
 
   advance(): void {
     this.advanceToNextPrompt(
-      () => (this.showImage = true),
+      () => {this.showImage = true;
+             this.startTimer();
+      },
       () => {
         const audio = this.setupPrompt();
         audio.play();
