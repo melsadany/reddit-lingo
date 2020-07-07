@@ -50,13 +50,13 @@
       },
       "syncvoice": {
         "enabled": true,
-        "randomize":true,
+        "randomize":false,
         "maxPrompts":0,
         "hideInstructionsOnAssessmentStart": false
       },
     "pictureprompt":{
         "enabled":true,
-        "randomize":true,
+        "randomize":false,
         "maxPrompts":0,
         "hideInstructionsOnAssessmentStart": false
       },
@@ -68,7 +68,7 @@
     },
     "listeningcomprehension": {
       "enabled": true,
-      "randomize":true,
+      "randomize":false,
       "maxPrompts":0,
       "hideInstructionsOnAssessmentStart": false
     },
