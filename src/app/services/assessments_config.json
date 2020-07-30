@@ -77,13 +77,13 @@
       }
     },
     "settings": {
-      "hashkeyAsGUID":true,   
+      "hashkeyAsGUID":true,
       "validateHashWithS3":false,
       "validateUserId":"^.{32}$",
       "endUrl":"https://synapse.tempusresearch.com/engines/MWP1?s=b7beb02e7ac2412e9a931df09dafe674&r=Y&a=",
       "countdownTimerLength": 3,
       "countdownTimerType": "circle",
-      "debugEnabled": true
+      "debugEnabled": false
     }
   }
 }
