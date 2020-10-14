@@ -335,7 +335,6 @@ function saveWavFile(reqData, userID, selector, bucketName) {
         
         uploadWavToS3(wavFileName, S3_DATA_BUCKET_NAME, S3UploadPath)
       }
-      uploadWavToS3(wavFileName, S3_DATA_BUCKET_NAME, S3UploadPath)
     }
   )
   reqData.assessments[0].data[selector][0]['recorded_data'] = wavFileName
