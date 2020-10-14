@@ -12,7 +12,7 @@
         "useSpecificStartWord": false,
         "startWord": "cat",
         "randomize":false,
-        "maxPrompts":1,
+        "maxPrompts":0,
         "showRunningChoices": true,
         "hideInstructionsOnAssessmentStart": true
       },
@@ -24,64 +24,63 @@
         "maxPrompts":0,
         "hideInstructionsOnAssessmentStart": true
       },
-      "wordfinding": {
-        "enabled": false,
-        "randomize":false,
-        "maxPrompts":0,
-        "hideInstructionsOnAssessmentStart": false
-      },
-      "sentencerepetition": {
-        "enabled": false,
-        "randomize":false,
-        "maxPrompts":0,
-        "prompt_countdowns": [3]
-      },
-      "matrixreasoning": {
-        "enabled": false,
-        "randomize":false,
-        "maxPrompts":0,
-        "hideInstructionsOnAssessmentStart": false
-      },
-      "syncvoice": {
-        "enabled": false,
-        "randomize":false,
-        "maxPrompts":0,
-        "hideInstructionsOnAssessmentStart": false
-      },
-
       "timeduration": {
         "enabled": false,
         "randomize":false,
         "maxPrompts":0,
         "circle_durations": [5, 1.5, 0.5]
       },
-      "ran": {
-        "enabled": false,
+    "ran": {
+        "enabled": true,
+        "randomize":false,
+        "maxPrompts":0,
+        "hideInstructionsOnAssessmentStart": true
+      },
+      "wordfinding": {
+        "enabled": true,
+        "randomize": false,
+        "maxPrompts":0,
+        "hideInstructionsOnAssessmentStart": false
+      },
+      "sentencerepetition": {
+        "enabled": true,
+        "randomize":false,
+        "maxPrompts":0,
+        "prompt_countdowns": [3]
+      },
+      "syncvoice": {
+        "enabled": true,
         "randomize":false,
         "maxPrompts":0,
         "hideInstructionsOnAssessmentStart": false
       },
-      "listeningcomprehension": {
-        "enabled": false,
+    "pictureprompt":{
+        "enabled":true,
         "randomize":false,
         "maxPrompts":0,
         "hideInstructionsOnAssessmentStart": false
       },
-      "pictureprompt":{
-        "enabled":false,
-        "randomize":false,
-        "maxPrompts":0,
-        "hideInstructionsOnAssessmentStart": false
-      },
-      "postscreenerquestions": {
+    "matrixreasoning": {
+      "enabled": true,
+      "randomize":false,
+      "maxPrompts":0,
+      "hideInstructionsOnAssessmentStart": false
+    },
+    "listeningcomprehension": {
+      "enabled": true,
+      "randomize":false,
+      "maxPrompts":0,
+      "hideInstructionsOnAssessmentStart": false
+    },
+    "postscreenerquestions": {
         "enabled": false
       }
     },
     "settings": {
       "hashkeyAsGUID":false,   
       "validateHashWithS3":false,
-      "validateUserId":".*",
-      "endUrl":"https://michaelson.lab.uiowa.edu/",
+      "validateUserId":"*",
+      "endUrl":"",
       "countdownTimerLength": 3,
       "countdownTimerType": "circle",
       "debugEnabled": true

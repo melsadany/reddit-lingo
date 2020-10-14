@@ -562,7 +562,11 @@ async function getObjectFromS3(fileName,userID) {
 }
 
 function uploadJSONFileToS3(localJSONLocation, S3Bucket, objectKeyName) {
-  let jsonData = fs.readFileSync(localJSONLocation)
+  let jsonData = safeFileReadSync(localJSONLocation)
+  if (!jsonData){
+    console.log("Could not upload json to s3.")
+    return
+  } 
   let params = {
     Bucket: S3Bucket,
     Key: objectKeyName,
@@ -578,7 +582,12 @@ function uploadJSONFileToS3(localJSONLocation, S3Bucket, objectKeyName) {
 
 function uploadWavToS3(localWavFileName, S3Bucket, objectKeyName) {
   console.log("uploadingWavToS3...")
-  let body = fs.readFileSync(localWavFileName)
+
+  let body = safeFileReadSync(localWavFileName)
+  if (!body){
+    console.log("Could not upload wav to s3.")
+    return
+  } 
   let params = {
     Bucket: S3Bucket,
     Key: objectKeyName,
@@ -633,6 +642,21 @@ function validateHashWithS3(hashKey){
   })
 }
 
+function safeFileReadSync(fileName){
+  var body;
+  try {
+    body = fs.readFileSync(fileName)
+  }
+  catch (err){
+    if (err.code === 'ENOENT') {
+      console.log('File not found!', err);
+    } else {
+      throw err;
+    }
+    return false;
+  }
+  return body;
+}
 function transcribeAudioAndSendToS3(logData){
 
  var params = {
