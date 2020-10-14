@@ -335,6 +335,7 @@ function saveWavFile(reqData, userID, selector, bucketName) {
         
         uploadWavToS3(wavFileName, S3_DATA_BUCKET_NAME, S3UploadPath)
       }
+      uploadWavToS3(wavFileName, S3_DATA_BUCKET_NAME, S3UploadPath)
     }
   )
   reqData.assessments[0].data[selector][0]['recorded_data'] = wavFileName
@@ -563,6 +564,10 @@ async function getObjectFromS3(fileName,userID) {
 
 function uploadJSONFileToS3(localJSONLocation, S3Bucket, objectKeyName) {
   let jsonData = safeFileReadSync(localJSONLocation)
+  if (!jsonData){
+    console.log("Could not upload json to s3.")
+    return
+  } 
   let params = {
     Bucket: S3Bucket,
     Key: objectKeyName,
@@ -580,7 +585,10 @@ function uploadWavToS3(localWavFileName, S3Bucket, objectKeyName) {
   console.log("uploadingWavToS3...")
 
   let body = safeFileReadSync(localWavFileName)
-  
+  if (!body){
+    console.log("Could not upload wav to s3.")
+    return
+  } 
   let params = {
     Bucket: S3Bucket,
     Key: objectKeyName,
