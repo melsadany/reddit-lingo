@@ -50,7 +50,7 @@ export class AssessmentDataService {
     const theDate = (date.getDate()<10?'0':'') + date.getDate();
     const hours = (date.getHours()<10?'0':'') + date.getHours();
     const minutes= (date.getMinutes()<10?'0':'') + date.getMinutes();
-    return(date.getFullYear() + "-" + month + "-" + theDate + "T"  
+    return(date.getFullYear() + "-" + month + "-" + theDate + "T"
       + hours + ":" + minutes)
   }
 
@@ -75,7 +75,7 @@ export class AssessmentDataService {
   }
 
   public initializeHashKeyData(hashkey :string): Promise<string> {
-    
+
     if (this.stateManager.hashkeyAsGUID){
       this.currentUserId=hashkey;
       this.setUserIdCookie(hashkey)
@@ -86,7 +86,7 @@ export class AssessmentDataService {
     else if (this.validHashKey(this.getHashKeyCookie())){
       if (this.validateUserId(this.getUserIdCookie())){
         this.currentUserId = this.getUserIdCookie()
-        
+
       }
       else{ this.currentUserId = this.generateNewUserId()
         this.setUserIdCookie(this.currentUserId);}
@@ -114,13 +114,13 @@ export class AssessmentDataService {
       this.stateManager.hashKey = hashkey;
   }
     return  (new Promise((resolve) => {resolve (this.currentUserId)}));
-    
+
   }
   public validateUserId(userId :string):boolean{
     if(!userId)return false
     if(this.stateManager.validateUserId!="*"){
       const listStr = this.stateManager.validateUserId.split("/")
-       return (new RegExp(listStr[1],listStr[2])).test(userId)
+       return (new RegExp(listStr[0])).test(userId)
     }
     else{
       return true
@@ -132,7 +132,7 @@ export class AssessmentDataService {
     this.deleteUserIdCookie()
     window.location.assign('/')
   }
-  
+
   public setHashKeyCookie(value: string): void {
     console.log('Setting hash key cookie: ' + value);
     this.cookieService.set('hash_key', value, 200);
@@ -140,7 +140,7 @@ export class AssessmentDataService {
   public deleteHashKeyCookie(): void {
       this.cookieService.delete('hash_key');
   }
- 
+
   public setSingleAssessmentCookie(value): void {
     console.log('Setting single assessment to: ' + value);
     this.cookieService.set('single_assessment', value, 200);
@@ -152,7 +152,7 @@ export class AssessmentDataService {
     console.log('Setting user cookie: ' + value);
     this.cookieService.set('user_id', value, 200);
   }
-  
+
   public deleteUserIdCookie(): void {
     console.log("deleting user_id cookie")
     this.cookieService.delete('user_id');
@@ -177,8 +177,8 @@ export class AssessmentDataService {
 
   public deleteUserCookieDebugMode(): void {
     if (this.stateManager.DEBUG_MODE) {
-      var c = confirm("Are you sure you want to do delete the user's cookie? You will have to restart the whole assessment.");  
-  
+      var c = confirm("Are you sure you want to do delete the user's cookie? You will have to restart the whole assessment.");
+
       if (c == true) {this.deleteUserIdCookie();window.location.assign('/')}
     }
   }
@@ -209,7 +209,7 @@ export class AssessmentDataService {
         (data: AssessmentData | boolean) => {
           this.stateManager.serveDiagnostics();
           if (data==false){
-            
+
           }
           else {
             this.stateManager.hasDoneDiagnostics = true;
@@ -264,7 +264,7 @@ export class AssessmentDataService {
         //google_speech_to_text_assess: [googleData]
       };
       this.stateManager.addHashToJson = false;
-    
+
       return this.http.post('/api/assessmentsAPI/SaveAssessments', structure, {
         responseType: 'json'
         });

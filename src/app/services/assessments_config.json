@@ -77,7 +77,7 @@
       }
     },
     "settings": {
-      "hashkeyAsGUID":true,   
+      "hashkeyAsGUID":false,   
       "validateHashWithS3":false,
       "validateUserId":"*",
       "endUrl":"",
