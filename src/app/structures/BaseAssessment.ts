@@ -302,7 +302,7 @@ export class BaseAssessment implements OnInit {
     this.stateManager.finishThisAssessmentAndAdvance(this.assessmentName);
   }
   fixDataTitle(){
-    if (this.dataTitle && typeof this.dataTitle=="string"){
+    if (this.dataTitle && ((typeof this.dataTitle)==='string')){
       const specify = this.dataTitle.split('/')
       this.dataTitle=specify[specify.length-1];
       this.dataTitle=this.dataTitle.split('.')[0]

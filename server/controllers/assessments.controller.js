@@ -272,9 +272,15 @@ function getUserAssessmentData(searchUserId,date) {
 
 //dont need inserNewIDJson anymore (BT)
 
-function saveWavFile(reqData, userID, selector, bucketName) {
+function saveWavFile(reqData, userID, selector) {
   const promptNumber = reqData.assessments[0].data[selector][0]['prompt_number']
-  const dataTitle =  reqData.assessments[0].data[selector][0]["dataGiven"];
+  var dataTitle =  reqData.assessments[0].data[selector][0]["dataGiven"];
+  //double check to make sure dataTitle doesn't have / marks and if so, crop it
+  if (dataTitle && ((typeof dataTitle)==='string') && dataTitle.includes('/')){
+    const specify = dataTitle.split('/')
+    dataTitle=specify[specify.length-1];
+    dataTitle=dataTitle.split('.')[0]
+  }
   const assessmentName = reqData.assessments[0]['assess_name']
   let wavFilePath
   let wavFileName
