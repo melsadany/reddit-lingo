@@ -25,6 +25,7 @@ build and deploy lingo:
         BUILD_FOLDER=lingo-master-builds;
       elif [[ $CI_COMMIT_REF_NAME == 'kiosk' ]]; then
         BUILD_FOLDER=lingo-kiosk-build;
+      elif [[ $CI_COMMIT_REF_NAME == 'spark' ]]; then BUILD_FOLDER=lingo-spark-build;
       else
         BUILD_FOLDER=unkown;
       fi;

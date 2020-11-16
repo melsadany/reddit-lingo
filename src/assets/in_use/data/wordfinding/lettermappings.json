@@ -13,5 +13,16 @@
     "letters": ["S"],
     "type": "S"
 
+  }, 
+  "3": {
+    "letters": ["L"],
+    "type": "L"
+
+  }, 
+  "4": {
+    "letters": ["C"],
+    "type": "C"
+
   }
+  
 }
