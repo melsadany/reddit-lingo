@@ -1,0 +1,262 @@
+---
+Description: Template for the Root deployment of the Reddit app 
+Parameters: #These are parameters that users can set when creating stack
+  KeyName:
+    Description: Key Pair name #TODO - add key pair for devices to get into in AWS (Nothing actually done in this file) -  you need to create a key pair value in AWS (Network & Security -> Key Pairs). Once created, then download onto your computer.
+    Type: AWS::EC2::KeyPair::KeyName
+    Default: msmuhammad-aws
+  InstanceType:
+    Description: Select one of the possible instance types
+    Type: String
+    Default: t3a.xlarge
+  ImageID:
+    Type: AWS::EC2::Image::Id
+    Default: ami-0a887e401f7654935
+  DataFolderName:
+    Description: Output folder for assessment data in lingo-assessment-data bucket. Must be legal S3 folder name
+    Type: String
+    Default: Reddit
+  DesiredCapacity:
+    Description: The ideal number of servers
+    Type: String
+    Default: 1
+  MinSize:
+    Description: Minimum number of EC2 
+    Type: String
+    Default: 1
+  MaxSize:
+    Description: Max number of EC2 
+    Type: String
+    Default: 2
+  VolumeSize: 
+    Description: Size of EBS requisition (i.e. disk space in GB)
+    Type: String
+    Default: 50
+  Email:
+    Description: First Email for cloudwatch alarm
+    Type: String
+    Default: muhammad-elsadany@uiowa.edu
+  Email2:
+    Description: Second Email for cloudwatch alarm
+    Type: String
+    Default: melsadany24@gmail.com
+  CPUPolicyTargetValue:
+    Description: Average CPU threshold for autoscaling group to trigger new instance(s)
+    Type: String
+    Default: 95
+  CertARN:
+    Description: The certificate ARN for the stack
+    Type: String
+    Default: arn:aws:acm:us-east-1:000246156158:certificate/56c54d7d-8a76-404c-bb73-a1cc7dad15c5 
+
+Resources:
+
+  RedditRecordSet: #creates our domain name record
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneName: lingo.aws.cloud.uiowa.edu.
+      RecordSets:
+      - Name:
+          reddit.lingo.aws.cloud.uiowa.edu. #need our domain name
+        Type: A
+        AliasTarget:
+          HostedZoneId:
+            Fn::GetAtt:
+              RedditLingoLoadBalancerGroup.CanonicalHostedZoneID
+          DNSName:
+            Fn::GetAtt:
+              RedditLingoLoadBalancerGroup.DNSName
+
+  RedditLingoIamInstanceProfile: #IAM profile for instances (already created in aws console - we are just referencing it)
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - LingoRole
+
+  RedditLingoLoadBalancerGroup:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      IpAddressType: ipv4
+      Name: RedditLingoLoadBalancerGroup #This is new load balancer name
+      Scheme: internet-facing
+      SecurityGroups:
+        - sg-0e6f6e654ea66190f  #RedditLoadBalancer Security group (should have already been created manually in aws console)
+      Subnets:
+        - subnet-0737a237be02ece05 #always subnets 'A' and 'B'
+        - subnet-09b5561f301ffbad7
+      Type: application
+
+  RedditListenerForBalancer:  # this allows for only allowing https (secure) connections on our load balancer which requires an ssl certificate created by ITS AWS team
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      Certificates:
+        - CertificateArn: 
+            Ref: CertARN #TODO - email ITS AWS team about creating certificate then when they make one with the EXAMPLE branch, copy the "ARN" certificate in Certificates Management page in AWS
+      DefaultActions:
+      - TargetGroupArn:
+          Ref: RedditLingoTargetGroup
+        Type: forward
+      LoadBalancerArn:
+        Ref: RedditLingoLoadBalancerGroup
+      Port: 443
+      Protocol: HTTPS
+
+  RedditLingoTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: RedditLingoAppGroup      # TODO  - need to change to "EXAMPLELinkgoGroup1" - which generates a new target group
+      Port: 8080
+      Protocol: HTTP
+      VpcId:
+        vpc-078340b56827d0b02
+
+  RedditLingoServerLaunchConfig: #This is a launch config for each instance
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Properties:
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeType: gp2
+            VolumeSize: 
+              Ref: VolumeSize
+            Encrypted: true
+      ImageId:
+        Ref: ImageID
+      IamInstanceProfile:
+        Ref:
+          RedditLingoIamInstanceProfile
+      SecurityGroups:
+      - sg-005db16aeaa2de436  #branch App Secrurity Group (should have already been created manually in aws console)
+      InstanceType:
+        Ref: InstanceType
+      KeyName:
+        Ref: KeyName  #this is the keypair PEM file reference for "ssh"ing into an instance
+      UserData: #this runs script on every instance launch
+        Fn::Base64:
+          Fn::Sub: |
+            #!/bin/bash -xe
+            yum update -y
+
+            # OLD Install FireEyeHX endpoint
+            # mkdir ~/FireEye && cd ~/FireEye
+            # aws s3 cp s3://fire-eye-hx-endpoint/IMAGE_HX_AGENT_LINUX_30.19.0.tgz IMAGE_HX_AGENT_LINUX_30.19.0.tgz
+            # tar zxvf IMAGE_HX_AGENT_LINUX_30.19.0.tgz
+            # rpm -ihv xagt-30.19.0-1.el7.x86_64.rpm
+            # /opt/fireeye/bin/xagt -i agent_config.json
+            # service xagt start
+
+            # NEW install FireEyeHx Endpoint
+            IMAGE=$(aws s3 ls s3://ui-helix-agent/LATEST/IMAGE_HX_AGENT_LINUX_ | awk '{print $4}')
+            aws s3 cp s3://ui-helix-agent/LATEST/$IMAGE .
+            tar zxvf $IMAGE
+            sudo yum -y install xagt-*el7.x86_64.rpm && sudo cp agent_config.json /opt/fireeye/
+            sudo /opt/fireeye/bin/xagt -i /opt/fireeye/agent_config.json
+            sudo systemctl start xagt && sudo systemctl enable xagt
+
+            # Install node and start lingo
+            mkdir ~/lingo && cd ~/lingo
+            yum install git -y
+            curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+            nvm install 10.16.0
+            node --version
+            curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo
+            curl --silent --location https://rpm.nodesource.com/setup_10.x | bash -
+            yum install yarn -y
+            export LINGO_FOLDER=lingo/${DataFolderName}
+            aws s3 cp s3://lingo-builds/lingo-reddit-build/ . --recursive #TODO - specify where the new s3 lingo EXAMPLE build is - lingo-builds/lingo-EXAMPLE-build/
+            yarn install && yarn start
+  
+  AlarmNotificationTopic: #this is just a notification topic linked to emails
+    Type: AWS::SNS::Topic
+    Properties:
+      Subscription:
+        - Endpoint:
+            Ref: Email
+          Protocol: email
+        - Endpoint:
+            Ref: Email2
+          Protocol: email
+
+  RedditLingoAutoScaleGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      Tags:
+      - Key: Name
+        Value: RedditLingoInstance   #name the ec2 instance when it is created with a EXAMPLE name
+        PropagateAtLaunch: true
+      VPCZoneIdentifier:
+        - subnet-0737a237be02ece05
+        - subnet-09b5561f301ffbad7
+      LaunchConfigurationName:
+        Ref: RedditLingoServerLaunchConfig
+      HealthCheckType: ELB   #autoscales based on loadbalancer health checks to instances rather than actual instance health status
+      HealthCheckGracePeriod: 600
+      DesiredCapacity: 
+        Ref: DesiredCapacity
+      MinSize: 
+        Ref: MinSize
+      MaxSize:
+        Ref: MaxSize
+      LifecycleHookSpecificationList: #this allows for logging ec2 script
+        - LifecycleTransition: "autoscaling:EC2_INSTANCE_TERMINATING"
+          LifecycleHookName: RedditTerminateLifeCycleHook
+          HeartbeatTimeout: 150
+      TargetGroupARNs: [Ref: RedditLingoTargetGroup]  
+
+  RedditCPUPolicy: #autoscale policy to spin new instances when at average cpu utilization is above threshold for autoscaling group average
+    Type: AWS::AutoScaling::ScalingPolicy
+    Properties:
+      AutoScalingGroupName: !Ref RedditLingoAutoScaleGroup
+      PolicyType: TargetTrackingScaling
+      TargetTrackingConfiguration:
+        PredefinedMetricSpecification:
+          PredefinedMetricType: ASGAverageCPUUtilization
+        TargetValue: !Ref CPUPolicyTargetValue
+      EstimatedInstanceWarmup: 600
+
+  RedditTriggerRule: #a cloudwatch event that triggers script for ec2 logging
+    Type: AWS::Events::Rule
+    Properties: 
+      Name: RedditTriggerRule
+      Description: Triggers lambda to copy ec2 log file in s3
+      EventPattern: {"source": ["aws.autoscaling"],"detail-type": ["EC2 Instance-terminate Lifecycle Action"],"detail": {"AutoScalingGroupName": [{ "Ref" : "RedditLingoAutoScaleGroup" }]}}
+      State: "ENABLED"
+      Targets: 
+        - 
+          Arn: "arn:aws:lambda:us-east-1:000246156158:function:sendScript"
+          Id: "sendScript"
+
+  PermissionForEventsToInvokeLambda: #permission for the event to trigger lambda script
+    Type: AWS::Lambda::Permission
+    Properties: 
+      FunctionName: "sendScript"
+      Action: "lambda:InvokeFunction"
+      Principal: "events.amazonaws.com"
+      SourceArn: 
+        Fn::GetAtt: 
+          - "RedditTriggerRule"
+          - "Arn"
+
+  UnhealthyHostAlarm:  #alarm for unhealthy instances from target group and triggers email notifications
+    Type: 'AWS::CloudWatch::Alarm'
+    Properties:
+      AlarmDescription: Unhealthy host for Reddit branch
+      MetricName: UnHealthyHostCount
+      Namespace: AWS/ApplicationELB
+      Statistic: Minimum
+      Period: 60
+      EvaluationPeriods: 1
+      Threshold: 0
+      AlarmActions:
+      - !Ref AlarmNotificationTopic
+      OKActions:
+      - !Ref AlarmNotificationTopic
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: TargetGroup
+          Value: !GetAtt RedditLingoTargetGroup.TargetGroupFullName
+        - Name: LoadBalancer
+          Value: !GetAtt RedditLingoLoadBalancerGroup.LoadBalancerFullName
